@@ -35,6 +35,11 @@ from modules.statistics import StatisticalAnalyzer
 from modules.visualization import EpigeneticVisualizer
 from modules.reference_database import ReferenceDatabase
 from modules.report_generator import ReportGenerator
+from modules.database import DatabaseManager
+from modules.longitudinal import LongitudinalAnalyzer
+from modules.gsea import GSEAnalyzer
+from modules.clinical_decision import ClinicalDecisionSupport
+from modules.multiomics import MultiOmicsIntegrator
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -120,6 +125,11 @@ def init_components():
     visualizer = EpigeneticVisualizer()
     ref_db = ReferenceDatabase()
     report_gen = ReportGenerator()
+    db_manager = DatabaseManager()
+    longitudinal = LongitudinalAnalyzer()
+    gsea = GSEAnalyzer()
+    clinical_decision = ClinicalDecisionSupport()
+    multiomics = MultiOmicsIntegrator()
     
     X_train, y_train = generate_synthetic_training_data(n_samples=500, n_cpgs=200)
     ml_predictor.fit(X_train, y_train)
@@ -131,7 +141,12 @@ def init_components():
         'stats_analyzer': stats_analyzer,
         'visualizer': visualizer,
         'ref_db': ref_db,
-        'report_gen': report_gen
+        'report_gen': report_gen,
+        'db_manager': db_manager,
+        'longitudinal': longitudinal,
+        'gsea': gsea,
+        'clinical_decision': clinical_decision,
+        'multiomics': multiomics
     }
 
 def main():
@@ -153,6 +168,11 @@ def main():
              "🔬 Diferansiyel Metilasyon",
              "🧪 Mediyasyon Analizi",
              "📊 Model Performansı",
+             "📉 Longitudinal Takip",
+             "🧬 GSEA Pathway Analizi",
+             "💊 Klinik Karar Destek",
+             "🔗 Multi-Omik Entegrasyon",
+             "🗄️ Veritabanı Yönetimi",
              "📋 Rapor Oluştur"],
             index=0
         )
@@ -208,6 +228,16 @@ def main():
         render_mediation_analysis(components)
     elif "📊 Model Performansı" in analysis_mode:
         render_model_performance(components)
+    elif "📉 Longitudinal Takip" in analysis_mode:
+        render_longitudinal_analysis(components)
+    elif "🧬 GSEA Pathway Analizi" in analysis_mode:
+        render_gsea_analysis(components)
+    elif "💊 Klinik Karar Destek" in analysis_mode:
+        render_clinical_decision_support(components)
+    elif "🔗 Multi-Omik Entegrasyon" in analysis_mode:
+        render_multiomics_analysis(components)
+    elif "🗄️ Veritabanı Yönetimi" in analysis_mode:
+        render_database_management(components)
     elif "📋 Rapor Oluştur" in analysis_mode:
         render_report_generator(components)
 
@@ -314,7 +344,7 @@ def render_home_page(components):
             height=400
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         st.markdown("### 🎯 Epigenetik Saat Performansları")
@@ -351,7 +381,7 @@ def render_home_page(components):
             height=400
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     st.markdown("---")
     
@@ -504,7 +534,7 @@ def render_individual_analysis(components, selected_clocks):
     
     st.markdown("---")
     
-    if st.button("🔬 Epigenetik Yaş Hesapla", type="primary", use_container_width=True):
+    if st.button("🔬 Epigenetik Yaş Hesapla", type="primary", width='stretch'):
         
         with st.spinner("Epigenetik saatler hesaplanıyor..."):
             
@@ -586,7 +616,7 @@ def render_individual_analysis(components, selected_clocks):
                 eaa_values = {name: r.age_acceleration for name, r in clock_results.items() 
                              if name != 'dunedinpace'}
                 radar_fig = visualizer.plot_clock_comparison_radar(eaa_values, patient_id)
-                st.plotly_chart(radar_fig, use_container_width=True)
+                st.plotly_chart(radar_fig, width='stretch')
             
             with col2:
                 import plotly.graph_objects as go
@@ -618,7 +648,7 @@ def render_individual_analysis(components, selected_clocks):
                     height=400
                 )
                 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
         
         with tab2:
             results_df = pd.DataFrame([
@@ -637,7 +667,7 @@ def render_individual_analysis(components, selected_clocks):
                 for r in clock_results.values()
             ])
             
-            st.dataframe(results_df, use_container_width=True)
+            st.dataframe(results_df, width='stretch')
         
         with tab3:
             grimage_result = clock_results.get('grimage')
@@ -766,7 +796,7 @@ def render_batch_analysis(components, selected_clocks):
                 group_counts = metadata['substance_type'].value_counts()
                 st.bar_chart(group_counts)
         
-        if st.button("🔬 Toplu Analiz Başlat", type="primary", use_container_width=True):
+        if st.button("🔬 Toplu Analiz Başlat", type="primary", width='stretch'):
             
             with st.spinner("Toplu analiz gerçekleştiriliyor..."):
                 
@@ -830,17 +860,17 @@ def render_batch_analysis(components, selected_clocks):
                     group_labels = results_df['substance_type'].values
                     
                     violin_fig = visualizer.plot_eaa_violin(eaa_values, group_labels)
-                    st.plotly_chart(violin_fig, use_container_width=True)
+                    st.plotly_chart(violin_fig, width='stretch')
                     
                     comparison_df = stats_analyzer.compare_groups(
                         eaa_values, group_labels, 'control'
                     )
                     
                     st.markdown("**İstatistiksel Karşılaştırma (vs Kontrol):**")
-                    st.dataframe(comparison_df, use_container_width=True)
+                    st.dataframe(comparison_df, width='stretch')
             
             with tab2:
-                st.dataframe(results_df, use_container_width=True)
+                st.dataframe(results_df, width='stretch')
             
             with tab3:
                 csv = results_df.to_csv(index=False).encode('utf-8')
@@ -939,11 +969,11 @@ def render_reference_database(components):
             height=500
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
         
         effect_summary = ref_db.get_substance_effect_summary()
         st.markdown("#### Madde Etkisi Özeti")
-        st.dataframe(effect_summary, use_container_width=True)
+        st.dataframe(effect_summary, width='stretch')
     
     with tab2:
         st.markdown("#### Yaş Gruplarına Göre EAA İstatistikleri")
@@ -958,7 +988,7 @@ def render_reference_database(components):
         else:
             age_stats = ref_db.get_age_stratified_statistics(selected_substance)
         
-        st.dataframe(age_stats, use_container_width=True)
+        st.dataframe(age_stats, width='stretch')
     
     with tab3:
         st.markdown("#### Detaylı Referans İstatistikleri")
@@ -1038,7 +1068,7 @@ def render_reference_database(components):
                 
                 st.success(f"✅ {len(synth_cohort)} örnekli sentetik kohort oluşturuldu!")
                 
-                st.dataframe(synth_cohort.head(20), use_container_width=True)
+                st.dataframe(synth_cohort.head(20), width='stretch')
                 
                 csv = synth_cohort.to_csv(index=False).encode('utf-8')
                 st.download_button(
@@ -1090,7 +1120,7 @@ def render_differential_methylation(components, significance_level):
             step=0.01
         )
     
-    if st.button("🔬 DMA Başlat", type="primary", use_container_width=True):
+    if st.button("🔬 DMA Başlat", type="primary", width='stretch'):
         
         with st.spinner("Diferansiyel metilasyon analizi gerçekleştiriliyor..."):
             
@@ -1156,18 +1186,18 @@ def render_differential_methylation(components, significance_level):
                 p_value_threshold=significance_level,
                 fc_threshold=min_delta_beta
             )
-            st.plotly_chart(volcano_fig, use_container_width=True)
+            st.plotly_chart(volcano_fig, width='stretch')
         
         with tab2:
             st.markdown("#### En Anlamlı Hipermetilasyonlu CpG'ler")
             top_hyper = dma_results[dma_results['direction'] == 'hypermethylated'].head(10)
             st.dataframe(top_hyper[['cpg_id', 'mean_diff', 'log2_fold_change', 'p_value', 'adjusted_p_value']], 
-                        use_container_width=True)
+                        width='stretch')
             
             st.markdown("#### En Anlamlı Hipometilasyonlu CpG'ler")
             top_hypo = dma_results[dma_results['direction'] == 'hypomethylated'].head(10)
             st.dataframe(top_hypo[['cpg_id', 'mean_diff', 'log2_fold_change', 'p_value', 'adjusted_p_value']], 
-                        use_container_width=True)
+                        width='stretch')
         
         with tab3:
             import plotly.express as px
@@ -1183,7 +1213,7 @@ def render_differential_methylation(components, significance_level):
             )
             
             fig.update_layout(template="plotly_white")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 
 def render_mediation_analysis(components):
@@ -1277,7 +1307,7 @@ def render_mediation_analysis(components):
                 """, unsafe_allow_html=True)
             
             med_diagram = visualizer.plot_mediation_diagram(result)
-            st.plotly_chart(med_diagram, use_container_width=True)
+            st.plotly_chart(med_diagram, width='stretch')
     
     with tab2:
         st.markdown("#### Psikolojik Moderatörler")
@@ -1386,7 +1416,7 @@ def render_model_performance(components):
         template="plotly_white"
     )
     
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     st.markdown("---")
     
@@ -1414,7 +1444,7 @@ def render_model_performance(components):
             template="plotly_white"
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         fig = go.Figure(data=[
@@ -1435,7 +1465,7 @@ def render_model_performance(components):
             template="plotly_white"
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     st.markdown("---")
     
@@ -1450,7 +1480,7 @@ def render_model_performance(components):
     }
     
     cv_df = pd.DataFrame(cv_results)
-    st.dataframe(cv_df, use_container_width=True)
+    st.dataframe(cv_df, width='stretch')
 
 
 def render_report_generator(components):
@@ -1553,6 +1583,740 @@ def render_report_generator(components):
                 )
         else:
             st.warning("⚠️ Henüz toplu analiz yapılmadı. Lütfen önce 'Toplu Analiz' modülünde bir analiz gerçekleştirin.")
+
+
+def render_longitudinal_analysis(components):
+    """Render longitudinal tracking analysis page"""
+    import plotly.graph_objects as go
+    
+    st.markdown("### 📉 Longitudinal Epigenetik Yaş Takibi")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Bu modülde hastaların zaman içindeki epigenetik yaş değişimlerini 
+    izleyebilir, tedavi etkinliğini değerlendirebilir ve gelecek tahminleri yapabilirsiniz.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    longitudinal = components['longitudinal']
+    
+    tab1, tab2, tab3 = st.tabs(["📊 Trend Analizi", "💊 Müdahale Değerlendirmesi", "🔮 Tahmin"])
+    
+    with tab1:
+        st.markdown("#### Simüle Longitudinal Veri (Demo)")
+        
+        np.random.seed(42)
+        n_timepoints = st.slider("Zaman Noktası Sayısı", 3, 12, 6)
+        
+        base_eaa = st.number_input("Başlangıç EAA (yıl)", -5.0, 15.0, 5.0)
+        trend_type = st.selectbox("Trend Tipi", ["İyileşme", "Stabil", "Kötüleşme"])
+        
+        if st.button("Demo Veri Oluştur ve Analiz Et"):
+            dates = pd.date_range(start='2022-01-01', periods=n_timepoints, freq='3M')
+            
+            if trend_type == "İyileşme":
+                slope = -0.8
+            elif trend_type == "Kötüleşme":
+                slope = 0.6
+            else:
+                slope = 0.1
+            
+            years = np.arange(n_timepoints) * 0.25
+            eaa_values = base_eaa + slope * years + np.random.normal(0, 0.3, n_timepoints)
+            
+            demo_data = pd.DataFrame({
+                'analysis_date': dates,
+                'grimage_eaa': eaa_values,
+                'phenoage_eaa': eaa_values * 0.9 + np.random.normal(0, 0.5, n_timepoints),
+                'horvath_eaa': eaa_values * 0.7 + np.random.normal(0, 0.4, n_timepoints),
+                'hannum_eaa': eaa_values * 0.8 + np.random.normal(0, 0.4, n_timepoints)
+            })
+            
+            trend = longitudinal.analyze_trend(demo_data, 'DEMO001', 'grimage_eaa')
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Yıllık Değişim", f"{trend.annual_change:+.2f} yıl")
+            with col2:
+                st.metric("R²", f"{trend.eaa_r_squared:.3f}")
+            with col3:
+                direction_tr = {'accelerating': 'Hızlanıyor', 'improving': 'İyileşiyor', 'stable': 'Stabil'}
+                st.metric("Trend", direction_tr.get(trend.trend_direction, trend.trend_direction))
+            
+            st.info(trend.interpretation)
+            
+            fig = longitudinal.plot_longitudinal_trajectory(
+                demo_data, 'DEMO001', 
+                ['grimage_eaa', 'phenoage_eaa', 'horvath_eaa']
+            )
+            st.plotly_chart(fig, width='stretch')
+            
+            st.session_state['longitudinal_demo_data'] = demo_data
+    
+    with tab2:
+        st.markdown("#### Müdahale Etkinliği Değerlendirmesi")
+        
+        if 'longitudinal_demo_data' in st.session_state:
+            demo_data = st.session_state['longitudinal_demo_data']
+            
+            intervention_idx = st.slider(
+                "Müdahale Zamanı (indeks)", 
+                1, len(demo_data) - 2, 
+                len(demo_data) // 2
+            )
+            intervention_date = demo_data['analysis_date'].iloc[intervention_idx]
+            
+            st.write(f"Müdahale Tarihi: {intervention_date.strftime('%d.%m.%Y')}")
+            
+            effect = longitudinal.analyze_intervention_effect(
+                demo_data, 
+                intervention_date, 
+                'grimage_eaa'
+            )
+            
+            if effect:
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Öncesi EAA", f"{effect.pre_intervention_eaa:.2f} yıl")
+                with col2:
+                    st.metric("Sonrası EAA", f"{effect.post_intervention_eaa:.2f} yıl")
+                with col3:
+                    delta_color = "normal" if effect.is_improvement else "inverse"
+                    st.metric("Değişim", f"{effect.eaa_change:+.2f} yıl", 
+                             delta=f"{effect.percent_change:+.1f}%",
+                             delta_color=delta_color)
+                
+                st.info(effect.interpretation)
+            else:
+                st.warning("Müdahale analizi için yeterli veri yok.")
+        else:
+            st.warning("Önce 'Trend Analizi' sekmesinde demo veri oluşturun.")
+    
+    with tab3:
+        st.markdown("#### Gelecek EAA Tahmini")
+        
+        if 'longitudinal_demo_data' in st.session_state:
+            demo_data = st.session_state['longitudinal_demo_data']
+            
+            pred_years = st.slider("Tahmin Süresi (yıl)", 1.0, 10.0, 5.0)
+            
+            prediction = longitudinal.predict_future_eaa(demo_data, pred_years, 'grimage_eaa')
+            
+            if 'error' not in prediction:
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Mevcut EAA", f"{prediction['current_eaa']:.2f} yıl")
+                with col2:
+                    st.metric(f"{pred_years:.0f} Yıl Sonra Tahmini EAA", 
+                             f"{prediction['predicted_eaa']:.2f} yıl")
+                with col3:
+                    st.metric("Beklenen Değişim", f"{prediction['expected_change']:+.2f} yıl")
+                
+                ci = prediction['confidence_interval']
+                st.info(f"95% Güven Aralığı: [{ci[0]:.2f}, {ci[1]:.2f}] yıl")
+            else:
+                st.warning(prediction['error'])
+        else:
+            st.warning("Önce 'Trend Analizi' sekmesinde demo veri oluşturun.")
+
+
+def render_gsea_analysis(components):
+    """Render Gene Set Enrichment Analysis page"""
+    import plotly.graph_objects as go
+    
+    st.markdown("### 🧬 Gene Set Enrichment Analysis (GSEA)")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> GSEA modülü, diferansiyel metile olmuş CpG bölgelerini biyolojik 
+    pathway'lerle ilişkilendirir. GO, KEGG ve Reactome veritabanları kullanılmaktadır.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    gsea = components['gsea']
+    
+    st.markdown("#### Madde Tipine Göre Pathway Analizi")
+    
+    substance_type = st.selectbox(
+        "Madde Tipi Seçin",
+        ["alcohol", "cocaine", "opioids", "methamphetamine", "cannabis", "polysubstance"],
+        format_func=lambda x: {
+            'alcohol': 'Alkol',
+            'cocaine': 'Kokain', 
+            'opioids': 'Opioid',
+            'methamphetamine': 'Metamfetamin',
+            'cannabis': 'Kannabis',
+            'polysubstance': 'Çoklu Madde'
+        }.get(x, x)
+    )
+    
+    n_significant = st.slider("Simüle Anlamlı CpG Sayısı", 20, 200, 75)
+    
+    if st.button("GSEA Analizi Çalıştır"):
+        with st.spinner("Pathway zenginleştirme analizi yapılıyor..."):
+            result = gsea.simulate_gsea_results(substance_type, n_significant)
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Analiz Edilen CpG", result.n_cpgs_analyzed)
+        with col2:
+            st.metric("Anlamlı CpG", result.n_significant_cpgs)
+        with col3:
+            st.metric("Anlamlı Pathway", result.n_significant_pathways)
+        
+        st.markdown("---")
+        
+        tab1, tab2, tab3 = st.tabs(["📊 Bar Plot", "🔵 Dot Plot", "🕸️ Network"])
+        
+        with tab1:
+            fig = gsea.plot_enrichment_barplot(result, top_n=12)
+            st.plotly_chart(fig, width='stretch')
+        
+        with tab2:
+            fig = gsea.plot_enrichment_dotplot(result, top_n=12)
+            st.plotly_chart(fig, width='stretch')
+        
+        with tab3:
+            fig = gsea.plot_pathway_network(result, top_n=8)
+            st.plotly_chart(fig, width='stretch')
+        
+        st.markdown("#### Top 10 Zenginleşmiş Pathway'ler")
+        
+        top_df = pd.DataFrame([
+            {
+                'Pathway': p.pathway_name,
+                'Kaynak': p.source,
+                'NES': f"{p.normalized_es:.2f}",
+                'p-değeri': f"{p.p_value:.2e}",
+                'FDR': f"{p.fdr_q_value:.4f}",
+                'Gen Sayısı': p.n_significant_genes,
+                'Anlamlı': '✅' if p.is_significant else '❌'
+            }
+            for p in result.top_pathways[:10]
+        ])
+        
+        st.dataframe(top_df, width='stretch')
+        
+        report = gsea.generate_gsea_report(result)
+        st.info(report['interpretation'])
+        
+        st.session_state['gsea_result'] = result
+
+
+def render_clinical_decision_support(components):
+    """Render Clinical Decision Support page"""
+    import plotly.graph_objects as go
+    
+    st.markdown("### 💊 Klinik Karar Destek Sistemi")
+    
+    st.markdown("""
+    <div class="warning-box">
+    <b>⚠️ Uyarı:</b> Bu modül klinik karar destek aracı olarak tasarlanmıştır. 
+    Tüm tedavi kararları yetkili sağlık profesyonelleri tarafından verilmelidir.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    clinical_decision = components['clinical_decision']
+    
+    tab1, tab2, tab3 = st.tabs(["🎯 Risk Değerlendirmesi", "💊 Tedavi Önerileri", "📋 Müdahale Planı"])
+    
+    with tab1:
+        st.markdown("#### Hasta Risk Profili")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**Epigenetik Yaş Değerleri**")
+            grimage_eaa = st.number_input("GrimAge EAA (yıl)", -10.0, 20.0, 4.5)
+            phenoage_eaa = st.number_input("PhenoAge EAA (yıl)", -10.0, 20.0, 3.8)
+            horvath_eaa = st.number_input("Horvath EAA (yıl)", -10.0, 20.0, 2.5)
+            
+            substance_type = st.selectbox(
+                "Madde Tipi",
+                ["control", "alcohol", "cocaine", "opioids", "methamphetamine", "cannabis", "polysubstance"],
+                format_func=lambda x: {
+                    'control': 'Kontrol (Madde Kullanımı Yok)',
+                    'alcohol': 'Alkol',
+                    'cocaine': 'Kokain',
+                    'opioids': 'Opioid',
+                    'methamphetamine': 'Metamfetamin',
+                    'cannabis': 'Kannabis',
+                    'polysubstance': 'Çoklu Madde'
+                }.get(x, x)
+            )
+        
+        with col2:
+            st.markdown("**Klinik Parametreler**")
+            crp = st.number_input("CRP (mg/L)", 0.0, 50.0, 2.5)
+            homa_ir = st.number_input("HOMA-IR", 0.0, 20.0, 1.8)
+            albumin = st.number_input("Albümin (g/dL)", 2.0, 6.0, 4.2)
+            glucose = st.number_input("Açlık Glukozu (mg/dL)", 50.0, 300.0, 95.0)
+            
+            st.markdown("**Yaşam Tarzı Faktörleri**")
+            smoking = st.number_input("Sigara (paket-yıl)", 0.0, 100.0, 5.0)
+            bmi = st.number_input("BMI (kg/m²)", 15.0, 50.0, 26.0)
+        
+        if st.button("Risk Değerlendirmesi Yap"):
+            eaa_values = {
+                'grimage_eaa': grimage_eaa,
+                'phenoage_eaa': phenoage_eaa,
+                'horvath_eaa': horvath_eaa
+            }
+            
+            clinical_data = {
+                'crp': crp,
+                'homa_ir': homa_ir,
+                'albumin': albumin,
+                'glucose': glucose
+            }
+            
+            lifestyle_data = {
+                'smoking_pack_years': smoking,
+                'bmi': bmi
+            }
+            
+            risk = clinical_decision.calculate_risk_score(
+                eaa_values, substance_type, clinical_data, lifestyle_data
+            )
+            
+            st.session_state['risk_assessment'] = risk
+            
+            st.markdown("---")
+            
+            risk_colors = {
+                'low': '🟢 Düşük',
+                'moderate': '🟡 Orta',
+                'high': '🟠 Yüksek',
+                'very_high': '🔴 Çok Yüksek'
+            }
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Risk Kategorisi", risk_colors.get(risk.risk_category, risk.risk_category))
+            with col2:
+                st.metric("Risk Skoru", f"{risk.risk_score:.1f}")
+            with col3:
+                st.metric("Persentil", f"{risk.risk_percentile:.1f}%")
+            with col4:
+                st.metric("EAA Katkısı", f"{risk.eaa_contribution:.1f}")
+            
+            st.info(risk.interpretation)
+            
+            fig = clinical_decision.plot_risk_dashboard(risk)
+            st.plotly_chart(fig, width='stretch')
+    
+    with tab2:
+        st.markdown("#### Kişiselleştirilmiş Tedavi Önerileri")
+        
+        if 'risk_assessment' in st.session_state:
+            risk = st.session_state['risk_assessment']
+            substance = st.session_state.get('substance_type', 'control')
+            
+            recommendations = clinical_decision.generate_recommendations(risk, substance_type)
+            
+            for i, rec in enumerate(recommendations):
+                priority_icons = {
+                    'very_high': '🔴',
+                    'high': '🟠',
+                    'moderate': '🟡',
+                    'low': '🟢'
+                }
+                
+                with st.expander(f"{priority_icons.get(rec.priority, '⚪')} {rec.title}", expanded=i < 3):
+                    st.markdown(f"**Kategori:** {rec.category}")
+                    st.markdown(f"**Açıklama:** {rec.description}")
+                    st.markdown(f"**Beklenen EAA Azalması:** {rec.expected_eaa_reduction} yıl")
+                    st.markdown(f"**Kanıt Düzeyi:** {rec.evidence_level}")
+                    st.markdown(f"**Etki Süresi:** {rec.time_to_effect}")
+                    
+                    if rec.target_pathways:
+                        st.markdown(f"**Hedef Yolaklar:** {', '.join(rec.target_pathways)}")
+            
+            st.session_state['recommendations'] = recommendations
+        else:
+            st.warning("Önce 'Risk Değerlendirmesi' sekmesinde değerlendirme yapın.")
+    
+    with tab3:
+        st.markdown("#### Kapsamlı Müdahale Planı")
+        
+        if 'risk_assessment' in st.session_state and 'recommendations' in st.session_state:
+            risk = st.session_state['risk_assessment']
+            recommendations = st.session_state['recommendations']
+            
+            plan = clinical_decision.create_intervention_plan(
+                'PATIENT001', risk, recommendations
+            )
+            
+            st.markdown("##### Zaman Çizelgesi")
+            
+            fig = clinical_decision.plot_recommendation_timeline(plan)
+            st.plotly_chart(fig, width='stretch')
+            
+            st.markdown("##### Takip Takvimi")
+            
+            for schedule in plan.monitoring_schedule:
+                st.markdown(f"**{schedule['timepoint']}:** {', '.join(schedule['assessments'])}")
+            
+            st.markdown("##### Beklenen Sonuçlar")
+            
+            outcomes = plan.expected_outcomes
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Beklenen EAA Azalması", f"{outcomes['expected_eaa_reduction']:.1f} yıl")
+            with col2:
+                st.metric("Minimum Azalma", f"{outcomes['minimum_eaa_reduction']:.1f} yıl")
+            with col3:
+                st.metric("Maksimum Azalma", f"{outcomes['maximum_eaa_reduction']:.1f} yıl")
+        else:
+            st.warning("Önce risk değerlendirmesi ve tedavi önerileri oluşturun.")
+
+
+def render_multiomics_analysis(components):
+    """Render Multi-Omics Integration page"""
+    import plotly.graph_objects as go
+    
+    st.markdown("### 🔗 Multi-Omik Entegrasyon Analizi")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Bu modül DNA metilasyon, transkriptomik ve proteomik verileri 
+    entegre ederek kapsamlı biyolojik yaş değerlendirmesi yapar.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    multiomics = components['multiomics']
+    
+    tab1, tab2, tab3 = st.tabs(["📊 Demo Analiz", "🔬 Entegrasyon", "📈 Karşılaştırma"])
+    
+    with tab1:
+        st.markdown("#### Simüle Multi-Omik Veri Oluştur")
+        
+        n_samples = st.slider("Örnek Sayısı", 20, 200, 50)
+        
+        substance_mix = st.multiselect(
+            "Dahil Edilecek Gruplar",
+            ["control", "alcohol", "cocaine", "opioids"],
+            default=["control", "alcohol", "cocaine"]
+        )
+        
+        if st.button("Multi-Omik Veri Oluştur"):
+            with st.spinner("Simüle veriler oluşturuluyor..."):
+                np.random.seed(42)
+                
+                chronological_ages = np.random.uniform(25, 65, n_samples)
+                substance_types = np.random.choice(substance_mix, n_samples)
+                
+                expr_data = multiomics.simulate_transcriptomic_data(
+                    n_samples, chronological_ages, substance_types
+                )
+                
+                prot_data = multiomics.simulate_proteomic_data(
+                    n_samples, chronological_ages, substance_types
+                )
+                
+                meth_data = pd.DataFrame(
+                    np.random.beta(2, 5, (n_samples, 100)),
+                    index=expr_data.index,
+                    columns=[f'cg{str(i).zfill(8)}' for i in range(100)]
+                )
+                
+                st.session_state['multiomics_data'] = {
+                    'methylation': meth_data,
+                    'transcriptomic': expr_data,
+                    'proteomic': prot_data,
+                    'chronological_ages': chronological_ages,
+                    'substance_types': substance_types
+                }
+                
+                st.success(f"✅ {n_samples} örnek için multi-omik veri oluşturuldu!")
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Metilasyon CpG", meth_data.shape[1])
+                with col2:
+                    st.metric("Transkriptom Gen", expr_data.shape[1])
+                with col3:
+                    st.metric("Proteom Protein", prot_data.shape[1])
+    
+    with tab2:
+        st.markdown("#### Multi-Omik Entegrasyon")
+        
+        if 'multiomics_data' in st.session_state:
+            data = st.session_state['multiomics_data']
+            
+            if st.button("Entegrasyon Analizi Çalıştır"):
+                with st.spinner("Omik katmanları entegre ediliyor..."):
+                    integration_result = multiomics.integrate_multi_omics(
+                        data['methylation'],
+                        data['transcriptomic'],
+                        data['proteomic'],
+                        data['chronological_ages']
+                    )
+                    
+                    st.session_state['integration_result'] = integration_result
+                
+                fig = multiomics.plot_multi_omics_overview(integration_result)
+                st.plotly_chart(fig, width='stretch')
+                
+                st.markdown("##### Katmanlar Arası Korelasyonlar")
+                st.dataframe(
+                    integration_result.cross_layer_correlations.round(3),
+                    width='stretch'
+                )
+                
+                st.markdown("##### En Önemli Özellikler")
+                for layer, features in integration_result.top_features.items():
+                    st.markdown(f"**{layer.title()}:** {', '.join(features[:5])}")
+        else:
+            st.warning("Önce 'Demo Analiz' sekmesinde veri oluşturun.")
+    
+    with tab3:
+        st.markdown("#### Omik-Bazlı Yaş Karşılaştırması")
+        
+        if 'multiomics_data' in st.session_state:
+            data = st.session_state['multiomics_data']
+            
+            if st.button("Yaş Tahminlerini Hesapla"):
+                with st.spinner("Farklı omik katmanlardan yaş tahmin ediliyor..."):
+                    meth_ages = data['chronological_ages'] + np.random.normal(2, 3, len(data['chronological_ages']))
+                    
+                    trans_ages = multiomics.calculate_transcriptomic_age(
+                        data['transcriptomic'],
+                        data['chronological_ages']
+                    )
+                    
+                    prot_ages = multiomics.calculate_proteomic_age(
+                        data['proteomic'],
+                        data['chronological_ages']
+                    )
+                    
+                    integrated_ages = np.array([
+                        multiomics.calculate_integrated_age(m, t, p)
+                        for m, t, p in zip(meth_ages, trans_ages, prot_ages)
+                    ])
+                
+                fig = multiomics.plot_age_comparison(
+                    data['chronological_ages'],
+                    meth_ages,
+                    trans_ages,
+                    prot_ages,
+                    integrated_ages
+                )
+                st.plotly_chart(fig, width='stretch')
+                
+                st.markdown("##### Özet İstatistikler")
+                
+                summary_df = pd.DataFrame({
+                    'Omik Katman': ['Metilasyon', 'Transkriptomik', 'Proteomik', 'Entegre'],
+                    'MAE (yıl)': [
+                        np.mean(np.abs(meth_ages - data['chronological_ages'])),
+                        np.mean(np.abs(trans_ages - data['chronological_ages'])),
+                        np.mean(np.abs(prot_ages - data['chronological_ages'])),
+                        np.mean(np.abs(integrated_ages - data['chronological_ages']))
+                    ],
+                    'Korrelasyon': [
+                        np.corrcoef(meth_ages, data['chronological_ages'])[0, 1],
+                        np.corrcoef(trans_ages, data['chronological_ages'])[0, 1],
+                        np.corrcoef(prot_ages, data['chronological_ages'])[0, 1],
+                        np.corrcoef(integrated_ages, data['chronological_ages'])[0, 1]
+                    ]
+                })
+                
+                summary_df['MAE (yıl)'] = summary_df['MAE (yıl)'].round(2)
+                summary_df['Korrelasyon'] = summary_df['Korrelasyon'].round(3)
+                
+                st.dataframe(summary_df, width='stretch')
+        else:
+            st.warning("Önce 'Demo Analiz' sekmesinde veri oluşturun.")
+
+
+def render_database_management(components):
+    """Render Database Management page"""
+    
+    st.markdown("### 🗄️ Veritabanı Yönetimi")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> PostgreSQL veritabanı kullanılarak hasta verileri, analiz sonuçları 
+    ve tedavi önerileri kalıcı olarak saklanmaktadır.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    db_manager = components['db_manager']
+    
+    try:
+        is_connected = db_manager.is_connected()
+        if is_connected:
+            st.success("✅ Veritabanı bağlantısı aktif")
+        else:
+            st.warning("⚠️ Veritabanı bağlantısı kurulamadı. Demo modunda çalışıyor.")
+    except Exception as e:
+        st.warning(f"⚠️ Veritabanı bağlantı kontrolü başarısız. Demo modunda çalışıyor.")
+        is_connected = False
+    
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 İstatistikler", "👤 Hasta Yönetimi", "📈 Analizler", "🔄 Demo Veri"])
+    
+    with tab1:
+        st.markdown("#### Veritabanı İstatistikleri")
+        
+        try:
+            stats = db_manager.get_database_stats()
+        except Exception as e:
+            stats = {'connected': False, 'error': str(e)}
+            st.warning("İstatistikler yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.")
+        
+        if stats.get('connected'):
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Toplam Hasta", stats.get('patient_count', 0))
+            with col2:
+                st.metric("Toplam Analiz", stats.get('analysis_count', 0))
+            with col3:
+                st.metric("Klinik Veri", stats.get('clinical_data_count', 0))
+            with col4:
+                st.metric("GSEA Sonucu", stats.get('gsea_result_count', 0))
+            
+            if stats.get('substance_counts'):
+                st.markdown("##### Madde Tipine Göre Hasta Dağılımı")
+                substance_df = pd.DataFrame([
+                    {'Madde Tipi': k, 'Hasta Sayısı': v}
+                    for k, v in stats['substance_counts'].items()
+                ])
+                st.dataframe(substance_df, width='stretch')
+        else:
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Toplam Hasta", stats.get('patient_count', 0))
+            with col2:
+                st.metric("Toplam Analiz", stats.get('analysis_count', 0))
+            with col3:
+                st.metric("Klinik Veri", stats.get('clinical_data_count', 0))
+            with col4:
+                st.metric("GSEA Sonucu", stats.get('gsea_result_count', 0))
+            
+            if stats.get('error'):
+                st.info(f"Veritabanı durumu: {stats.get('error')}")
+    
+    with tab2:
+        st.markdown("#### Hasta Kayıt ve Yönetimi")
+        
+        with st.expander("Yeni Hasta Ekle"):
+            patient_id = st.text_input("Hasta ID", "PATIENT001")
+            sex = st.selectbox("Cinsiyet", ["male", "female"])
+            substance_type = st.selectbox(
+                "Madde Tipi",
+                ["control", "alcohol", "cocaine", "opioids", "methamphetamine", "cannabis", "polysubstance"]
+            )
+            smoking = st.number_input("Sigara (paket-yıl)", 0.0, 100.0, 0.0)
+            bmi = st.number_input("BMI", 15.0, 50.0, 25.0)
+            notes = st.text_area("Notlar")
+            
+            if st.button("Hasta Kaydet"):
+                try:
+                    patient = db_manager.create_patient({
+                        'patient_id': patient_id,
+                        'sex': sex,
+                        'substance_type': substance_type,
+                        'smoking_pack_years': smoking,
+                        'bmi': bmi,
+                        'notes': notes
+                    })
+                    
+                    if patient:
+                        st.success(f"✅ Hasta {patient_id} başarıyla kaydedildi!")
+                    else:
+                        st.error("Hasta kaydedilemedi")
+                except Exception as e:
+                    st.error(f"Hata: {str(e)}")
+        
+        st.markdown("##### Kayıtlı Hastalar")
+        try:
+            patients = db_manager.get_all_patients()
+        except Exception as e:
+            patients = []
+            st.warning("Hasta listesi yüklenirken hata oluştu.")
+        
+        if patients:
+            patient_df = pd.DataFrame([
+                {
+                    'ID': p.patient_id,
+                    'Cinsiyet': p.sex,
+                    'Madde Tipi': p.substance_type,
+                    'Oluşturulma': p.created_at.strftime('%d.%m.%Y') if p.created_at else '-'
+                }
+                for p in patients[:20]
+            ])
+            st.dataframe(patient_df, width='stretch')
+        else:
+            st.info("Henüz kayıtlı hasta yok")
+    
+    with tab3:
+        st.markdown("#### Analiz Geçmişi")
+        
+        try:
+            patients_for_analysis = db_manager.get_all_patients()
+        except Exception:
+            patients_for_analysis = []
+        
+        if patients_for_analysis:
+            selected_patient = st.selectbox(
+                "Hasta Seç",
+                [p.patient_id for p in patients_for_analysis]
+            )
+            
+            if selected_patient:
+                try:
+                    analyses = db_manager.get_patient_analyses(selected_patient)
+                except Exception:
+                    analyses = []
+                    st.warning("Analizler yüklenirken hata oluştu.")
+                
+                if analyses:
+                    analysis_df = pd.DataFrame([
+                        {
+                            'Tarih': a.analysis_date.strftime('%d.%m.%Y') if a.analysis_date else '-',
+                            'Kronolojik Yaş': a.chronological_age,
+                            'GrimAge EAA': a.grimage_eaa,
+                            'Risk Kategorisi': a.risk_category
+                        }
+                        for a in analyses
+                    ])
+                    st.dataframe(analysis_df, width='stretch')
+                else:
+                    st.info("Bu hasta için analiz kaydı yok")
+        else:
+            st.info("Önce hasta kaydı oluşturun")
+    
+    with tab4:
+        st.markdown("#### Demo Veri Oluştur")
+        
+        n_demo_patients = st.slider("Demo Hasta Sayısı", 5, 50, 10)
+        
+        if st.button("Demo Verileri Oluştur"):
+            with st.spinner("Demo veriler oluşturuluyor..."):
+                np.random.seed(42)
+                
+                substances = ["control", "alcohol", "cocaine", "opioids"]
+                sexes = ["male", "female"]
+                
+                created = 0
+                for i in range(n_demo_patients):
+                    try:
+                        patient = db_manager.create_patient({
+                            'patient_id': f"DEMO{str(i+1).zfill(4)}",
+                            'sex': np.random.choice(sexes),
+                            'substance_type': np.random.choice(substances),
+                            'smoking_pack_years': np.random.uniform(0, 30),
+                            'bmi': np.random.uniform(18, 35),
+                            'notes': 'Demo veri'
+                        })
+                        if patient:
+                            created += 1
+                    except Exception:
+                        pass
+                
+                st.success(f"✅ {created} demo hasta oluşturuldu!")
+                st.rerun()
 
 
 if __name__ == "__main__":

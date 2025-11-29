@@ -10,8 +10,9 @@ from .statistics import StatisticalAnalyzer
 from .visualization import EpigeneticVisualizer
 from .report_generator import ReportGenerator
 from .reference_database import ReferenceDatabase
+from .database import DatabaseManager, Patient, Analysis, ClinicalData, GSEAResult, TreatmentRecommendation
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "EpiClock Research Team"
 
 __all__ = [
@@ -21,5 +22,11 @@ __all__ = [
     'StatisticalAnalyzer',
     'EpigeneticVisualizer',
     'ReportGenerator',
-    'ReferenceDatabase'
+    'ReferenceDatabase',
+    'DatabaseManager',
+    'Patient',
+    'Analysis',
+    'ClinicalData',
+    'GSEAResult',
+    'TreatmentRecommendation'
 ]
