@@ -40,6 +40,13 @@ from modules.longitudinal import LongitudinalAnalyzer
 from modules.gsea import GSEAnalyzer
 from modules.clinical_decision import ClinicalDecisionSupport
 from modules.multiomics import MultiOmicsIntegrator
+from modules.postmortem import PostmortemValidator, ForensicApplications
+from modules.moderation import (
+    EmotionRegulationModerator, 
+    SelfControlModerator, 
+    ReversibilityAnalysis, 
+    ClinicalCovariates
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -130,6 +137,12 @@ def init_components():
     gsea = GSEAnalyzer()
     clinical_decision = ClinicalDecisionSupport()
     multiomics = MultiOmicsIntegrator()
+    postmortem = PostmortemValidator()
+    forensic = ForensicApplications()
+    ders_moderator = EmotionRegulationModerator()
+    scsb_moderator = SelfControlModerator()
+    reversibility = ReversibilityAnalysis()
+    clinical_covariates = ClinicalCovariates()
     
     X_train, y_train = generate_synthetic_training_data(n_samples=500, n_cpgs=200)
     ml_predictor.fit(X_train, y_train)
@@ -146,7 +159,13 @@ def init_components():
         'longitudinal': longitudinal,
         'gsea': gsea,
         'clinical_decision': clinical_decision,
-        'multiomics': multiomics
+        'multiomics': multiomics,
+        'postmortem': postmortem,
+        'forensic': forensic,
+        'ders_moderator': ders_moderator,
+        'scsb_moderator': scsb_moderator,
+        'reversibility': reversibility,
+        'clinical_covariates': clinical_covariates
     }
 
 def main():
@@ -172,6 +191,10 @@ def main():
              "🧬 GSEA Pathway Analizi",
              "💊 Klinik Karar Destek",
              "🔗 Multi-Omik Entegrasyon",
+             "🧠 Postmortem Validasyon",
+             "⚖️ Moderasyon Analizi",
+             "🔄 Tersine Çevrilebilirlik",
+             "📊 Klinik Kovaryatlar",
              "🗄️ Veritabanı Yönetimi",
              "📋 Rapor Oluştur"],
             index=0
@@ -236,6 +259,14 @@ def main():
         render_clinical_decision_support(components)
     elif "🔗 Multi-Omik Entegrasyon" in analysis_mode:
         render_multiomics_analysis(components)
+    elif "🧠 Postmortem Validasyon" in analysis_mode:
+        render_postmortem_validation(components)
+    elif "⚖️ Moderasyon Analizi" in analysis_mode:
+        render_moderation_analysis(components)
+    elif "🔄 Tersine Çevrilebilirlik" in analysis_mode:
+        render_reversibility_analysis(components)
+    elif "📊 Klinik Kovaryatlar" in analysis_mode:
+        render_clinical_covariates(components)
     elif "🗄️ Veritabanı Yönetimi" in analysis_mode:
         render_database_management(components)
     elif "📋 Rapor Oluştur" in analysis_mode:
@@ -2128,6 +2159,391 @@ def render_multiomics_analysis(components):
                 st.dataframe(summary_df, width='stretch')
         else:
             st.warning("Önce 'Demo Analiz' sekmesinde veri oluşturun.")
+
+
+def render_postmortem_validation(components):
+    """Render Postmortem Validasyon page - PDF Tablo 22-25"""
+    
+    st.markdown("### 🧠 Postmortem Validasyon ve Adli Uygulamalar")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Postmortem beyin dokusu örneklerinde epigenetik yaş validasyonu ve 
+    PMI (Postmortem Interval) düzeltme algoritması. n=108 beyin dokusu örneği üzerinde 
+    valide edilmiştir.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    postmortem = components['postmortem']
+    forensic = components['forensic']
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📊 PMI Düzeltme",
+        "🧪 pH Kalite Analizi",
+        "🧠 Beyin Bölgeleri",
+        "⚖️ Adli Uygulamalar",
+        "🔬 Demo Analiz"
+    ])
+    
+    with tab1:
+        st.markdown("#### PMI Düzeltme Algoritması Performansı")
+        
+        validation_summary = postmortem.get_validation_summary()
+        
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Toplam Örnek", validation_summary['total_samples'])
+        with col2:
+            st.metric("PMI Aralığı", validation_summary['pmi_range'])
+        with col3:
+            st.metric("pH Aralığı", validation_summary['ph_range'])
+        with col4:
+            st.metric("MAE İyileşmesi", f"%{validation_summary['improvement']['mae_reduction']}")
+        
+        st.markdown("##### Düzeltme Öncesi vs Sonrası Karşılaştırma")
+        
+        before = validation_summary['before_correction']
+        after = validation_summary['after_correction']
+        improvement = validation_summary['improvement']
+        
+        comparison_df = pd.DataFrame({
+            'Metrik': ['MAE (yıl)', 'RMSE (yıl)', 'R²', 'Kalibrasyon Eğimi'],
+            'Düzeltme Öncesi': [
+                f"{before['mae']} ({before['mae_ci'][0]}-{before['mae_ci'][1]})",
+                f"{before['rmse']} ({before['rmse_ci'][0]}-{before['rmse_ci'][1]})",
+                f"{before['r2']} ({before['r2_ci'][0]}-{before['r2_ci'][1]})",
+                f"{before['calibration_slope']} ({before['slope_ci'][0]}-{before['slope_ci'][1]})"
+            ],
+            'Düzeltme Sonrası': [
+                f"{after['mae']} ({after['mae_ci'][0]}-{after['mae_ci'][1]})",
+                f"{after['rmse']} ({after['rmse_ci'][0]}-{after['rmse_ci'][1]})",
+                f"{after['r2']} ({after['r2_ci'][0]}-{after['r2_ci'][1]})",
+                f"{after['calibration_slope']} ({after['slope_ci'][0]}-{after['slope_ci'][1]})"
+            ],
+            'İyileşme': [
+                f"-{improvement['mae_reduction']}%",
+                f"-{improvement['rmse_reduction']}%",
+                f"+{improvement['r2_increase']}%",
+                f"+{improvement['slope_improvement']}%"
+            ]
+        })
+        st.dataframe(comparison_df, width='stretch')
+        
+        st.markdown("##### PMI Etki Modeli")
+        pmi_model = postmortem.get_pmi_effect_model()
+        st.code(pmi_model['equation'], language=None)
+        st.info(f"R² = {pmi_model['r2']}, p{pmi_model['p_value']}. {pmi_model['interpretation']}")
+    
+    with tab2:
+        st.markdown("#### Doku pH'sına Göre Performans")
+        
+        ph_table = postmortem.get_ph_quality_table()
+        st.dataframe(ph_table, width='stretch')
+        
+        st.warning("ANOVA: F=18.4, p<0.001 (pH kategorileri arasında MAE'de anlamlı fark)")
+        st.info("pH < 6.0 örneklerde dikkatli kullanım, pH < 5.5 örneklerde kullanım önerilmez.")
+    
+    with tab3:
+        st.markdown("#### Beyin Bölgesine Göre Epigenetik Yaş İvmelenmesi")
+        
+        brain_table = postmortem.compare_brain_regions()
+        st.dataframe(brain_table, width='stretch')
+        
+        st.success("ANOVA: F=8.7, p<0.001")
+        
+        st.markdown("##### Post-hoc Karşılaştırmalar (Tukey HSD)")
+        posthoc = postmortem.get_posthoc_comparisons()
+        st.dataframe(posthoc, width='stretch')
+        st.caption("*p<0.05, ***p<0.001, NS: Non-significant")
+    
+    with tab4:
+        st.markdown("#### Adli Uygulamalar")
+        
+        st.markdown("##### Daubert Kriterleri Değerlendirmesi")
+        daubert_table = forensic.get_daubert_summary()
+        st.dataframe(daubert_table, width='stretch')
+        
+        st.markdown("##### Uygulama Alanları")
+        applications = forensic.get_forensic_applications()
+        for app in applications:
+            with st.expander(f"📋 {app['application']}"):
+                st.markdown(f"**Açıklama:** {app['description']}")
+                st.markdown(f"**Avantaj:** {app['advantage']}")
+                st.markdown(f"**Sınırlılık:** {app['limitation']}")
+        
+        st.warning("⚠️ Epigenetik kanıt destekleyici kanıt olarak değerlendirilmeli, tek başına yeterli değildir.")
+    
+    with tab5:
+        st.markdown("#### Demo Postmortem Analiz")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            pmi_input = st.slider("PMI (saat)", 6, 48, 24)
+            ph_input = st.slider("Doku pH", 5.0, 7.2, 6.3, 0.1)
+        with col2:
+            chron_age = st.number_input("Kronolojik Yaş", 20, 90, 55)
+            raw_epi_age = st.number_input("Ham Epigenetik Yaş", 20.0, 110.0, 62.0)
+        
+        if st.button("PMI Düzeltme Uygula"):
+            result = postmortem.apply_pmi_correction(raw_epi_age, pmi_input, ph_input)
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Ham Epigenetik Yaş", f"{result.original_age:.1f} yıl")
+            with col2:
+                st.metric("Düzeltilmiş Epigenetik Yaş", f"{result.corrected_age:.1f} yıl", 
+                         f"-{result.correction_factor:.1f} yıl")
+            with col3:
+                st.metric("EAA", f"{result.corrected_age - chron_age:.1f} yıl")
+            
+            st.info(f"Kalite Kategorisi: {result.quality_category.title()} | Güvenilirlik: {result.reliability_score:.2f}")
+
+
+def render_moderation_analysis(components):
+    """Render Moderasyon Analizi page - PDF Tablo 14-21"""
+    
+    st.markdown("### ⚖️ Moderasyon Analizi")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Duygu düzenleme (DERS) ve öz-kontrol (SCS-B) faktörlerinin 
+    madde kullanımı-EAA ilişkisi üzerindeki moderasyon etkileri.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    ders_mod = components['ders_moderator']
+    scsb_mod = components['scsb_moderator']
+    
+    tab1, tab2, tab3 = st.tabs([
+        "😔 Duygu Düzenleme (DERS)",
+        "💪 Öz-Kontrol (SCS-B)",
+        "🔗 Moderated Mediation"
+    ])
+    
+    with tab1:
+        st.markdown("#### Duygu Düzenleme Moderasyon Analizi")
+        
+        st.markdown("##### Model Özeti")
+        model_table = ders_mod.get_model_summary()
+        st.dataframe(model_table, width='stretch')
+        
+        st.markdown("##### Simple Slopes Analizi")
+        slopes_table = ders_mod.get_simple_slopes_table()
+        st.dataframe(slopes_table, width='stretch')
+        
+        jn = ders_mod.johnson_neyman
+        st.info(f"Johnson-Neyman Analizi: DERS skoru >{jn['threshold']} eşiğinde madde kullanımının EAA üzerindeki etkisi istatistiksel olarak anlamlı. Örneklemin %{jn['percent_above']}'si bu eşiğin üzerindedir.")
+        
+        st.markdown("##### Kategorik Analiz")
+        cat_table = ders_mod.get_categorical_table()
+        st.dataframe(cat_table, width='stretch')
+        
+        st.warning("Zayıf duygu düzenleme, EAA etkisini ~3.7 kat artırmaktadır (+1.8 yıl vs +6.2 yıl)")
+    
+    with tab2:
+        st.markdown("#### Öz-Kontrol Moderasyon Analizi")
+        
+        st.markdown("##### Model Özeti")
+        model_table = scsb_mod.get_model_summary()
+        st.dataframe(model_table, width='stretch')
+        
+        st.markdown("##### Simple Slopes Analizi")
+        slopes_table = scsb_mod.get_simple_slopes_table()
+        st.dataframe(slopes_table, width='stretch')
+        
+        st.markdown("##### Kategorik Analiz")
+        cat_table = scsb_mod.get_categorical_table()
+        st.dataframe(cat_table, width='stretch')
+        
+        protective = scsb_mod.calculate_protective_effect()
+        st.success(f"Koruyucu Etki: {protective['interpretation']}")
+    
+    with tab3:
+        st.markdown("#### Moderated Mediation Analizi")
+        st.markdown("##### Öz-Kontrol → İnsülin Direnci Yolağı")
+        
+        mm_table = scsb_mod.get_moderated_mediation_table()
+        st.dataframe(mm_table, width='stretch')
+        
+        st.markdown("##### Path a Moderasyonu: Madde → HOMA-IR")
+        path_a = scsb_mod.path_a_moderation
+        
+        path_df = pd.DataFrame({
+            'Öz-Kontrol Seviyesi': ['Düşük Öz-Kontrol', 'Yüksek Öz-Kontrol', 'Etkileşim Terimi'],
+            'β': [path_a['low_control']['beta'], path_a['high_control']['beta'], path_a['interaction']['beta']],
+            'p-değeri': [path_a['low_control']['p'], path_a['high_control']['p'], path_a['interaction']['p']]
+        })
+        st.dataframe(path_df, width='stretch')
+        
+        st.info("Yüksek öz-kontrol, madde kullanımının insülin direncine yol açma eğilimini azaltmaktadır.")
+
+
+def render_reversibility_analysis(components):
+    """Render Tersine Çevrilebilirlik Analizi page - PDF Bölüm 3.10"""
+    
+    st.markdown("### 🔄 Epigenetik Yaş İvmelenmesinin Tersine Çevrilebilirliği")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Literatür taramasına dayalı müdahale etkileri ve meta-analiz sonuçları.
+    Epigenetik plastisite, tedavi için ümit vermektedir.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    reversibility = components['reversibility']
+    
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "💊 Müdahale Çalışmaları",
+        "🚭 Madde Bırakma Etkileri",
+        "📊 Meta-Analiz",
+        "💡 Klinik Öneriler"
+    ])
+    
+    with tab1:
+        st.markdown("#### Randomize Kontrollü Müdahale Çalışmaları")
+        
+        intervention_table = reversibility.get_intervention_table()
+        st.dataframe(intervention_table, width='stretch')
+        
+        st.success("Kombine müdahale (diyet + egzersiz + stress yönetimi) en yüksek etkiyi göstermektedir: -4.60 yıl")
+    
+    with tab2:
+        st.markdown("#### Madde Kullanımını Bırakma Etkileri")
+        
+        cessation_table = reversibility.get_cessation_table()
+        st.dataframe(cessation_table, width='stretch')
+        
+        st.info("Madde kullanımını bırakma ile zaman içinde progresif EAA azalması gözlemlenmektedir.")
+        
+        st.markdown("##### İyileşme Trajektori Hesaplayıcı")
+        col1, col2 = st.columns(2)
+        with col1:
+            initial_eaa = st.slider("Başlangıç EAA (yıl)", 1.0, 10.0, 5.0, 0.5)
+        with col2:
+            months = st.slider("Bırakma Süresi (ay)", 0, 60, 12)
+        
+        projected_eaa = reversibility.calculate_recovery_trajectory(initial_eaa, months)
+        reduction = initial_eaa - projected_eaa
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Başlangıç EAA", f"{initial_eaa:.1f} yıl")
+        with col2:
+            st.metric("Tahmini EAA", f"{projected_eaa:.1f} yıl", f"-{reduction:.1f} yıl")
+    
+    with tab3:
+        st.markdown("#### Meta-Analiz Sonuçları")
+        
+        meta = reversibility.get_meta_analysis_summary()
+        
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Çalışma Sayısı", meta['n_studies'])
+        with col2:
+            st.metric("Toplam n", meta['total_n'])
+        with col3:
+            st.metric("Ortalama Değişim", f"{meta['mean_change']:.2f} yıl")
+        with col4:
+            st.metric("Heterojenite (I²)", f"%{meta['heterogeneity_i2']}")
+        
+        st.markdown(f"""
+        **Meta-Analiz Özeti:**
+        - 95% Güven Aralığı: {meta['ci']}
+        - p-değeri: {meta['p']}
+        - Heterojenite: {meta['heterogeneity_level']} (I²={meta['heterogeneity_i2']}%, p={meta['heterogeneity_p']})
+        """)
+    
+    with tab4:
+        st.markdown("#### Klinik Öneriler")
+        
+        recommendations = reversibility.get_clinical_recommendations()
+        
+        for rec in recommendations:
+            with st.expander(f"✅ {rec['recommendation']}"):
+                st.markdown(f"**Bileşenler:** {rec['components']}")
+                st.markdown(f"**Beklenen Etki:** {rec['expected_effect']}")
+                st.markdown(f"**Kanıt Düzeyi:** {rec['evidence_level']}")
+
+
+def render_clinical_covariates(components):
+    """Render Klinik Kovaryatlar page - PDF Tablo 26-32"""
+    
+    st.markdown("### 📊 Klinik ve Demografik Kovaryatlar")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Başlangıç yaşı, cinsiyet, eğitim seviyesi, BMI ve egzersiz sıklığının 
+    epigenetik yaş ivmelenmesi üzerindeki etkileri.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    covariates = components['clinical_covariates']
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "🎂 Başlangıç Yaşı",
+        "👫 Cinsiyet",
+        "🎓 Eğitim & BMI",
+        "🏃 Egzersiz",
+        "📈 Regresyon Modeli"
+    ])
+    
+    with tab1:
+        st.markdown("#### Madde Kullanım Başlangıç Yaşına Göre EAA")
+        
+        onset_table = covariates.get_onset_age_table()
+        st.dataframe(onset_table, width='stretch')
+        
+        st.warning("ANOVA Trend: p<0.001 - Erken başlangıç yaşı daha yüksek EAA ile ilişkili")
+    
+    with tab2:
+        st.markdown("#### Madde Türüne Göre Cinsiyet Etkileri")
+        
+        sex_table = covariates.get_sex_effects_table()
+        st.dataframe(sex_table, width='stretch')
+        
+        st.info("Alkol kullanımında kadınlarda daha yüksek EAA gözlemlenmektedir (p=0.042)")
+    
+    with tab3:
+        st.markdown("#### Eğitim Seviyesi ve EAA")
+        
+        edu_table = covariates.get_education_table()
+        st.dataframe(edu_table, width='stretch')
+        st.caption("Her eğitim seviyesi artışı için -1.3 yıl EAA azalması (β=-1.3, p<0.001)")
+        
+        st.markdown("#### BMI ve EAA")
+        
+        bmi_table = covariates.get_bmi_table()
+        st.dataframe(bmi_table, width='stretch')
+        st.caption("ANOVA: F=34.2, p<0.001 | Pearson r=0.34")
+    
+    with tab4:
+        st.markdown("#### Egzersiz Sıklığı ve EAA")
+        
+        exercise_table = covariates.get_exercise_table()
+        st.dataframe(exercise_table, width='stretch')
+        
+        st.success("Düzenli egzersiz (≥3×/hafta) EAA'yı %57 azaltmaktadır (4.9 yıl → 2.1 yıl)")
+    
+    with tab5:
+        st.markdown("#### Hiyerarşik Çok Değişkenli Regresyon Analizi (n=3,847)")
+        
+        hier_table = covariates.get_hierarchical_regression_table()
+        st.dataframe(hier_table, width='stretch')
+        
+        st.markdown("#### Final Model Değişken Katkıları")
+        
+        final_table = covariates.get_final_model_table()
+        st.dataframe(final_table, width='stretch')
+        
+        st.success("Toplam Açıklanan Varyans: R²=0.42 (%42)")
+        
+        st.markdown("##### En Önemli Prediktörler:")
+        st.markdown("""
+        1. **Madde Kullanım Süresi** (β=0.42, R²=0.18)
+        2. **DERS Skoru** (β=0.24, R²=0.06)
+        3. **İnflamasyon Skoru** (β=0.22, R²=0.05)
+        4. **BMI** (β=0.21, R²=0.04)
+        """)
 
 
 def render_database_management(components):
