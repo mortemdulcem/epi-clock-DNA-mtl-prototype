@@ -2,8 +2,23 @@
 EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
 DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu
 
-A comprehensive platform for detecting and quantifying epigenetic age acceleration 
+A comprehensive PROTOTYPE platform for detecting and quantifying epigenetic age acceleration 
 in addiction using DNA methylation clocks.
+
+IMPORTANT DISCLAIMER:
+This is a PROTOTYPE/DEMONSTRATION platform that uses SIMULATED DATA to demonstrate
+the analytical workflow and methodology. The epigenetic clock coefficients and reference
+database are simulated based on published research statistics, not the actual coefficients.
+
+For research or clinical use:
+- The actual Horvath/Hannum/PhenoAge/GrimAge/DunedinPACE coefficients are available in
+  their respective publications' supplementary materials and must be obtained through
+  proper academic channels.
+- The reference database is simulated; actual methylation profiles require data access
+  agreements from repositories like GEO.
+
+This platform demonstrates the complete analytical architecture and can integrate
+real coefficients and data when obtained through proper licensing channels.
 """
 
 import streamlit as st
@@ -199,6 +214,20 @@ def main():
 
 def render_home_page(components):
     """Render the home page with overview and quick stats"""
+    
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); 
+                border: 2px solid #ffc107; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+    <h4 style="color: #856404; margin: 0;">⚠️ PROTOTIP PLATFORMU</h4>
+    <p style="color: #856404; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+    Bu platform, epigenetik yaş analizi metodolojisini ve iş akışını göstermek için 
+    <b>SİMÜLE EDİLMİŞ VERİLER</b> kullanmaktadır. Saat katsayıları ve referans veritabanı, 
+    yayınlanmış araştırma istatistiklerine dayalı olarak simüle edilmiştir. 
+    Gerçek klinik veya araştırma kullanımı için, gerçek katsayılar ve veriler uygun 
+    akademik kanallardan temin edilmelidir.
+    </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("### 🎯 Platform Özellikleri")
     
