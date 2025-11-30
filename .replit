@@ -43,3 +43,6 @@ externalPort = 3001
 [[ports]]
 localPort = 38845
 externalPort = 3000
+
+[agent]
+integrations = ["github:1.0.0"]
