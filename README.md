@@ -185,33 +185,40 @@ epi-clock-DNA-mtl-prototype/
 
 <div align="center">
 
-## 👩‍🔬 Principal Investigator
+## 👩‍🔬 Author
 
-### **Dr. Nurcan Denli Bayır**
+# **Nurcan Denli Bayır**
+
+<br/>
+
+<table>
+<tr>
+<td align="center" width="33%">
+<h3>🔬</h3>
+<b>FORENSIC MEDICINE</b>
+<br/>
+<i>Ph.D., M.D.</i>
+</td>
+<td align="center" width="33%">
+<h3>💻</h3>
+<b>SOFTWARE ENGINEERING</b>
+<br/>
+<i>M.Sc.</i>
+</td>
+<td align="center" width="33%">
+<h3>⚖️</h3>
+<b>HEALTH LAW</b>
+<br/>
+<i>J.D., M.D.</i>
+</td>
+</tr>
+</table>
+
+<br/>
+
+[![GitHub](https://img.shields.io/badge/GitHub-mortemdulcem-181717?style=for-the-badge&logo=github)](https://github.com/mortemdulcem)
 
 </div>
-
-| | |
-|:--|:--|
-| **Forensic Medicine** | Ph.D., M.D. — Molecular Forensics & Epigenetics |
-| **Software Engineering** | M.Sc. — Computational Biology & Bioinformatics |
-| **Health Law** | J.D., M.D. — Medical Jurisprudence & Bioethics |
-
-**Affiliation:** Smart University, Faculty of Medicine, Department of Forensic Medicine  
-**Laboratory:** Computational Forensics & Epigenetics Research Laboratory
-
-<div align="center">
-
-[![GitHub](https://img.shields.io/badge/GitHub-mortemdulcem-181717?style=flat-square&logo=github)](https://github.com/mortemdulcem)
-[![Email](https://img.shields.io/badge/Email-Contact-ea4335?style=flat-square&logo=gmail&logoColor=white)](mailto:denliizeynep1@gmail.com)
-
-</div>
-
-**Research Areas:**
-- Epigenetic Age Acceleration in Addiction
-- DNA Methylation Clock Development
-- Forensic Molecular Biology
-- Computational Approaches in Legal Medicine
 
 ---
 
@@ -233,18 +240,10 @@ epi-clock-DNA-mtl-prototype/
 
 This project is provided for **academic and research purposes only**.
 
-For clinical applications, ensure compliance with IRB requirements, HIPAA/GDPR regulations, and professional licensing standards.
-
 ---
 
 <div align="center">
 
-**© 2024 Dr. Nurcan Denli Bayır. All Rights Reserved.**
-
-*Smart University — Faculty of Medicine — Computational Forensics & Epigenetics Research Laboratory*
-
----
-
-[![Repository](https://img.shields.io/badge/Repository-EpiClock_Prototype-blue?style=for-the-badge&logo=github)](https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype)
+**© 2024 Nurcan Denli Bayır. All Rights Reserved.**
 
 </div>
