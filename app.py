@@ -72,6 +72,18 @@ from modules.mobile_ui import (
     render_mobile_summary_cards,
     init_mobile_ui
 )
+from modules.dna_reader import (
+    DNAMethylationReader,
+    MethylationDataset,
+    MethylationSample,
+    SampleAnnotationParser,
+    create_demo_methylation_data
+)
+from modules.published_coefficients import (
+    CLOCK_CITATIONS,
+    LICENSING_INFO,
+    get_coefficient_summary
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -689,6 +701,7 @@ def main():
         analysis_mode = st.radio(
             "Analiz Türü Seçin:",
             ["🏠 Ana Sayfa",
+             "📤 DNA Verisi Yükle",
              "👤 Bireysel Analiz",
              "📁 Toplu Analiz",
              "📈 Referans Veritabanı",
@@ -705,6 +718,7 @@ def main():
              "📊 Klinik Kovaryatlar",
              "🫀 Doku-Spesifik Saatler",
              "🔐 Blockchain Denetim",
+             "📚 Yayın Referansları",
              "🗄️ Veritabanı Yönetimi",
              "📋 Rapor Oluştur"],
             index=0
@@ -749,6 +763,8 @@ def main():
     
     if "🏠 Ana Sayfa" in analysis_mode:
         render_home_page(components)
+    elif "📤 DNA Verisi Yükle" in analysis_mode:
+        render_dna_upload(components, selected_clocks)
     elif "👤 Bireysel Analiz" in analysis_mode:
         render_individual_analysis(components, selected_clocks)
     elif "📁 Toplu Analiz" in analysis_mode:
@@ -781,12 +797,308 @@ def main():
         render_tissue_specific_clocks(components)
     elif "🔐 Blockchain Denetim" in analysis_mode:
         render_blockchain_audit(components)
+    elif "📚 Yayın Referansları" in analysis_mode:
+        render_publication_references()
     elif "🗄️ Veritabanı Yönetimi" in analysis_mode:
         render_database_management(components)
     elif "📋 Rapor Oluştur" in analysis_mode:
         render_report_generator(components)
     
     render_academic_footer()
+
+
+def render_dna_upload(components, selected_clocks):
+    """DNA Methylation Data Upload and Analysis Interface"""
+    
+    st.markdown("## 📤 DNA Metilasyon Verisi Yükleme")
+    st.markdown("""
+    Illumina EPIC (850K), 450K veya 27K array verilerinizi yükleyin.
+    Desteklenen formatlar: CSV, TXT, Excel, GEO Series Matrix
+    """)
+    
+    tab1, tab2, tab3 = st.tabs(["📁 Dosya Yükle", "🧪 Demo Veri", "📊 Analiz"])
+    
+    with tab1:
+        st.markdown("### Metilasyon Verisi Yükle")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            uploaded_file = st.file_uploader(
+                "Beta Değerleri Dosyası",
+                type=['csv', 'txt', 'xlsx', 'xls'],
+                help="CpG satır, örnek sütun formatında beta değerleri (0-1 arası)"
+            )
+        
+        with col2:
+            phenotype_file = st.file_uploader(
+                "Fenotip/Klinik Veri (Opsiyonel)",
+                type=['csv', 'xlsx'],
+                help="Yaş, cinsiyet, madde kullanımı bilgileri"
+            )
+        
+        data_format = st.selectbox(
+            "Veri Formatı:",
+            ["Otomatik Algıla", "CSV (Virgülle Ayrılmış)", "TSV (Tab ile Ayrılmış)", 
+             "Excel", "GEO Series Matrix"],
+            index=0
+        )
+        
+        transpose_data = st.checkbox("Veriyi Transpoze Et (CpG'ler sütunlarda ise)", value=False)
+        
+        if uploaded_file is not None:
+            try:
+                reader = DNAMethylationReader()
+                
+                if st.button("🔬 Veriyi İşle ve Analiz Et", type="primary"):
+                    with st.spinner("Veri okunuyor ve işleniyor..."):
+                        dataset = reader.read_from_streamlit_upload(uploaded_file)
+                        
+                        st.session_state['loaded_dataset'] = dataset
+                        
+                        st.success(f"✅ Veri başarıyla yüklendi!")
+                        
+                        col1, col2, col3, col4 = st.columns(4)
+                        with col1:
+                            st.metric("Toplam CpG", f"{dataset.quality_metrics['total_cpgs']:,}")
+                        with col2:
+                            st.metric("Örnek Sayısı", dataset.quality_metrics['total_samples'])
+                        with col3:
+                            st.metric("Array Tipi", dataset.array_type)
+                        with col4:
+                            st.metric("Kalite Skoru", f"{(1-dataset.quality_metrics['missing_rate'])*100:.1f}%")
+                        
+                        st.markdown("### 🕐 Saat Kapsama Oranları")
+                        
+                        coverage_data = []
+                        for clock, coverage in dataset.quality_metrics['clock_coverage'].items():
+                            status = "✅" if coverage >= 80 else "⚠️" if coverage >= 50 else "❌"
+                            coverage_data.append({
+                                "Saat": clock.upper(),
+                                "Kapsam": f"{coverage:.1f}%",
+                                "Durum": status
+                            })
+                        
+                        st.dataframe(pd.DataFrame(coverage_data), use_container_width=True)
+                        
+                        if phenotype_file is not None:
+                            phenotype_df = pd.read_csv(phenotype_file) if phenotype_file.name.endswith('.csv') else pd.read_excel(phenotype_file)
+                            st.session_state['phenotype_data'] = phenotype_df
+                            st.success("✅ Fenotip verisi yüklendi!")
+                            st.dataframe(phenotype_df.head(), use_container_width=True)
+                        
+            except Exception as e:
+                st.error(f"❌ Veri okuma hatası: {str(e)}")
+    
+    with tab2:
+        st.markdown("### 🧪 Demo Veri Oluştur")
+        st.markdown("Test amaçlı simüle edilmiş DNA metilasyon verisi oluşturun.")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            n_samples = st.slider("Örnek Sayısı", 5, 50, 10)
+            n_cpgs = st.slider("CpG Sayısı", 500, 10000, 2000)
+        
+        with col2:
+            include_clock_cpgs = st.checkbox("Saat CpG'lerini Dahil Et", value=True)
+        
+        if st.button("🧬 Demo Veri Oluştur", type="primary"):
+            with st.spinner("Demo veri oluşturuluyor..."):
+                demo_dataset = create_demo_methylation_data(
+                    n_samples=n_samples,
+                    n_cpgs=n_cpgs,
+                    include_clock_cpgs=include_clock_cpgs
+                )
+                st.session_state['loaded_dataset'] = demo_dataset
+                
+                st.success("✅ Demo veri oluşturuldu!")
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("CpG Sayısı", f"{len(demo_dataset.beta_matrix):,}")
+                with col2:
+                    st.metric("Örnek Sayısı", len(demo_dataset.samples))
+                with col3:
+                    st.metric("Kaynak", "Simüle")
+                
+                st.markdown("### Örnek Bilgileri")
+                st.dataframe(demo_dataset.sample_info, use_container_width=True)
+    
+    with tab3:
+        st.markdown("### 📊 Yüklü Veri Analizi")
+        
+        if 'loaded_dataset' in st.session_state:
+            dataset = st.session_state['loaded_dataset']
+            
+            st.markdown(f"**Yüklü Veri:** {dataset.source} - {dataset.quality_metrics['total_samples']} örnek")
+            
+            analysis_type = st.selectbox(
+                "Analiz Türü:",
+                ["Epigenetik Yaş Hesaplama", "Kalite Kontrol", "Beta Dağılımı", "CpG Korelasyonu"]
+            )
+            
+            if analysis_type == "Epigenetik Yaş Hesaplama":
+                if st.button("🧬 Epigenetik Yaş Hesapla", type="primary"):
+                    with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
+                        clock_calc = components['clock_calc']
+                        
+                        results = []
+                        for sample in dataset.samples:
+                            sample_df = pd.DataFrame({sample.sample_id: sample.beta_values}).T
+                            
+                            chron_age = sample.chronological_age if sample.chronological_age else 40
+                            
+                            clock_results = clock_calc.calculate_all_clocks(
+                                sample_df, 
+                                chronological_age=chron_age
+                            )
+                            
+                            row = {
+                                'Örnek ID': sample.sample_id,
+                                'Kronolojik Yaş': chron_age,
+                                'Cinsiyet': sample.sex or 'Bilinmiyor',
+                                'Madde': sample.substance_type or 'Bilinmiyor'
+                            }
+                            
+                            for clock_name, result in clock_results.items():
+                                row[f'{clock_name.upper()} Yaş'] = result.predicted_age
+                                row[f'{clock_name.upper()} EAA'] = result.age_acceleration
+                            
+                            results.append(row)
+                        
+                        results_df = pd.DataFrame(results)
+                        st.session_state['analysis_results'] = results_df
+                        
+                        st.success("✅ Analiz tamamlandı!")
+                        st.dataframe(results_df, use_container_width=True)
+                        
+                        csv = results_df.to_csv(index=False)
+                        st.download_button(
+                            "📥 Sonuçları İndir (CSV)",
+                            csv,
+                            "epiclock_results.csv",
+                            "text/csv"
+                        )
+            
+            elif analysis_type == "Kalite Kontrol":
+                st.markdown("#### Kalite Metrikleri")
+                
+                metrics = dataset.quality_metrics
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Eksik Veri Oranı", f"{metrics['missing_rate']*100:.2f}%")
+                with col2:
+                    st.metric("Ortalama Beta", f"{metrics['mean_beta']:.3f}")
+                with col3:
+                    st.metric("Beta Std. Sapma", f"{metrics['std_beta']:.3f}")
+            
+            elif analysis_type == "Beta Dağılımı":
+                st.markdown("#### Beta Değer Dağılımı")
+                
+                import plotly.express as px
+                
+                sample_data = dataset.beta_matrix.iloc[:, 0].dropna()
+                fig = px.histogram(sample_data, nbins=50, title="İlk Örnek Beta Dağılımı")
+                fig.update_layout(xaxis_title="Beta Değeri", yaxis_title="Frekans")
+                st.plotly_chart(fig, use_container_width=True)
+            
+            elif analysis_type == "CpG Korelasyonu":
+                st.markdown("#### Örnekler Arası Korelasyon")
+                
+                if len(dataset.beta_matrix.columns) > 1:
+                    corr_matrix = dataset.beta_matrix.corr()
+                    
+                    import plotly.express as px
+                    fig = px.imshow(corr_matrix, title="Örnek Korelasyon Matrisi")
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("Korelasyon için en az 2 örnek gerekli.")
+        else:
+            st.info("⬆️ Lütfen önce 'Dosya Yükle' veya 'Demo Veri' sekmesinden veri yükleyin.")
+
+
+def render_publication_references():
+    """Render publication references and licensing information"""
+    
+    st.markdown("## 📚 Yayın Referansları ve Lisans Bilgileri")
+    
+    st.markdown("""
+    Bu platformda kullanılan epigenetik saat katsayıları aşağıdaki hakemli 
+    yayınlardan alınmıştır. Her saatin orijinal kaynağı ve lisans durumu aşağıda belirtilmiştir.
+    """)
+    
+    tab1, tab2, tab3 = st.tabs(["📖 Yayınlar", "📋 Katsayı Özeti", "⚖️ Lisans Bilgileri"])
+    
+    with tab1:
+        st.markdown("### Orijinal Yayınlar")
+        
+        for clock_name, citation in CLOCK_CITATIONS.items():
+            with st.expander(f"🔬 {clock_name.upper()} Clock", expanded=False):
+                st.markdown(f"""
+                **Yazarlar:** {citation['authors']}
+                
+                **Başlık:** {citation['title']}
+                
+                **Dergi:** {citation['journal']} ({citation['year']})
+                
+                **Cilt/Sayfa:** {citation['volume']}: {citation['pages']}
+                
+                **DOI:** [{citation['doi']}](https://doi.org/{citation['doi']})
+                
+                **PubMed ID:** [{citation['pmid']}](https://pubmed.ncbi.nlm.nih.gov/{citation['pmid']}/)
+                """)
+                
+                if 'github' in citation:
+                    st.markdown(f"**GitHub:** [{citation['github']}]({citation['github']})")
+    
+    with tab2:
+        st.markdown("### Katsayı Özeti")
+        
+        summary = get_coefficient_summary()
+        
+        summary_data = []
+        for clock, info in summary.items():
+            row = {
+                "Saat": clock.upper(),
+                "Toplam CpG": info.get('total_cpgs', info.get('components', 'N/A')),
+                "Sağlanan CpG": info.get('provided_cpgs', 'N/A'),
+                "Kaynak": info['source'],
+                "Durum": info['status']
+            }
+            summary_data.append(row)
+        
+        st.dataframe(pd.DataFrame(summary_data), use_container_width=True)
+        
+        st.markdown("""
+        **Not:** Bu platformda gerçek yayınlanmış katsayılar kullanılmaktadır. 
+        Ancak bazı saatlerin tam katsayı seti lisans kısıtlamaları nedeniyle 
+        temsili örneklerle sınırlıdır.
+        """)
+    
+    with tab3:
+        st.markdown("### Lisans Bilgileri")
+        
+        st.markdown(LICENSING_INFO)
+        
+        st.markdown("---")
+        
+        st.markdown("""
+        ### 📞 İletişim Bilgileri
+        
+        **Epigenetic Clock Development Foundation**
+        - Website: https://clockfoundation.org
+        - Email: info@clockfoundation.org
+        - Phone: (866) 366-2001
+        
+        **Zymo Research (Ticari Lisans)**
+        - Website: https://www.zymoresearch.com/pages/dnage
+        
+        **DunedinPACE (Açık Kaynak)**
+        - GitHub: https://github.com/danbelsky/DunedinPACE
+        - Lisans: Akademik ve ticari kullanım için ücretsiz
+        """)
 
 
 def render_home_page(components):
