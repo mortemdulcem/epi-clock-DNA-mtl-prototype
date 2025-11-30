@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="attached_assets/image_1764524295028.png" alt="DNA Molecular Art" width="400"/>
+
 # 🧬 EpiClock Prototype
 
 ### DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
