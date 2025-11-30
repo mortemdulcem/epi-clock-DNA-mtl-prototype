@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "created": "2025-11-30T10:54:26.061952",
+  "block_count": 1,
+  "blocks": [
+    {
+      "block_id": "49bc2c91-2a79-4023-948e-bbe7f3c53495",
+      "timestamp": "2025-11-30T10:54:26.061802",
+      "action": "genesis",
+      "actor_id": "system",
+      "actor_name": "EpiClock System",
+      "payload_hash": "dca15f4c863f48c8ed78a2d4052a8ab89dd757d65f963064f2e0725c2407ff5a",
+      "payload_summary": "Chain initialized",
+      "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "block_hash": "2cd1837f17931de41556b31ec47884de6f67638c10a05fbceee05a0cd52310d6",
+      "signature": "K5T9Yog3VZuKmXzRgtV7C9ZTirxYYbUCEove8AWHuYM=",
+      "metadata": {
+        "version": "1.0",
+        "platform": "EpiClock Prototype"
+      }
+    }
+  ]
+}

@@ -47,6 +47,31 @@ from modules.moderation import (
     ReversibilityAnalysis, 
     ClinicalCovariates
 )
+from modules.tissue_clocks import (
+    TissueType,
+    TissueSpecificClockCalculator,
+    CrossTissueNormalizer,
+    TissueAgeDiscordanceAnalyzer,
+    get_tissue_clock_summary
+)
+from modules.audit import (
+    BlockchainAuditLedger,
+    ForensicChainOfCustody,
+    TamperDetectionSimulator,
+    AuditAction,
+    get_audit_summary_table
+)
+from modules.mobile_ui import (
+    inject_responsive_css,
+    WizardWorkflow,
+    WizardStep,
+    RoleBasedUI,
+    UserRole,
+    render_touch_friendly_tabs,
+    create_quick_action_buttons,
+    render_mobile_summary_cards,
+    init_mobile_ui
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -143,6 +168,12 @@ def init_components():
     scsb_moderator = SelfControlModerator()
     reversibility = ReversibilityAnalysis()
     clinical_covariates = ClinicalCovariates()
+    tissue_clock_calc = TissueSpecificClockCalculator()
+    cross_tissue_normalizer = CrossTissueNormalizer()
+    tissue_discordance = TissueAgeDiscordanceAnalyzer()
+    audit_ledger = BlockchainAuditLedger()
+    chain_of_custody = ForensicChainOfCustody()
+    role_ui = RoleBasedUI()
     
     X_train, y_train = generate_synthetic_training_data(n_samples=500, n_cpgs=200)
     ml_predictor.fit(X_train, y_train)
@@ -165,7 +196,13 @@ def init_components():
         'ders_moderator': ders_moderator,
         'scsb_moderator': scsb_moderator,
         'reversibility': reversibility,
-        'clinical_covariates': clinical_covariates
+        'clinical_covariates': clinical_covariates,
+        'tissue_clock_calc': tissue_clock_calc,
+        'cross_tissue_normalizer': cross_tissue_normalizer,
+        'tissue_discordance': tissue_discordance,
+        'audit_ledger': audit_ledger,
+        'chain_of_custody': chain_of_custody,
+        'role_ui': role_ui
     }
 
 def main():
@@ -195,6 +232,8 @@ def main():
              "⚖️ Moderasyon Analizi",
              "🔄 Tersine Çevrilebilirlik",
              "📊 Klinik Kovaryatlar",
+             "🫀 Doku-Spesifik Saatler",
+             "🔐 Blockchain Denetim",
              "🗄️ Veritabanı Yönetimi",
              "📋 Rapor Oluştur"],
             index=0
@@ -267,6 +306,10 @@ def main():
         render_reversibility_analysis(components)
     elif "📊 Klinik Kovaryatlar" in analysis_mode:
         render_clinical_covariates(components)
+    elif "🫀 Doku-Spesifik Saatler" in analysis_mode:
+        render_tissue_specific_clocks(components)
+    elif "🔐 Blockchain Denetim" in analysis_mode:
+        render_blockchain_audit(components)
     elif "🗄️ Veritabanı Yönetimi" in analysis_mode:
         render_database_management(components)
     elif "📋 Rapor Oluştur" in analysis_mode:
@@ -2543,6 +2586,378 @@ def render_clinical_covariates(components):
         2. **DERS Skoru** (β=0.24, R²=0.06)
         3. **İnflamasyon Skoru** (β=0.22, R²=0.05)
         4. **BMI** (β=0.21, R²=0.04)
+        """)
+
+
+def render_tissue_specific_clocks(components):
+    """Render Tissue-Specific Epigenetic Clocks page"""
+    
+    st.markdown("### 🫀 Doku-Spesifik Epigenetik Saatler")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Farklı doku tipleri için optimize edilmiş epigenetik yaş hesaplama.
+    Beyin, karaciğer, böbrek, kalp, akciğer ve diğer dokular için özelleştirilmiş CpG katsayıları.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    tissue_calc = components['tissue_clock_calc']
+    normalizer = components['cross_tissue_normalizer']
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📊 Mevcut Saatler",
+        "🧮 Doku Analizi",
+        "🔄 Çapraz-Doku Normalizasyonu",
+        "📈 Doku Karşılaştırma",
+        "🔬 Demo Analiz"
+    ])
+    
+    with tab1:
+        st.markdown("#### Doku-Spesifik Epigenetik Saat Kataloğu")
+        
+        clock_summary = get_tissue_clock_summary()
+        st.dataframe(clock_summary, width='stretch')
+        
+        st.markdown("##### Desteklenen Dokular")
+        
+        tissue_info = [
+            ("🧠 Beyin (Prefrontal Korteks)", "Bilişsel yaşlanma, nörodejenrasyon"),
+            ("🧠 Beyin (Hipokampus)", "Hafıza, öğrenme fonksiyonları"),
+            ("🧠 Beyin (Serebellum)", "Motor koordinasyon, denge"),
+            ("🫀 Kalp", "Kardiyovasküler yaşlanma"),
+            ("🫁 Akciğer", "Pulmoner yaşlanma"),
+            ("🫘 Karaciğer", "Metabolik fonksiyon, detoksifikasyon"),
+            ("🫘 Böbrek", "Renal fonksiyon"),
+            ("💪 Kas", "Sarkopeni, fiziksel performans"),
+            ("🩸 Kan", "Sistemik yaşlanma (altın standart)"),
+            ("👅 Tükürük", "Non-invaziv örnekleme"),
+            ("🧴 Cilt", "Dermatolojik yaşlanma"),
+            ("🍖 Yağ Dokusu", "Metabolik sağlık")
+        ]
+        
+        col1, col2 = st.columns(2)
+        for i, (tissue, desc) in enumerate(tissue_info):
+            with col1 if i % 2 == 0 else col2:
+                st.markdown(f"**{tissue}**: {desc}")
+    
+    with tab2:
+        st.markdown("#### Doku-Spesifik Yaş Analizi")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            tissue_type = st.selectbox(
+                "Doku Tipi Seçin",
+                [t.value for t in TissueType],
+                format_func=lambda x: x.replace('_', ' ').title()
+            )
+            clock_type = st.radio("Saat Tipi", ["horvath", "hannum"])
+        
+        with col2:
+            chron_age = st.number_input("Kronolojik Yaş", 20, 100, 45)
+            n_cpgs = st.slider("Simüle CpG Sayısı", 100, 500, 300)
+        
+        if st.button("Doku Yaşı Hesapla", type="primary"):
+            np.random.seed(42)
+            simulated_methylation = np.random.beta(2, 5, n_cpgs)
+            
+            selected_tissue = TissueType(tissue_type)
+            result = tissue_calc.calculate_tissue_age(
+                simulated_methylation,
+                chron_age,
+                selected_tissue,
+                clock_type
+            )
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Epigenetik Yaş", f"{result.epigenetic_age:.1f} yıl")
+            with col2:
+                st.metric("EAA", f"{result.age_acceleration:+.1f} yıl")
+            with col3:
+                st.metric("Kalite Skoru", f"{result.quality_score:.2f}")
+            with col4:
+                st.metric("CpG Kapsama", f"{result.cpg_coverage:.1%}")
+            
+            st.markdown(f"**Yorum:** {result.interpretation}")
+            
+            if result.warning_flags:
+                for warning in result.warning_flags:
+                    st.warning(f"⚠️ {warning}")
+            
+            ref_info = tissue_calc.get_tissue_reference_percentile(
+                result.age_acceleration, selected_tissue
+            )
+            st.info(f"Referans Persentil: %{ref_info['percentile']:.1f} | Kategori: {ref_info['category']}")
+    
+    with tab3:
+        st.markdown("#### Çapraz-Doku Normalizasyon Faktörleri")
+        
+        norm_table = normalizer.get_normalization_table()
+        st.dataframe(norm_table, width='stretch')
+        
+        st.markdown("##### Doku-Arası Dönüşüm")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            source_tissue = st.selectbox(
+                "Kaynak Doku",
+                [t.value for t in TissueType],
+                key="source_tissue",
+                format_func=lambda x: x.replace('_', ' ').title()
+            )
+        with col2:
+            target_tissue = st.selectbox(
+                "Hedef Doku",
+                [t.value for t in TissueType],
+                key="target_tissue",
+                format_func=lambda x: x.replace('_', ' ').title()
+            )
+        with col3:
+            input_age = st.number_input("Kaynak Epigenetik Yaş", 20.0, 100.0, 55.0)
+        
+        if st.button("Dönüştür"):
+            converted = normalizer.normalize_between_tissues(
+                input_age,
+                TissueType(source_tissue),
+                TissueType(target_tissue)
+            )
+            st.success(f"**Dönüştürülmüş Yaş:** {converted:.1f} yıl")
+    
+    with tab4:
+        st.markdown("#### Çoklu Doku Karşılaştırması")
+        
+        selected_tissues = st.multiselect(
+            "Karşılaştırılacak Dokular",
+            [t.value for t in TissueType],
+            default=["blood", "brain_prefrontal_cortex", "liver"],
+            format_func=lambda x: x.replace('_', ' ').title()
+        )
+        
+        comparison_age = st.number_input("Kronolojik Yaş (Karşılaştırma)", 20, 100, 50)
+        
+        if st.button("Dokuları Karşılaştır") and selected_tissues:
+            tissue_data = {}
+            np.random.seed(42)
+            
+            for tissue in selected_tissues:
+                tissue_data[TissueType(tissue)] = np.random.beta(2, 5, 300)
+            
+            comparison_df = tissue_calc.compare_tissues(
+                tissue_data,
+                comparison_age
+            )
+            st.dataframe(comparison_df, width='stretch')
+            
+            discordance = components['tissue_discordance']
+            tissue_ages = {TissueType(t): np.random.normal(comparison_age + np.random.uniform(-5, 8), 2) 
+                          for t in selected_tissues}
+            
+            analysis = discordance.analyze_discordance(tissue_ages, comparison_age)
+            
+            st.markdown("##### Uyumsuzluk Analizi")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("CV", f"%{analysis['coefficient_of_variation']:.1f}")
+            with col2:
+                st.metric("Maks Fark", f"{analysis['max_discordance']:.1f} yıl")
+            with col3:
+                st.metric("Patern", analysis['pattern'])
+            
+            st.info(analysis['interpretation'])
+    
+    with tab5:
+        st.markdown("#### Demo: Beyin Bölgeleri Karşılaştırması")
+        
+        demo_age = st.slider("Demo Kronolojik Yaş", 30, 80, 55)
+        
+        if st.button("Beyin Bölgeleri Analizi"):
+            np.random.seed(int(demo_age))
+            
+            brain_results = []
+            for tissue in [TissueType.BRAIN_PFC, TissueType.BRAIN_HIPPO, TissueType.BRAIN_CEREBELLUM]:
+                meth_data = np.random.beta(2, 5, 350)
+                result = tissue_calc.calculate_tissue_age(meth_data, demo_age, tissue)
+                brain_results.append({
+                    'Bölge': tissue.value.replace('brain_', '').replace('_', ' ').title(),
+                    'Epigenetik Yaş': result.epigenetic_age,
+                    'EAA': result.age_acceleration,
+                    'Kalite': result.quality_score
+                })
+            
+            brain_df = pd.DataFrame(brain_results)
+            st.dataframe(brain_df, width='stretch')
+            
+            fastest = max(brain_results, key=lambda x: x['EAA'])
+            slowest = min(brain_results, key=lambda x: x['EAA'])
+            
+            st.success(f"En hızlı yaşlanan: {fastest['Bölge']} (+{fastest['EAA']:.1f} yıl)")
+            st.info(f"En yavaş yaşlanan: {slowest['Bölge']} ({slowest['EAA']:+.1f} yıl)")
+
+
+def render_blockchain_audit(components):
+    """Render Blockchain Audit Trail page"""
+    
+    st.markdown("### 🔐 Blockchain Denetim İzi")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>ℹ️ Bilgi:</b> Append-only hash-chain ledger ile adli zincir-of-custody takibi.
+    SHA-256 kriptografik hash ile manipülasyon tespiti ve HMAC imza doğrulaması.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    audit_ledger = components['audit_ledger']
+    chain_of_custody = components['chain_of_custody']
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📊 Zincir Durumu",
+        "📝 Kayıt Ekle",
+        "✅ Doğrulama",
+        "⚖️ Delil Takibi",
+        "🔬 Manipülasyon Testi"
+    ])
+    
+    with tab1:
+        st.markdown("#### Denetim Zinciri Özeti")
+        
+        summary = audit_ledger.get_chain_summary()
+        
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Toplam Blok", summary.get('block_count', 0))
+        with col2:
+            st.metric("Durum", summary.get('status', 'bilinmiyor').title())
+        with col3:
+            genesis = summary.get('genesis_timestamp', '-')
+            if genesis != '-':
+                genesis = genesis[:10]
+            st.metric("İlk Kayıt", genesis)
+        with col4:
+            latest = summary.get('latest_timestamp', '-')
+            if latest != '-':
+                latest = latest[:10]
+            st.metric("Son Kayıt", latest)
+        
+        st.markdown("##### Zincir Parmak İzi")
+        st.code(summary.get('chain_fingerprint', 'N/A'))
+        
+        st.markdown("##### Son Kayıtlar")
+        audit_table = audit_ledger.get_audit_table(limit=20)
+        st.dataframe(audit_table, width='stretch')
+    
+    with tab2:
+        st.markdown("#### Yeni Denetim Kaydı Ekle")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            action_type = st.selectbox(
+                "İşlem Tipi",
+                [a.value for a in AuditAction],
+                format_func=lambda x: x.replace('_', ' ').title()
+            )
+            actor_id = st.text_input("Aktör ID", value="user_001")
+            actor_name = st.text_input("Aktör Adı", value="Dr. Araştırmacı")
+        
+        with col2:
+            summary_text = st.text_area("İşlem Özeti", value="Epigenetik yaş analizi tamamlandı")
+            sample_id = st.text_input("Örnek ID (opsiyonel)", value="SAMPLE_001")
+        
+        if st.button("Kayıt Ekle", type="primary"):
+            block = audit_ledger.add_record(
+                action=AuditAction(action_type),
+                actor_id=actor_id,
+                actor_name=actor_name,
+                payload={'sample_id': sample_id, 'timestamp': datetime.now().isoformat()},
+                summary=summary_text,
+                metadata={'sample_id': sample_id}
+            )
+            st.success(f"✅ Kayıt eklendi! Blok Hash: {block.block_hash[:32]}...")
+    
+    with tab3:
+        st.markdown("#### Zincir Bütünlüğü Doğrulama")
+        
+        if st.button("Zinciri Doğrula", type="primary"):
+            validation = audit_ledger.validate_chain()
+            
+            if validation.is_valid:
+                st.success(f"""
+                ✅ **ZİNCİR GEÇERLİ**
+                - Doğrulanan Blok: {validation.validated_blocks}/{validation.total_blocks}
+                - Doğrulama Zamanı: {validation.validation_timestamp[:19]}
+                - Zincir Hash: {validation.validation_hash[:32]}...
+                """)
+            else:
+                st.error(f"""
+                ❌ **MANİPÜLASYON TESPİT EDİLDİ**
+                - İlk Geçersiz Blok: {validation.first_invalid_block}
+                - Hata: {validation.error_message}
+                - Doğrulanan: {validation.validated_blocks}/{validation.total_blocks}
+                """)
+        
+        st.markdown("##### Daubert Kriterleri Uyumu")
+        daubert_df = pd.DataFrame([
+            {'Kriter': 'Test Edilebilirlik', 'Durum': '✅ Geçer', 'Açıklama': 'SHA-256 hash doğrulaması'},
+            {'Kriter': 'Peer Review', 'Durum': '✅ Geçer', 'Açıklama': 'Açık kaynak algoritma'},
+            {'Kriter': 'Hata Oranı', 'Durum': '✅ Geçer', 'Açıklama': '2^-256 çakışma olasılığı'},
+            {'Kriter': 'Standartlar', 'Durum': '✅ Geçer', 'Açıklama': 'NIST SHA-256 standardı'},
+            {'Kriter': 'Kabul', 'Durum': '✅ Geçer', 'Açıklama': 'Yaygın blockchain kullanımı'}
+        ])
+        st.dataframe(daubert_df, width='stretch')
+    
+    with tab4:
+        st.markdown("#### Adli Delil Zincir-of-Custody")
+        
+        st.markdown("##### Yeni Delil Kaydet")
+        col1, col2 = st.columns(2)
+        with col1:
+            evidence_id = st.text_input("Delil ID", value=f"EV-{datetime.now().strftime('%Y%m%d')}-001")
+            evidence_type = st.selectbox("Delil Tipi", ["DNA Örneği", "Kan Örneği", "Doku Örneği", "Dijital Veri"])
+            collector_name = st.text_input("Toplayıcı", value="Uzm. Adli Teknisyen")
+        with col2:
+            collection_location = st.text_input("Toplama Yeri", value="Olay Yeri A")
+            collection_method = st.selectbox("Toplama Yöntemi", ["Swab", "Kan Alımı", "Biyopsi", "Dijital Kopya"])
+            description = st.text_area("Açıklama", value="Olay yerinden alınan biyolojik örnek")
+        
+        if st.button("Delil Kaydet"):
+            block_hash = chain_of_custody.register_evidence(
+                evidence_id=evidence_id,
+                evidence_type=evidence_type,
+                collector_id="collector_001",
+                collector_name=collector_name,
+                collection_location=collection_location,
+                collection_method=collection_method,
+                description=description
+            )
+            st.success(f"✅ Delil kaydedildi! Hash: {block_hash[:32]}...")
+        
+        st.markdown("##### Delil Sorgula")
+        query_evidence_id = st.text_input("Sorgulanacak Delil ID", key="query_ev")
+        
+        if st.button("Custody Chain Görüntüle") and query_evidence_id:
+            custody_report = chain_of_custody.generate_custody_report(query_evidence_id)
+            st.dataframe(custody_report, width='stretch')
+    
+    with tab5:
+        st.markdown("#### Manipülasyon Tespit Demonstrasyonu")
+        
+        st.warning("⚠️ Bu demo, sistemin manipülasyonu nasıl tespit ettiğini gösterir. Gerçek veri etkilenmez.")
+        
+        simulator = TamperDetectionSimulator(audit_ledger)
+        
+        if st.button("Bütünlük Demo Çalıştır"):
+            results = simulator.run_integrity_demo()
+            
+            for result in results:
+                if result['result']:
+                    st.success(f"✅ Adım {result['step']}: {result['description']} - {result['message']}")
+                else:
+                    st.error(f"❌ Adım {result['step']}: {result['description']} - {result['message']}")
+        
+        st.markdown("##### Nasıl Çalışır?")
+        st.markdown("""
+        1. **Hash Zinciri**: Her blok, önceki bloğun hash'ini içerir
+        2. **Manipülasyon Tespiti**: Herhangi bir değişiklik hash uyumsuzluğuna yol açar
+        3. **Dijital İmza**: HMAC-SHA256 ile blok doğrulaması
+        4. **Append-Only**: Sadece yeni kayıt eklenebilir, mevcut kayıtlar değiştirilemez
         """)
 
 
