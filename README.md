@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="attached_assets/dna_banner.png" alt="DNA Double Helix" width="600"/>
+<img src="attached_assets/image_1764525193643.png" alt="DNA Double Helix" width="400"/>
 
 # 🧬 EpiClock Prototype
 
