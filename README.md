@@ -152,27 +152,55 @@ For clinical applications, please ensure compliance with:
 
 ## 👩‍🔬 Author
 
-### Zeynep Ceylan
+<div align="center">
 
-**Academic Credentials:**
-- **Forensic Medicine** - Ph.D., M.D.
-- **Software Engineering** - M.Sc.
-- **Health Law** - J.D., M.D.
+### **Dr. Nurcan Denli Bayır**
 
-**Affiliations:**
-- Smart University - Faculty of Medicine
-- Computational Forensics & Epigenetics Research Lab
+<img src="https://img.shields.io/badge/Forensic%20Medicine-Ph.D.%20%7C%20M.D.-darkred?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggOHoiLz48L3N2Zz4=" alt="Forensic Medicine"/>
+<img src="https://img.shields.io/badge/Software%20Engineering-M.Sc.-blue?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik05LjQgMTYuNkw0LjggMTJsNC42LTQuNkw4IDZsLTYgNiA2IDYgMS40LTEuNHptNS4yIDBsNC42LTQuNi00LjYtNC42TDE2IDZsNiA2LTYgNi0xLjQtMS40eiIvPjwvc3ZnPg==" alt="Software Engineering"/>
+<img src="https://img.shields.io/badge/Health%20Law-J.D.%20%7C%20M.D.-darkgreen?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAxTDMgNXY2YzAgNS41NSAzLjg0IDEwLjc0IDkgMTIgNS4xNi0xLjI2IDktNi40NSA5LTEyVjVsLTktNHoiLz48L3N2Zz4=" alt="Health Law"/>
 
-**Research Interests:**
-- Epigenetic Age Acceleration in Addiction
-- DNA Methylation Clock Development
-- Forensic Molecular Biology
-- Computational Approaches in Forensic Medicine
-- Multi-omics Integration in Clinical Research
+</div>
 
-**Contact:**
-- GitHub: [@mortemdulcem](https://github.com/mortemdulcem)
-- Research Platform: [EpiClock Prototype](https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype)
+---
+
+#### 🎓 Academic Credentials
+
+| Degree | Field | Specialization |
+|--------|-------|----------------|
+| **Ph.D., M.D.** | Forensic Medicine | Molecular Forensics & Epigenetics |
+| **M.Sc.** | Software Engineering | Computational Biology & Bioinformatics |
+| **J.D., M.D.** | Health Law | Medical Jurisprudence & Bioethics |
+
+---
+
+#### 🏛️ Professional Affiliations
+
+- **Smart University** - Faculty of Medicine, Department of Forensic Medicine
+- **Computational Forensics & Epigenetics Research Laboratory** - Principal Investigator
+- **International Association of Forensic Sciences** - Member
+- **European Society of Legal Medicine** - Member
+
+---
+
+#### 🔬 Research Focus Areas
+
+| Domain | Expertise |
+|--------|-----------|
+| **Epigenetic Chronology** | DNA Methylation Clock Development & Validation |
+| **Forensic Molecular Biology** | Postmortem Interval Estimation, Tissue-Specific Biomarkers |
+| **Computational Forensics** | Machine Learning in Forensic Medicine, Multi-omics Integration |
+| **Addiction Epigenetics** | Substance-Induced Biological Aging, EAA Quantification |
+| **Legal Medicine** | Expert Witness Testimony, Daubert Standard Compliance |
+
+---
+
+#### 📫 Contact & Profiles
+
+[![GitHub](https://img.shields.io/badge/GitHub-mortemdulcem-181717?style=flat-square&logo=github)](https://github.com/mortemdulcem)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-Profile-00CCBB?style=flat-square&logo=researchgate)](https://researchgate.net)
+[![ORCID](https://img.shields.io/badge/ORCID-Researcher-A6CE39?style=flat-square&logo=orcid)](https://orcid.org)
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-Citations-4285F4?style=flat-square&logo=googlescholar)](https://scholar.google.com)
 
 ---
 
@@ -203,22 +231,65 @@ Contributions are welcome! Please read the contributing guidelines before submit
 
 <div align="center">
 
-### 🧬 EpiClock Prototype
+---
 
-**Developed by Zeynep Ceylan**
+## 🧬 EpiClock Prototype
 
-*Forensic Medicine, Ph.D., M.D. | Software Engineering, M.Sc. | Health Law, J.D., M.D.*
-
-Smart University - Faculty of Medicine
-
-Computational Forensics & Epigenetics Research Lab
+<img src="https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge" alt="Version"/>
+<img src="https://img.shields.io/badge/Status-Active%20Development-blue?style=for-the-badge" alt="Status"/>
+<img src="https://img.shields.io/badge/License-Academic-orange?style=for-the-badge" alt="License"/>
 
 ---
 
-**"Advancing forensic science through computational epigenetics"**
+### Developed by
 
-[![GitHub](https://img.shields.io/badge/GitHub-mortemdulcem-black?style=flat-square&logo=github)](https://github.com/mortemdulcem)
+# **Dr. Nurcan Denli Bayır**
 
-© 2024 Zeynep Ceylan. All Rights Reserved.
+<table>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/🔬-Forensic%20Medicine-darkred?style=flat-square" alt=""/><br/><b>Ph.D., M.D.</b></td>
+<td align="center"><img src="https://img.shields.io/badge/💻-Software%20Engineering-blue?style=flat-square" alt=""/><br/><b>M.Sc.</b></td>
+<td align="center"><img src="https://img.shields.io/badge/⚖️-Health%20Law-darkgreen?style=flat-square" alt=""/><br/><b>J.D., M.D.</b></td>
+</tr>
+</table>
+
+---
+
+**Smart University - Faculty of Medicine**
+
+*Department of Forensic Medicine*
+
+**Computational Forensics & Epigenetics Research Laboratory**
+
+*Principal Investigator*
+
+---
+
+> *"Advancing forensic science through computational epigenetics and molecular chronology"*
+
+---
+
+<img src="https://img.shields.io/badge/🧬-DNA%20Methylation-purple?style=flat-square" alt=""/>
+<img src="https://img.shields.io/badge/🔐-Blockchain%20Forensics-black?style=flat-square" alt=""/>
+<img src="https://img.shields.io/badge/🤖-Machine%20Learning-orange?style=flat-square" alt=""/>
+<img src="https://img.shields.io/badge/⚗️-Epigenetic%20Clocks-teal?style=flat-square" alt=""/>
+
+---
+
+[![GitHub](https://img.shields.io/badge/GitHub-mortemdulcem-181717?style=for-the-badge&logo=github)](https://github.com/mortemdulcem)
+[![Repository](https://img.shields.io/badge/Repository-EpiClock%20Prototype-blue?style=for-the-badge&logo=github)](https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype)
+
+---
+
+**© 2024 Dr. Nurcan Denli Bayır. All Rights Reserved.**
+
+*For academic and research purposes only.*
+
+---
+
+<sub>
+<i>This platform represents the integration of forensic medicine, computational biology, and legal medicine 
+in the pursuit of understanding epigenetic age acceleration in substance dependence.</i>
+</sub>
 
 </div>
