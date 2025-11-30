@@ -82,70 +82,540 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Dark Theme Base */
+    .stApp {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f23 100%) !important;
+    }
+    
+    .main .block-container {
+        background: transparent !important;
+        padding-top: 2rem;
+    }
+    
+    /* Sidebar Dark Theme */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0d0d0d 0%, #1a1a2e 100%) !important;
+        border-right: 1px solid #00ff4120;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #e0e0e0 !important;
+    }
+    
+    /* DNA Helix Animation Container */
+    .dna-container {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+    
+    .dna-helix {
+        position: relative;
+        width: 300px;
+        height: 180px;
+    }
+    
+    .dna-strand {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .nucleotide {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #00ff41;
+        box-shadow: 0 0 20px #00ff41, 0 0 40px #00ff4180, 0 0 60px #00ff4140;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .nucleotide-pair {
+        position: absolute;
+        height: 3px;
+        background: linear-gradient(90deg, #00ff41, #00ff4180, #00ff41);
+        box-shadow: 0 0 10px #00ff4180;
+        transform-origin: left center;
+    }
+    
+    @keyframes dnaRotate {
+        0% { transform: rotateY(0deg); }
+        100% { transform: rotateY(360deg); }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.2); }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .dna-helix-svg {
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    /* Main Header */
     .main-header {
-        font-size: 2.5rem;
+        font-family: 'Inter', sans-serif;
+        font-size: 3rem;
         font-weight: 700;
-        color: #1a365d;
+        background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #00ff41 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-align: center;
         margin-bottom: 0.5rem;
+        text-shadow: 0 0 30px #00ff4140;
+        letter-spacing: 2px;
     }
+    
     .sub-header {
-        font-size: 1.1rem;
-        color: #4a5568;
+        font-family: 'Inter', sans-serif;
+        font-size: 1.2rem;
+        color: #00ff4180 !important;
         text-align: center;
         margin-bottom: 2rem;
+        letter-spacing: 1px;
     }
+    
+    /* Metric Cards - Dark Theme */
     .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid #00ff4130;
         padding: 1.5rem;
-        border-radius: 10px;
-        color: white;
+        border-radius: 15px;
+        color: #00ff41;
         text-align: center;
+        box-shadow: 0 0 20px #00ff4110, inset 0 0 20px #00ff4105;
+        transition: all 0.3s ease;
     }
+    
+    .metric-card:hover {
+        border-color: #00ff4160;
+        box-shadow: 0 0 30px #00ff4120, inset 0 0 30px #00ff4110;
+        transform: translateY(-2px);
+    }
+    
+    /* Section Headers */
     .section-header {
+        font-family: 'Inter', sans-serif;
         font-size: 1.5rem;
         font-weight: 600;
-        color: #2d3748;
-        border-bottom: 2px solid #4299e1;
+        color: #00ff41 !important;
+        border-bottom: 2px solid #00ff4140;
         padding-bottom: 0.5rem;
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
+    
+    /* Info Boxes - Dark Theme */
     .info-box {
-        background-color: #ebf8ff;
-        border-left: 4px solid #4299e1;
+        background: linear-gradient(135deg, #0a192f 0%, #0d1b2a 100%);
+        border-left: 4px solid #00ff41;
         padding: 1rem;
-        border-radius: 0 8px 8px 0;
+        border-radius: 0 12px 12px 0;
         margin: 1rem 0;
+        color: #c0c0c0;
+        box-shadow: 0 0 15px #00ff4110;
     }
+    
     .warning-box {
-        background-color: #fffaf0;
-        border-left: 4px solid #ed8936;
+        background: linear-gradient(135deg, #1a1a0a 0%, #2d2d0a 100%);
+        border-left: 4px solid #ffd700;
         padding: 1rem;
-        border-radius: 0 8px 8px 0;
+        border-radius: 0 12px 12px 0;
         margin: 1rem 0;
+        color: #ffd700;
     }
+    
     .success-box {
-        background-color: #f0fff4;
-        border-left: 4px solid #48bb78;
+        background: linear-gradient(135deg, #0a1a0a 0%, #0d2d0d 100%);
+        border-left: 4px solid #00ff41;
         padding: 1rem;
-        border-radius: 0 8px 8px 0;
+        border-radius: 0 12px 12px 0;
         margin: 1rem 0;
+        color: #00ff41;
     }
+    
+    /* Tabs - Dark Theme */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
+        background: transparent;
     }
+    
     .stTabs [data-baseweb="tab"] {
-        background-color: #f7fafc;
-        border-radius: 8px 8px 0 0;
-        padding: 10px 20px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid #00ff4130;
+        border-radius: 10px 10px 0 0;
+        padding: 12px 24px;
+        color: #00ff4180 !important;
+        transition: all 0.3s ease;
     }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: linear-gradient(135deg, #1a2a3e 0%, #1a3a4e 100%);
+        border-color: #00ff4160;
+    }
+    
     .stTabs [aria-selected="true"] {
-        background-color: #4299e1;
-        color: white;
+        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%) !important;
+        border-color: #00ff41 !important;
+        color: #00ff41 !important;
+        box-shadow: 0 0 15px #00ff4130;
+    }
+    
+    /* Buttons - Neon Green */
+    .stButton > button {
+        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%);
+        border: 1px solid #00ff41;
+        color: #00ff41;
+        border-radius: 8px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px #00ff4120;
+    }
+    
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #00ff4140 0%, #00cc3340 100%);
+        box-shadow: 0 0 20px #00ff4140, 0 0 40px #00ff4120;
+        transform: translateY(-1px);
+    }
+    
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+        color: #0a0a0a;
+        font-weight: 700;
+    }
+    
+    /* Text Colors */
+    .stMarkdown, .stText, p, span, label {
+        color: #c0c0c0 !important;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: #00ff41 !important;
+    }
+    
+    /* DataFrames */
+    .stDataFrame {
+        background: #0a0a0a;
+        border: 1px solid #00ff4130;
+        border-radius: 10px;
+    }
+    
+    /* Selectbox, Input */
+    .stSelectbox > div > div,
+    .stTextInput > div > div > input,
+    .stNumberInput > div > div > input,
+    .stTextArea > div > div > textarea {
+        background: #1a1a2e !important;
+        border: 1px solid #00ff4140 !important;
+        color: #e0e0e0 !important;
+        border-radius: 8px;
+    }
+    
+    /* Metrics */
+    [data-testid="stMetricValue"] {
+        color: #00ff41 !important;
+        font-family: 'Roboto Mono', monospace;
+    }
+    
+    [data-testid="stMetricDelta"] {
+        color: #00cc33 !important;
+    }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid #00ff4130;
+        border-radius: 10px;
+        color: #00ff41 !important;
+    }
+    
+    /* Academic Footer */
+    .academic-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, transparent 0%, #0a0a0a 20%, #0a0a0a 100%);
+        padding: 1.5rem 0 1rem 0;
+        text-align: center;
+        z-index: 1000;
+    }
+    
+    .academic-credentials {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+        color: #00ff4180;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin: 0;
+        padding: 0.5rem;
+        border-top: 1px solid #00ff4130;
+        background: linear-gradient(90deg, transparent 0%, #00ff4110 50%, transparent 100%);
+    }
+    
+    .credential-line {
+        display: block;
+        margin: 0.3rem 0;
+    }
+    
+    .credential-title {
+        color: #00ff41;
+        font-weight: 600;
+    }
+    
+    .credential-degree {
+        color: #00cc33;
+        font-weight: 500;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #00ff4140;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #00ff4160;
+    }
+    
+    /* Radio buttons */
+    .stRadio > div {
+        background: transparent;
+    }
+    
+    .stRadio > div > label {
+        color: #c0c0c0 !important;
+        background: #1a1a2e;
+        border: 1px solid #00ff4120;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem 0;
+        transition: all 0.3s ease;
+    }
+    
+    .stRadio > div > label:hover {
+        border-color: #00ff4160;
+        background: #1a2a3e;
+    }
+    
+    /* Slider */
+    .stSlider > div > div > div {
+        background: #00ff41 !important;
+    }
+    
+    /* Multiselect */
+    .stMultiSelect > div > div {
+        background: #1a1a2e !important;
+        border-color: #00ff4140 !important;
+    }
+    
+    /* Progress bar */
+    .stProgress > div > div > div {
+        background: linear-gradient(90deg, #00ff41 0%, #00cc33 100%);
+    }
+    
+    /* Code blocks */
+    .stCodeBlock {
+        background: #0a0a0a !important;
+        border: 1px solid #00ff4130;
+    }
+    
+    code {
+        color: #00ff41 !important;
+        background: #1a1a2e !important;
+    }
+    
+    /* Alerts */
+    .stAlert {
+        background: #1a1a2e;
+        border: 1px solid #00ff4140;
+        border-radius: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
+
+def render_dna_helix_animation():
+    """Render animated DNA helix with phosphorescent green color"""
+    st.markdown('''
+    <div class="dna-container">
+        <svg class="dna-helix-svg" viewBox="0 0 200 150" width="350" height="200">
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <linearGradient id="phosphorGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#00ff41;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#00cc33;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#00ff41;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <!-- DNA Strand 1 -->
+            <g filter="url(#glow)">
+                <path d="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20" 
+                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
+                    <animate attributeName="d" 
+                             values="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20;
+                                     M 30 25 Q 50 5 70 25 Q 90 45 110 25 Q 130 5 150 25 Q 170 45 190 25;
+                                     M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20"
+                             dur="3s" repeatCount="indefinite"/>
+                </path>
+            </g>
+            
+            <!-- DNA Strand 2 -->
+            <g filter="url(#glow)">
+                <path d="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50" 
+                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
+                    <animate attributeName="d" 
+                             values="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50;
+                                     M 30 45 Q 50 65 70 45 Q 90 25 110 45 Q 130 65 150 45 Q 170 25 190 45;
+                                     M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50"
+                             dur="3s" repeatCount="indefinite"/>
+                </path>
+            </g>
+            
+            <!-- Connecting Base Pairs with Animation -->
+            <g filter="url(#glow)" stroke="#00ff41" stroke-width="2" opacity="0.7">
+                <line x1="40" y1="35" x2="40" y2="35">
+                    <animate attributeName="y1" values="25;30;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;40;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="60" y1="25" x2="60" y2="45">
+                    <animate attributeName="y1" values="30;20;30" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="40;50;40" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="80" y1="15" x2="80" y2="55">
+                    <animate attributeName="y1" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="25" x2="100" y2="45">
+                    <animate attributeName="y1" values="25;15;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;55;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="120" y1="35" x2="120" y2="35">
+                    <animate attributeName="y1" values="35;25;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="35;45;35" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="140" y1="25" x2="140" y2="45">
+                    <animate attributeName="y1" values="25;35;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;35;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="160" y1="15" x2="160" y2="55">
+                    <animate attributeName="y1" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="180" y1="25" x2="180" y2="45">
+                    <animate attributeName="y1" values="25;15;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;55;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+            </g>
+            
+            <!-- Nucleotide Dots -->
+            <g filter="url(#glow)">
+                <circle cx="40" cy="25" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="25;30;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="40" cy="45" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="45;40;45" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="80" cy="15" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="80" cy="55" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="120" cy="35" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="35;25;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="120" cy="35" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="35;45;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="160" cy="15" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="160" cy="55" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+            </g>
+            
+            <!-- Second DNA Helix Layer (offset) -->
+            <g transform="translate(0, 70)" filter="url(#glow)" opacity="0.8">
+                <path d="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20" 
+                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
+                    <animate attributeName="d" 
+                             values="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20;
+                                     M 20 25 Q 40 45 60 25 Q 80 5 100 25 Q 120 45 140 25 Q 160 5 180 25;
+                                     M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20"
+                             dur="4s" repeatCount="indefinite"/>
+                </path>
+                <path d="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50" 
+                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
+                    <animate attributeName="d" 
+                             values="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50;
+                                     M 20 45 Q 40 25 60 45 Q 80 65 100 45 Q 120 25 140 45 Q 160 65 180 45;
+                                     M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50"
+                             dur="4s" repeatCount="indefinite"/>
+                </path>
+            </g>
+        </svg>
+    </div>
+    ''', unsafe_allow_html=True)
+
+def render_academic_footer():
+    """Render academic credentials footer"""
+    st.markdown('''
+    <div class="academic-footer">
+        <div class="academic-credentials">
+            <span class="credential-line">
+                <span class="credential-title">Forensic Medicine</span> 
+                <span class="credential-degree">Ph.D., M.D.</span>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <span class="credential-title">Software Engineering</span> 
+                <span class="credential-degree">M.Sc.</span>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <span class="credential-title">Health Law</span> 
+                <span class="credential-degree">J.D., M.D.</span>
+            </span>
+        </div>
+    </div>
+    <div style="height: 80px;"></div>
+    ''', unsafe_allow_html=True)
 
 @st.cache_resource
 def init_components():
@@ -208,11 +678,12 @@ def init_components():
 def main():
     components = init_components()
     
+    render_dna_helix_animation()
     st.markdown('<p class="main-header">🧬 EpiClock Prototype</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
     
     with st.sidebar:
-        st.image("https://img.icons8.com/color/96/000000/dna-helix.png", width=80)
+        st.markdown("### 🧬 EpiClock")
         st.markdown("### 📊 Analiz Modülleri")
         
         analysis_mode = st.radio(
@@ -314,6 +785,8 @@ def main():
         render_database_management(components)
     elif "📋 Rapor Oluştur" in analysis_mode:
         render_report_generator(components)
+    
+    render_academic_footer()
 
 
 def render_home_page(components):
