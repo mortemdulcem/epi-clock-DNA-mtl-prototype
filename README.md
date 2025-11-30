@@ -150,12 +150,29 @@ For clinical applications, please ensure compliance with:
 
 ---
 
-## 👨‍🔬 Author
+## 👩‍🔬 Author
+
+### Zeynep Ceylan
 
 **Academic Credentials:**
-- Forensic Medicine, Ph.D., M.D.
-- Software Engineering, M.Sc.
-- Health Law, J.D., M.D.
+- **Forensic Medicine** - Ph.D., M.D.
+- **Software Engineering** - M.Sc.
+- **Health Law** - J.D., M.D.
+
+**Affiliations:**
+- Smart University - Faculty of Medicine
+- Computational Forensics & Epigenetics Research Lab
+
+**Research Interests:**
+- Epigenetic Age Acceleration in Addiction
+- DNA Methylation Clock Development
+- Forensic Molecular Biology
+- Computational Approaches in Forensic Medicine
+- Multi-omics Integration in Clinical Research
+
+**Contact:**
+- GitHub: [@mortemdulcem](https://github.com/mortemdulcem)
+- Research Platform: [EpiClock Prototype](https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype)
 
 ---
 
@@ -181,3 +198,27 @@ Contributions are welcome! Please read the contributing guidelines before submit
 ---
 
 *This platform demonstrates the complete analytical architecture and can integrate real coefficients and data when obtained through proper licensing channels.*
+
+---
+
+<div align="center">
+
+### 🧬 EpiClock Prototype
+
+**Developed by Zeynep Ceylan**
+
+*Forensic Medicine, Ph.D., M.D. | Software Engineering, M.Sc. | Health Law, J.D., M.D.*
+
+Smart University - Faculty of Medicine
+
+Computational Forensics & Epigenetics Research Lab
+
+---
+
+**"Advancing forensic science through computational epigenetics"**
+
+[![GitHub](https://img.shields.io/badge/GitHub-mortemdulcem-black?style=flat-square&logo=github)](https://github.com/mortemdulcem)
+
+© 2024 Zeynep Ceylan. All Rights Reserved.
+
+</div>
