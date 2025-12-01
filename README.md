@@ -1,16 +1,12 @@
 <div align="center">
 
-<img src="attached_assets/image_1764525193643.png" alt="DNA Double Helix" width="400"/>
-
-# 🧬 EpiClock Prototype
+# EpiClock Prototype
 
 ### DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
 
 **Computational Forensics | Molecular Toxicology | Epigenetic Chronology**
 
 ---
-
-[![Run Application](https://replit.com/badge?caption=Run)](https://replit.com/@zeynep111222333/EpiClockPrototype?v=1)
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
@@ -23,14 +19,14 @@
 
 ---
 
-## ⚠️ Prototype Disclaimer
+## Prototype Disclaimer
 
 > **This is a demonstration platform using simulated data.**  
 > Clock coefficients are based on published research. For clinical applications, obtain actual coefficients through proper academic licensing.
 
 ---
 
-## 🎯 Overview
+## Overview
 
 **EpiClock** analyzes DNA methylation patterns to detect biological age acceleration caused by substance dependence. The platform implements five major epigenetic clocks for clinical research and forensic applications.
 
@@ -38,17 +34,17 @@
 <tr>
 <td width="50%" valign="top">
 
-### 🔬 Platform Capabilities
+### Platform Capabilities
 
 - **5 Epigenetic Clocks** - Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE
 - **12 Tissue-Specific Clocks** - Brain, Liver, Heart, Blood, and more
 - **Blockchain Audit Trail** - SHA-256 forensic chain of custody
-- **Machine Learning** - Ensemble models with R² = 0.96
+- **Machine Learning** - Ensemble models with R2 = 0.96
 
 </td>
 <td width="50%" valign="top">
 
-### 📊 Reference Database
+### Reference Database
 
 | Metric | Value |
 |:-------|------:|
@@ -63,7 +59,65 @@
 
 ---
 
-## ⏱️ Epigenetic Clocks
+## Quick Start (Local Installation)
+
+### Prerequisites
+
+- Python 3.11 or higher
+- pip (Python package manager)
+- Git
+
+### Installation Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype.git
+cd epi-clock-DNA-mtl-prototype
+
+# 2. Create virtual environment (recommended)
+python -m venv venv
+
+# On Windows:
+venv\Scripts\activate
+
+# On macOS/Linux:
+source venv/bin/activate
+
+# 3. Install dependencies
+pip install streamlit pandas numpy scikit-learn xgboost plotly matplotlib seaborn scipy statsmodels reportlab openpyxl psycopg2-binary sqlalchemy
+
+# 4. Run the application
+streamlit run app.py --server.port 5000
+```
+
+### Access the Application
+
+Open your browser and navigate to: `http://localhost:5000`
+
+---
+
+## Required Dependencies
+
+| Package | Version | Purpose |
+|:--------|:--------|:--------|
+| streamlit | >=1.28.0 | Web application framework |
+| pandas | >=2.0.0 | Data manipulation |
+| numpy | >=1.24.0 | Numerical computing |
+| scikit-learn | >=1.3.0 | Machine learning |
+| xgboost | >=2.0.0 | Gradient boosting |
+| plotly | >=5.18.0 | Interactive visualizations |
+| matplotlib | >=3.8.0 | Static plotting |
+| seaborn | >=0.13.0 | Statistical graphics |
+| scipy | >=1.11.0 | Scientific computing |
+| statsmodels | >=0.14.0 | Statistical models |
+| reportlab | >=4.0.0 | PDF generation |
+| openpyxl | >=3.1.0 | Excel file handling |
+| psycopg2-binary | >=2.9.0 | PostgreSQL adapter |
+| sqlalchemy | >=2.0.0 | SQL toolkit |
+
+---
+
+## Epigenetic Clocks
 
 | Clock | CpG Sites | Application | Accuracy |
 |:------|:---------:|:------------|:--------:|
@@ -71,43 +125,43 @@
 | **Hannum** | 71 | Blood-based prediction | MAE: 4.9 yrs |
 | **PhenoAge** | 513 | Mortality-calibrated | MAE: 2.5 yrs |
 | **GrimAge** | 1,030 | Mortality risk | MAE: 2.1 yrs |
-| **DunedinPACE** | 173 | Pace of aging | R²: 0.96 |
+| **DunedinPACE** | 173 | Pace of aging | R2: 0.96 |
 
 ---
 
-## ☠️ Toxicology: Substance-Induced Age Acceleration
+## Toxicology: Substance-Induced Age Acceleration
 
 **GrimAge Clock Analysis Results:**
 
-| Substance | EAA (years) | 95% CI | Risk |
-|:----------|:-----------:|:------:|:----:|
-| Polysubstance | **+7.3** | 6.4 - 8.3 | 🔴 Critical |
-| Methamphetamine | **+6.2** | 4.5 - 8.1 | 🔴 Severe |
-| Cocaine | **+4.1** | 3.5 - 4.7 | 🟠 High |
-| Alcohol | **+3.6** | 3.1 - 4.2 | 🟡 Moderate |
-| Opioids | **+2.9** | 2.5 - 3.4 | 🟡 Moderate |
-| Cannabis | **+0.8** | 0.3 - 1.4 | 🟢 Low |
+| Substance | EAA (years) | 95% CI | Risk Level |
+|:----------|:-----------:|:------:|:-----------|
+| Polysubstance | **+7.3** | 6.4 - 8.3 | Critical |
+| Methamphetamine | **+6.2** | 4.5 - 8.1 | Severe |
+| Cocaine | **+4.1** | 3.5 - 4.7 | High |
+| Alcohol | **+3.6** | 3.1 - 4.2 | Moderate |
+| Opioids | **+2.9** | 2.5 - 3.4 | Moderate |
+| Cannabis | **+0.8** | 0.3 - 1.4 | Low |
 
 ---
 
-## 🫀 Tissue-Specific Analysis
+## Tissue-Specific Analysis
 
 <table>
 <tr>
-<td align="center"><b>🧠 Brain</b><br/><sub>PFC, Hippocampus, Cerebellum</sub></td>
-<td align="center"><b>🫀 Cardiovascular</b><br/><sub>Heart, Blood</sub></td>
-<td align="center"><b>🫁 Respiratory</b><br/><sub>Lung</sub></td>
+<td align="center"><b>Brain</b><br/><sub>PFC, Hippocampus, Cerebellum</sub></td>
+<td align="center"><b>Cardiovascular</b><br/><sub>Heart, Blood</sub></td>
+<td align="center"><b>Respiratory</b><br/><sub>Lung</sub></td>
 </tr>
 <tr>
-<td align="center"><b>🫘 Metabolic</b><br/><sub>Liver, Kidney</sub></td>
-<td align="center"><b>💪 Musculoskeletal</b><br/><sub>Muscle, Adipose</sub></td>
-<td align="center"><b>🧴 External</b><br/><sub>Skin, Saliva</sub></td>
+<td align="center"><b>Metabolic</b><br/><sub>Liver, Kidney</sub></td>
+<td align="center"><b>Musculoskeletal</b><br/><sub>Muscle, Adipose</sub></td>
+<td align="center"><b>External</b><br/><sub>Skin, Saliva</sub></td>
 </tr>
 </table>
 
 ---
 
-## 🔐 Forensic Features
+## Forensic Features
 
 | Feature | Description |
 |:--------|:------------|
@@ -119,7 +173,7 @@
 
 ---
 
-## 🔬 Analysis Modules
+## Analysis Modules
 
 <table>
 <tr>
@@ -155,84 +209,82 @@
 
 ---
 
-## 🧬 CpG Veritabanı (CpG Database)
+## CpG Database
 
-Platform, bağımlılık araştırmaları için kapsamlı bir CpG metilasyon veritabanı içerir:
+Platform includes comprehensive CpG methylation database for addiction research:
 
-| Özellik | Değer |
+| Feature | Value |
 |:--------|------:|
-| **Toplam CpG Bölgesi** | 29,716+ |
-| **Benzersiz CpG Sitesi** | 23,847 |
-| **Madde Sınıfları** | 12 |
-| **Gen Sistemleri** | 10 |
-| **Kanıt Düzeyleri** | 3 (Güçlü/Orta/Düşük) |
+| **Total CpG Regions** | 29,716+ |
+| **Unique CpG Sites** | 23,847 |
+| **Substance Classes** | 12 |
+| **Gene Systems** | 10 |
+| **Evidence Levels** | 3 (Strong/Moderate/Low) |
 
-### Maddeye Göre CpG Dağılımı
+### CpG Distribution by Substance
 
-| Madde | Türkçe | CpG Sayısı | Anahtar Genler |
-|:------|:-------|----------:|:---------------|
-| Benzodiazepines | Benzodiazepin | 5,234 | GABRA2, GABRB3 |
-| Stimulants | Stimülan | 4,123 | SLC6A3, DRD2, BDNF |
-| Opioids | Opioid | 3,456 | OPRM1, OPRD1, BDNF |
-| Alcohol | Alkol | 2,847 | AHRR, ADH1B, ALDH2 |
-| NPS | Yeni Psikoaktif | 2,789 | SLC6A3, DRD2 |
-| Nicotine | Nikotin | 2,567 | AHRR, F2RL3, GPR15 |
-| Polysubstance | Polisubstans | 2,345 | BDNF, AHRR, DRD2 |
-| Cannabis | Esrar | 1,987 | CNR1, CNR2, FAAH |
-| Hallucinogens | Halüsinojen | 1,678 | HTR2A, HTR1B |
-| Anabolic Steroids | Anabolik Steroid | 1,456 | AR, STAT3 |
-| Inhalants | İnhalan | 1,234 | TP53, ATM |
-| Dissociatives | Disosyatif | 1,000 | GRIN2B, GRIN1 |
-
----
-
-## 🔬 DNA Varyant Veritabanı (SNP/GWAS)
-
-Platform, bağımlılık genetiği için kapsamlı DNA varyant veritabanı içerir:
-
-| Kaynak | Varyant Sayısı | Açıklama |
-|:-------|---------------:|:---------|
-| **Toplam GWAS SNP** | **17,090,082** | Genom çapında ilişki çalışmaları |
-| Alkol Bağımlılığı | 9,690,082 | Walters et al. 2018 |
-| Opioid Bağımlılığı | 7,200,000 | Polimanti et al. 2020 |
-| Nikotin Bağımlılığı | ~200,000 | Liu et al. 2019 (GSCAN) |
-
-### EWAS CpG Siteleri
-
-| Çalışma | CpG Sayısı | Referans |
-|:--------|----------:|:---------|
-| Tütün/Sigara | 2,568 | Joehanes et al. 2016 |
-| Alkol Bağımlılığı | 105 | Liu et al. 2018 |
-
-### Gen Kapasitesi
-
-| Kategori | Sayı |
-|:---------|-----:|
-| **Toplam Bağımlılık Geni** | 2,800+ |
-| Nörotransmitter Sistemleri | 10 |
-| Dopamin Yolağı | 456 CpG |
-| Serotonin Yolağı | 387 CpG |
-| GABA Sistemi | 523 CpG |
-| Opioid Sistemi | 298 CpG |
+| Substance | CpG Count | Key Genes |
+|:----------|----------:|:----------|
+| Benzodiazepines | 5,234 | GABRA2, GABRB3 |
+| Stimulants | 4,123 | SLC6A3, DRD2, BDNF |
+| Opioids | 3,456 | OPRM1, OPRD1, BDNF |
+| Alcohol | 2,847 | AHRR, ADH1B, ALDH2 |
+| NPS | 2,789 | SLC6A3, DRD2 |
+| Nicotine | 2,567 | AHRR, F2RL3, GPR15 |
+| Polysubstance | 2,345 | BDNF, AHRR, DRD2 |
+| Cannabis | 1,987 | CNR1, CNR2, FAAH |
+| Hallucinogens | 1,678 | HTR2A, HTR1B |
+| Anabolic Steroids | 1,456 | AR, STAT3 |
+| Inhalants | 1,234 | TP53, ATM |
+| Dissociatives | 1,000 | GRIN2B, GRIN1 |
 
 ---
 
-## 📥 Veri Dışa Aktarma (Data Export)
+## DNA Variant Database (SNP/GWAS)
 
-Platform, CpG verilerini **4 farklı formatta** dışa aktarabilir:
+| Source | Variant Count | Description |
+|:-------|---------------:|:----------|
+| **Total GWAS SNPs** | **17,090,082** | Genome-wide association studies |
+| Alcohol Dependence | 9,690,082 | Walters et al. 2018 |
+| Opioid Dependence | 7,200,000 | Polimanti et al. 2020 |
+| Nicotine Dependence | ~200,000 | Liu et al. 2019 (GSCAN) |
+
+### EWAS CpG Sites
+
+| Study | CpG Count | Reference |
+|:------|----------:|:----------|
+| Tobacco/Smoking | 2,568 | Joehanes et al. 2016 |
+| Alcohol Dependence | 105 | Liu et al. 2018 |
+
+### Gene Capacity
+
+| Category | Count |
+|:---------|------:|
+| **Total Addiction Genes** | 2,800+ |
+| Neurotransmitter Systems | 10 |
+| Dopamine Pathway | 456 CpG |
+| Serotonin Pathway | 387 CpG |
+| GABA System | 523 CpG |
+| Opioid System | 298 CpG |
+
+---
+
+## Data Export Formats
+
+Platform can export CpG data in **4 different formats**:
 
 ### CSV Format
 ```csv
 cpg_id,gene,chromosome,position,delta_beta,p_value,direction,evidence_level,substance
 cg05575921,AHRR,chr5,373378,-0.42,1.5e-78,Hypomethylation,Very Strong,nicotine
 ```
-**Kullanım:** Excel, R, Python pandas ile analiz
+**Usage:** Excel, R, Python pandas analysis
 
-### BED Format (Genom Tarayıcı)
+### BED Format (Genome Browser)
 ```
 chr5    373378    373379    cg05575921    1000    -    AHRR    nicotine    Very Strong
 ```
-**Kullanım:** UCSC Genome Browser, IGV, Ensembl
+**Usage:** UCSC Genome Browser, IGV, Ensembl
 
 ### JSON Format
 ```json
@@ -245,7 +297,7 @@ chr5    373378    373379    cg05575921    1000    -    AHRR    nicotine    Very 
   }
 }
 ```
-**Kullanım:** Web uygulamaları, API entegrasyonu
+**Usage:** Web applications, API integration
 
 ### SQL Format
 ```sql
@@ -257,151 +309,110 @@ CREATE TABLE cpg_markers (
 );
 INSERT INTO cpg_markers VALUES ('cg05575921', 'AHRR', 'chr5');
 ```
-**Kullanım:** PostgreSQL veritabanı oluşturma
+**Usage:** PostgreSQL database creation
 
 ---
 
-## 🌍 Dünya Veritabanları Entegrasyonu
+## World Database Integration
 
-| Veritabanı | Açıklama | Kayıt Sayısı |
-|:-----------|:---------|-------------:|
-| **GWAS Catalog** | Genom çapında ilişki çalışmaları | 500+ |
-| **EWAS Atlas** | Epigenom çapında ilişki çalışmaları | 300+ |
-| **PharmGKB** | Farmakogenomik bilgiler | 200+ |
-| **CPIC** | Klinik farmakogenetik kılavuzları | 50+ |
-
----
-
-## 🚀 Kurulum (Installation)
-
-```bash
-# 1. Repoyu klonla
-git clone https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype.git
-cd epi-clock-DNA-mtl-prototype
-
-# 2. Bağımlılıkları yükle
-pip install -r requirements.txt
-
-# 3. Uygulamayı çalıştır
-streamlit run app.py --server.port 5000
-```
-
-### Gerekli Kütüphaneler
-
-```
-streamlit>=1.28.0
-pandas>=2.0.0
-numpy>=1.24.0
-scikit-learn>=1.3.0
-xgboost>=2.0.0
-plotly>=5.18.0
-matplotlib>=3.8.0
-seaborn>=0.13.0
-scipy>=1.11.0
-statsmodels>=0.14.0
-reportlab>=4.0.0
-openpyxl>=3.1.0
-psycopg2-binary>=2.9.0
-sqlalchemy>=2.0.0
-```
+| Database | Description | Record Count |
+|:---------|:------------|-------------:|
+| **GWAS Catalog** | Genome-wide association studies | 500+ |
+| **EWAS Atlas** | Epigenome-wide association studies | 300+ |
+| **PharmGKB** | Pharmacogenomic information | 200+ |
+| **CPIC** | Clinical pharmacogenetic guidelines | 50+ |
 
 ---
 
-## 📖 Kullanım Kılavuzu (User Guide)
+## User Guide
 
-### 1. Bireysel Analiz
-1. Sol menüden **"🧪 Bireysel Analiz"** seçin
-2. Yaş ve cinsiyet bilgilerini girin
-3. Madde kullanım geçmişini işaretleyin
-4. **"Analiz Et"** butonuna tıklayın
-5. Epigenetik yaş ve EAA sonuçlarını görüntüleyin
+### 1. Individual Analysis
+1. Select **"Bireysel Analiz"** from menu
+2. Enter age and sex information
+3. Mark substance use history
+4. Click **"Analiz Et"** button
+5. View epigenetic age and EAA results
 
-### 2. CpG Veritabanı Tarama
-1. **"🧬 CpG Veritabanı"** menüsüne gidin
-2. Madde sınıfı veya gen adına göre arama yapın
-3. CpG detaylarını ve kanıt düzeylerini inceleyin
+### 2. CpG Database Search
+1. Navigate to **"CpG Veritabani"** menu
+2. Search by substance class or gene name
+3. Review CpG details and evidence levels
 
-### 3. Veri Dışa Aktarma
-1. **"📥 Veri Dışa Aktarma"** menüsüne gidin
-2. İstediğiniz formatı seçin (CSV/BED/JSON/SQL)
-3. **"İndir"** butonuna tıklayın
+### 3. Data Export
+1. Go to **"Veri Disa Aktar"** menu
+2. Select desired format (CSV/BED/JSON/SQL)
+3. Click **"Indir"** button
 
-### 4. Dünya Veritabanları
-1. **"🌍 Dünya Veritabanları"** menüsüne gidin
-2. GWAS, EWAS veya PharmGKB sekmelerini inceleyin
-3. Madde-gen ilişkilerini araştırın
+### 4. World Databases
+1. Navigate to **"Dunya Veritabanlari"** menu
+2. Review GWAS, EWAS or PharmGKB tabs
+3. Research substance-gene relationships
 
-### 5. Akademik Kılavuz
-1. **"📚 Akademik Kılavuz"** menüsüne gidin
-2. Metodoloji ve referansları inceleyin
-3. Atıf bilgilerini kopyalayın
-
----
-
-## 💰 Maliyet Avantajı
-
-| Yöntem | Tahmini Maliyet | Süre |
-|:-------|----------------:|-----:|
-| Geleneksel GWAS Taraması | $50,000+ | 6+ ay |
-| Ticari Epigenetik Test | $5,000+ | 4-6 hafta |
-| **EpiClock Platformu** | **$0 (Açık Kaynak)** | **Anında** |
-
-> **%90-95 maliyet tasarrufu** - Açık kaynak araçlar ve kamu veritabanları kullanılarak
+### 5. Academic Guide
+1. Go to **"Akademik Kilavuz"** menu
+2. Review methodology and references
+3. Copy citation information
 
 ---
 
-## 📁 Proje Yapısı (Project Structure)
+## Cost Advantage
+
+| Method | Estimated Cost | Duration |
+|:-------|---------------:|:---------|
+| Traditional GWAS Screening | $50,000+ | 6+ months |
+| Commercial Epigenetic Test | $5,000+ | 4-6 weeks |
+| **EpiClock Platform** | **$0 (Open Source)** | **Instant** |
+
+> **90-95% cost savings** - Using open source tools and public databases
+
+---
+
+## Project Structure
 
 ```
 epi-clock-DNA-mtl-prototype/
-├── app.py                           # Ana Uygulama (3000+ satır)
-├── modules/                         # Analiz Modülleri (24 modül)
-│   ├── epigenetic_clocks.py         # 5 Epigenetik Saat
-│   ├── ml_models.py                 # Makine Öğrenmesi
-│   ├── tissue_clocks.py             # 12 Doku-Spesifik Saat
-│   ├── cpg_database.py              # CpG Veritabanı (29,716 site)
-│   ├── data_export.py               # Çoklu Format Export
-│   ├── academic_guide.py            # Akademik Kılavuz
+├── app.py                           # Main Application (3000+ lines)
+├── modules/                         # Analysis Modules (24 modules)
+│   ├── epigenetic_clocks.py         # 5 Epigenetic Clocks
+│   ├── ml_models.py                 # Machine Learning
+│   ├── tissue_clocks.py             # 12 Tissue-Specific Clocks
+│   ├── cpg_database.py              # CpG Database (29,716 sites)
+│   ├── data_export.py               # Multi-Format Export
+│   ├── academic_guide.py            # Academic Guide
 │   ├── world_databases.py           # GWAS/EWAS/PharmGKB
-│   ├── comprehensive_substance_database.py  # 2,800+ Gen
-│   ├── advanced_prs.py              # Poligenik Risk Skoru
-│   ├── audit.py                     # Blockchain Denetim
-│   ├── forensic.py                  # Adli Tıp Araçları
-│   └── ...                          # Diğer modüller
-├── data/                            # Veri Dosyaları
-├── attached_assets/                 # Araştırma Makaleleri
-├── .streamlit/config.toml           # Streamlit Ayarları
-└── pyproject.toml                   # Python Bağımlılıkları
+│   ├── comprehensive_substance_database.py  # 2,800+ Genes
+│   ├── advanced_prs.py              # Polygenic Risk Score
+│   ├── audit.py                     # Blockchain Audit
+│   ├── forensic.py                  # Forensic Tools
+│   └── ...                          # Other modules
+├── data/                            # Data Files
+├── attached_assets/                 # Research Papers
+├── .streamlit/config.toml           # Streamlit Settings
+└── pyproject.toml                   # Python Dependencies
 ```
 
 ---
 
 <div align="center">
 
-## 👩‍🔬 Author
+## Author
 
-# **Nurcan Denli Bayır**
+# **Nurcan Denli Bayir**
 
 <br/>
 
 <table>
 <tr>
 <td align="center" width="33%">
-<h3>🔬</h3>
-<b>FORENSIC MEDICINE</b>
-<br/>
+<h3>FORENSIC MEDICINE</h3>
 <i>Ph.D., M.D.</i>
 </td>
 <td align="center" width="33%">
-<h3>💻</h3>
-<b>SOFTWARE ENGINEERING</b>
-<br/>
+<h3>SOFTWARE ENGINEERING</h3>
 <i>M.Sc.</i>
 </td>
 <td align="center" width="33%">
-<h3>⚖️</h3>
-<b>HEALTH LAW</b>
-<br/>
+<h3>HEALTH LAW</h3>
 <i>J.D., M.D.</i>
 </td>
 </tr>
@@ -415,11 +426,11 @@ epi-clock-DNA-mtl-prototype/
 
 ---
 
-## 📚 Citation
+## Citation
 
 ```bibtex
 @article{denlibayir2025epiclock,
-  author  = {Denli Bayır, Nurcan},
+  author  = {Denli Bayir, Nurcan},
   title   = {Detection of Epigenetic Age Acceleration in Addiction 
              Using DNA Methylation Clocks: An End-to-End Computational Approach},
   year    = {2025},
@@ -429,7 +440,7 @@ epi-clock-DNA-mtl-prototype/
 
 ---
 
-## 📜 License
+## License
 
 This project is provided for **academic and research purposes only**.
 
@@ -437,9 +448,9 @@ This project is provided for **academic and research purposes only**.
 
 <div align="center">
 
-**© 2025 Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.**
+**Copyright 2025 Dr. Nurcan Denli Bayir, M.D., Ph.D., M.Sc., J.D.**
 
-**Adli Tıp Uzmanı | Yazılım Mühendisi | Sağlık Hukuku Uzmanı**
+**Adli Tip Uzmani | Yazilim Muhendisi | Saglik Hukuku Uzmani**
 
 *Forensic Medicine Specialist | Software Engineer | Health Law Expert*
 
