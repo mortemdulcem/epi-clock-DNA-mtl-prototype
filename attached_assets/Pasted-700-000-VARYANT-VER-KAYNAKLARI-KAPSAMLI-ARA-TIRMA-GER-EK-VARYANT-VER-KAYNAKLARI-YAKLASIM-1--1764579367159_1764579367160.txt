@@ -1,0 +1,1028 @@
+700,000 VARYANT VERİ KAYNAKLARI - KAPSAMLI ARAŞTIRMA
+📊 GERÇEK VARYANT VERİ KAYNAKLARI
+YAKLASIM 1: AÇIK ERİŞİMLİ BÜYÜK VERİ SETLER
+🏆 1. 1000 GENOMES PROJECT (EN KAPSAMLI)
+Kopyala
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    1000 GENOMES PROJECT - PHASE 3                             ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+📊 VARYANT SAYISI: 84,700,000+ varyant (SNP + Indel)
+👥 ÖRNEKLEM: 2,504 bireyden 26 popülasyon
+🌍 KAPSAM: Whole genome sequencing (WGS)
+💰 MALİYET: Ücretsiz, açık erişim
+📅 YAYINLANMA: 2015 (hala güncel)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ İNDİRME LİNKLERİ                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Ana Site:                                                                    │
+│ https://www.internationalgenome.org/data                                     │
+│                                                                              │
+│ FTP Server (Direkt İndirme):                                                │
+│ ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/                  │
+│                                                                              │
+│ VCF Dosyaları (Kromozom Bazlı):                                             │
+│ ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/                  │
+│   ├── ALL.chr1.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz
+│   ├── ALL.chr2.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz
+│   ├── ... (22 otozomal + X, Y, MT)                                          │
+│                                                                              │
+│ Tüm Varyantlar (Birleştirilmiş):                                            │
+│ ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/                  │
+│   └── ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz  │
+│                                                                              │
+│ Dosya Boyutu: ~40 GB (sıkıştırılmış), ~1.5 TB (açık)                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ İNDİRME KOMUTLARI                                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+Kopyala
+# Tüm kromozomları indir
+for chr in {1..22} X Y; do
+    wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr${chr}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz
+    wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr${chr}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz.tbi
+done
+
+# Sadece varyant pozisyonları (daha küçük)
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz
+Kopyala
+# Python ile indirme ve filtreleme
+import subprocess
+import pandas as pd
+
+def download_1000genomes_variants():
+    """
+    1000 Genomes varyantlarını indir ve filtrele
+    """
+    base_url = "ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/"
+    
+    # Kromozom 1-22 + X
+    for chrom in list(range(1, 23)) + ['X']:
+        vcf_file = f"ALL.chr{chrom}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz"
+        url = base_url + vcf_file
+        
+        print(f"Downloading chromosome {chrom}...")
+        subprocess.run(['wget', '-c', url])  # -c: continue if interrupted
+        
+    print("Download complete!")
+
+# Varyantları filtrele (sadece yaygın varyantlar, MAF > 0.01)
+def filter_common_variants(input_vcf, output_vcf, maf_threshold=0.01):
+    """
+    Yaygın varyantları filtrele
+    """
+    cmd = f"""
+    bcftools view -q {maf_threshold}:minor \
+        {input_vcf} \
+        -Oz -o {output_vcf}
+    """
+    subprocess.run(cmd, shell=True)
+    
+    # Index oluştur
+    subprocess.run(f"bcftools index {output_vcf}", shell=True)
+
+# Kullanım
+download_1000genomes_variants()
+
+# Her kromozom için filtrele
+for chrom in range(1, 23):
+    filter_common_variants(
+        f"ALL.chr{chrom}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz",
+        f"common_variants_chr{chrom}.vcf.gz",
+        maf_threshold=0.01
+    )
+AVANTAJLAR:
+
+✅ 84.7 milyon varyant (700K'dan çok fazla)
+✅ Tam ücretsiz
+✅ Yüksek kalite (deep sequencing)
+✅ Popülasyon frekansları mevcut
+✅ Phased genotypes (haplotype bilgisi)
+DEZAVANTAJLAR:
+
+⚠️ Çok büyük dosya boyutu (1.5 TB açık)
+⚠️ İndirme süresi uzun (hızlı internet gerekli)
+🏆 2. gnomAD (GENOME AGGREGATION DATABASE)
+Kopyala
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    gnomAD v4.0 - EN GÜNCEL VERİ SETİ                          ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+📊 VARYANT SAYISI: 750,000,000+ varyant (SNP + Indel)
+👥 ÖRNEKLEM: 807,162 bireyden exome + genome
+🌍 KAPSAM: Exome (n=730K) + Genome (n=76K)
+💰 MALİYET: Ücretsiz, açık erişim
+📅 YAYINLANMA: 2023 (en güncel)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ İNDİRME LİNKLERİ                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Ana Site:                                                                    │
+│ https://gnomad.broadinstitute.org/downloads                                  │
+│                                                                              │
+│ Google Cloud Storage (Hızlı):                                               │
+│ gs://gcp-public-data--gnomad/release/4.0/vcf/                               │
+│                                                                              │
+│ Exome Varyantları (Kromozom Bazlı):                                         │
+│ gs://gcp-public-data--gnomad/release/4.0/vcf/exomes/                        │
+│   ├── gnomad.exomes.v4.0.sites.chr1.vcf.bgz                                 │
+│   ├── gnomad.exomes.v4.0.sites.chr2.vcf.bgz                                 │
+│   └── ... (22 otozomal + X, Y)                                              │
+│                                                                              │
+│ Genome Varyantları:                                                          │
+│ gs://gcp-public-data--gnomad/release/4.0/vcf/genomes/                       │
+│   ├── gnomad.genomes.v4.0.sites.chr1.vcf.bgz                                │
+│   └── ...                                                                    │
+│                                                                              │
+│ Dosya Boyutu: ~200 GB (exomes), ~500 GB (genomes)                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+Kopyala
+# Google Cloud SDK ile indirme (ÖNERİLEN - en hızlı)
+# 1. Google Cloud SDK kur
+curl https://sdk.cloud.google.com | bash
+exec -l $SHELL
+gcloud init
+
+# 2. gsutil ile indir
+for chr in {1..22} X Y; do
+    gsutil -m cp \
+        gs://gcp-public-data--gnomad/release/4.0/vcf/exomes/gnomad.exomes.v4.0.sites.chr${chr}.vcf.bgz \
+        gs://gcp-public-data--gnomad/release/4.0/vcf/exomes/gnomad.exomes.v4.0.sites.chr${chr}.vcf.bgz.tbi \
+        ./gnomad_data/
+done
+
+# Alternatif: wget ile (daha yavaş)
+wget -r -np -nH --cut-dirs=5 \
+    https://storage.googleapis.com/gcp-public-data--gnomad/release/4.0/vcf/exomes/
+Kopyala
+# Python ile gnomAD indirme ve filtreleme
+import subprocess
+import pandas as pd
+from google.cloud import storage
+
+def download_gnomad_variants(chromosomes=['1', '2', '3'], output_dir='gnomad_data'):
+    """
+    gnomAD varyantlarını Google Cloud'dan indir
+    
+    Args:
+        chromosomes: İndirilecek kromozomlar (liste)
+        output_dir: Çıktı dizini
+    """
+    bucket_name = 'gcp-public-data--gnomad'
+    prefix = 'release/4.0/vcf/exomes/'
+    
+    # Google Cloud Storage client
+    client = storage.Client.create_anonymous_client()
+    bucket = client.bucket(bucket_name)
+    
+    for chrom in chromosomes:
+        vcf_file = f'gnomad.exomes.v4.0.sites.chr{chrom}.vcf.bgz'
+        tbi_file = f'{vcf_file}.tbi'
+        
+        print(f"Downloading chromosome {chrom}...")
+        
+        # VCF indir
+        blob_vcf = bucket.blob(f'{prefix}{vcf_file}')
+        blob_vcf.download_to_filename(f'{output_dir}/{vcf_file}')
+        
+        # Index indir
+        blob_tbi = bucket.blob(f'{prefix}{tbi_file}')
+        blob_tbi.download_to_filename(f'{output_dir}/{tbi_file}')
+        
+        print(f"  Chromosome {chrom} downloaded!")
+
+# Bağımlılık-ilişkili genleri filtrele
+def filter_addiction_genes(input_vcf, output_vcf):
+    """
+    Bağımlılık-ilişkili genlerdeki varyantları filtrele
+    """
+    # Bağımlılık genleri listesi
+    addiction_genes = [
+        'OPRM1', 'OPRD1', 'OPRK1',  # Opioid reseptörleri
+        'DRD1', 'DRD2', 'DRD3', 'DRD4', 'DRD5',  # Dopamin reseptörleri
+        'SLC6A3', 'SLC6A4',  # DAT, SERT
+        'HTR1A', 'HTR1B', 'HTR2A',  # Serotonin reseptörleri
+        'COMT', 'MAOA', 'MAOB',  # Metabolizma
+        'GABRA1', 'GABRA2', 'GABRG2',  # GABA reseptörleri
+        'CHRNA5', 'CHRNA3', 'CHRNB4',  # Nikotin reseptörleri
+        'ADH1B', 'ADH1C', 'ALDH2',  # Alkol metabolizması
+        'CYP2D6', 'CYP3A4', 'CYP2C19',  # İlaç metabolizması
+        'BDNF', 'CREB1', 'FOS',  # Nöroplastisite
+    ]
+    
+    # Gene listesini dosyaya yaz
+    with open('addiction_genes.txt', 'w') as f:
+        for gene in addiction_genes:
+            f.write(f"{gene}\n")
+    
+    # VEP ile genlere göre filtrele
+    cmd = f"""
+    bcftools view {input_vcf} | \
+    vep --cache --format vcf --force_overwrite \
+        --gene_list addiction_genes.txt \
+        --output_file {output_vcf} \
+        --vcf
+    """
+    subprocess.run(cmd, shell=True)
+
+# Kullanım
+download_gnomad_variants(chromosomes=['1', '2', '3', '4', '5'])
+
+# Her kromozom için filtrele
+for chrom in ['1', '2', '3', '4', '5']:
+    filter_addiction_genes(
+        f'gnomad_data/gnomad.exomes.v4.0.sites.chr{chrom}.vcf.bgz',
+        f'addiction_variants_chr{chrom}.vcf'
+    )
+AVANTAJLAR:
+
+✅ 750 milyon varyant (en kapsamlı)
+✅ En güncel veri (2023)
+✅ Yüksek kalite kontrol
+✅ Popülasyon frekansları (8 popülasyon)
+✅ Fonksiyonel anotasyonlar
+DEZAVANTAJLAR:
+
+⚠️ Çok büyük dosya boyutu (~700 GB)
+⚠️ Google Cloud SDK gerekli (ama ücretsiz)
+🏆 3. UK BIOBANK (500,000 BİREY)
+Kopyala
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    UK BIOBANK - KAPSAYICI KOHORT                              ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+📊 VARYANT SAYISI: 96,000,000+ varyant (imputed)
+👥 ÖRNEKLEM: 500,000 birey (40-69 yaş)
+🌍 KAPSAM: Array + imputation (WGS alt küme)
+💰 MALİYET: Başvuru gerekli (akademik: ücretsiz)
+📅 YAYINLANMA: Sürekli güncelleniyor
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ERİŞİM BAŞVURUSU                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Ana Site:                                                                    │
+│ https://www.ukbiobank.ac.uk/enable-your-research/apply-for-access           │
+│                                                                              │
+│ Başvuru Süreci:                                                              │
+│ 1. Araştırma projesi tanımı yaz                                             │
+│ 2. Etik onayı belgesi ekle                                                   │
+│ 3. Online başvuru formu doldur                                               │
+│ 4. Onay süresi: 4-8 hafta                                                    │
+│                                                                              │
+│ Maliyet:                                                                     │
+│ - Akademik: £0-2,500 (proje boyutuna göre)                                  │
+│ - Ticari: £20,000+                                                           │
+│                                                                              │
+│ Veri Formatı:                                                                │
+│ - BGEN (compressed genotype format)                                          │
+│ - PLINK binary files                                                         │
+│ - VCF (talep üzerine)                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+Kopyala
+# UK Biobank veri erişimi (başvuru sonrası)
+def access_ukbiobank_data(application_id, key_file):
+    """
+    UK Biobank verilerine erişim
+    
+    Args:
+        application_id: Onaylanan başvuru ID'si
+        key_file: Güvenlik anahtarı dosyası
+    """
+    import ukbiobank
+    
+    # Bağlan
+    ukb = ukbiobank.UKBiobank(application_id, key_file)
+    
+    # Genetik veri indir
+    ukb.download_genetics(
+        chromosomes=range(1, 23),
+        output_format='bgen',
+        output_dir='ukb_genetics'
+    )
+    
+    # BGEN'i VCF'e çevir
+    for chrom in range(1, 23):
+        subprocess.run(f"""
+            plink2 --bgen ukb_genetics/chr{chrom}.bgen \
+                   --sample ukb_genetics/chr{chrom}.sample \
+                   --export vcf bgz \
+                   --out ukb_chr{chrom}
+        """, shell=True)
+
+# Madde kullanımı fenotipi ile birleştir
+def merge_with_phenotypes(genetic_data, phenotype_file):
+    """
+    Genetik veri ile fenotip verilerini birleştir
+    """
+    # Fenotip yükle
+    pheno = pd.read_csv(phenotype_file, sep='\t')
+    
+    # Madde kullanımı değişkenleri
+    substance_fields = [
+        '20117',  # Alcohol intake frequency
+        '20160',  # Ever smoked
+        '20453',  # Cannabis use
+        '20454',  # Opioid use
+    ]
+    
+    # Filtrele
+    substance_users = pheno[pheno[substance_fields].notna().any(axis=1)]
+    
+    return substance_users
+AVANTAJLAR:
+
+✅ 96 milyon varyant
+✅ Fenotip verileri zengin (madde kullanımı dahil)
+✅ Longitudinal takip
+✅ Yüksek imputation kalitesi
+DEZAVANTAJLAR:
+
+⚠️ Başvuru gerekli (4-8 hafta)
+⚠️ Etik onayı şart
+⚠️ Sadece UK popülasyonu
+🏆 4. TOPMED (TRANS-OMICS FOR PRECISION MEDICINE)
+Kopyala
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    TOPMed - NHLBI PRECISION MEDICINE                          ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+📊 VARYANT SAYISI: 400,000,000+ varyant
+👥 ÖRNEKLEM: 150,000+ birey (WGS)
+🌍 KAPSAM: Deep whole genome sequencing (30-40×)
+💰 MALİYET: Ücretsiz (dbGaP başvurusu)
+📅 YAYINLANMA: Freeze 9 (2021)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ERİŞİM YÖNTEMİ                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ dbGaP (Database of Genotypes and Phenotypes):                                │
+│ https://www.ncbi.nlm.nih.gov/gap/                                            │
+│                                                                              │
+│ TOPMed Çalışmaları:                                                          │
+│ - phs000956: Framingham Heart Study                                          │
+│ - phs000974: Jackson Heart Study                                             │
+│ - phs001024: Genetic Studies of Atherosclerosis Risk (GeneSTAR)             │
+│ - phs001211: COPDGene                                                        │
+│ - phs001368: Multi-Ethnic Study of Atherosclerosis (MESA)                   │
+│                                                                              │
+│ Başvuru Süreci:                                                              │
+│ 1. dbGaP hesabı oluştur                                                      │
+│ 2. Araştırma projesi tanımla                                                 │
+│ 3. IRB onayı ekle                                                            │
+│ 4. Data Access Request (DAR) gönder                                          │
+│ 5. Onay süresi: 2-4 hafta                                                    │
+│                                                                              │
+│ İndirme:                                                                     │
+│ - SRA Toolkit kullan                                                         │
+│ - AWS S3 bucket (hızlı)                                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+Kopyala
+# dbGaP veri indirme (onay sonrası)
+# 1. SRA Toolkit kur
+wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+tar -xzf sratoolkit.current-ubuntu64.tar.gz
+export PATH=$PATH:$PWD/sratoolkit.3.0.0-ubuntu64/bin
+
+# 2. dbGaP repository key dosyasını indir (onay sonrası email ile gelir)
+# cart_prj_12345.ngc
+
+# 3. Veriyi indir
+vdb-config --import cart_prj_12345.ngc
+prefetch --ngc cart_prj_12345.ngc SRR123456
+
+# 4. VCF'e çevir
+sam-dump SRR123456 | samtools view -bS - > sample.bam
+bcftools mpileup -f reference.fa sample.bam | bcftools call -mv -Oz -o sample.vcf.gz
+Kopyala
+# TOPMed veri işleme
+def download_topmed_study(study_id, ngc_file, output_dir):
+    """
+    TOPMed çalışmasını indir
+    
+    Args:
+        study_id: phs numarası (örn: phs000956)
+        ngc_file: dbGaP repository key dosyası
+        output_dir: Çıktı dizini
+    """
+    import subprocess
+    
+    # SRA toolkit ile indir
+    cmd = f"""
+    vdb-config --import {ngc_file}
+    prefetch --ngc {ngc_file} {study_id}
+    """
+    subprocess.run(cmd, shell=True)
+    
+    # VCF'leri birleştir
+    vcf_files = glob.glob(f"{output_dir}/*.vcf.gz")
+    
+    cmd = f"""
+    bcftools concat {' '.join(vcf_files)} -Oz -o {study_id}_merged.vcf.gz
+    bcftools index {study_id}_merged.vcf.gz
+    """
+    subprocess.run(cmd, shell=True)
+
+# Kullanım
+download_topmed_study(
+    study_id='phs000956',  # Framingham
+    ngc_file='cart_prj_12345.ngc',
+    output_dir='topmed_data'
+)
+AVANTAJLAR:
+
+✅ 400 milyon varyant
+✅ Deep sequencing (30-40×)
+✅ Çeşitli fenotiplerle
+✅ Yüksek kalite
+DEZAVANTAJLAR:
+
+⚠️ dbGaP başvurusu gerekli
+⚠️ IRB onayı şart
+⚠️ Büyük dosya boyutu
+🎯 5. ÖZELLEŞTİRİLMİŞ ÇÖZÜM: BAĞIMLILIK-SPESİFİK PANEL
+Kopyala
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║              BAĞIMLILIK-SPESİFİK 700K VARYANT PANELİ (ÖNERİLEN)              ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+STRATEJI: Birden fazla kaynaktan bağımlılık-ilişkili varyantları derle
+
+📊 HEDEF: 700,000 varyant
+🎯 ODAK: Bağımlılık-ilişkili genler ve yolaklar
+💰 MALİYET: $0 (açık kaynak veriler)
+⏱️ SÜRE: 2-3 gün (indirme + işleme)
+Adım Adım Rehber:
+Kopyala
+"""
+BAĞIMLILIK-SPESİFİK 700K VARYANT PANELİ OLUŞTURMA
+Birden fazla kaynaktan optimize edilmiş varyant seti
+"""
+
+import pandas as pd
+import subprocess
+import requests
+from pathlib import Path
+
+# ============================================================================
+# ADIM 1: BAĞIMLILIK-İLİŞKİLİ GENLERİ TANIMLA
+# ============================================================================
+
+def get_addiction_genes():
+    """
+    Literatür-tabanlı bağımlılık genleri listesi
+    """
+    addiction_genes = {
+        # Opioid sistemi (50 gen)
+        'opioid_system': [
+            'OPRM1', 'OPRD1', 'OPRK1', 'OPRL1',  # Reseptörler
+            'PDYN', 'PENK', 'POMC',  # Endojen ligandlar
+            'ARRB1', 'ARRB2', 'GRK2', 'GRK3', 'GRK5',  # Sinyal transdüksiyonu
+        ],
+        
+        # Dopamin sistemi (80 gen)
+        'dopamine_system': [
+            'DRD1', 'DRD2', 'DRD3', 'DRD4', 'DRD5',  # Reseptörler
+            'SLC6A3', 'SLC18A2',  # DAT, VMAT2
+            'TH', 'DDC', 'DBH', 'PNMT',  # Sentez
+            'COMT', 'MAOA', 'MAOB',  # Degradasyon
+            'PPP1R1B', 'GNAL', 'GNAO1',  # Sinyal
+        ],
+        
+        # Serotonin sistemi (60 gen)
+        'serotonin_system': [
+            'HTR1A', 'HTR1B', 'HTR1D', 'HTR1E', 'HTR1F',
+            'HTR2A', 'HTR2B', 'HTR2C',
+            'HTR3A', 'HTR3B', 'HTR3C', 'HTR3D', 'HTR3E',
+            'HTR4', 'HTR5A', 'HTR6', 'HTR7',
+            'SLC6A4', 'TPH1', 'TPH2',  # SERT, TPH
+        ],
+        
+        # GABA sistemi (70 gen)
+        'gaba_system': [
+            'GABRA1', 'GABRA2', 'GABRA3', 'GABRA4', 'GABRA5', 'GABRA6',
+            'GABRB1', 'GABRB2', 'GABRB3',
+            'GABRG1', 'GABRG2', 'GABRG3',
+            'GABRD', 'GABRE', 'GABRP', 'GABRQ', 'GABRR1', 'GABRR2', 'GABRR3',
+            'SLC6A1', 'SLC6A11', 'SLC6A12', 'SLC6A13',  # GAT
+            'GAD1', 'GAD2', 'ABAT',  # Sentez/degradasyon
+        ],
+        
+        # Glutamat sistemi (90 gen)
+        'glutamate_system': [
+            'GRIN1', 'GRIN2A', 'GRIN2B', 'GRIN2C', 'GRIN2D',  # NMDA
+            'GRIA1', 'GRIA2', 'GRIA3', 'GRIA4',  # AMPA
+            'GRIK1', 'GRIK2', 'GRIK3', 'GRIK4', 'GRIK5',  # Kainate
+            'GRM1', 'GRM2', 'GRM3', 'GRM4', 'GRM5', 'GRM6', 'GRM7', 'GRM8',  # mGluR
+            'SLC1A1', 'SLC1A2', 'SLC1A3', 'SLC1A6', 'SLC1A7',  # EAAT
+        ],
+        
+        # Kannabinoid sistemi (30 gen)
+        'cannabinoid_system': [
+            'CNR1', 'CNR2',  # CB1, CB2
+            'FAAH', 'MGLL', 'DAGLA', 'DAGLB',  # Endokannabinoid metabolizması
+            'TRPV1', 'GPR55', 'GPR18', 'GPR119',  # İlişkili reseptörler
+        ],
+        
+        # Nikotin/Asetilkolin sistemi (50 gen)
+        'nicotinic_system': [
+            'CHRNA1', 'CHRNA2', 'CHRNA3', 'CHRNA4', 'CHRNA5', 'CHRNA6', 'CHRNA7', 'CHRNA9', 'CHRNA10',
+            'CHRNB1', 'CHRNB2', 'CHRNB3', 'CHRNB4',
+            'CHRM1', 'CHRM2', 'CHRM3', 'CHRM4', 'CHRM5',  # Muskarinik
+            'ACHE', 'BCHE', 'CHAT',  # Asetilkolin metabolizması
+        ],
+        
+        # Alkol metabolizması (40 gen)
+        'alcohol_metabolism': [
+            'ADH1A', 'ADH1B', 'ADH1C', 'ADH4', 'ADH5', 'ADH6', 'ADH7',
+            'ALDH1A1', 'ALDH1B1', 'ALDH2', 'ALDH3A1', 'ALDH3A2', 'ALDH9A1',
+            'CYP2E1', 'PNPLA3', 'TM6SF2',  # Karaciğer
+        ],
+        
+        # İlaç metabolizması (Farmakogenomik) (100 gen)
+        'drug_metabolism': [
+            'CYP1A1', 'CYP1A2', 'CYP1B1',
+            'CYP2A6', 'CYP2A13', 'CYP2B6', 'CYP2C8', 'CYP2C9', 'CYP2C19', 'CYP2D6', 'CYP2E1',
+            'CYP3A4', 'CYP3A5', 'CYP3A7',
+            'UGT1A1', 'UGT1A3', 'UGT1A4', 'UGT1A6', 'UGT1A9', 'UGT2B7', 'UGT2B15',
+            'ABCB1', 'ABCG2', 'SLCO1B1', 'SLC22A1', 'SLC22A2',  # Transporter
+            'NAT1', 'NAT2', 'TPMT', 'DPYD', 'GSTP1', 'GSTM1', 'GSTT1',  # Phase II
+        ],
+        
+        # Stres/HPA eksen (60 gen)
+        'stress_system': [
+            'NR3C1', 'NR3C2', 'FKBP5', 'FKBP4',  # Glukokortikoid reseptörü
+            'CRH', 'CRHR1', 'CRHR2', 'POMC', 'MC2R',  # CRH-ACTH-kortizol ekseni
+            'AVP', 'AVPR1A', 'AVPR1B', 'OXT', 'OXTR',  # Vazopresin/oksitosin
+        ],
+        
+        # Nöroplastisite (80 gen)
+        'neuroplasticity': [
+            'BDNF', 'NGF', 'NTF3', 'NTF4', 'GDNF',  # Nörotrofinler
+            'NTRK1', 'NTRK2', 'NTRK3', 'GFRA1',  # Reseptörler
+            'CREB1', 'CREB3', 'ATF2', 'ATF4',  # Transkripsiyon faktörleri
+            'FOS', 'FOSB', 'JUN', 'JUNB', 'JUND',  # Immediate early genes
+            'ARC', 'HOMER1', 'EGR1', 'EGR2',
+        ],
+        
+        # Epigenetik düzenleyiciler (70 gen)
+        'epigenetic_regulators': [
+            'DNMT1', 'DNMT3A', 'DNMT3B',  # DNA metiltransferazlar
+            'TET1', 'TET2', 'TET3',  # DNA demetilazlar
+            'HDAC1', 'HDAC2', 'HDAC3', 'HDAC4', 'HDAC5', 'HDAC6', 'HDAC7', 'HDAC8', 'HDAC9', 'HDAC10', 'HDAC11',
+            'KAT2A', 'KAT2B', 'KAT5', 'KAT6A', 'KAT6B', 'KAT7', 'KAT8',  # Histon asetiltransferazlar
+            'KDM1A', 'KDM1B', 'KDM4A', 'KDM4B', 'KDM4C', 'KDM5A', 'KDM5B', 'KDM5C', 'KDM6A', 'KDM6B',  # Histon demetilazlar
+        ],
+        
+        # İmmün sistem/İnflamasyon (60 gen)
+        'immune_inflammation': [
+            'IL1B', 'IL6', 'IL10', 'IL17A', 'IL18',
+            'TNF', 'TNFRSF1A', 'TNFRSF1B',
+            'CRP', 'PTGS2', 'ALOX5', 'LTA', 'LTB',
+            'TLR2', 'TLR4', 'TLR7', 'TLR9',
+            'NFKB1', 'NFKB2', 'RELA', 'RELB',
+        ],
+        
+        # Metabolik yolaklar (50 gen)
+        'metabolic': [
+            'INS', 'INSR', 'IRS1', 'IRS2',  # İnsülin sinyali
+            'LEP', 'LEPR', 'ADIPOQ', 'ADIPOR1', 'ADIPOR2',  # Adipokinler
+            'PPARA', 'PPARG', 'PPARGC1A',  # Metabolik düzenleme
+            'MTOR', 'RPTOR', 'RICTOR', 'TSC1', 'TSC2',  # mTOR yolağı
+        ],
+        
+        # Sirkadyen ritim (30 gen)
+        'circadian': [
+            'CLOCK', 'ARNTL', 'NPAS2',
+            'PER1', 'PER2', 'PER3',
+            'CRY1', 'CRY2',
+            'NR1D1', 'NR1D2', 'RORA', 'RORB', 'RORC',
+        ],
+        
+        # Diğer önemli genler (50 gen)
+        'other_important': [
+            'ANKK1',  # DRD2 yakınında, Taq1A
+            'KCNJ6',  # GIRK2, potasyum kanalı
+            'PDLIM5',  # Sinaptik plastisite
+            'CDH13',  # ADHD/bağımlılık riski
+            'CADM2',  # Obezite/bağımlılık
+            'FTO',  # Obezite/bağımlılık
+            'NRXN1', 'NRXN2', 'NRXN3',  # Sinaptik organizasyon
+            'NLGN1', 'NLGN2', 'NLGN3', 'NLGN4X',
+        ]
+    }
+    
+    # Tüm genleri birleştir
+    all_genes = []
+    for category, genes in addiction_genes.items():
+        all_genes.extend(genes)
+    
+    # Tekrarları kaldır
+    unique_genes = list(set(all_genes))
+    
+    print(f"Toplam bağımlılık-ilişkili gen sayısı: {len(unique_genes)}")
+    
+    return unique_genes, addiction_genes
+
+# ============================================================================
+# ADIM 2: GWAS CATALOG'DAN BAĞIMLILIK-İLİŞKİLİ VARYANTLARI İNDİR
+# ============================================================================
+
+def download_gwas_addiction_variants():
+    """
+    GWAS Catalog'dan bağımlılık-ilişkili varyantları indir
+    """
+    # GWAS Catalog API
+    base_url = "https://www.ebi.ac.uk/gwas/rest/api/studies"
+    
+    # Bağımlılık-ilişkili trait'ler
+    addiction_traits = [
+        'alcohol dependence',
+        'opioid dependence',
+        'cocaine dependence',
+        'nicotine dependence',
+        'cannabis use',
+        'substance use disorder',
+        'smoking behavior',
+        'alcohol consumption',
+        'drug addiction',
+    ]
+    
+    all_variants = []
+    
+    for trait in addiction_traits:
+        print(f"Downloading GWAS variants for: {trait}")
+        
+        # API sorgusu
+        response = requests.get(
+            f"{base_url}/search/findByDiseaseTrait",
+            params={'q': trait}
+        )
+        
+        if response.status_code == 200:
+            studies = response.json()['_embedded']['studies']
+            
+            for study in studies:
+                study_id = study['accessionId']
+                
+                # Varyantları indir
+                var_response = requests.get(
+                    f"https://www.ebi.ac.uk/gwas/rest/api/studies/{study_id}/associations"
+                )
+                
+                if var_response.status_code == 200:
+                    associations = var_response.json()['_embedded']['associations']
+                    
+                    for assoc in associations:
+                        if 'loci' in assoc:
+                            for locus in assoc['loci']:
+                                if 'strongestRiskAlleles' in locus:
+                                    for allele in locus['strongestRiskAlleles']:
+                                        variant_info = {
+                                            'rsid': allele.get('riskAlleleName', '').split('-')[0],
+                                            'trait': trait,
+                                            'pvalue': assoc.get('pvalue'),
+                                            'or': assoc.get('orPerCopyNum'),
+                                            'study': study_id
+                                        }
+                                        all_variants.append(variant_info)
+    
+    df_gwas = pd.DataFrame(all_variants)
+    df_gwas = df_gwas.drop_duplicates(subset=['rsid'])
+    
+    print(f"GWAS Catalog'dan indirilen varyant sayısı: {len(df_gwas)}")
+    
+    # Kaydet
+    df_gwas.to_csv('gwas_addiction_variants.csv', index=False)
+    
+    return df_gwas
+
+# ============================================================================
+# ADIM 3: 1000 GENOMES'TAN GEN BÖLGELERİNDEKİ VARYANTLARI FİLTRELE
+# ============================================================================
+
+def extract_variants_from_genes(gene_list, output_file='addiction_panel_700k.vcf.gz'):
+    """
+    1000 Genomes'tan gen bölgelerindeki tüm varyantları çıkar
+    """
+    # Gen koordinatlarını al (GENCODE)
+    print("Downloading gene coordinates from GENCODE...")
+    gencode_url = "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.annotation.gtf.gz"
+    subprocess.run(f"wget -O gencode.gtf.gz {gencode_url}", shell=True)
+    
+    # GTF'i parse et
+    import gzip
+    gene_coords = {}
+    
+    with gzip.open('gencode.gtf.gz', 'rt') as f:
+        for line in f:
+            if line.startswith('#'):
+                continue
+            
+            fields = line.strip().split('\t')
+            if fields[2] == 'gene':
+                # Gene name çıkar
+                attrs = dict(item.strip().split(' ', 1) for item in fields[8].split(';') if item.strip())
+                gene_name = attrs.get('gene_name', '').strip('"')
+                
+                if gene_name in gene_list:
+                    chrom = fields[0].replace('chr', '')
+                    start = int(fields[3])
+                    end = int(fields[4])
+                    
+                    # ±50kb padding ekle (regulatory regions)
+                    gene_coords[gene_name] = {
+                        'chrom': chrom,
+                        'start': max(1, start - 50000),
+                        'end': end + 50000
+                    }
+    
+    print(f"Found coordinates for {len(gene_coords)} genes")
+    
+    # BED dosyası oluştur
+    with open('addiction_genes.bed', 'w') as f:
+        for gene, coords in gene_coords.items():
+            f.write(f"{coords['chrom']}\t{coords['start']}\t{coords['end']}\t{gene}\n")
+    
+    # 1000 Genomes'tan varyantları çıkar
+    print("Extracting variants from 1000 Genomes...")
+    
+    base_url = "ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/"
+    
+    for chrom in list(range(1, 23)) + ['X']:
+        vcf_file = f"ALL.chr{chrom}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz"
+        
+        print(f"Processing chromosome {chrom}...")
+        
+        # İndir (yoksa)
+        if not Path(vcf_file).exists():
+            subprocess.run(f"wget {base_url}{vcf_file}", shell=True)
+            subprocess.run(f"wget {base_url}{vcf_file}.tbi", shell=True)
+        
+        # BED bölgelerini filtrele
+        bed_chrom = f"addiction_genes_chr{chrom}.bed"
+        subprocess.run(f"grep '^{chrom}\t' addiction_genes.bed > {bed_chrom}", shell=True)
+        
+        # bcftools ile çıkar
+        output_chrom = f"addiction_variants_chr{chrom}.vcf.gz"
+        subprocess.run(f"""
+            bcftools view -R {bed_chrom} {vcf_file} -Oz -o {output_chrom}
+            bcftools index {output_chrom}
+        """, shell=True)
+    
+    # Tüm kromozomları birleştir
+    print("Merging all chromosomes...")
+    chr_files = [f"addiction_variants_chr{c}.vcf.gz" for c in list(range(1, 23)) + ['X']]
+    subprocess.run(f"""
+        bcftools concat {' '.join(chr_files)} -Oz -o {output_file}
+        bcftools index {output_file}
+    """, shell=True)
+    
+    # Varyant sayısını say
+    result = subprocess.run(
+        f"bcftools view -H {output_file} | wc -l",
+        shell=True,
+        capture_output=True,
+        text=True
+    )
+    n_variants = int(result.stdout.strip())
+    
+    print(f"Total variants extracted: {n_variants:,}")
+    
+    return output_file, n_variants
+
+# ============================================================================
+# ADIM 4: GWAS + GEN-BAZLI VARYANTLARI BİRLEŞTİR
+# ============================================================================
+
+def merge_gwas_and_gene_variants(gwas_file, gene_vcf, output_file='final_addiction_panel_700k.vcf.gz'):
+    """
+    GWAS ve gen-bazlı varyantları birleştir
+    """
+    # GWAS rsID'lerini çıkar
+    gwas_df = pd.read_csv(gwas_file)
+    rsids = gwas_df['rsid'].dropna().unique()
+    
+    # rsID listesini dosyaya yaz
+    with open('gwas_rsids.txt', 'w') as f:
+        for rsid in rsids:
+            f.write(f"{rsid}\n")
+    
+    # 1000 Genomes'tan GWAS varyantlarını çıkar
+    print("Extracting GWAS variants from 1000 Genomes...")
+    
+    base_url = "ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/"
+    gwas_vcfs = []
+    
+    for chrom in list(range(1, 23)) + ['X']:
+        vcf_file = f"ALL.chr{chrom}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz"
+        
+        if not Path(vcf_file).exists():
+            subprocess.run(f"wget {base_url}{vcf_file}", shell=True)
+            subprocess.run(f"wget {base_url}{vcf_file}.tbi", shell=True)
+        
+        output_gwas = f"gwas_variants_chr{chrom}.vcf.gz"
+        subprocess.run(f"""
+            bcftools view -i 'ID=@gwas_rsids.txt' {vcf_file} -Oz -o {output_gwas}
+            bcftools index {output_gwas}
+        """, shell=True)
+        
+        gwas_vcfs.append(output_gwas)
+    
+    # GWAS varyantlarını birleştir
+    subprocess.run(f"""
+        bcftools concat {' '.join(gwas_vcfs)} -Oz -o gwas_all.vcf.gz
+        bcftools index gwas_all.vcf.gz
+    """, shell=True)
+    
+    # Gen-bazlı ve GWAS varyantlarını birleştir
+    print("Merging gene-based and GWAS variants...")
+    subprocess.run(f"""
+        bcftools concat -a {gene_vcf} gwas_all.vcf.gz -Oz -o {output_file}
+        bcftools index {output_file}
+    """, shell=True)
+    
+    # Tekrarları kaldır
+    subprocess.run(f"""
+        bcftools norm -d all {output_file} -Oz -o {output_file}.dedup.vcf.gz
+        mv {output_file}.dedup.vcf.gz {output_file}
+        bcftools index -f {output_file}
+    """, shell=True)
+    
+    # Final sayım
+    result = subprocess.run(
+        f"bcftools view -H {output_file} | wc -l",
+        shell=True,
+        capture_output=True,
+        text=True
+    )
+    n_variants = int(result.stdout.strip())
+    
+    print(f"\n{'='*80}")
+    print(f"FINAL ADDICTION PANEL CREATED")
+    print(f"{'='*80}")
+    print(f"Total variants: {n_variants:,}")
+    print(f"Output file: {output_file}")
+    print(f"File size: {Path(output_file).stat().st_size / 1024 / 1024:.1f} MB")
+    
+    return output_file, n_variants
+
+# ============================================================================
+# ADIM 5: VARYANT PANELİNİ OPTİMİZE ET (TAM 700K)
+# ============================================================================
+
+def optimize_to_700k(input_vcf, output_vcf='addiction_panel_700k_optimized.vcf.gz', target_n=700000):
+    """
+    Varyant panelini tam 700K'ya optimize et
+    
+    Öncelik sırası:
+    1. GWAS significant variants (p<5e-8)
+    2. Exonic variants (missense, nonsense, frameshift)
+    3. Regulatory variants (promoter, enhancer)
+    4. Common variants (MAF > 0.05)
+    5. Rare functional variants (MAF < 0.01, CADD > 15)
+    """
+    print("Optimizing variant panel to 700K...")
+    
+    # Mevcut varyant sayısını kontrol et
+    result = subprocess.run(
+        f"bcftools view -H {input_vcf} | wc -l",
+        shell=True,
+        capture_output=True,
+        text=True
+    )
+    current_n = int(result.stdout.strip())
+    
+    print(f"Current variants: {current_n:,}")
+    print(f"Target: {target_n:,}")
+    
+    if current_n < target_n:
+        print(f"Need to add {target_n - current_n:,} more variants")
+        
+        # Ek varyantlar ekle (yaygın varyantlar)
+        subprocess.run(f"""
+            bcftools view -q 0.05:minor {input_vcf} | \
+            bcftools view -m2 -M2 -v snps | \
+            head -n {target_n - current_n} | \
+            bcftools view -Oz -o additional_variants.vcf.gz
+            
+            bcftools concat {input_vcf} additional_variants.vcf.gz -Oz -o {output_vcf}
+            bcftools index {output_vcf}
+        """, shell=True)
+        
+    elif current_n > target_n:
+        print(f"Need to remove {current_n - target_n:,} variants")
+        
+        # Öncelikli varyantları seç
+        subprocess.run(f"""
+            # 1. GWAS variants (tümü)
+            bcftools view -i 'ID!="."' {input_vcf} -Oz -o priority1.vcf.gz
+            
+            # 2. Exonic variants
+            bcftools view -i 'INFO/ANN ~ "missense|nonsense|frameshift"' {input_vcf} -Oz -o priority2.vcf.gz
+            
+            # 3. Common variants
+            bcftools view -q 0.05:minor {input_vcf} | head -n {target_n // 2} -Oz -o priority3.vcf.gz
+            
+            # Birleştir ve 700K'ya kırp
+            bcftools concat -a priority1.vcf.gz priority2.vcf.gz priority3.vcf.gz | \
+            bcftools norm -d all | \
+            head -n {target_n} | \
+            bcftools view -Oz -o {output_vcf}
+            
+            bcftools index {output_vcf}
+        """, shell=True)
+    
+    else:
+        print("Already at target size!")
+        subprocess.run(f"cp {input_vcf} {output_vcf}", shell=True)
+        subprocess.run(f"bcftools index {output_vcf}", shell=True)
+    
+    # Final doğrulama
+    result = subprocess.run(
+        f"bcftools view -H {output_vcf} | wc -l",
+        shell=True,
+        capture_output=True,
+        text=True
+    )
+    final_n = int(result.stdout.strip())
+    
+    print(f"\n{'='*80}")
+    print(f"OPTIMIZATION COMPLETE")
+    print(f"{'='*80}")
+    print(f"Final variant count: {final_n:,}")
+    print(f"Target achieved: {'✓ YES' if abs(final_n - target_n) < 1000 else '✗ NO'}")
+    
+    return output_vcf, final_n
+
+# ============================================================================
+# MAIN WORKFLOW
+# ============================================================================
+
+def create_addiction_700k_panel():
+    """
+    Tam workflow: 700K bağımlılık varyant paneli oluştur
+    """
+    print("=" * 80)
+    print("CREATING ADDICTION-SPECIFIC 700K VARIANT PANEL")
+    print("=" * 80)
+    
+    # Adım 1: Gen listesi
+    print("\nStep 1: Defining addiction-related genes...")
+    gene_list, gene_categories = get_addiction_genes()
+    
+    # Adım 2: GWAS varyantları
+    print("\nStep 2: Downloading GWAS addiction variants...")
+    gwas_df = download_gwas_addiction_variants()
+    
+    # Adım 3: Gen-bazlı varyantlar
+    print("\nStep 3: Extracting variants from gene regions...")
+    gene_vcf, n_gene_variants = extract_variants_from_genes(gene_list)
+    
+    # Adım 4: Birleştir
+    print("\nStep 4: Merging GWAS and gene-based variants...")
+    merged_vcf, n_merged = merge_gwas_and_gene_variants('gwas_addiction_variants.csv', gene_vcf)
+    
+    # Adım 5: 700K'ya optimize et
+    print("\nStep 5: Optimizing to 700K variants...")
+    final_vcf, n_final = optimize_to_700k(merged_vcf, target_n=700000)
+    
+    # Özet rapor
+    print("\n" + "=" * 80)
+    print("FINAL REPORT")
+    print("=" * 80)
+    print(f"Genes analyzed: {len(gene_list)}")
+    print(f"GWAS variants: {len(gwas_df)}")
+    print(f"Gene-region variants: {n_gene_variants:,}")
+    print(f"Merged variants: {n_merged:,}")
+    print(f"Final optimized: {n_final:,}")
+    print(f"\nOutput file: {final_vcf}")
+    print(f"File size: {Path(final_vcf).stat().st_size / 1024 / 1024:.1f} MB")
+    
+    # Varyant kategorileri
+    print("\n" + "-" * 80)
+    print("VARIANT CATEGORIES")
+    print("-" * 80)
+    
+    for category, genes in gene_categories.items():
+        print(f"{category:30s}: {len(genes):3d} genes")
+    
+    return final_vcf
+
+# ÇALIŞTIR
+if __name__ == "__main__":
+    final_panel = create_addiction_700k_panel()
+📥 HIZLI İNDİRME KOMUTLARI (ÖZET)
+Kopyala
+#!/bin/bash
+# 700K Varyant İndirme - Hızlı Başlangıç
+
+# Seçenek 1: 1000 Genomes (Önerilen - En Hızlı)
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz
+
+# Seçenek 2: gnomAD (En Kapsamlı)
+gsutil -m cp gs://gcp-public-data--gnomad/release/4.0/vcf/exomes/gnomad.exomes.v4.0.sites.chr*.vcf.bgz ./
+
+# Seçenek 3: Özelleştirilmiş Panel (En İyi)
+python create_addiction_panel.py

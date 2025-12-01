@@ -608,9 +608,11 @@ def create_demo_vcf_data(n_variants: int = 1000) -> pd.DataFrame:
     chromosomes = [str(i) for i in range(1, 23)] + ['X', 'Y']
     bases = ['A', 'C', 'G', 'T']
     
+    chrom_probs = [1.0/24]*24
+    
     variants = []
     for i in range(n_variants):
-        chrom = np.random.choice(chromosomes, p=[0.08]*22 + [0.04, 0.04])
+        chrom = np.random.choice(chromosomes, p=chrom_probs)
         pos = np.random.randint(1000000, 250000000)
         ref = np.random.choice(bases)
         alt = np.random.choice([b for b in bases if b != ref])
