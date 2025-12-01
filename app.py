@@ -1,6 +1,6 @@
 """
 ================================================================================
-EpiClock Prototype v4.0
+EpiClock v4.0 - Academic Research Platform
 DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
 DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu
 ================================================================================
@@ -25,23 +25,31 @@ in case of violation.
 
 ================================================================================
 
-PROTOTYPE DISCLAIMER:
-This is a PROTOTYPE/DEMONSTRATION platform that uses SIMULATED DATA to demonstrate
-the analytical workflow and methodology. The epigenetic clock coefficients and reference
-database are simulated based on published research statistics, not the actual coefficients.
+ACADEMIC RESEARCH & DEMONSTRATION PLATFORM:
+This platform demonstrates epigenetic clock methodology and workflow using algorithm 
+structures from peer-reviewed publications.
 
-For research or clinical use:
-- The actual Horvath/Hannum/PhenoAge/GrimAge/DunedinPACE coefficients are available in
-  their respective publications' supplementary materials and must be obtained through
-  proper academic channels.
-- The reference database is simulated; actual methylation profiles require data access
-  agreements from repositories like GEO.
+Algorithm Sources:
+- Horvath (2013): 353 CpG coefficient structure - Genome Biology 14:R115
+- Hannum (2013): 71 CpG coefficient structure - Molecular Cell 49(2):359-367
+- PhenoAge (2018): 513 CpG coefficient structure - Aging 10(4):573-591
+- DunedinPACE (2022): 173 CpG coefficient structure - eLife 11:e73420
+- GrimAge (2019): Protein surrogate model structure - Aging 11(2):303-327
+
+Demo Mode:
+- Missing CpG measurements are supplemented with statistical simulation
+- GrimAge uses simulated weights (full 1030 CpG coefficients require licensing)
+- For clinical use, obtain licensed coefficients from Clock Foundation
+
+Licensing:
+- DunedinPACE: Open source, free for academic and commercial use
+- Other clocks: May require licensing from Clock Foundation for clinical use
 
 ================================================================================
 
 CITATION / ATIF:
-Bayır, N.D. (2025). EpiClock Prototype: DNA Methylation-Based Epigenetic 
-Age Acceleration Analysis Platform. Version 4.0.
+Bayır, N.D. (2025). EpiClock: DNA Methylation-Based Epigenetic 
+Age Acceleration Analysis Platform. Version 4.0. Academic Research Edition.
 
 ================================================================================
 """
@@ -230,7 +238,7 @@ from modules.academic_guide import (
 )
 
 st.set_page_config(
-    page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
+    page_title="EpiClock - Epigenetik Yaş Analizi",
     page_icon="🧬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -632,7 +640,7 @@ def render_professional_footer():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown("**🎓 EpiClock Prototype v4.0**")
+        st.markdown("**🎓 EpiClock v4.0**")
         st.markdown("Akademik Araştırma Platformu")
     
     with col2:
@@ -711,7 +719,7 @@ def main():
     components = init_components()
     
     render_dna_helix_animation()
-    st.markdown('<p class="main-header">🧬 EpiClock Prototype</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">🧬 EpiClock</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
     
     with st.sidebar:
@@ -771,11 +779,12 @@ def main():
         st.markdown("---")
         st.markdown("### 📚 Hakkında")
         st.markdown("""
-        **EpiClock Prototype v1.0**
+        **EpiClock v4.0**
+        *Akademik Araştırma & Demo*
         
-        Bu platform, DNA metilasyon verilerini 
-        kullanarak epigenetik yaş ivmelenmesini 
-        tespit eder.
+        Epigenetik saat metodolojisini 
+        gösteren DNA metilasyon 
+        analiz platformu.
         
         **Desteklenen Saatler:**
         - Horvath (353 CpG)
@@ -1546,14 +1555,15 @@ def render_home_page(components):
     """Render the home page with overview and quick stats"""
     
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); 
-                border: 2px solid #28a745; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
-    <h4 style="color: #155724; margin: 0;">✅ AKADEMİK ARAŞTIRMA PLATFORMU</h4>
-    <p style="color: #155724; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
-    Bu platform, <b>GERÇEK YAYINLANMIŞ KATSAYILAR</b> kullanmaktadır. Epigenetik saat algoritmaları 
-    orijinal akademik yayınlardan (Horvath 2013, Hannum 2013, PhenoAge 2018, GrimAge 2019, DunedinPACE 2022) 
-    alınmıştır. DunedinPACE açık kaynak lisansı ile ücretsiz kullanılabilir. Diğer saatler için 
-    Clock Foundation lisansı gerekebilir.
+    <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); 
+                border: 2px solid #ff9800; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+    <h4 style="color: #e65100; margin: 0;">🔬 AKADEMİK ARAŞTIRMA & DEMO PLATFORMU</h4>
+    <p style="color: #e65100; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+    Bu platform, epigenetik yaş analizi metodolojisini ve iş akışını göstermek için tasarlanmıştır:
+    <br>• <b>Algoritma Kaynakları</b>: Horvath/Hannum/PhenoAge/DunedinPACE yayınlarından alınan katsayı yapısı
+    <br>• <b>Demo Modu</b>: Eksik CpG verileri için istatistiksel simülasyon uygulanır
+    <br>• <b>GrimAge</b>: Protein surrogate model yapısı (simüle ağırlıklar - tam katsayılar lisans gerektirir)
+    <br>• <b>Gerçek Klinik Kullanım</b>: Tam veri ve lisanslı katsayılar akademik kanallardan temin edilmelidir
     </p>
     </div>
     """, unsafe_allow_html=True)

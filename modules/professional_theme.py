@@ -785,7 +785,7 @@ def render_academic_footer():
     
     st.markdown(f"""
     <div class="academic-footer">
-        <div class="academic-footer-title">🎓 EpiClock Prototype - Akademik Araştırma Platformu</div>
+        <div class="academic-footer-title">🎓 EpiClock v4.0 - Akademik Araştırma & Demo Platformu</div>
         <div class="academic-footer-text">
             <strong>Araştırmacı:</strong> Dr. Nurcan Denli Bayır<br>
             <strong>Platform:</strong> DNA Metilasyon Tabanlı Epigenetik Yaş Analizi<br>

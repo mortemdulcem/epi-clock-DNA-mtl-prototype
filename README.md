@@ -2,9 +2,11 @@
 
 <img src="attached_assets/image_1764525193643.png" alt="DNA Double Helix" width="400"/>
 
-# 🧬 EpiClock Prototype v4.0
+# 🧬 EpiClock v4.0
 
 ### DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
+
+**Academic Research & Demonstration Platform**
 
 **Computational Forensics | Molecular Toxicology | Epigenetic Chronology**
 
@@ -42,10 +44,13 @@ streamlit run app.py --server.port 5000
 
 ---
 
-## ⚠️ Prototype Disclaimer
+## 📋 Platform Information
 
-> **This is a demonstration platform using simulated data.**  
-> Clock coefficients are based on published research. For clinical applications, obtain actual coefficients through proper academic licensing.
+> **This is an Academic Research & Demonstration Platform.**  
+> - Algorithm structures from published papers (Horvath, Hannum, PhenoAge, DunedinPACE, GrimAge)
+> - Demo mode uses statistical simulation for missing CpG data
+> - GrimAge uses simulated weights (full coefficients require licensing)
+> - For clinical applications, obtain licensed coefficients from Clock Foundation
 
 ---
 

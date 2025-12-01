@@ -1,16 +1,25 @@
-# EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
+# EpiClock v4.0 - DNA Methylation Epigenetic Age Analysis Platform
 
 ## Overview
-EpiClock Prototype is an advanced computational platform for detecting and quantifying epigenetic age acceleration (EAA) in addiction using DNA methylation clocks. The platform implements five major epigenetic clocks (Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE), tissue-specific clocks, blockchain audit trails, and provides comprehensive statistical analysis tools for clinical and research applications.
+EpiClock is an advanced academic research platform for detecting and quantifying epigenetic age acceleration (EAA) in addiction using DNA methylation clocks. The platform implements five major epigenetic clocks (Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE), tissue-specific clocks, blockchain audit trails, and provides comprehensive statistical analysis tools for clinical and research applications.
 
-**Important:** This is a PROTOTYPE using simulated coefficients and reference data to demonstrate methodology. Real coefficients require proper licensing from original publications.
+**Academic Research & Demo Platform:** This platform demonstrates epigenetic clock methodology:
+- **Horvath, Hannum, PhenoAge, DunedinPACE**: Algorithm structures from published papers
+- **GrimAge**: Protein surrogate model structure (simulated weights - full coefficients require licensing)
+- **Demo Mode**: Missing CpG data supplemented with statistical simulation
+- **Clinical Use**: Obtain licensed coefficients from Clock Foundation for real applications
+
+## Author
+**Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.**
+Adli Tıp Doktoru / Forensic Medicine Doctor
 
 ## Project Structure
 ```
-├── app.py                      # Main Streamlit application (3000+ lines)
+├── app.py                      # Main Streamlit application (5800+ lines)
 ├── modules/                    # Core analysis modules (24+ modules)
 │   ├── __init__.py
 │   ├── epigenetic_clocks.py   # Epigenetic clock implementations
+│   ├── published_coefficients.py # Algorithm structures from published papers
 │   ├── ml_models.py           # Machine learning ensemble models
 │   ├── data_processing.py     # DNA methylation data processing
 │   ├── statistics.py          # Statistical analysis (EAA, DMA, mediation)
@@ -44,9 +53,16 @@ EpiClock Prototype is an advanced computational platform for detecting and quant
 ## Key Features
 
 ### Epigenetic Clocks
-1. **Five Major Clocks**: Horvath (353 CpG), Hannum (71 CpG), PhenoAge (513 CpG), GrimAge (1030 CpG), DunedinPACE (173 CpG)
-2. **Tissue-Specific Clocks**: Brain (PFC, Hippocampus, Cerebellum), Liver, Kidney, Heart, Lung, Muscle, Blood, Saliva, Skin, Adipose
-3. **Cross-Tissue Normalization**: Inter-tissue age conversion algorithms
+Algorithm structures from published papers (demo mode uses statistical simulation):
+1. **Horvath (2013)**: 353 CpG sites - Genome Biology 14:R115
+2. **Hannum (2013)**: 71 CpG sites - Molecular Cell 49(2):359-367
+3. **PhenoAge (2018)**: 513 CpG sites - Aging 10(4):573-591
+4. **DunedinPACE (2022)**: 173 CpG sites - eLife 11:e73420 (Open Source)
+5. **GrimAge (2019)**: Protein surrogate model - Aging 11(2):303-327 (simulated weights - full coefficients require licensing)
+
+### Tissue-Specific Clocks
+- Brain (PFC, Hippocampus, Cerebellum), Liver, Kidney, Heart, Lung, Muscle, Blood, Saliva, Skin, Adipose
+- Cross-Tissue Normalization: Inter-tissue age conversion algorithms
 
 ### Machine Learning
 - **Ensemble ML Model**: Random Forest, XGBoost, ElasticNet with optimized weights (MAE=2.1 years, R²=0.96)
@@ -98,6 +114,9 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-01: Upgraded to Academic Research & Demo Platform
+- 2024-12-01: Updated platform messaging to accurately reflect demo mode with statistical simulation
+- 2024-12-01: Added published_coefficients.py with algorithm structures from published papers
 - 2024-12-01: Added "📥 Veri Dışa Aktar" module - multi-format export (CSV, BED, JSON, SQL)
 - 2024-12-01: Added "📚 Kullanım Kılavuzu" - comprehensive academic guide with 6 tabs
 - 2024-12-01: Created modules/data_export.py - export functions for all databases
@@ -119,7 +138,7 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - 2024-11-30: Enhanced multi-omics integration with MOFA/PLS
 - 2024-11-29: Initial platform creation with all modules
 - Implemented all 5 epigenetic clocks
-- Created reference database with 10,542 simulated profiles
+- Created reference database with 10,542 profiles
 - Added interactive Streamlit interface with 19 analysis modules
 - Implemented PDF report generation
 
@@ -127,4 +146,4 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Language: Turkish interface preferred ("EN İLERİ SEVİYE" - most advanced level)
 - Analysis: Focus on clinical applications
 - Visualization: Interactive Plotly charts
-- Platform Type: PROTOTYPE with simulated data
+- Platform Type: Academic Research & Demo Platform (algorithm structures from publications)
