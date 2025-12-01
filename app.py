@@ -215,9 +215,9 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* Dark Theme Base */
+    /* Autumn Theme - Professional Light Background */
     .stApp {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f23 100%) !important;
+        background: linear-gradient(135deg, #FFF8DC 0%, #FAF3E0 50%, #F5DEB3 100%) !important;
     }
     
     .main .block-container {
@@ -225,14 +225,14 @@ st.markdown("""
         padding-top: 2rem;
     }
     
-    /* Sidebar Dark Theme */
+    /* Sidebar Autumn Theme */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0d0d0d 0%, #1a1a2e 100%) !important;
-        border-right: 1px solid #00ff4120;
+        background: linear-gradient(180deg, #5D4037 0%, #4E342E 100%) !important;
+        border-right: 2px solid #8B4513;
     }
     
     [data-testid="stSidebar"] * {
-        color: #e0e0e0 !important;
+        color: #FFF8DC !important;
     }
     
     /* DNA Helix Animation Container */
@@ -264,16 +264,16 @@ st.markdown("""
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #00ff41;
-        box-shadow: 0 0 20px #00ff41, 0 0 40px #00ff4180, 0 0 60px #00ff4140;
+        background: #CD853F;
+        box-shadow: 0 0 15px #CD853F, 0 0 30px #D2691E80;
         animation: pulse 2s ease-in-out infinite;
     }
     
     .nucleotide-pair {
         position: absolute;
         height: 3px;
-        background: linear-gradient(90deg, #00ff41, #00ff4180, #00ff41);
-        box-shadow: 0 0 10px #00ff4180;
+        background: linear-gradient(90deg, #8B4513, #CD853F, #8B4513);
+        box-shadow: 0 0 8px #CD853F80;
         transform-origin: left center;
     }
     
@@ -284,12 +284,12 @@ st.markdown("""
     
     @keyframes pulse {
         0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(1.2); }
+        50% { opacity: 0.8; transform: scale(1.1); }
     }
     
     @keyframes float {
         0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
+        50% { transform: translateY(-8px); }
     }
     
     .dna-helix-svg {
@@ -301,40 +301,39 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
         font-size: 3rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #00ff41 100%);
+        background: linear-gradient(135deg, #5D4037 0%, #8B4513 50%, #5D4037 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-align: center;
         margin-bottom: 0.5rem;
-        text-shadow: 0 0 30px #00ff4140;
         letter-spacing: 2px;
     }
     
     .sub-header {
         font-family: 'Inter', sans-serif;
         font-size: 1.2rem;
-        color: #00ff4180 !important;
+        color: #5D4037 !important;
         text-align: center;
         margin-bottom: 2rem;
         letter-spacing: 1px;
     }
     
-    /* Metric Cards - Dark Theme */
+    /* Metric Cards - Autumn Theme */
     .metric-card {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid #00ff4130;
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
+        border: 2px solid #CD853F;
         padding: 1.5rem;
         border-radius: 15px;
-        color: #00ff41;
+        color: #5D4037;
         text-align: center;
-        box-shadow: 0 0 20px #00ff4110, inset 0 0 20px #00ff4105;
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.15);
         transition: all 0.3s ease;
     }
     
     .metric-card:hover {
-        border-color: #00ff4160;
-        box-shadow: 0 0 30px #00ff4120, inset 0 0 30px #00ff4110;
+        border-color: #8B4513;
+        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.25);
         transform: translateY(-2px);
     }
     
@@ -343,106 +342,106 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
         font-size: 1.5rem;
         font-weight: 600;
-        color: #00ff41 !important;
-        border-bottom: 2px solid #00ff4140;
+        color: #5D4037 !important;
+        border-bottom: 2px solid #CD853F;
         padding-bottom: 0.5rem;
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
     
-    /* Info Boxes - Dark Theme */
+    /* Info Boxes - Autumn Theme */
     .info-box {
-        background: linear-gradient(135deg, #0a192f 0%, #0d1b2a 100%);
-        border-left: 4px solid #00ff41;
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
+        border-left: 4px solid #CD853F;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #c0c0c0;
-        box-shadow: 0 0 15px #00ff4110;
+        color: #3E2723;
+        box-shadow: 0 2px 10px rgba(139, 69, 19, 0.1);
     }
     
     .warning-box {
-        background: linear-gradient(135deg, #1a1a0a 0%, #2d2d0a 100%);
-        border-left: 4px solid #ffd700;
+        background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%);
+        border-left: 4px solid #D2691E;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #ffd700;
+        color: #8B4513;
     }
     
     .success-box {
-        background: linear-gradient(135deg, #0a1a0a 0%, #0d2d0d 100%);
-        border-left: 4px solid #00ff41;
+        background: linear-gradient(135deg, #F5DEB3 0%, #DEB887 100%);
+        border-left: 4px solid #8B4513;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #00ff41;
+        color: #5D4037;
     }
     
-    /* Tabs - Dark Theme */
+    /* Tabs - Autumn Theme */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
         background: transparent;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid #00ff4130;
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
+        border: 1px solid #CD853F80;
         border-radius: 10px 10px 0 0;
         padding: 12px 24px;
-        color: #00ff4180 !important;
+        color: #5D4037 !important;
         transition: all 0.3s ease;
     }
     
     .stTabs [data-baseweb="tab"]:hover {
-        background: linear-gradient(135deg, #1a2a3e 0%, #1a3a4e 100%);
-        border-color: #00ff4160;
+        background: linear-gradient(135deg, #FFF8DC 0%, #F5DEB3 100%);
+        border-color: #CD853F;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%) !important;
-        border-color: #00ff41 !important;
-        color: #00ff41 !important;
-        box-shadow: 0 0 15px #00ff4130;
+        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%) !important;
+        border-color: #8B4513 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 2px 10px rgba(139, 69, 19, 0.3);
     }
     
-    /* Buttons - Neon Green */
+    /* Buttons - Autumn Colors */
     .stButton > button {
-        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%);
-        border: 1px solid #00ff41;
-        color: #00ff41;
+        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%);
+        border: 1px solid #8B4513;
+        color: #FFFFFF;
         border-radius: 8px;
         padding: 0.5rem 1.5rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 0 10px #00ff4120;
+        box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #00ff4140 0%, #00cc3340 100%);
-        box-shadow: 0 0 20px #00ff4140, 0 0 40px #00ff4120;
+        background: linear-gradient(135deg, #8B4513 0%, #5D4037 100%);
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.35);
         transform: translateY(-1px);
     }
     
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
-        color: #0a0a0a;
+        background: linear-gradient(135deg, #5D4037 0%, #8B4513 100%);
+        color: #FFFFFF;
         font-weight: 700;
     }
     
-    /* Text Colors */
+    /* Text Colors - Dark Brown for Readability */
     .stMarkdown, .stText, p, span, label {
-        color: #c0c0c0 !important;
+        color: #3E2723 !important;
     }
     
     h1, h2, h3, h4, h5, h6 {
-        color: #00ff41 !important;
+        color: #5D4037 !important;
     }
     
     /* DataFrames */
     .stDataFrame {
-        background: #0a0a0a;
-        border: 1px solid #00ff4130;
+        background: #FFFFFF;
+        border: 1px solid #CD853F80;
         border-radius: 10px;
     }
     
@@ -451,28 +450,28 @@ st.markdown("""
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
     .stTextArea > div > div > textarea {
-        background: #1a1a2e !important;
-        border: 1px solid #00ff4140 !important;
-        color: #e0e0e0 !important;
+        background: #FFFFFF !important;
+        border: 1px solid #CD853F !important;
+        color: #3E2723 !important;
         border-radius: 8px;
     }
     
     /* Metrics */
     [data-testid="stMetricValue"] {
-        color: #00ff41 !important;
+        color: #5D4037 !important;
         font-family: 'Roboto Mono', monospace;
     }
     
     [data-testid="stMetricDelta"] {
-        color: #00cc33 !important;
+        color: #8B4513 !important;
     }
     
     /* Expander */
     .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid #00ff4130;
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
+        border: 1px solid #CD853F80;
         border-radius: 10px;
-        color: #00ff41 !important;
+        color: #5D4037 !important;
     }
     
     /* Academic Footer */
@@ -481,7 +480,7 @@ st.markdown("""
         bottom: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(180deg, transparent 0%, #0a0a0a 20%, #0a0a0a 100%);
+        background: linear-gradient(180deg, transparent 0%, #5D4037 20%, #5D4037 100%);
         padding: 1.5rem 0 1rem 0;
         text-align: center;
         z-index: 1000;
@@ -490,13 +489,13 @@ st.markdown("""
     .academic-credentials {
         font-family: 'Inter', sans-serif;
         font-size: 0.85rem;
-        color: #00ff4180;
+        color: #FFF8DC;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin: 0;
         padding: 0.5rem;
-        border-top: 1px solid #00ff4130;
-        background: linear-gradient(90deg, transparent 0%, #00ff4110 50%, transparent 100%);
+        border-top: 1px solid #CD853F;
+        background: linear-gradient(90deg, transparent 0%, #8B451320 50%, transparent 100%);
     }
     
     .credential-line {
@@ -505,12 +504,12 @@ st.markdown("""
     }
     
     .credential-title {
-        color: #00ff41;
+        color: #FFE4B5;
         font-weight: 600;
     }
     
     .credential-degree {
-        color: #00cc33;
+        color: #F5DEB3;
         font-weight: 500;
     }
     
@@ -521,16 +520,16 @@ st.markdown("""
     }
     
     ::-webkit-scrollbar-track {
-        background: #0a0a0a;
+        background: #FFF8DC;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: #00ff4140;
+        background: #CD853F;
         border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: #00ff4160;
+        background: #8B4513;
     }
     
     /* Radio buttons */
@@ -539,9 +538,9 @@ st.markdown("""
     }
     
     .stRadio > div > label {
-        color: #c0c0c0 !important;
-        background: #1a1a2e;
-        border: 1px solid #00ff4120;
+        color: #3E2723 !important;
+        background: #FFFFFF;
+        border: 1px solid #CD853F80;
         border-radius: 8px;
         padding: 0.5rem 1rem;
         margin: 0.25rem 0;
@@ -549,70 +548,70 @@ st.markdown("""
     }
     
     .stRadio > div > label:hover {
-        border-color: #00ff4160;
-        background: #1a2a3e;
+        border-color: #CD853F;
+        background: #FFF8DC;
     }
     
     /* Slider */
     .stSlider > div > div > div {
-        background: #00ff41 !important;
+        background: #CD853F !important;
     }
     
     /* Multiselect */
     .stMultiSelect > div > div {
-        background: #1a1a2e !important;
-        border-color: #00ff4140 !important;
+        background: #FFFFFF !important;
+        border-color: #CD853F !important;
     }
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #00ff41 0%, #00cc33 100%);
+        background: linear-gradient(90deg, #CD853F 0%, #8B4513 100%);
     }
     
     /* Code blocks */
     .stCodeBlock {
-        background: #0a0a0a !important;
-        border: 1px solid #00ff4130;
+        background: #FFF8DC !important;
+        border: 1px solid #CD853F80;
     }
     
     code {
-        color: #00ff41 !important;
-        background: #1a1a2e !important;
+        color: #5D4037 !important;
+        background: #FFF8DC !important;
     }
     
     /* Alerts */
     .stAlert {
-        background: #1a1a2e;
-        border: 1px solid #00ff4140;
+        background: #FFFFFF;
+        border: 1px solid #CD853F;
         border-radius: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
 
 def render_dna_helix_animation():
-    """Render animated DNA helix with phosphorescent green color"""
+    """Render animated DNA helix with autumn color theme"""
     st.markdown('''
     <div class="dna-container">
         <svg class="dna-helix-svg" viewBox="0 0 200 150" width="350" height="200">
             <defs>
                 <filter id="glow">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
                     <feMerge>
                         <feMergeNode in="coloredBlur"/>
                         <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                 </filter>
-                <linearGradient id="phosphorGreen" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#00ff41;stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:#00cc33;stop-opacity:0.8" />
-                    <stop offset="100%" style="stop-color:#00ff41;stop-opacity:1" />
+                <linearGradient id="autumnGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#CD853F;stop-opacity:0.9" />
+                    <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
                 </linearGradient>
             </defs>
             
             <!-- DNA Strand 1 -->
             <g filter="url(#glow)">
                 <path d="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20" 
-                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
+                      stroke="url(#autumnGradient)" stroke-width="3" fill="none">
                     <animate attributeName="d" 
                              values="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20;
                                      M 30 25 Q 50 5 70 25 Q 90 45 110 25 Q 130 5 150 25 Q 170 45 190 25;
@@ -624,7 +623,7 @@ def render_dna_helix_animation():
             <!-- DNA Strand 2 -->
             <g filter="url(#glow)">
                 <path d="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50" 
-                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
+                      stroke="url(#autumnGradient)" stroke-width="3" fill="none">
                     <animate attributeName="d" 
                              values="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50;
                                      M 30 45 Q 50 65 70 45 Q 90 25 110 45 Q 130 65 150 45 Q 170 25 190 45;
@@ -634,7 +633,7 @@ def render_dna_helix_animation():
             </g>
             
             <!-- Connecting Base Pairs with Animation -->
-            <g filter="url(#glow)" stroke="#00ff41" stroke-width="2" opacity="0.7">
+            <g filter="url(#glow)" stroke="#CD853F" stroke-width="2" opacity="0.7">
                 <line x1="40" y1="35" x2="40" y2="35">
                     <animate attributeName="y1" values="25;30;25" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="y2" values="45;40;45" dur="3s" repeatCount="indefinite"/>
@@ -671,35 +670,35 @@ def render_dna_helix_animation():
             
             <!-- Nucleotide Dots -->
             <g filter="url(#glow)">
-                <circle cx="40" cy="25" r="4" fill="#00ff41">
+                <circle cx="40" cy="25" r="4" fill="#D2691E">
                     <animate attributeName="cy" values="25;30;25" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="40" cy="45" r="4" fill="#00ff41">
+                <circle cx="40" cy="45" r="4" fill="#8B4513">
                     <animate attributeName="cy" values="45;40;45" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="80" cy="15" r="4" fill="#00ff41">
+                <circle cx="80" cy="15" r="4" fill="#D2691E">
                     <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="80" cy="55" r="4" fill="#00ff41">
+                <circle cx="80" cy="55" r="4" fill="#8B4513">
                     <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="120" cy="35" r="4" fill="#00ff41">
+                <circle cx="120" cy="35" r="4" fill="#D2691E">
                     <animate attributeName="cy" values="35;25;35" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="120" cy="35" r="4" fill="#00ff41">
+                <circle cx="120" cy="35" r="4" fill="#8B4513">
                     <animate attributeName="cy" values="35;45;35" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="160" cy="15" r="4" fill="#00ff41">
+                <circle cx="160" cy="15" r="4" fill="#D2691E">
                     <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="160" cy="55" r="4" fill="#00ff41">
+                <circle cx="160" cy="55" r="4" fill="#8B4513">
                     <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
@@ -708,7 +707,7 @@ def render_dna_helix_animation():
             <!-- Second DNA Helix Layer (offset) -->
             <g transform="translate(0, 70)" filter="url(#glow)" opacity="0.8">
                 <path d="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20" 
-                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
+                      stroke="url(#autumnGradient)" stroke-width="2.5" fill="none">
                     <animate attributeName="d" 
                              values="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20;
                                      M 20 25 Q 40 45 60 25 Q 80 5 100 25 Q 120 45 140 25 Q 160 5 180 25;
@@ -716,7 +715,7 @@ def render_dna_helix_animation():
                              dur="4s" repeatCount="indefinite"/>
                 </path>
                 <path d="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50" 
-                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
+                      stroke="url(#autumnGradient)" stroke-width="2.5" fill="none">
                     <animate attributeName="d" 
                              values="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50;
                                      M 20 45 Q 40 25 60 45 Q 80 65 100 45 Q 120 25 140 45 Q 160 65 180 45;
