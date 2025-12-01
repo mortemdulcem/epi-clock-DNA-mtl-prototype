@@ -156,7 +156,7 @@ class BlockchainAuditLedger:
             previous_hash="0" * 64,
             block_hash="",
             signature=None,
-            metadata={'version': '1.0', 'platform': 'EpiClock v4.0'}
+            metadata={'version': '1.0', 'platform': 'EpiClock Prototype'}
         )
         genesis.block_hash = self._calculate_block_hash(genesis)
         genesis.signature = self._sign_block(genesis)

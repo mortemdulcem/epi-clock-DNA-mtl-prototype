@@ -122,7 +122,7 @@ class ReportGenerator:
         canvas.saveState()
         canvas.setFont('Helvetica-Bold', 9)
         canvas.setFillColor(colors.HexColor('#1a365d'))
-        canvas.drawString(inch, A4[1] - 0.5*inch, "EpiClock v4.0 - Epigenetik Yaş Analizi Raporu")
+        canvas.drawString(inch, A4[1] - 0.5*inch, "EpiClock Prototype - Epigenetik Yaş Analizi Raporu")
         canvas.setFont('Helvetica', 8)
         canvas.setFillColor(colors.gray)
         canvas.drawRightString(A4[0] - inch, A4[1] - 0.5*inch, 

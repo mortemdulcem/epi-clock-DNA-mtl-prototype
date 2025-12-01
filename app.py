@@ -1,57 +1,24 @@
 """
-================================================================================
-EpiClock v4.0 - Academic Research Platform
-DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
+EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
 DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu
-================================================================================
 
-COPYRIGHT (c) 2025 Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.
-Adli Tıp Doktoru / Forensic Medicine Doctor
-TÜM HAKLARI SAKLIDIR / ALL RIGHTS RESERVED
+A comprehensive PROTOTYPE platform for detecting and quantifying epigenetic age acceleration 
+in addiction using DNA methylation clocks.
 
-================================================================================
+IMPORTANT DISCLAIMER:
+This is a PROTOTYPE/DEMONSTRATION platform that uses SIMULATED DATA to demonstrate
+the analytical workflow and methodology. The epigenetic clock coefficients and reference
+database are simulated based on published research statistics, not the actual coefficients.
 
-YASAL UYARI / LEGAL NOTICE:
+For research or clinical use:
+- The actual Horvath/Hannum/PhenoAge/GrimAge/DunedinPACE coefficients are available in
+  their respective publications' supplementary materials and must be obtained through
+  proper academic channels.
+- The reference database is simulated; actual methylation profiles require data access
+  agreements from repositories like GEO.
 
-Bu yazılım telif hakkı yasaları ile korunmaktadır. İzinsiz kopyalama, 
-değiştirme, dağıtma veya ticari kullanım YASAKTIR. İhlal durumunda 
-Türkiye Cumhuriyeti ve uluslararası telif hakkı yasaları kapsamında 
-yasal işlem başlatılacaktır.
-
-This software is protected by copyright laws. Unauthorized copying, 
-modification, distribution, or commercial use is PROHIBITED. Legal 
-action will be taken under Turkish and international copyright laws 
-in case of violation.
-
-================================================================================
-
-ACADEMIC RESEARCH & DEMONSTRATION PLATFORM:
-This platform demonstrates epigenetic clock methodology and workflow using algorithm 
-structures from peer-reviewed publications.
-
-Algorithm Sources:
-- Horvath (2013): 353 CpG coefficient structure - Genome Biology 14:R115
-- Hannum (2013): 71 CpG coefficient structure - Molecular Cell 49(2):359-367
-- PhenoAge (2018): 513 CpG coefficient structure - Aging 10(4):573-591
-- DunedinPACE (2022): 173 CpG coefficient structure - eLife 11:e73420
-- GrimAge (2019): Protein surrogate model structure - Aging 11(2):303-327
-
-Demo Mode:
-- Missing CpG measurements are supplemented with statistical simulation
-- GrimAge uses simulated weights (full 1030 CpG coefficients require licensing)
-- For clinical use, obtain licensed coefficients from Clock Foundation
-
-Licensing:
-- DunedinPACE: Open source, free for academic and commercial use
-- Other clocks: May require licensing from Clock Foundation for clinical use
-
-================================================================================
-
-CITATION / ATIF:
-Bayır, N.D. (2025). EpiClock: DNA Methylation-Based Epigenetic 
-Age Acceleration Analysis Platform. Version 4.0. Academic Research Edition.
-
-================================================================================
+This platform demonstrates the complete analytical architecture and can integrate
+real coefficients and data when obtained through proper licensing channels.
 """
 
 import streamlit as st
@@ -238,7 +205,7 @@ from modules.academic_guide import (
 )
 
 st.set_page_config(
-    page_title="EpiClock - Epigenetik Yaş Analizi",
+    page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
     page_icon="🧬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -246,11 +213,11 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* Autumn Theme Base */
+    /* Dark Theme Base */
     .stApp {
-        background: linear-gradient(135deg, #FFF8F0 0%, #FAEBD7 50%, #FFE4C4 100%) !important;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f23 100%) !important;
     }
     
     .main .block-container {
@@ -258,14 +225,14 @@ st.markdown("""
         padding-top: 2rem;
     }
     
-    /* Sidebar Autumn Theme */
+    /* Sidebar Dark Theme */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #5D4037 0%, #3E2723 100%) !important;
-        border-right: 1px solid #CD853F;
+        background: linear-gradient(180deg, #0d0d0d 0%, #1a1a2e 100%) !important;
+        border-right: 1px solid #00ff4120;
     }
     
     [data-testid="stSidebar"] * {
-        color: #FFF8F0 !important;
+        color: #e0e0e0 !important;
     }
     
     /* DNA Helix Animation Container */
@@ -297,15 +264,16 @@ st.markdown("""
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #D2691E;
-        box-shadow: 0 0 20px #CD853F, 0 0 40px #DAA52080;
+        background: #00ff41;
+        box-shadow: 0 0 20px #00ff41, 0 0 40px #00ff4180, 0 0 60px #00ff4140;
+        animation: pulse 2s ease-in-out infinite;
     }
     
     .nucleotide-pair {
         position: absolute;
         height: 3px;
-        background: linear-gradient(90deg, #8B4513, #CD853F, #8B4513);
-        box-shadow: 0 0 10px #CD853F80;
+        background: linear-gradient(90deg, #00ff41, #00ff4180, #00ff41);
+        box-shadow: 0 0 10px #00ff4180;
         transform-origin: left center;
     }
     
@@ -330,150 +298,151 @@ st.markdown("""
     
     /* Main Header */
     .main-header {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Inter', sans-serif;
         font-size: 3rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #5D4037 0%, #8B4513 50%, #A0522D 100%);
+        background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #00ff41 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-align: center;
         margin-bottom: 0.5rem;
+        text-shadow: 0 0 30px #00ff4140;
         letter-spacing: 2px;
     }
     
     .sub-header {
-        font-family: 'Source Sans Pro', sans-serif;
+        font-family: 'Inter', sans-serif;
         font-size: 1.2rem;
-        color: #5D4037 !important;
+        color: #00ff4180 !important;
         text-align: center;
         margin-bottom: 2rem;
         letter-spacing: 1px;
     }
     
-    /* Metric Cards - Autumn Theme */
+    /* Metric Cards - Dark Theme */
     .metric-card {
-        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
-        border: 1px solid #DEB887;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid #00ff4130;
         padding: 1.5rem;
         border-radius: 15px;
-        color: #5D4037;
+        color: #00ff41;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(93, 64, 55, 0.1);
+        box-shadow: 0 0 20px #00ff4110, inset 0 0 20px #00ff4105;
         transition: all 0.3s ease;
     }
     
     .metric-card:hover {
-        border-color: #CD853F;
-        box-shadow: 0 6px 20px rgba(93, 64, 55, 0.15);
+        border-color: #00ff4160;
+        box-shadow: 0 0 30px #00ff4120, inset 0 0 30px #00ff4110;
         transform: translateY(-2px);
     }
     
     /* Section Headers */
     .section-header {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Inter', sans-serif;
         font-size: 1.5rem;
         font-weight: 600;
-        color: #5D4037 !important;
-        border-bottom: 2px solid #DEB887;
+        color: #00ff41 !important;
+        border-bottom: 2px solid #00ff4140;
         padding-bottom: 0.5rem;
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
     
-    /* Info Boxes - Autumn Theme */
+    /* Info Boxes - Dark Theme */
     .info-box {
-        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
-        border-left: 4px solid #8B4513;
+        background: linear-gradient(135deg, #0a192f 0%, #0d1b2a 100%);
+        border-left: 4px solid #00ff41;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #3E2723;
-        box-shadow: 0 2px 10px rgba(93, 64, 55, 0.1);
+        color: #c0c0c0;
+        box-shadow: 0 0 15px #00ff4110;
     }
     
     .warning-box {
-        background: linear-gradient(135deg, #FFF8DC 0%, #FAEBD7 100%);
-        border-left: 4px solid #DAA520;
+        background: linear-gradient(135deg, #1a1a0a 0%, #2d2d0a 100%);
+        border-left: 4px solid #ffd700;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #8B4513;
+        color: #ffd700;
     }
     
     .success-box {
-        background: linear-gradient(135deg, #F5DEB3 0%, #DEB887 100%);
-        border-left: 4px solid #8B4513;
+        background: linear-gradient(135deg, #0a1a0a 0%, #0d2d0d 100%);
+        border-left: 4px solid #00ff41;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #3E2723;
+        color: #00ff41;
     }
     
-    /* Tabs - Autumn Theme */
+    /* Tabs - Dark Theme */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
         background: transparent;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
-        border: 1px solid #DEB887;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid #00ff4130;
         border-radius: 10px 10px 0 0;
         padding: 12px 24px;
-        color: #5D4037 !important;
+        color: #00ff4180 !important;
         transition: all 0.3s ease;
     }
     
     .stTabs [data-baseweb="tab"]:hover {
-        background: linear-gradient(135deg, #FAEBD7 0%, #FFE4C4 100%);
-        border-color: #CD853F;
+        background: linear-gradient(135deg, #1a2a3e 0%, #1a3a4e 100%);
+        border-color: #00ff4160;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #DEB887 0%, #D2B48C 100%) !important;
-        border-color: #8B4513 !important;
-        color: #3E2723 !important;
-        box-shadow: 0 2px 10px rgba(139, 69, 19, 0.2);
+        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%) !important;
+        border-color: #00ff41 !important;
+        color: #00ff41 !important;
+        box-shadow: 0 0 15px #00ff4130;
     }
     
-    /* Buttons - Autumn Theme */
+    /* Buttons - Neon Green */
     .stButton > button {
-        background: linear-gradient(135deg, #DEB887 0%, #D2B48C 100%);
-        border: 1px solid #8B4513;
-        color: #3E2723;
+        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%);
+        border: 1px solid #00ff41;
+        color: #00ff41;
         border-radius: 8px;
         padding: 0.5rem 1.5rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(139, 69, 19, 0.15);
+        box-shadow: 0 0 10px #00ff4120;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%);
-        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.25);
+        background: linear-gradient(135deg, #00ff4140 0%, #00cc3340 100%);
+        box-shadow: 0 0 20px #00ff4140, 0 0 40px #00ff4120;
         transform: translateY(-1px);
     }
     
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-        color: #FFF8F0;
+        background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+        color: #0a0a0a;
         font-weight: 700;
     }
     
     /* Text Colors */
     .stMarkdown, .stText, p, span, label {
-        color: #3E2723 !important;
+        color: #c0c0c0 !important;
     }
     
     h1, h2, h3, h4, h5, h6 {
-        color: #5D4037 !important;
+        color: #00ff41 !important;
     }
     
     /* DataFrames */
     .stDataFrame {
-        background: #FFFAF5;
-        border: 1px solid #DEB887;
+        background: #0a0a0a;
+        border: 1px solid #00ff4130;
         border-radius: 10px;
     }
     
@@ -482,29 +451,28 @@ st.markdown("""
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
     .stTextArea > div > div > textarea {
-        background: #FFFAF5 !important;
-        border: 1px solid #DEB887 !important;
-        color: #3E2723 !important;
+        background: #1a1a2e !important;
+        border: 1px solid #00ff4140 !important;
+        color: #e0e0e0 !important;
         border-radius: 8px;
     }
     
     /* Metrics */
     [data-testid="stMetricValue"] {
-        color: #5D4037 !important;
-        font-family: 'Source Sans Pro', sans-serif;
-        font-weight: 700;
+        color: #00ff41 !important;
+        font-family: 'Roboto Mono', monospace;
     }
     
     [data-testid="stMetricDelta"] {
-        color: #8B4513 !important;
+        color: #00cc33 !important;
     }
     
     /* Expander */
     .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
-        border: 1px solid #DEB887;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid #00ff4130;
         border-radius: 10px;
-        color: #5D4037 !important;
+        color: #00ff41 !important;
     }
     
     /* Academic Footer */
@@ -513,22 +481,22 @@ st.markdown("""
         bottom: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(180deg, transparent 0%, #FFF8F0 20%, #FFF8F0 100%);
+        background: linear-gradient(180deg, transparent 0%, #0a0a0a 20%, #0a0a0a 100%);
         padding: 1.5rem 0 1rem 0;
         text-align: center;
         z-index: 1000;
     }
     
     .academic-credentials {
-        font-family: 'Source Sans Pro', sans-serif;
+        font-family: 'Inter', sans-serif;
         font-size: 0.85rem;
-        color: #5D4037;
+        color: #00ff4180;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin: 0;
         padding: 0.5rem;
-        border-top: 1px solid #DEB887;
-        background: linear-gradient(90deg, transparent 0%, #DEB88720 50%, transparent 100%);
+        border-top: 1px solid #00ff4130;
+        background: linear-gradient(90deg, transparent 0%, #00ff4110 50%, transparent 100%);
     }
     
     .credential-line {
@@ -537,12 +505,12 @@ st.markdown("""
     }
     
     .credential-title {
-        color: #5D4037;
+        color: #00ff41;
         font-weight: 600;
     }
     
     .credential-degree {
-        color: #8B4513;
+        color: #00cc33;
         font-weight: 500;
     }
     
@@ -553,16 +521,16 @@ st.markdown("""
     }
     
     ::-webkit-scrollbar-track {
-        background: #FFF8F0;
+        background: #0a0a0a;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: #DEB887;
+        background: #00ff4140;
         border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: #CD853F;
+        background: #00ff4160;
     }
     
     /* Radio buttons */
@@ -571,9 +539,9 @@ st.markdown("""
     }
     
     .stRadio > div > label {
-        color: #3E2723 !important;
-        background: #FFFAF5;
-        border: 1px solid #DEB887;
+        color: #c0c0c0 !important;
+        background: #1a1a2e;
+        border: 1px solid #00ff4120;
         border-radius: 8px;
         padding: 0.5rem 1rem;
         margin: 0.25rem 0;
@@ -581,79 +549,189 @@ st.markdown("""
     }
     
     .stRadio > div > label:hover {
-        border-color: #CD853F;
-        background: #FAEBD7;
+        border-color: #00ff4160;
+        background: #1a2a3e;
     }
     
     /* Slider */
     .stSlider > div > div > div {
-        background: #CD853F !important;
+        background: #00ff41 !important;
     }
     
     /* Multiselect */
     .stMultiSelect > div > div {
-        background: #FFFAF5 !important;
-        border-color: #DEB887 !important;
+        background: #1a1a2e !important;
+        border-color: #00ff4140 !important;
     }
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #8B4513 0%, #CD853F 100%);
+        background: linear-gradient(90deg, #00ff41 0%, #00cc33 100%);
     }
     
     /* Code blocks */
     .stCodeBlock {
-        background: #FFFAF5 !important;
-        border: 1px solid #DEB887;
+        background: #0a0a0a !important;
+        border: 1px solid #00ff4130;
     }
     
     code {
-        color: #5D4037 !important;
-        background: #FFF8F0 !important;
+        color: #00ff41 !important;
+        background: #1a1a2e !important;
     }
     
     /* Alerts */
     .stAlert {
-        background: #FFFAF5;
-        border: 1px solid #DEB887;
+        background: #1a1a2e;
+        border: 1px solid #00ff4140;
         border-radius: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
 
 def render_dna_helix_animation():
-    """Render simple DNA helix banner without complex SVG"""
-    pass
+    """Render animated DNA helix with phosphorescent green color"""
+    st.markdown('''
+    <div class="dna-container">
+        <svg class="dna-helix-svg" viewBox="0 0 200 150" width="350" height="200">
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <linearGradient id="phosphorGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#00ff41;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#00cc33;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#00ff41;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <!-- DNA Strand 1 -->
+            <g filter="url(#glow)">
+                <path d="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20" 
+                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
+                    <animate attributeName="d" 
+                             values="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20;
+                                     M 30 25 Q 50 5 70 25 Q 90 45 110 25 Q 130 5 150 25 Q 170 45 190 25;
+                                     M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20"
+                             dur="3s" repeatCount="indefinite"/>
+                </path>
+            </g>
+            
+            <!-- DNA Strand 2 -->
+            <g filter="url(#glow)">
+                <path d="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50" 
+                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
+                    <animate attributeName="d" 
+                             values="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50;
+                                     M 30 45 Q 50 65 70 45 Q 90 25 110 45 Q 130 65 150 45 Q 170 25 190 45;
+                                     M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50"
+                             dur="3s" repeatCount="indefinite"/>
+                </path>
+            </g>
+            
+            <!-- Connecting Base Pairs with Animation -->
+            <g filter="url(#glow)" stroke="#00ff41" stroke-width="2" opacity="0.7">
+                <line x1="40" y1="35" x2="40" y2="35">
+                    <animate attributeName="y1" values="25;30;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;40;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="60" y1="25" x2="60" y2="45">
+                    <animate attributeName="y1" values="30;20;30" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="40;50;40" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="80" y1="15" x2="80" y2="55">
+                    <animate attributeName="y1" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="25" x2="100" y2="45">
+                    <animate attributeName="y1" values="25;15;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;55;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="120" y1="35" x2="120" y2="35">
+                    <animate attributeName="y1" values="35;25;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="35;45;35" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="140" y1="25" x2="140" y2="45">
+                    <animate attributeName="y1" values="25;35;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;35;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="160" y1="15" x2="160" y2="55">
+                    <animate attributeName="y1" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <line x1="180" y1="25" x2="180" y2="45">
+                    <animate attributeName="y1" values="25;15;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="y2" values="45;55;45" dur="3s" repeatCount="indefinite"/>
+                </line>
+            </g>
+            
+            <!-- Nucleotide Dots -->
+            <g filter="url(#glow)">
+                <circle cx="40" cy="25" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="25;30;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="40" cy="45" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="45;40;45" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="80" cy="15" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="80" cy="55" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="120" cy="35" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="35;25;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="120" cy="35" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="35;45;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="160" cy="15" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="160" cy="55" r="4" fill="#00ff41">
+                    <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+            </g>
+            
+            <!-- Second DNA Helix Layer (offset) -->
+            <g transform="translate(0, 70)" filter="url(#glow)" opacity="0.8">
+                <path d="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20" 
+                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
+                    <animate attributeName="d" 
+                             values="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20;
+                                     M 20 25 Q 40 45 60 25 Q 80 5 100 25 Q 120 45 140 25 Q 160 5 180 25;
+                                     M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20"
+                             dur="4s" repeatCount="indefinite"/>
+                </path>
+                <path d="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50" 
+                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
+                    <animate attributeName="d" 
+                             values="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50;
+                                     M 20 45 Q 40 25 60 45 Q 80 65 100 45 Q 120 25 140 45 Q 160 65 180 45;
+                                     M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50"
+                             dur="4s" repeatCount="indefinite"/>
+                </path>
+            </g>
+        </svg>
+    </div>
+    ''', unsafe_allow_html=True)
 
 def render_professional_footer():
     """Render professional academic footer with timestamp"""
-    from datetime import datetime
-    import pytz
-    
-    turkey_tz = pytz.timezone('Europe/Istanbul')
-    now = datetime.now(turkey_tz)
-    timestamp = now.strftime("%d.%m.%Y %H:%M:%S")
-    
-    st.markdown("---")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("**EpiClock v4.0**")
-        st.markdown("Akademik Arastirma Platformu")
-    
-    with col2:
-        st.markdown("**Arastirmaci:**")
-        st.markdown("Dr. Nurcan Denli Bayir")
-        st.caption("Adli Tip Doktoru")
-    
-    with col3:
-        st.markdown("**Son Guncelleme:**")
-        st.markdown(f"{timestamp}")
-        st.caption("Turkiye Saati")
-    
-    st.markdown("---")
-    st.caption("2025 Dr. Nurcan Denli Bayir - Tum Haklari Saklidir")
+    from modules.professional_theme import render_academic_footer as theme_footer
+    theme_footer()
 
 @st.cache_resource
 def init_components():
@@ -683,7 +761,7 @@ def init_components():
     chain_of_custody = ForensicChainOfCustody()
     role_ui = RoleBasedUI()
     
-    X_train, y_train = generate_synthetic_training_data(n_samples=100, n_cpgs=50)
+    X_train, y_train = generate_synthetic_training_data(n_samples=500, n_cpgs=200)
     ml_predictor.fit(X_train, y_train)
     
     return {
@@ -714,52 +792,51 @@ def init_components():
     }
 
 def main():
-    inject_professional_css()
     components = init_components()
     
     render_dna_helix_animation()
-    st.markdown('<p class="main-header">EpiClock</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">DNA Metilasyon Tabanli Epigenetik Yas Ivmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">🧬 EpiClock Prototype</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
     
     with st.sidebar:
-        st.markdown("### EpiClock v4.0")
-        st.markdown("### Analiz Modulleri")
+        st.markdown("### 🧬 EpiClock")
+        st.markdown("### 📊 Analiz Modülleri")
         
         analysis_mode = st.radio(
-            "Analiz Turu Secin:",
-            ["Ana Sayfa",
-             "Kullanim Kilavuzu",
-             "Veri Disa Aktar",
-             "DNA Verisi Yukle",
-             "CpG Veritabani",
-             "Varyant Analizi",
-             "Farmakogenomik",
-             "Poligenik Risk Skoru",
-             "Dunya Veritabanlari",
-             "Bireysel Analiz",
-             "Toplu Analiz",
-             "Referans Veritabani",
-             "Diferansiyel Metilasyon",
-             "Mediyasyon Analizi",
-             "Model Performansi",
-             "Longitudinal Takip",
-             "GSEA Pathway Analizi",
-             "Klinik Karar Destek",
-             "Multi-Omik Entegrasyon",
-             "Postmortem Validasyon",
-             "Moderasyon Analizi",
-             "Tersine Cevrilebilirlik",
-             "Klinik Kovaryatlar",
-             "Doku-Spesifik Saatler",
-             "Blockchain Denetim",
-             "Yayin Referanslari",
-             "Veritabani Yonetimi",
-             "Rapor Olustur"],
+            "Analiz Türü Seçin:",
+            ["🏠 Ana Sayfa",
+             "📚 Kullanım Kılavuzu",
+             "📥 Veri Dışa Aktar",
+             "📤 DNA Verisi Yükle",
+             "🧬 CpG Veritabanı",
+             "🔬 Varyant Analizi",
+             "💊 Farmakogenomik",
+             "📊 Poligenik Risk Skoru",
+             "🌍 Dünya Veritabanları",
+             "👤 Bireysel Analiz",
+             "📁 Toplu Analiz",
+             "📈 Referans Veritabanı",
+             "🔬 Diferansiyel Metilasyon",
+             "🧪 Mediyasyon Analizi",
+             "📊 Model Performansı",
+             "📉 Longitudinal Takip",
+             "🧬 GSEA Pathway Analizi",
+             "💊 Klinik Karar Destek",
+             "🔗 Multi-Omik Entegrasyon",
+             "🧠 Postmortem Validasyon",
+             "⚖️ Moderasyon Analizi",
+             "🔄 Tersine Çevrilebilirlik",
+             "📊 Klinik Kovaryatlar",
+             "🫀 Doku-Spesifik Saatler",
+             "🔐 Blockchain Denetim",
+             "📚 Yayın Referansları",
+             "🗄️ Veritabanı Yönetimi",
+             "📋 Rapor Oluştur"],
             index=0
         )
         
         st.markdown("---")
-        st.markdown("### Ayarlar")
+        st.markdown("### ⚙️ Ayarlar")
         
         selected_clocks = st.multiselect(
             "Epigenetik Saatler:",
@@ -776,14 +853,13 @@ def main():
         )
         
         st.markdown("---")
-        st.markdown("### Hakkinda")
+        st.markdown("### 📚 Hakkında")
         st.markdown("""
-        **EpiClock v4.0**
-        *Akademik Arastirma & Demo*
+        **EpiClock Prototype v1.0**
         
-        Epigenetik saat metodolojisini 
-        gosteren DNA metilasyon 
-        analiz platformu.
+        Bu platform, DNA metilasyon verilerini 
+        kullanarak epigenetik yaş ivmelenmesini 
+        tespit eder.
         
         **Desteklenen Saatler:**
         - Horvath (353 CpG)
@@ -792,680 +868,357 @@ def main():
         - GrimAge (1030 CpG)
         - DunedinPACE (173 CpG)
         
-        **Referans Veritabani:**
+        **Referans Veritabanı:**
         10,542 DNA metilasyon profili
         """)
     
-    if "Ana Sayfa" in analysis_mode:
+    if "🏠 Ana Sayfa" in analysis_mode:
         render_home_page(components)
-    elif "Kullanim Kilavuzu" in analysis_mode:
+    elif "📚 Kullanım Kılavuzu" in analysis_mode:
         render_academic_guide()
-    elif "Veri Disa Aktar" in analysis_mode:
+    elif "📥 Veri Dışa Aktar" in analysis_mode:
         render_data_export_page(components)
-    elif "DNA Verisi Yukle" in analysis_mode:
+    elif "📤 DNA Verisi Yükle" in analysis_mode:
         render_dna_upload(components, selected_clocks)
-    elif "CpG Veritabani" in analysis_mode:
+    elif "🧬 CpG Veritabanı" in analysis_mode:
         render_cpg_database(components)
-    elif "Varyant Analizi" in analysis_mode:
+    elif "🔬 Varyant Analizi" in analysis_mode:
         render_variant_analysis(components)
-    elif "Farmakogenomik" in analysis_mode:
+    elif "💊 Farmakogenomik" in analysis_mode:
         render_pharmacogenomics(components)
-    elif "Poligenik Risk Skoru" in analysis_mode:
+    elif "📊 Poligenik Risk Skoru" in analysis_mode:
         render_polygenic_risk(components)
-    elif "Dunya Veritabanlari" in analysis_mode:
+    elif "🌍 Dünya Veritabanları" in analysis_mode:
         render_world_databases(components)
-    elif "Bireysel Analiz" in analysis_mode:
+    elif "👤 Bireysel Analiz" in analysis_mode:
         render_individual_analysis(components, selected_clocks)
-    elif "Toplu Analiz" in analysis_mode:
+    elif "📁 Toplu Analiz" in analysis_mode:
         render_batch_analysis(components, selected_clocks)
-    elif "Referans Veritabani" in analysis_mode:
+    elif "📈 Referans Veritabanı" in analysis_mode:
         render_reference_database(components)
-    elif "Diferansiyel Metilasyon" in analysis_mode:
+    elif "🔬 Diferansiyel Metilasyon" in analysis_mode:
         render_differential_methylation(components, significance_level)
-    elif "Mediyasyon Analizi" in analysis_mode:
+    elif "🧪 Mediyasyon Analizi" in analysis_mode:
         render_mediation_analysis(components)
-    elif "Model Performansi" in analysis_mode:
+    elif "📊 Model Performansı" in analysis_mode:
         render_model_performance(components)
-    elif "Longitudinal Takip" in analysis_mode:
+    elif "📉 Longitudinal Takip" in analysis_mode:
         render_longitudinal_analysis(components)
-    elif "GSEA Pathway Analizi" in analysis_mode:
+    elif "🧬 GSEA Pathway Analizi" in analysis_mode:
         render_gsea_analysis(components)
-    elif "Klinik Karar Destek" in analysis_mode:
+    elif "💊 Klinik Karar Destek" in analysis_mode:
         render_clinical_decision_support(components)
-    elif "Multi-Omik Entegrasyon" in analysis_mode:
+    elif "🔗 Multi-Omik Entegrasyon" in analysis_mode:
         render_multiomics_analysis(components)
-    elif "Postmortem Validasyon" in analysis_mode:
+    elif "🧠 Postmortem Validasyon" in analysis_mode:
         render_postmortem_validation(components)
-    elif "Moderasyon Analizi" in analysis_mode:
+    elif "⚖️ Moderasyon Analizi" in analysis_mode:
         render_moderation_analysis(components)
-    elif "Tersine Cevrilebilirlik" in analysis_mode:
+    elif "🔄 Tersine Çevrilebilirlik" in analysis_mode:
         render_reversibility_analysis(components)
-    elif "Klinik Kovaryatlar" in analysis_mode:
+    elif "📊 Klinik Kovaryatlar" in analysis_mode:
         render_clinical_covariates(components)
-    elif "Doku-Spesifik Saatler" in analysis_mode:
+    elif "🫀 Doku-Spesifik Saatler" in analysis_mode:
         render_tissue_specific_clocks(components)
-    elif "Blockchain Denetim" in analysis_mode:
+    elif "🔐 Blockchain Denetim" in analysis_mode:
         render_blockchain_audit(components)
-    elif "Yayin Referanslari" in analysis_mode:
+    elif "📚 Yayın Referansları" in analysis_mode:
         render_publication_references()
-    elif "Veritabani Yonetimi" in analysis_mode:
+    elif "🗄️ Veritabanı Yönetimi" in analysis_mode:
         render_database_management(components)
-    elif "Rapor Olustur" in analysis_mode:
+    elif "📋 Rapor Oluştur" in analysis_mode:
         render_report_generator(components)
     
     render_professional_footer()
 
 
 def render_dna_upload(components, selected_clocks):
-    """Comprehensive Data Upload Interface for DNA, Variants, Genes, and CpG"""
+    """DNA Methylation Data Upload and Analysis Interface"""
     
-    st.markdown("## Genomik Veri Yukleme Merkezi")
+    st.markdown("## 📤 DNA Metilasyon Verisi Yükleme")
     st.markdown("""
-    **DNA Metilasyon**, **Varyant (VCF)**, **Gen Listesi** ve **CpG Verilerinizi** yukleyin.
-    Kapsamli epigenetik yas analizi icin tum veri turlerini destekliyoruz.
+    Illumina EPIC (850K), 450K veya 27K array verilerinizi yükleyin.
+    Desteklenen formatlar: CSV, TXT, Excel, GEO Series Matrix
     """)
     
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); 
-                padding: 20px; border-radius: 12px; margin-bottom: 20px;
-                border-left: 4px solid #DAA520;">
-        <h4 style="color: #FFF8F0; margin: 0;">Desteklenen Veri Turleri</h4>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
-            <div style="color: #FFF8F0;">
-                <b style="color: #DAA520;">DNA Metilasyon:</b><br>
-                Illumina EPIC/450K/27K beta degerleri
-            </div>
-            <div style="color: #FFF8F0;">
-                <b style="color: #DAA520;">VCF Varyant:</b><br>
-                SNP, indel, yapisal varyantlar
-            </div>
-            <div style="color: #FFF8F0;">
-                <b style="color: #DAA520;">Gen Listesi:</b><br>
-                HGNC gen sembolleri, Ensembl ID
-            </div>
-            <div style="color: #FFF8F0;">
-                <b style="color: #DAA520;">CpG Verisi:</b><br>
-                CpG site listesi, custom panel
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    with st.expander("📖 Kullanım Kılavuzu", expanded=False):
+        st.markdown("""
+        ### CSV Dosya Formatı
+        
+        **Gerekli Format:**
+        - İlk sütun: CpG site isimleri (örn: cg00000029, cg00000165)
+        - Diğer sütunlar: Örnek beta değerleri (0-1 arası)
+        - İlk satır: Örnek ID'leri
+        
+        **Örnek CSV yapısı:**
+        ```
+        CpG_ID,Sample_1,Sample_2,Sample_3
+        cg00000029,0.234,0.456,0.321
+        cg00000165,0.567,0.234,0.890
+        cg00000236,0.123,0.678,0.456
+        ...
+        ```
+        
+        ### Adım Adım Kullanım
+        
+        1. **Dosya Yükle** sekmesinden CSV dosyanızı seçin
+        2. "Veriyi İşle ve Analiz Et" butonuna tıklayın
+        3. **Analiz** sekmesine geçin
+        4. "Epigenetik Yaş Hesapla" butonuna tıklayın
+        5. Sonuçları CSV olarak indirebilirsiniz
+        
+        ### Desteklenen Saatler
+        
+        | Saat | CpG Sayısı | Açıklama |
+        |------|------------|----------|
+        | Horvath | 353 | Multi-doku, pan-tissue clock |
+        | Hannum | 71 | Kan bazlı, yaşlanma belirteci |
+        | PhenoAge | 513 | Fenotipik yaş, mortalite tahmini |
+        | DunedinPACE | 173 | Yaşlanma hızı ölçümü |
+        
+        ### Veri Kaynakları
+        
+        - **Laboratuvar Çıktısı:** Illumina GenomeStudio veya minfi/sesame çıktısı
+        - **GEO Veritabanı:** NCBI GEO'dan indirilen series matrix dosyaları
+        - **Araştırma Verileri:** Yayınlanmış çalışmalardaki beta değer matrisleri
+        
+        ### Kalite Gereksinimleri
+        
+        - Beta değerleri 0-1 arasında olmalı
+        - En az %80 CpG kapsamı önerilir
+        - Eksik değerler otomatik olarak impute edilir
+        """)
+        
+        st.info("💡 **İpucu:** Demo veri oluşturarak önce sistemin nasıl çalıştığını test edebilirsiniz.")
     
-    main_tab1, main_tab2, main_tab3, main_tab4, main_tab5 = st.tabs([
-        "DNA Metilasyon", 
-        "VCF Varyant", 
-        "Gen Listesi", 
-        "CpG Verisi",
-        "Yuklu Veriler"
-    ])
+    tab1, tab2, tab3 = st.tabs(["📁 Dosya Yükle", "🧪 Demo Veri", "📊 Analiz"])
     
-    with main_tab1:
-        st.markdown("### DNA Metilasyon Verisi Yukle")
-        st.markdown("Illumina EPIC (850K), 450K veya 27K array verilerinizi yükleyin.")
+    with tab1:
+        st.markdown("### Metilasyon Verisi Yükle")
         
-        with st.expander("📖 Format Kılavuzu", expanded=False):
-            st.markdown("""
-            **CSV/Excel Formatı:**
-            ```
-            CpG_ID,Sample_1,Sample_2,Sample_3
-            cg00000029,0.234,0.456,0.321
-            cg00000165,0.567,0.234,0.890
-            ```
-            - Beta değerleri 0-1 arası olmalı
-            - En az %80 CpG kapsamı önerilir
-            """)
+        col1, col2 = st.columns(2)
         
-        tab1, tab2, tab3 = st.tabs(["📁 Dosya Yükle", "🧪 Demo Veri", "📊 Analiz"])
-        
-        with tab1:
-            st.markdown("### Metilasyon Verisi Yükle")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                uploaded_file = st.file_uploader(
-                    "Beta Değerleri Dosyası",
-                    type=['csv', 'txt', 'xlsx', 'xls'],
-                    help="CpG satır, örnek sütun formatında beta değerleri (0-1 arası)",
-                    key="methylation_upload"
-                )
-            
-            with col2:
-                phenotype_file = st.file_uploader(
-                    "Fenotip/Klinik Veri (Opsiyonel)",
-                    type=['csv', 'xlsx'],
-                    help="Yaş, cinsiyet, madde kullanımı bilgileri",
-                    key="phenotype_upload"
-                )
-            
-            data_format = st.selectbox(
-                "Veri Formatı:",
-                ["Otomatik Algıla", "CSV (Virgülle Ayrılmış)", "TSV (Tab ile Ayrılmış)", 
-                 "Excel", "GEO Series Matrix"],
-                index=0,
-                key="methylation_format"
+        with col1:
+            uploaded_file = st.file_uploader(
+                "Beta Değerleri Dosyası",
+                type=['csv', 'txt', 'xlsx', 'xls'],
+                help="CpG satır, örnek sütun formatında beta değerleri (0-1 arası)"
             )
-            
-            transpose_data = st.checkbox("Veriyi Transpoze Et (CpG'ler sütunlarda ise)", value=False, key="methylation_transpose")
-            
-            if uploaded_file is not None:
-                try:
-                    reader = DNAMethylationReader()
-                    
-                    if st.button("🔬 Veriyi İşle ve Analiz Et", type="primary", key="process_methylation"):
-                        with st.spinner("Veri okunuyor ve işleniyor..."):
-                            dataset = reader.read_from_streamlit_upload(uploaded_file)
-                            
-                            st.session_state['loaded_dataset'] = dataset
-                            
-                            st.success(f"✅ Veri başarıyla yüklendi!")
-                            
-                            col1, col2, col3, col4 = st.columns(4)
-                            with col1:
-                                st.metric("Toplam CpG", f"{dataset.quality_metrics['total_cpgs']:,}")
-                            with col2:
-                                st.metric("Örnek Sayısı", dataset.quality_metrics['total_samples'])
-                            with col3:
-                                st.metric("Array Tipi", dataset.array_type)
-                            with col4:
-                                st.metric("Kalite Skoru", f"{(1-dataset.quality_metrics['missing_rate'])*100:.1f}%")
-                            
-                            st.markdown("### 🕐 Saat Kapsama Oranları")
-                            
-                            coverage_data = []
-                            for clock, coverage in dataset.quality_metrics['clock_coverage'].items():
-                                status = "✅" if coverage >= 80 else "⚠️" if coverage >= 50 else "❌"
-                                coverage_data.append({
-                                    "Saat": clock.upper(),
-                                    "Kapsam": f"{coverage:.1f}%",
-                                    "Durum": status
-                                })
-                            
-                            st.dataframe(pd.DataFrame(coverage_data), use_container_width=True)
-                            
-                            if phenotype_file is not None:
-                                phenotype_df = pd.read_csv(phenotype_file) if phenotype_file.name.endswith('.csv') else pd.read_excel(phenotype_file)
-                                st.session_state['phenotype_data'] = phenotype_df
-                                st.success("✅ Fenotip verisi yüklendi!")
-                                st.dataframe(phenotype_df.head(), use_container_width=True)
-                            
-                except Exception as e:
-                    st.error(f"❌ Veri okuma hatası: {str(e)}")
         
-        with tab2:
-            st.markdown("### 🧪 Demo Veri Oluştur")
-            st.markdown("Test amaçlı simüle edilmiş DNA metilasyon verisi oluşturun.")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                n_samples = st.slider("Örnek Sayısı", 5, 50, 10, key="demo_samples")
-                n_cpgs = st.slider("CpG Sayısı", 500, 10000, 2000, key="demo_cpgs")
-            
-            with col2:
-                include_clock_cpgs = st.checkbox("Saat CpG'lerini Dahil Et", value=True, key="demo_clock_cpgs")
-            
-            if st.button("🧬 Demo Veri Oluştur", type="primary", key="create_demo"):
-                with st.spinner("Demo veri oluşturuluyor..."):
-                    demo_dataset = create_demo_methylation_data(
-                        n_samples=n_samples,
-                        n_cpgs=n_cpgs,
-                        include_clock_cpgs=include_clock_cpgs
-                    )
-                    st.session_state['loaded_dataset'] = demo_dataset
-                    
-                    st.success("✅ Demo veri oluşturuldu!")
-                    
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("CpG Sayısı", f"{len(demo_dataset.beta_matrix):,}")
-                    with col2:
-                        st.metric("Örnek Sayısı", len(demo_dataset.samples))
-                    with col3:
-                        st.metric("Kaynak", "Simüle")
-                    
-                    st.markdown("### Örnek Bilgileri")
-                    st.dataframe(demo_dataset.sample_info, use_container_width=True)
+        with col2:
+            phenotype_file = st.file_uploader(
+                "Fenotip/Klinik Veri (Opsiyonel)",
+                type=['csv', 'xlsx'],
+                help="Yaş, cinsiyet, madde kullanımı bilgileri"
+            )
         
-        with tab3:
-            st.markdown("### 📊 Yüklü Veri Analizi")
-            
-            if 'loaded_dataset' in st.session_state:
-                dataset = st.session_state['loaded_dataset']
-                
-                st.markdown(f"**Yüklü Veri:** {dataset.source} - {dataset.quality_metrics['total_samples']} örnek")
-                
-                analysis_type = st.selectbox(
-                    "Analiz Türü:",
-                    ["Epigenetik Yaş Hesaplama", "Kalite Kontrol", "Beta Dağılımı", "CpG Korelasyonu"],
-                    key="methylation_analysis_type"
-                )
-                
-                if analysis_type == "Epigenetik Yaş Hesaplama":
-                    st.markdown("""
-                    **Gerçek Katsayılarla Hesaplama:**
-                    Bu analiz, yayınlanmış epigenetik saat katsayılarını kullanarak 
-                    yüklediğiniz DNA metilasyon verisinden epigenetik yaş hesaplar.
-                    """)
-                    
-                    if st.button("🧬 Epigenetik Yaş Hesapla", type="primary", key="calc_epi_age"):
-                        with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
-                            
-                            results_df = calculate_epigenetic_age(dataset)
-                            
-                            display_df = results_df.rename(columns={
-                                'sample_id': 'Örnek ID',
-                                'chronological_age': 'Kronolojik Yaş',
-                                'horvath_age': 'Horvath Yaş',
-                                'hannum_age': 'Hannum Yaş',
-                                'phenoage': 'PhenoAge',
-                                'dunedin_pace': 'DunedinPACE',
-                                'horvath_coverage': 'Horvath %',
-                                'hannum_coverage': 'Hannum %',
-                                'phenoage_coverage': 'PhenoAge %',
-                                'dunedin_coverage': 'DunedinPACE %'
-                            })
-                            
-                            for sample in dataset.samples:
-                                idx = display_df[display_df['Örnek ID'] == sample.sample_id].index
-                                if len(idx) > 0:
-                                    if sample.sex:
-                                        display_df.loc[idx, 'Cinsiyet'] = sample.sex
-                                    if sample.substance_type:
-                                        display_df.loc[idx, 'Madde'] = sample.substance_type
-                            
-                            if 'Kronolojik Yaş' in display_df.columns:
-                                for clock in ['Horvath Yaş', 'Hannum Yaş', 'PhenoAge']:
-                                    if clock in display_df.columns:
-                                        display_df[f'{clock.split()[0]} EAA'] = (
-                                            display_df[clock] - display_df['Kronolojik Yaş'].fillna(0)
-                                        ).round(2)
-                            
-                            st.session_state['analysis_results'] = display_df
-                            
-                            st.success("✅ Gerçek katsayılarla analiz tamamlandı!")
-                            
-                            st.markdown("### 📊 Sonuçlar")
-                            st.dataframe(display_df, use_container_width=True)
-                            
-                            st.markdown("### 📈 CpG Kapsama Oranları")
-                            coverage_cols = [c for c in display_df.columns if '%' in c]
-                            if coverage_cols:
-                                avg_coverage = display_df[coverage_cols].mean()
-                                
-                                col1, col2, col3, col4 = st.columns(4)
-                                with col1:
-                                    st.metric("Horvath Kapsam", f"{avg_coverage.get('Horvath %', 0):.1f}%")
-                                with col2:
-                                    st.metric("Hannum Kapsam", f"{avg_coverage.get('Hannum %', 0):.1f}%")
-                                with col3:
-                                    st.metric("PhenoAge Kapsam", f"{avg_coverage.get('PhenoAge %', 0):.1f}%")
-                                with col4:
-                                    st.metric("DunedinPACE Kapsam", f"{avg_coverage.get('DunedinPACE %', 0):.1f}%")
-                            
-                            csv = display_df.to_csv(index=False)
-                            st.download_button(
-                                "📥 Sonuçları İndir (CSV)",
-                                csv,
-                                "epiclock_results.csv",
-                                "text/csv",
-                                key="download_methylation_results"
-                            )
-                
-                elif analysis_type == "Kalite Kontrol":
-                    st.markdown("#### Kalite Metrikleri")
-                    
-                    metrics = dataset.quality_metrics
-                    
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Eksik Veri Oranı", f"{metrics['missing_rate']*100:.2f}%")
-                    with col2:
-                        st.metric("Ortalama Beta", f"{metrics['mean_beta']:.3f}")
-                    with col3:
-                        st.metric("Beta Std. Sapma", f"{metrics['std_beta']:.3f}")
-                
-                elif analysis_type == "Beta Dağılımı":
-                    st.markdown("#### Beta Değer Dağılımı")
-                    
-                    import plotly.express as px
-                    
-                    sample_data = dataset.beta_matrix.iloc[:, 0].dropna()
-                    fig = px.histogram(sample_data, nbins=50, title="İlk Örnek Beta Dağılımı")
-                    fig.update_layout(xaxis_title="Beta Değeri", yaxis_title="Frekans")
-                    st.plotly_chart(fig, use_container_width=True)
-                
-                elif analysis_type == "CpG Korelasyonu":
-                    st.markdown("#### Örnekler Arası Korelasyon")
-                    
-                    if len(dataset.beta_matrix.columns) > 1:
-                        corr_matrix = dataset.beta_matrix.corr()
-                        
-                        import plotly.express as px
-                        fig = px.imshow(corr_matrix, title="Örnek Korelasyon Matrisi")
-                        st.plotly_chart(fig, use_container_width=True)
-                    else:
-                        st.info("Korelasyon için en az 2 örnek gerekli.")
-            else:
-                st.info("⬆️ Lütfen önce 'Dosya Yükle' veya 'Demo Veri' sekmesinden veri yükleyin.")
-    
-    with main_tab2:
-        st.markdown("### 🧬 VCF Varyant Dosyası Yükle")
-        st.markdown("Genetik varyant verilerinizi VCF formatında yükleyin.")
-        
-        with st.expander("📖 VCF Format Kılavuzu", expanded=False):
-            st.markdown("""
-            **VCF (Variant Call Format) Dosyası:**
-            ```
-            ##fileformat=VCFv4.2
-            #CHROM  POS     ID          REF ALT QUAL FILTER INFO
-            chr1    12345   rs123456    A   G   .    PASS   .
-            chr2    67890   rs789012    C   T   .    PASS   .
-            ```
-            - Desteklenen formatlar: .vcf, .vcf.gz
-            - SNP, indel ve yapısal varyantlar desteklenir
-            """)
-        
-        uploaded_vcf = st.file_uploader(
-            "VCF Dosyası Yükle",
-            type=['vcf', 'gz'],
-            help="Genetik varyant verilerini içeren VCF dosyası",
-            key="vcf_upload"
+        data_format = st.selectbox(
+            "Veri Formatı:",
+            ["Otomatik Algıla", "CSV (Virgülle Ayrılmış)", "TSV (Tab ile Ayrılmış)", 
+             "Excel", "GEO Series Matrix"],
+            index=0
         )
         
-        if uploaded_vcf is not None:
-            if st.button("🧬 VCF Dosyasını İşle", type="primary", key="process_vcf"):
-                with st.spinner("VCF dosyası işleniyor..."):
-                    try:
-                        import io
-                        content = uploaded_vcf.read().decode('utf-8')
-                        lines = content.strip().split('\n')
-                        
-                        header_lines = [l for l in lines if l.startswith('##')]
-                        data_lines = [l for l in lines if not l.startswith('##') and l.strip()]
-                        
-                        if data_lines:
-                            header = data_lines[0].split('\t')
-                            variants = []
-                            for line in data_lines[1:]:
-                                parts = line.split('\t')
-                                if len(parts) >= 5:
-                                    variants.append({
-                                        'CHROM': parts[0],
-                                        'POS': parts[1],
-                                        'ID': parts[2],
-                                        'REF': parts[3],
-                                        'ALT': parts[4]
-                                    })
-                            
-                            vcf_df = pd.DataFrame(variants)
-                            st.session_state['uploaded_vcf'] = vcf_df
-                            
-                            st.success(f"✅ VCF dosyası yüklendi! {len(vcf_df):,} varyant bulundu.")
-                            
-                            col1, col2, col3 = st.columns(3)
-                            with col1:
-                                st.metric("Toplam Varyant", f"{len(vcf_df):,}")
-                            with col2:
-                                st.metric("Kromozom Sayısı", vcf_df['CHROM'].nunique())
-                            with col3:
-                                rs_count = vcf_df['ID'].str.startswith('rs').sum()
-                                st.metric("dbSNP ID (rs)", f"{rs_count:,}")
-                            
-                            st.markdown("### Örnek Varyantlar")
-                            st.dataframe(vcf_df.head(10), use_container_width=True)
-                    except Exception as e:
-                        st.error(f"❌ VCF okuma hatası: {str(e)}")
+        transpose_data = st.checkbox("Veriyi Transpoze Et (CpG'ler sütunlarda ise)", value=False)
         
-        if 'uploaded_vcf' in st.session_state:
-            st.markdown("---")
-            st.markdown("### 📊 Yüklü VCF Analizi")
-            vcf_df = st.session_state['uploaded_vcf']
-            
-            chrom_counts = vcf_df['CHROM'].value_counts()
-            import plotly.express as px
-            fig = px.bar(x=chrom_counts.index, y=chrom_counts.values, 
-                        title="Kromozom Başına Varyant Sayısı",
-                        labels={'x': 'Kromozom', 'y': 'Varyant Sayısı'})
-            st.plotly_chart(fig, use_container_width=True)
+        if uploaded_file is not None:
+            try:
+                reader = DNAMethylationReader()
+                
+                if st.button("🔬 Veriyi İşle ve Analiz Et", type="primary"):
+                    with st.spinner("Veri okunuyor ve işleniyor..."):
+                        dataset = reader.read_from_streamlit_upload(uploaded_file)
+                        
+                        st.session_state['loaded_dataset'] = dataset
+                        
+                        st.success(f"✅ Veri başarıyla yüklendi!")
+                        
+                        col1, col2, col3, col4 = st.columns(4)
+                        with col1:
+                            st.metric("Toplam CpG", f"{dataset.quality_metrics['total_cpgs']:,}")
+                        with col2:
+                            st.metric("Örnek Sayısı", dataset.quality_metrics['total_samples'])
+                        with col3:
+                            st.metric("Array Tipi", dataset.array_type)
+                        with col4:
+                            st.metric("Kalite Skoru", f"{(1-dataset.quality_metrics['missing_rate'])*100:.1f}%")
+                        
+                        st.markdown("### 🕐 Saat Kapsama Oranları")
+                        
+                        coverage_data = []
+                        for clock, coverage in dataset.quality_metrics['clock_coverage'].items():
+                            status = "✅" if coverage >= 80 else "⚠️" if coverage >= 50 else "❌"
+                            coverage_data.append({
+                                "Saat": clock.upper(),
+                                "Kapsam": f"{coverage:.1f}%",
+                                "Durum": status
+                            })
+                        
+                        st.dataframe(pd.DataFrame(coverage_data), use_container_width=True)
+                        
+                        if phenotype_file is not None:
+                            phenotype_df = pd.read_csv(phenotype_file) if phenotype_file.name.endswith('.csv') else pd.read_excel(phenotype_file)
+                            st.session_state['phenotype_data'] = phenotype_df
+                            st.success("✅ Fenotip verisi yüklendi!")
+                            st.dataframe(phenotype_df.head(), use_container_width=True)
+                        
+            except Exception as e:
+                st.error(f"❌ Veri okuma hatası: {str(e)}")
     
-    with main_tab3:
-        st.markdown("### 📋 Gen Listesi Yükle")
-        st.markdown("Analiz etmek istediğiniz genlerin listesini yükleyin veya girin.")
-        
-        with st.expander("📖 Gen Listesi Formatı", expanded=False):
-            st.markdown("""
-            **Desteklenen Formatlar:**
-            - CSV/TXT: Her satırda bir gen sembolü
-            - Excel: İlk sütunda gen sembolleri
-            
-            **Örnek:**
-            ```
-            OPRM1
-            DRD2
-            COMT
-            BDNF
-            SLC6A4
-            ```
-            
-            **Desteklenen ID Türleri:**
-            - HGNC Gen Sembolleri (örn: OPRM1, DRD2)
-            - Ensembl Gene ID (örn: ENSG00000112038)
-            - Entrez Gene ID (örn: 4988)
-            """)
+    with tab2:
+        st.markdown("### 🧪 Demo Veri Oluştur")
+        st.markdown("Test amaçlı simüle edilmiş DNA metilasyon verisi oluşturun.")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("#### Dosyadan Yükle")
-            gene_file = st.file_uploader(
-                "Gen Listesi Dosyası",
-                type=['csv', 'txt', 'xlsx'],
-                help="Her satırda bir gen sembolü",
-                key="gene_list_upload"
-            )
-            
-            if gene_file is not None:
-                try:
-                    if gene_file.name.endswith('.xlsx'):
-                        genes_df = pd.read_excel(gene_file, header=None)
-                    else:
-                        genes_df = pd.read_csv(gene_file, header=None)
-                    
-                    gene_list = genes_df.iloc[:, 0].dropna().tolist()
-                    st.session_state['uploaded_genes'] = gene_list
-                    st.success(f"✅ {len(gene_list)} gen yüklendi!")
-                except Exception as e:
-                    st.error(f"❌ Dosya okuma hatası: {str(e)}")
+            n_samples = st.slider("Örnek Sayısı", 5, 50, 10)
+            n_cpgs = st.slider("CpG Sayısı", 500, 10000, 2000)
         
         with col2:
-            st.markdown("#### Manuel Giriş")
-            manual_genes = st.text_area(
-                "Gen Sembolleri (her satırda bir gen)",
-                placeholder="OPRM1\nDRD2\nCOMT\nBDNF",
-                height=150,
-                key="manual_genes"
-            )
-            
-            if st.button("📋 Genleri Ekle", key="add_manual_genes"):
-                if manual_genes.strip():
-                    gene_list = [g.strip() for g in manual_genes.split('\n') if g.strip()]
-                    st.session_state['uploaded_genes'] = gene_list
-                    st.success(f"✅ {len(gene_list)} gen eklendi!")
+            include_clock_cpgs = st.checkbox("Saat CpG'lerini Dahil Et", value=True)
         
-        if 'uploaded_genes' in st.session_state:
-            st.markdown("---")
-            st.markdown("### 📊 Yüklü Gen Analizi")
-            gene_list = st.session_state['uploaded_genes']
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("Toplam Gen", len(gene_list))
-            with col2:
-                st.metric("Benzersiz Gen", len(set(gene_list)))
-            
-            st.markdown("**Gen Listesi:**")
-            st.dataframe(pd.DataFrame({'Gen Sembolü': gene_list}), use_container_width=True)
-            
-            csv = pd.DataFrame({'Gene_Symbol': gene_list}).to_csv(index=False)
-            st.download_button(
-                "📥 Gen Listesini İndir",
-                csv,
-                "gene_list.csv",
-                "text/csv",
-                key="download_genes"
-            )
+        if st.button("🧬 Demo Veri Oluştur", type="primary"):
+            with st.spinner("Demo veri oluşturuluyor..."):
+                demo_dataset = create_demo_methylation_data(
+                    n_samples=n_samples,
+                    n_cpgs=n_cpgs,
+                    include_clock_cpgs=include_clock_cpgs
+                )
+                st.session_state['loaded_dataset'] = demo_dataset
+                
+                st.success("✅ Demo veri oluşturuldu!")
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("CpG Sayısı", f"{len(demo_dataset.beta_matrix):,}")
+                with col2:
+                    st.metric("Örnek Sayısı", len(demo_dataset.samples))
+                with col3:
+                    st.metric("Kaynak", "Simüle")
+                
+                st.markdown("### Örnek Bilgileri")
+                st.dataframe(demo_dataset.sample_info, use_container_width=True)
     
-    with main_tab4:
-        st.markdown("### 🎯 CpG Site Verisi Yükle")
-        st.markdown("Özel CpG site listesi veya metilasyon paneli yükleyin.")
-        
-        with st.expander("📖 CpG Format Kılavuzu", expanded=False):
-            st.markdown("""
-            **Desteklenen Formatlar:**
-            
-            **Basit CpG Listesi:**
-            ```
-            cg00000029
-            cg00000165
-            cg00000236
-            ```
-            
-            **Detaylı CpG Verisi (CSV):**
-            ```
-            CpG_ID,Chromosome,Position,Gene
-            cg00000029,chr16,53434200,RBL2
-            cg00000165,chr1,91194674,BARHL2
-            ```
-            
-            **Illumina Manifest Formatı:**
-            - EPIC (850K) manifest
-            - 450K manifest
-            - 27K manifest
-            """)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### Dosyadan Yükle")
-            cpg_file = st.file_uploader(
-                "CpG Dosyası",
-                type=['csv', 'txt', 'xlsx'],
-                help="CpG site listesi veya manifest dosyası",
-                key="cpg_list_upload"
-            )
-            
-            if cpg_file is not None:
-                try:
-                    if cpg_file.name.endswith('.xlsx'):
-                        cpg_df = pd.read_excel(cpg_file)
-                    else:
-                        cpg_df = pd.read_csv(cpg_file)
-                    
-                    if cpg_df.shape[1] == 1:
-                        cpg_list = cpg_df.iloc[:, 0].dropna().tolist()
-                        cpg_df = pd.DataFrame({'CpG_ID': cpg_list})
-                    
-                    st.session_state['uploaded_cpgs'] = cpg_df
-                    st.success(f"✅ {len(cpg_df):,} CpG site yüklendi!")
-                except Exception as e:
-                    st.error(f"❌ Dosya okuma hatası: {str(e)}")
-        
-        with col2:
-            st.markdown("#### Manuel Giriş")
-            manual_cpgs = st.text_area(
-                "CpG Site ID'leri (her satırda bir CpG)",
-                placeholder="cg00000029\ncg00000165\ncg00000236",
-                height=150,
-                key="manual_cpgs"
-            )
-            
-            if st.button("🎯 CpG'leri Ekle", key="add_manual_cpgs"):
-                if manual_cpgs.strip():
-                    cpg_list = [c.strip() for c in manual_cpgs.split('\n') if c.strip()]
-                    st.session_state['uploaded_cpgs'] = pd.DataFrame({'CpG_ID': cpg_list})
-                    st.success(f"✅ {len(cpg_list)} CpG eklendi!")
-        
-        if 'uploaded_cpgs' in st.session_state:
-            st.markdown("---")
-            st.markdown("### 📊 Yüklü CpG Analizi")
-            cpg_df = st.session_state['uploaded_cpgs']
-            
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("Toplam CpG", f"{len(cpg_df):,}")
-            with col2:
-                cg_count = cpg_df.iloc[:, 0].str.startswith('cg').sum() if len(cpg_df) > 0 else 0
-                st.metric("cg Prefix", f"{cg_count:,}")
-            with col3:
-                ch_count = cpg_df.iloc[:, 0].str.startswith('ch').sum() if len(cpg_df) > 0 else 0
-                st.metric("ch Prefix", f"{ch_count:,}")
-            
-            st.markdown("**CpG Listesi:**")
-            st.dataframe(cpg_df.head(20), use_container_width=True)
-    
-    with main_tab5:
-        st.markdown("### 📊 Yüklü Veriler Özeti")
-        st.markdown("Şu ana kadar yüklenen tüm verilerin özeti.")
-        
-        uploaded_data = []
+    with tab3:
+        st.markdown("### 📊 Yüklü Veri Analizi")
         
         if 'loaded_dataset' in st.session_state:
             dataset = st.session_state['loaded_dataset']
-            uploaded_data.append({
-                "Veri Türü": "🔬 DNA Metilasyon",
-                "Durum": "✅ Yüklü",
-                "Detay": f"{dataset.quality_metrics['total_cpgs']:,} CpG, {dataset.quality_metrics['total_samples']} örnek"
-            })
-        else:
-            uploaded_data.append({"Veri Türü": "🔬 DNA Metilasyon", "Durum": "⏳ Bekleniyor", "Detay": "-"})
-        
-        if 'uploaded_vcf' in st.session_state:
-            vcf_df = st.session_state['uploaded_vcf']
-            uploaded_data.append({
-                "Veri Türü": "🧬 VCF Varyant",
-                "Durum": "✅ Yüklü",
-                "Detay": f"{len(vcf_df):,} varyant"
-            })
-        else:
-            uploaded_data.append({"Veri Türü": "🧬 VCF Varyant", "Durum": "⏳ Bekleniyor", "Detay": "-"})
-        
-        if 'uploaded_genes' in st.session_state:
-            gene_list = st.session_state['uploaded_genes']
-            uploaded_data.append({
-                "Veri Türü": "📋 Gen Listesi",
-                "Durum": "✅ Yüklü",
-                "Detay": f"{len(gene_list)} gen"
-            })
-        else:
-            uploaded_data.append({"Veri Türü": "📋 Gen Listesi", "Durum": "⏳ Bekleniyor", "Detay": "-"})
-        
-        if 'uploaded_cpgs' in st.session_state:
-            cpg_df = st.session_state['uploaded_cpgs']
-            uploaded_data.append({
-                "Veri Türü": "🎯 CpG Verisi",
-                "Durum": "✅ Yüklü",
-                "Detay": f"{len(cpg_df):,} CpG"
-            })
-        else:
-            uploaded_data.append({"Veri Türü": "🎯 CpG Verisi", "Durum": "⏳ Bekleniyor", "Detay": "-"})
-        
-        st.dataframe(pd.DataFrame(uploaded_data), use_container_width=True, hide_index=True)
-        
-        loaded_count = sum(1 for d in uploaded_data if d["Durum"] == "✅ Yüklü")
-        
-        if loaded_count > 0:
-            st.success(f"🎉 {loaded_count}/4 veri türü yüklendi!")
             
-            if st.button("🗑️ Tüm Verileri Temizle", type="secondary", key="clear_all_data"):
-                keys_to_clear = ['loaded_dataset', 'uploaded_vcf', 'uploaded_genes', 'uploaded_cpgs', 
-                                'phenotype_data', 'analysis_results']
-                for key in keys_to_clear:
-                    if key in st.session_state:
-                        del st.session_state[key]
-                st.rerun()
+            st.markdown(f"**Yüklü Veri:** {dataset.source} - {dataset.quality_metrics['total_samples']} örnek")
+            
+            analysis_type = st.selectbox(
+                "Analiz Türü:",
+                ["Epigenetik Yaş Hesaplama", "Kalite Kontrol", "Beta Dağılımı", "CpG Korelasyonu"]
+            )
+            
+            if analysis_type == "Epigenetik Yaş Hesaplama":
+                st.markdown("""
+                **Gerçek Katsayılarla Hesaplama:**
+                Bu analiz, yayınlanmış epigenetik saat katsayılarını kullanarak 
+                yüklediğiniz DNA metilasyon verisinden epigenetik yaş hesaplar.
+                """)
+                
+                if st.button("🧬 Epigenetik Yaş Hesapla", type="primary"):
+                    with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
+                        
+                        results_df = calculate_epigenetic_age(dataset)
+                        
+                        display_df = results_df.rename(columns={
+                            'sample_id': 'Örnek ID',
+                            'chronological_age': 'Kronolojik Yaş',
+                            'horvath_age': 'Horvath Yaş',
+                            'hannum_age': 'Hannum Yaş',
+                            'phenoage': 'PhenoAge',
+                            'dunedin_pace': 'DunedinPACE',
+                            'horvath_coverage': 'Horvath %',
+                            'hannum_coverage': 'Hannum %',
+                            'phenoage_coverage': 'PhenoAge %',
+                            'dunedin_coverage': 'DunedinPACE %'
+                        })
+                        
+                        for sample in dataset.samples:
+                            idx = display_df[display_df['Örnek ID'] == sample.sample_id].index
+                            if len(idx) > 0:
+                                if sample.sex:
+                                    display_df.loc[idx, 'Cinsiyet'] = sample.sex
+                                if sample.substance_type:
+                                    display_df.loc[idx, 'Madde'] = sample.substance_type
+                        
+                        if 'Kronolojik Yaş' in display_df.columns:
+                            for clock in ['Horvath Yaş', 'Hannum Yaş', 'PhenoAge']:
+                                if clock in display_df.columns:
+                                    display_df[f'{clock.split()[0]} EAA'] = (
+                                        display_df[clock] - display_df['Kronolojik Yaş'].fillna(0)
+                                    ).round(2)
+                        
+                        st.session_state['analysis_results'] = display_df
+                        
+                        st.success("✅ Gerçek katsayılarla analiz tamamlandı!")
+                        
+                        st.markdown("### 📊 Sonuçlar")
+                        st.dataframe(display_df, use_container_width=True)
+                        
+                        st.markdown("### 📈 CpG Kapsama Oranları")
+                        coverage_cols = [c for c in display_df.columns if '%' in c]
+                        if coverage_cols:
+                            avg_coverage = display_df[coverage_cols].mean()
+                            
+                            col1, col2, col3, col4 = st.columns(4)
+                            with col1:
+                                st.metric("Horvath Kapsam", f"{avg_coverage.get('Horvath %', 0):.1f}%")
+                            with col2:
+                                st.metric("Hannum Kapsam", f"{avg_coverage.get('Hannum %', 0):.1f}%")
+                            with col3:
+                                st.metric("PhenoAge Kapsam", f"{avg_coverage.get('PhenoAge %', 0):.1f}%")
+                            with col4:
+                                st.metric("DunedinPACE Kapsam", f"{avg_coverage.get('DunedinPACE %', 0):.1f}%")
+                        
+                        csv = display_df.to_csv(index=False)
+                        st.download_button(
+                            "📥 Sonuçları İndir (CSV)",
+                            csv,
+                            "epiclock_results.csv",
+                            "text/csv"
+                        )
+            
+            elif analysis_type == "Kalite Kontrol":
+                st.markdown("#### Kalite Metrikleri")
+                
+                metrics = dataset.quality_metrics
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Eksik Veri Oranı", f"{metrics['missing_rate']*100:.2f}%")
+                with col2:
+                    st.metric("Ortalama Beta", f"{metrics['mean_beta']:.3f}")
+                with col3:
+                    st.metric("Beta Std. Sapma", f"{metrics['std_beta']:.3f}")
+            
+            elif analysis_type == "Beta Dağılımı":
+                st.markdown("#### Beta Değer Dağılımı")
+                
+                import plotly.express as px
+                
+                sample_data = dataset.beta_matrix.iloc[:, 0].dropna()
+                fig = px.histogram(sample_data, nbins=50, title="İlk Örnek Beta Dağılımı")
+                fig.update_layout(xaxis_title="Beta Değeri", yaxis_title="Frekans")
+                st.plotly_chart(fig, use_container_width=True)
+            
+            elif analysis_type == "CpG Korelasyonu":
+                st.markdown("#### Örnekler Arası Korelasyon")
+                
+                if len(dataset.beta_matrix.columns) > 1:
+                    corr_matrix = dataset.beta_matrix.corr()
+                    
+                    import plotly.express as px
+                    fig = px.imshow(corr_matrix, title="Örnek Korelasyon Matrisi")
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("Korelasyon için en az 2 örnek gerekli.")
         else:
-            st.info("📤 Yukarıdaki sekmelerden veri yükleyerek başlayın.")
+            st.info("⬆️ Lütfen önce 'Dosya Yükle' veya 'Demo Veri' sekmesinden veri yükleyin.")
 
 
 def render_publication_references():
@@ -1554,15 +1307,15 @@ def render_home_page(components):
     """Render the home page with overview and quick stats"""
     
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); 
-                border: 2px solid #ff9800; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
-    <h4 style="color: #e65100; margin: 0;">🔬 AKADEMİK ARAŞTIRMA & DEMO PLATFORMU</h4>
-    <p style="color: #e65100; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
-    Bu platform, epigenetik yaş analizi metodolojisini ve iş akışını göstermek için tasarlanmıştır:
-    <br>• <b>Algoritma Kaynakları</b>: Horvath/Hannum/PhenoAge/DunedinPACE yayınlarından alınan katsayı yapısı
-    <br>• <b>Demo Modu</b>: Eksik CpG verileri için istatistiksel simülasyon uygulanır
-    <br>• <b>GrimAge</b>: Protein surrogate model yapısı (simüle ağırlıklar - tam katsayılar lisans gerektirir)
-    <br>• <b>Gerçek Klinik Kullanım</b>: Tam veri ve lisanslı katsayılar akademik kanallardan temin edilmelidir
+    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); 
+                border: 2px solid #ffc107; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+    <h4 style="color: #856404; margin: 0;">⚠️ PROTOTIP PLATFORMU</h4>
+    <p style="color: #856404; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+    Bu platform, epigenetik yaş analizi metodolojisini ve iş akışını göstermek için 
+    <b>SİMÜLE EDİLMİŞ VERİLER</b> kullanmaktadır. Saat katsayıları ve referans veritabanı, 
+    yayınlanmış araştırma istatistiklerine dayalı olarak simüle edilmiştir. 
+    Gerçek klinik veya araştırma kullanımı için, gerçek katsayılar ve veriler uygun 
+    akademik kanallardan temin edilmelidir.
     </p>
     </div>
     """, unsafe_allow_html=True)
@@ -1604,13 +1357,15 @@ def render_home_page(components):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### Madde Tipine Gore EAA Etkileri")
+        st.markdown("### 📊 Madde Tipine Göre EAA Etkileri")
         
         ref_db = components['ref_db']
         effect_summary = ref_db.get_substance_effect_summary()
         
+        visualizer = components['visualizer']
+        
         effect_summary['substance_tr'] = effect_summary['substance'].map({
-            'polysubstance': 'Coklu Madde',
+            'polysubstance': 'Çoklu Madde',
             'methamphetamine': 'Metamfetamin',
             'cocaine': 'Kokain',
             'alcohol': 'Alkol',
@@ -1620,12 +1375,6 @@ def render_home_page(components):
         
         import plotly.graph_objects as go
         
-        autumn_colors = ['#8B4513', '#A0522D', '#CD853F', '#D2691E', '#B8860B', '#DAA520']
-        
-        clock_names = ['Horvath', 'Hannum', 'PhenoAge', 'GrimAge', 'DunedinPACE']
-        
-        clock_tab = st.selectbox("Epigenetik Saat Secin:", clock_names, index=3, key="eaa_clock_select")
-        
         fig = go.Figure()
         
         fig.add_trace(go.Bar(
@@ -1633,82 +1382,71 @@ def render_home_page(components):
             x=effect_summary['effect_vs_control'],
             orientation='h',
             marker=dict(
-                color=autumn_colors[:len(effect_summary)],
-                line=dict(color='#5D4037', width=1)
+                color=effect_summary['effect_vs_control'],
+                colorscale='Reds',
+                showscale=True,
+                colorbar=dict(title="EAA (yıl)")
             ),
             error_x=dict(
                 type='data',
                 symmetric=False,
                 array=effect_summary['ci_upper'] - effect_summary['effect_vs_control'],
-                arrayminus=effect_summary['effect_vs_control'] - effect_summary['ci_lower'],
-                color='#3E2723'
+                arrayminus=effect_summary['effect_vs_control'] - effect_summary['ci_lower']
             ),
-            hovertemplate="<b>%{y}</b><br>EAA: %{x:.1f} yil<br>n=%{customdata}<extra></extra>",
+            hovertemplate="<b>%{y}</b><br>EAA: %{x:.1f} yıl<br>n=%{customdata}<extra></extra>",
             customdata=effect_summary['n_samples']
         ))
         
         fig.update_layout(
-            title=dict(
-                text=f"{clock_tab} - Epigenetik Yas Ivmelenmesi",
-                font=dict(size=16, color='#3E2723', family='Arial Black')
-            ),
-            xaxis_title=dict(text="Epigenetik Yas Ivmelenmesi (yil)", font=dict(size=12, color='#5D4037')),
+            title="GrimAge Epigenetik Yaş İvmelenmesi (Kontrole Göre)",
+            xaxis_title="Epigenetik Yaş İvmelenmesi (yıl)",
             yaxis_title="",
             template="plotly_white",
-            height=400,
-            paper_bgcolor='#FFF8F0',
-            plot_bgcolor='#FFF8F0',
-            font=dict(family='Arial', size=12, color='#3E2723')
+            height=400
         )
         
-        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
-        st.markdown("### Epigenetik Saat Performanslari")
+        st.markdown("### 🎯 Epigenetik Saat Performansları")
         
         clock_perf = ref_db.get_clock_performance_summary()
         
         fig = go.Figure()
         
         fig.add_trace(go.Bar(
-            name='MAE (yil)',
+            name='MAE (yıl)',
             x=clock_perf['clock'],
             y=clock_perf['mae'],
-            marker_color='#8B4513',
+            marker_color='steelblue',
             yaxis='y'
         ))
         
         fig.add_trace(go.Scatter(
-            name='R2',
+            name='R²',
             x=clock_perf['clock'],
             y=clock_perf['r_squared'],
             mode='lines+markers',
-            marker=dict(size=12, color='#D2691E'),
-            line=dict(width=3, color='#CD853F'),
+            marker=dict(size=12, color='coral'),
+            line=dict(width=3),
             yaxis='y2'
         ))
         
         fig.update_layout(
-            title=dict(
-                text="Epigenetik Saat Dogruluk Karsilastirmasi",
-                font=dict(size=16, color='#3E2723', family='Arial Black')
-            ),
-            xaxis_title=dict(text="Epigenetik Saat", font=dict(size=12, color='#5D4037')),
-            yaxis=dict(title="MAE (yil)", side='left', title_font=dict(color='#5D4037')),
-            yaxis2=dict(title="R2", side='right', overlaying='y', range=[0.85, 1.0], title_font=dict(color='#5D4037')),
+            title="Epigenetik Saat Doğruluk Karşılaştırması",
+            xaxis_title="Epigenetik Saat",
+            yaxis=dict(title="MAE (yıl)", side='left'),
+            yaxis2=dict(title="R²", side='right', overlaying='y', range=[0.85, 1.0]),
             template="plotly_white",
-            legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99, font=dict(color='#3E2723')),
-            height=400,
-            paper_bgcolor='#FFF8F0',
-            plot_bgcolor='#FFF8F0',
-            font=dict(family='Arial', size=12, color='#3E2723')
+            legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99),
+            height=400
         )
         
-        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        st.plotly_chart(fig, width='stretch')
     
     st.markdown("---")
     
-    st.markdown("### Metodoloji ve Bilimsel Arka Plan")
+    st.markdown("### 📖 Metodoloji ve Bilimsel Arka Plan")
     
     with st.expander("DNA Metilasyonu ve Epigenetik Saatler", expanded=False):
         st.markdown("""

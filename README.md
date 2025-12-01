@@ -2,36 +2,15 @@
 
 <img src="attached_assets/image_1764525193643.png" alt="DNA Double Helix" width="400"/>
 
-# 🧬 EpiClock v4.0
+# 🧬 EpiClock Prototype
 
 ### DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
-
-**Academic Research & Demonstration Platform**
 
 **Computational Forensics | Molecular Toxicology | Epigenetic Chronology**
 
 ---
 
-**Author:** Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D. (Adli Tıp Doktoru)
-
----
-
-### 🚀 Hızlı Başlangıç (Quick Start)
-
-```bash
-# 1. Repoyu klonla
-git clone https://github.com/YOUR_USERNAME/EpiClockPrototype.git
-cd EpiClockPrototype
-
-# 2. Bağımlılıkları yükle
-pip install -r requirements.txt
-
-# 3. Uygulamayı çalıştır
-streamlit run app.py --server.port 5000
-```
-
-> **📤 Genomik Veri Yükleme:** DNA Metilasyon, VCF Varyant, Gen Listesi, CpG verilerinizi doğrudan yükleyin!  
-> **🧬 Epigenetik Yaş Hesaplama:** 5 major clock ile anında analiz yapın!
+[![Run Application](https://replit.com/badge?caption=Run)](https://replit.com/@zeynep111222333/EpiClockPrototype?v=1)
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
@@ -44,13 +23,10 @@ streamlit run app.py --server.port 5000
 
 ---
 
-## 📋 Platform Information
+## ⚠️ Prototype Disclaimer
 
-> **This is an Academic Research & Demonstration Platform.**  
-> - Algorithm structures from published papers (Horvath, Hannum, PhenoAge, DunedinPACE, GrimAge)
-> - Demo mode uses statistical simulation for missing CpG data
-> - GrimAge uses simulated weights (full coefficients require licensing)
-> - For clinical applications, obtain licensed coefficients from Clock Foundation
+> **This is a demonstration platform using simulated data.**  
+> Clock coefficients are based on published research. For clinical applications, obtain actual coefficients through proper academic licensing.
 
 ---
 
@@ -140,27 +116,6 @@ streamlit run app.py --server.port 5000
 | **Daubert Compliance** | Legal admissibility standards |
 | **Tamper Detection** | Automatic integrity verification |
 | **Postmortem Validation** | PMI correction algorithms |
-
----
-
-## 📤 Genomik Veri Yükleme (Data Upload Center)
-
-Platform, **4 farklı veri türünü** tek merkezden yükleme ve analiz imkanı sunar:
-
-| Veri Türü | Format | Açıklama |
-|:----------|:-------|:---------|
-| 🔬 **DNA Metilasyon** | CSV, TXT, Excel, GEO Matrix | Illumina EPIC/450K/27K beta değerleri |
-| 🧬 **VCF Varyant** | VCF, VCF.gz | SNP, indel, yapısal varyantlar |
-| 📋 **Gen Listesi** | CSV, TXT, Excel | HGNC sembolleri, Ensembl ID |
-| 🎯 **CpG Verisi** | CSV, TXT, Excel | CpG site listesi, custom panel |
-
-### Desteklenen Özellikler
-
-- ✅ **Otomatik Format Algılama** - Dosya türü otomatik tanınır
-- ✅ **Kalite Kontrol** - Beta değer doğrulama, CpG kapsam analizi
-- ✅ **Demo Veri Oluşturma** - Test için simüle edilmiş veri
-- ✅ **Epigenetik Yaş Hesaplama** - 5 clock ile anında analiz
-- ✅ **Sonuç İndirme** - CSV formatında dışa aktarma
 
 ---
 
@@ -474,30 +429,9 @@ epi-clock-DNA-mtl-prototype/
 
 ---
 
-## 📜 License & Copyright
+## 📜 License
 
-> ⚠️ **UYARI / WARNING**
-
-Bu proje **özel akademik lisans** ile korunmaktadır. Tüm hakları saklıdır.
-
-This project is protected under a **custom academic license**. All rights reserved.
-
-### İzin Verilen / Permitted:
-- ✅ Kişisel ve eğitim amaçlı görüntüleme
-- ✅ Akademik makalelerde atıf yapma
-- ✅ Değerlendirme amaçlı çalıştırma
-
-### Yasak / Prohibited:
-- ❌ Kopyalama veya çoğaltma
-- ❌ Değiştirme veya türev çalışma oluşturma
-- ❌ Ticari kullanım
-- ❌ Yeniden dağıtım
-- ❌ Kendi çalışmanız gibi sunma
-
-**İhlal durumunda yasal işlem başlatılacaktır.**  
-**Legal action will be taken in case of violation.**
-
-Detaylı lisans bilgisi için: [LICENSE](LICENSE)
+This project is provided for **academic and research purposes only**.
 
 ---
 
@@ -505,10 +439,8 @@ Detaylı lisans bilgisi için: [LICENSE](LICENSE)
 
 **© 2025 Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.**
 
-**Adli Tıp Doktoru | Yazılım Mühendisi | Sağlık Hukuku Uzmanı**
+**Adli Tıp Uzmanı | Yazılım Mühendisi | Sağlık Hukuku Uzmanı**
 
-*Forensic Medicine Doctor | Software Engineer | Health Law Expert*
-
-**Tüm Hakları Saklıdır / All Rights Reserved**
+*Forensic Medicine Specialist | Software Engineer | Health Law Expert*
 
 </div>

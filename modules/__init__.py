@@ -1,6 +1,5 @@
 """
-EpiClock v4.0 - DNA Methylation Age Analysis Platform
-Academic Research & Demonstration Platform
+EpiClock Prototype - DNA Methylation Age Analysis Platform
 Epigenetik Yaş İvmelenmesi Tespit Sistemi
 """
 

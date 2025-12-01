@@ -29,32 +29,33 @@ def render_update_badge():
     st.markdown(f"""
     <div class="update-badge-container">
         <div class="update-badge">
-            <span class="update-text">Son Guncelleme: <strong>{timestamp}</strong></span>
+            <span class="update-icon">🔄</span>
+            <span class="update-text">Son Güncelleme: <strong>{timestamp}</strong></span>
             <span class="update-version">v{EPICLOCK_VERSION}</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
 def inject_professional_css():
-    """Inject professional Autumn-themed CSS"""
+    """Inject professional Prezi Biology-style CSS"""
     st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
         
         :root {
-            --primary-dna: #5D4037;
-            --secondary-helix: #8B4513;
-            --accent-nucleotide: #D2691E;
-            --highlight-gene: #DAA520;
-            --warm-cytosine: #CD853F;
-            --alert-adenine: #A0522D;
-            --background-cell: #FFF8F0;
-            --surface-membrane: #FFFAF5;
-            --text-genome: #3E2723;
-            --text-light: #5D4037;
-            --border-chromosome: #DEB887;
-            --gradient-bio: linear-gradient(135deg, #5D4037 0%, #8B4513 50%, #CD853F 100%);
-            --shadow-bio: 0 8px 32px rgba(93, 64, 55, 0.15);
+            --primary-dna: #0d4f4f;
+            --secondary-helix: #1a7a7a;
+            --accent-nucleotide: #2dd4bf;
+            --highlight-gene: #5eead4;
+            --warm-cytosine: #fbbf24;
+            --alert-adenine: #ef4444;
+            --background-cell: #f0fdfa;
+            --surface-membrane: #ffffff;
+            --text-genome: #134e4a;
+            --text-light: #5f7472;
+            --border-chromosome: #99f6e4;
+            --gradient-bio: linear-gradient(135deg, #0d4f4f 0%, #1a7a7a 50%, #2dd4bf 100%);
+            --shadow-bio: 0 8px 32px rgba(13, 79, 79, 0.15);
         }
         
         /* ============================================
@@ -69,8 +70,8 @@ def inject_professional_css():
         }
         
         .update-badge {
-            background: linear-gradient(135deg, #5D4037 0%, #8B4513 100%);
-            color: #FFF8F0;
+            background: linear-gradient(135deg, #0d4f4f 0%, #1a7a7a 100%);
+            color: white;
             padding: 12px 20px;
             border-radius: 50px;
             font-family: 'Source Sans Pro', sans-serif;
@@ -78,16 +79,18 @@ def inject_professional_css():
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 20px rgba(93, 64, 55, 0.3);
-            border: 2px solid #CD853F;
+            box-shadow: 0 4px 20px rgba(13, 79, 79, 0.3);
+            border: 2px solid #2dd4bf;
+            animation: badgePulse 3s ease-in-out infinite;
         }
         
         .update-icon {
             font-size: 1.1rem;
+            animation: iconSpin 4s linear infinite;
         }
         
         .update-version {
-            background: rgba(205, 133, 63, 0.3);
+            background: rgba(45, 212, 191, 0.3);
             padding: 3px 10px;
             border-radius: 15px;
             font-weight: 600;
@@ -95,8 +98,8 @@ def inject_professional_css():
         }
         
         @keyframes badgePulse {
-            0%, 100% { box-shadow: 0 4px 20px rgba(93, 64, 55, 0.3); }
-            50% { box-shadow: 0 4px 30px rgba(205, 133, 63, 0.5); }
+            0%, 100% { box-shadow: 0 4px 20px rgba(13, 79, 79, 0.3); }
+            50% { box-shadow: 0 4px 30px rgba(45, 212, 191, 0.5); }
         }
         
         @keyframes iconSpin {
@@ -105,15 +108,15 @@ def inject_professional_css():
         }
         
         /* ============================================
-           AUTUMN THEME - BASE STYLES
+           PREZI BIOLOGY CONCEPT - BASE STYLES
            ============================================ */
         
         .stApp {
             background: linear-gradient(180deg, 
-                #FFF8F0 0%, 
-                #FAEBD7 30%, 
-                #FFE4C4 70%, 
-                #FFF8F0 100%) !important;
+                #f0fdfa 0%, 
+                #ccfbf1 30%, 
+                #e0f2fe 70%, 
+                #f0fdfa 100%) !important;
         }
         
         .main .block-container {
@@ -123,20 +126,20 @@ def inject_professional_css():
         }
         
         /* ============================================
-           SIDEBAR - AUTUMN NAVIGATION
+           SIDEBAR - SCIENTIFIC NAVIGATION
            ============================================ */
         
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #5D4037 0%, #3E2723 100%) !important;
+            background: linear-gradient(180deg, #0d4f4f 0%, #134e4a 100%) !important;
             border-right: 3px solid var(--accent-nucleotide);
         }
         
         [data-testid="stSidebar"] * {
-            color: #FFF8F0 !important;
+            color: #ffffff !important;
         }
         
         [data-testid="stSidebar"] .stRadio label {
-            background: rgba(205, 133, 63, 0.1);
+            background: rgba(45, 212, 191, 0.1);
             padding: 12px 18px;
             border-radius: 12px;
             margin: 5px 0;
@@ -146,7 +149,7 @@ def inject_professional_css():
         }
         
         [data-testid="stSidebar"] .stRadio label:hover {
-            background: rgba(205, 133, 63, 0.25);
+            background: rgba(45, 212, 191, 0.25);
             border-left-color: var(--accent-nucleotide);
         }
         
@@ -782,7 +785,7 @@ def render_academic_footer():
     
     st.markdown(f"""
     <div class="academic-footer">
-        <div class="academic-footer-title">🎓 EpiClock v4.0 - Akademik Araştırma & Demo Platformu</div>
+        <div class="academic-footer-title">🎓 EpiClock Prototype - Akademik Araştırma Platformu</div>
         <div class="academic-footer-text">
             <strong>Araştırmacı:</strong> Dr. Nurcan Denli Bayır<br>
             <strong>Platform:</strong> DNA Metilasyon Tabanlı Epigenetik Yaş Analizi<br>
