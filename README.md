@@ -382,11 +382,11 @@ epi-clock-DNA-mtl-prototype/
 ## 📚 Citation
 
 ```bibtex
-@article{denlibayir2024epiclock,
+@article{denlibayir2025epiclock,
   author  = {Denli Bayır, Nurcan},
   title   = {Detection of Epigenetic Age Acceleration in Addiction 
              Using DNA Methylation Clocks: An End-to-End Computational Approach},
-  year    = {2024},
+  year    = {2025},
   url     = {https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype}
 }
 ```
@@ -401,6 +401,10 @@ This project is provided for **academic and research purposes only**.
 
 <div align="center">
 
-**© 2024 Nurcan Denli Bayır. All Rights Reserved.**
+**© 2025 Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.**
+
+**Adli Tıp Uzmanı | Yazılım Mühendisi | Sağlık Hukuku Uzmanı**
+
+*Forensic Medicine Specialist | Software Engineer | Health Law Expert*
 
 </div>
