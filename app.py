@@ -155,6 +155,33 @@ from modules.world_databases import (
     GEO_ADDICTION_DATASETS,
     get_database_summary
 )
+from modules.professional_theme import (
+    inject_professional_css,
+    render_hero_section,
+    render_academic_footer,
+    render_metric_card,
+    render_sticker_badge,
+    render_bio_card,
+    render_info_box,
+    get_last_update_timestamp,
+    BIO_COLOR_PALETTE,
+    BIO_ICONS,
+    EPICLOCK_VERSION
+)
+from modules.cpg_database import (
+    get_total_cpg_statistics,
+    get_substance_cpg_panel,
+    search_cpg_by_gene,
+    search_cpg_by_id,
+    get_gene_system_cpgs,
+    generate_cpg_report_data,
+    validate_uploaded_cpg_data,
+    SUBSTANCE_CPG_COUNTS,
+    KEY_CPG_MARKERS,
+    CPG_GENE_SYSTEMS,
+    ILLUMINA_PLATFORM_INFO,
+    HUMAN_GENOME_CPG_DISTRIBUTION
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -680,25 +707,10 @@ def render_dna_helix_animation():
     </div>
     ''', unsafe_allow_html=True)
 
-def render_academic_footer():
-    """Render academic credentials footer"""
-    st.markdown('''
-    <div class="academic-footer">
-        <div class="academic-credentials">
-            <span class="credential-line">
-                <span class="credential-title">Forensic Medicine</span> 
-                <span class="credential-degree">Ph.D., M.D.</span>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                <span class="credential-title">Software Engineering</span> 
-                <span class="credential-degree">M.Sc.</span>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                <span class="credential-title">Health Law</span> 
-                <span class="credential-degree">J.D., M.D.</span>
-            </span>
-        </div>
-    </div>
-    <div style="height: 80px;"></div>
-    ''', unsafe_allow_html=True)
+def render_professional_footer():
+    """Render professional academic footer with timestamp"""
+    from modules.professional_theme import render_academic_footer as theme_footer
+    theme_footer()
 
 @st.cache_resource
 def init_components():
@@ -773,7 +785,8 @@ def main():
             "Analiz Türü Seçin:",
             ["🏠 Ana Sayfa",
              "📤 DNA Verisi Yükle",
-             "🧬 Varyant Analizi",
+             "🧬 CpG Veritabanı",
+             "🔬 Varyant Analizi",
              "💊 Farmakogenomik",
              "📊 Poligenik Risk Skoru",
              "🌍 Dünya Veritabanları",
@@ -840,7 +853,9 @@ def main():
         render_home_page(components)
     elif "📤 DNA Verisi Yükle" in analysis_mode:
         render_dna_upload(components, selected_clocks)
-    elif "🧬 Varyant Analizi" in analysis_mode:
+    elif "🧬 CpG Veritabanı" in analysis_mode:
+        render_cpg_database(components)
+    elif "🔬 Varyant Analizi" in analysis_mode:
         render_variant_analysis(components)
     elif "💊 Farmakogenomik" in analysis_mode:
         render_pharmacogenomics(components)
@@ -887,7 +902,7 @@ def main():
     elif "📋 Rapor Oluştur" in analysis_mode:
         render_report_generator(components)
     
-    render_academic_footer()
+    render_professional_footer()
 
 
 def render_dna_upload(components, selected_clocks):
@@ -2500,6 +2515,303 @@ def render_model_performance(components):
     
     cv_df = pd.DataFrame(cv_results)
     st.dataframe(cv_df, width='stretch')
+
+
+def render_cpg_database(components):
+    """Render comprehensive CpG Database page - 29,716 CpG sites"""
+    
+    st.markdown("## 🧬 CpG Metilasyon Veritabanı")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>📚 Kapsamlı CpG Veritabanı:</b> Bu modül, bağımlılık araştırmaları için validasyonu yapılmış 
+    29,716 CpG sitesini içerir. Illumina 450K ve EPIC array platformlarından elde edilen, 
+    11 farklı madde sınıfı için optimize edilmiş biyobelirteçler bulunmaktadır.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    cpg_stats = get_total_cpg_statistics()
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.metric("Toplam CpG", f"{cpg_stats['total_cpgs_with_overlap']:,}", 
+                 help="Overlap dahil tüm CpG siteleri")
+    with col2:
+        st.metric("Unique CpG", f"{cpg_stats['unique_cpg_sites']:,}", 
+                 help="Tekrarsız CpG siteleri")
+    with col3:
+        st.metric("Madde Sınıfı", cpg_stats['substance_classes'], 
+                 help="Farklı madde kategorisi")
+    with col4:
+        st.metric("Gen Sistemi", cpg_stats['gene_systems'], 
+                 help="Nörotransmitter sistemleri")
+    with col5:
+        st.metric("Güçlü Kanıt", f"{cpg_stats['strong_evidence_cpgs']:,}", 
+                 help="p < 0.001, replicated")
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📊 Madde Panelleri",
+        "🔬 CpG Arama",
+        "🧠 Gen Sistemleri",
+        "📈 Platform Bilgisi",
+        "📤 Veri Yükleme"
+    ])
+    
+    with tab1:
+        st.markdown("### 📊 Madde Bazlı CpG Panelleri")
+        st.markdown("""
+        Her madde sınıfı için validasyonu yapılmış CpG biyobelirteçleri. 
+        Kanıt düzeyleri meta-analiz ve replikasyon çalışmalarına dayanmaktadır.
+        """)
+        
+        substance_data = []
+        for substance, info in SUBSTANCE_CPG_COUNTS.items():
+            substance_data.append({
+                'Madde': info['turkish_name'],
+                'Toplam CpG': f"{info['total_cpgs']:,}",
+                'Güçlü Kanıt': f"{info['strong_evidence']:,}",
+                'Orta Kanıt': f"{info['moderate_evidence']:,}",
+                'Öneri': f"{info['suggestive_evidence']:,}",
+                'Hassasiyet': f"{info['sensitivity']:.0%}",
+                'Özgüllük': f"{info['specificity']:.0%}",
+                'AUC': f"{info['auc']:.2f}"
+            })
+        
+        substance_df = pd.DataFrame(substance_data)
+        st.dataframe(substance_df, use_container_width=True, hide_index=True)
+        
+        st.markdown("### 🎯 Madde Detayları")
+        
+        selected_substance = st.selectbox(
+            "Madde Seçin:",
+            list(SUBSTANCE_CPG_COUNTS.keys()),
+            format_func=lambda x: SUBSTANCE_CPG_COUNTS[x]['turkish_name']
+        )
+        
+        if selected_substance:
+            panel = get_substance_cpg_panel(selected_substance)
+            if panel and panel.get('key_markers'):
+                st.markdown(f"#### {panel['turkish_name']} - Anahtar CpG Belirteçleri")
+                
+                marker_data = []
+                for m in panel['key_markers']:
+                    marker_data.append({
+                        'CpG ID': m['cpg_id'],
+                        'Gen': m['gene'],
+                        'Kromozom': m['chromosome'],
+                        'ΔBeta': f"{m['delta_beta']:.3f}",
+                        'P-değeri': f"{m['p_value']:.2e}",
+                        'Yön': m['direction'],
+                        'Kanıt': m['evidence'],
+                        'Çalışma': m['n_studies']
+                    })
+                
+                marker_df = pd.DataFrame(marker_data)
+                st.dataframe(marker_df, use_container_width=True, hide_index=True)
+                
+                import plotly.express as px
+                if marker_data:
+                    plot_df = pd.DataFrame({
+                        'CpG': [m['cpg_id'] for m in panel['key_markers']],
+                        'Delta_Beta': [m['delta_beta'] for m in panel['key_markers']],
+                        'Gen': [m['gene'] for m in panel['key_markers']]
+                    })
+                    
+                    fig = px.bar(plot_df, x='CpG', y='Delta_Beta', color='Delta_Beta',
+                                color_continuous_scale='RdBu_r', text='Gen',
+                                title=f'{panel["turkish_name"]} - CpG Metilasyon Değişiklikleri (ΔBeta)')
+                    fig.update_layout(template='plotly_white', height=400)
+                    st.plotly_chart(fig, use_container_width=True)
+    
+    with tab2:
+        st.markdown("### 🔬 CpG Sitesi Arama")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### Gen Adına Göre Arama")
+            gene_search = st.text_input("Gen adı girin:", placeholder="örn: OPRM1, DRD2, AHRR")
+            
+            if gene_search:
+                results = search_cpg_by_gene(gene_search)
+                if results:
+                    st.success(f"✅ {len(results)} CpG sitesi bulundu!")
+                    for cpg in results:
+                        with st.expander(f"{cpg.cpg_id} - {cpg.gene}"):
+                            st.markdown(f"""
+                            - **Gen:** {cpg.gene} ({cpg.gene_full_name})
+                            - **Kromozom:** {cpg.chromosome}
+                            - **Pozisyon:** {cpg.position:,}
+                            - **ΔBeta:** {cpg.delta_beta:.3f}
+                            - **P-değeri:** {cpg.p_value:.2e}
+                            - **Kanıt Düzeyi:** {cpg.evidence_level.value[1]}
+                            - **Çalışma Sayısı:** {cpg.n_studies}
+                            """)
+                else:
+                    st.warning("Sonuç bulunamadı. Farklı bir gen adı deneyin.")
+        
+        with col2:
+            st.markdown("#### CpG ID'ye Göre Arama")
+            cpg_search = st.text_input("CpG ID girin:", placeholder="örn: cg05575921")
+            
+            if cpg_search:
+                result = search_cpg_by_id(cpg_search)
+                if result:
+                    st.success(f"✅ CpG sitesi bulundu!")
+                    st.markdown(f"""
+                    ### {result.cpg_id}
+                    - **Gen:** {result.gene} ({result.gene_full_name})
+                    - **Kromozom:** {result.chromosome}
+                    - **Pozisyon:** {result.position:,}
+                    - **Genomik Bölge:** {result.genomic_region.value[1]}
+                    - **ΔBeta:** {result.delta_beta:.3f}
+                    - **P-değeri:** {result.p_value:.2e}
+                    - **Yön:** {result.direction.value[1]}
+                    - **Kanıt Düzeyi:** {result.evidence_level.value[1]}
+                    - **Çalışma Sayısı:** {result.n_studies}
+                    - **Örnek Sayısı:** {result.n_samples:,}
+                    - **Biyolojik Fonksiyon:** {result.biological_function}
+                    """)
+                else:
+                    st.warning("CpG sitesi bulunamadı.")
+    
+    with tab3:
+        st.markdown("### 🧠 Nörotransmitter Gen Sistemleri")
+        st.markdown("""
+        Bağımlılıkta rol oynayan temel nörotransmitter sistemleri ve 
+        ilişkili CpG siteleri.
+        """)
+        
+        for system_name, system_data in CPG_GENE_SYSTEMS.items():
+            with st.expander(f"🔹 {system_data['name']} ({system_data['total_cpgs']} CpG)"):
+                st.markdown(f"**Açıklama:** {system_data['description']}")
+                st.markdown(f"**Bağımlılık İlişkisi:** {system_data['addiction_relevance']}")
+                
+                st.markdown("**İlişkili Genler:**")
+                genes_text = ', '.join(system_data['genes'])
+                st.code(genes_text, language=None)
+    
+    with tab4:
+        st.markdown("### 📈 Illumina Platform Karşılaştırması")
+        
+        platform_data = []
+        for platform_id, info in ILLUMINA_PLATFORM_INFO.items():
+            if platform_id != 'wgbs':
+                platform_data.append({
+                    'Platform': info['name'],
+                    'Prob Sayısı': f"{info.get('total_probes', info.get('cpg_sites', 0)):,}",
+                    'Yıl': info['year'],
+                    'Maliyet': info.get('cost_per_sample', '-'),
+                    'Durum': info['status'].replace('_', ' ').title()
+                })
+        
+        platform_df = pd.DataFrame(platform_data)
+        st.dataframe(platform_df, use_container_width=True, hide_index=True)
+        
+        st.markdown("### 🧬 İnsan Genomu CpG Dağılımı")
+        
+        dist_data = {
+            'Kategori': ['Toplam CpG (Genom)', 'CpG Adaları', 'CpG Kıyıları', 'CpG Rafları', 
+                        '27K Array', '450K Array', 'EPIC Array', 'EPIC v2', 'WGBS'],
+            'Sayı': [28000000, 30000, 60000, 40000, 27578, 485577, 866895, 935000, 28000000]
+        }
+        
+        import plotly.express as px
+        fig = px.bar(dist_data, x='Kategori', y='Sayı', 
+                    title='CpG Kapsam Karşılaştırması (Log Ölçek)',
+                    log_y=True)
+        fig.update_layout(template='plotly_white')
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tab5:
+        st.markdown("### 📤 DNA Metilasyon Verisi Yükleme ve Validasyon")
+        
+        st.markdown("""
+        <div class="info-box">
+        <b>📋 Desteklenen Formatlar:</b>
+        <ul>
+            <li>CSV/TXT - Beta değerleri matrisi</li>
+            <li>Illumina GenomeStudio export</li>
+            <li>IDAT dosyaları (minfi ile işlenmiş)</li>
+            <li>GEO Series Matrix format</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        platform_select = st.selectbox(
+            "Platform Seçin:",
+            ['450k', 'epic', 'epic_v2', '27k'],
+            format_func=lambda x: {
+                '450k': 'Illumina 450K (485,577 prob)',
+                'epic': 'Illumina EPIC (866,895 prob)',
+                'epic_v2': 'Illumina EPIC v2 (935,000 prob)',
+                '27k': 'Illumina 27K (27,578 prob)'
+            }[x]
+        )
+        
+        uploaded_file = st.file_uploader(
+            "Metilasyon verisi yükleyin",
+            type=['csv', 'txt', 'xlsx'],
+            help="CpG ID'leri ilk sütunda, beta değerleri diğer sütunlarda olmalı"
+        )
+        
+        if uploaded_file:
+            try:
+                if uploaded_file.name.endswith('.xlsx'):
+                    df = pd.read_excel(uploaded_file)
+                else:
+                    df = pd.read_csv(uploaded_file)
+                
+                validation = validate_uploaded_cpg_data(df, platform_select)
+                
+                if validation['is_valid']:
+                    st.success(f"✅ Veri başarıyla yüklendi!")
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Yüklenen CpG", f"{validation['total_cpgs_uploaded']:,}")
+                    with col2:
+                        st.metric("Kapsam", f"{validation['coverage_percent']:.1f}%")
+                    with col3:
+                        st.metric("Beta Aralığı", "✅ Geçerli" if validation['beta_range_valid'] else "⚠️ Kontrol")
+                    
+                    if validation['warnings']:
+                        for warning in validation['warnings']:
+                            st.warning(warning)
+                    
+                    st.markdown("#### Veri Önizleme")
+                    st.dataframe(df.head(20), use_container_width=True)
+                    
+                    st.session_state['uploaded_methylation_data'] = df
+                    st.session_state['methylation_platform'] = platform_select
+                    
+                else:
+                    for error in validation['errors']:
+                        st.error(error)
+                        
+            except Exception as e:
+                st.error(f"Dosya okuma hatası: {str(e)}")
+        
+        st.markdown("---")
+        st.markdown("#### 📥 Örnek Veri İndir")
+        
+        demo_data = {
+            'CpG_ID': ['cg05575921', 'cg03636183', 'cg19859270', 'cg01940273', 'cg07339236'],
+            'Sample_1': [0.234, 0.456, 0.321, 0.567, 0.234],
+            'Sample_2': [0.345, 0.567, 0.432, 0.678, 0.345],
+            'Sample_3': [0.456, 0.678, 0.543, 0.789, 0.456]
+        }
+        demo_df = pd.DataFrame(demo_data)
+        
+        csv_buffer = io.StringIO()
+        demo_df.to_csv(csv_buffer, index=False)
+        
+        st.download_button(
+            label="📥 Örnek CSV İndir",
+            data=csv_buffer.getvalue(),
+            file_name="epiclock_sample_data.csv",
+            mime="text/csv"
+        )
 
 
 def render_world_databases(components):
