@@ -8,7 +8,7 @@ EpiClock Prototype is an advanced computational platform for detecting and quant
 ## Project Structure
 ```
 ├── app.py                      # Main Streamlit application (3000+ lines)
-├── modules/                    # Core analysis modules (19+ modules)
+├── modules/                    # Core analysis modules (24+ modules)
 │   ├── __init__.py
 │   ├── epigenetic_clocks.py   # Epigenetic clock implementations
 │   ├── ml_models.py           # Machine learning ensemble models
@@ -29,7 +29,10 @@ EpiClock Prototype is an advanced computational platform for detecting and quant
 │   ├── clinical_covariates.py # Clinical covariates
 │   ├── tissue_clocks.py       # Tissue-specific clocks (12 tissues)
 │   ├── audit.py               # Blockchain audit trail (SHA-256)
-│   └── mobile_ui.py           # Mobile-responsive UI components
+│   ├── mobile_ui.py           # Mobile-responsive UI components
+│   ├── advanced_prs.py        # Multi-trait PRS with GWAS database (6 addiction traits)
+│   ├── variant_data_sources.py # Real genomic data sources (1000G, gnomAD, UK Biobank)
+│   └── user_guide.py          # Interactive glossary, tutorials, academic citations
 ├── data/                       # Data directory
 ├── attached_assets/           # Research paper and assets
 ├── pyproject.toml             # Python dependencies
@@ -93,6 +96,11 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-01: Added advanced multi-trait PRS module (6 addiction traits with GWAS-validated weights)
+- 2024-12-01: Integrated real genomic data sources (1000 Genomes, gnomAD, UK Biobank, TOPMed)
+- 2024-12-01: Created comprehensive user guide with interactive glossary and academic citations
+- 2024-12-01: Enhanced PRS interface with 5-tab workflow and step-by-step wizard
+- 2024-12-01: Added cost savings calculator (90-95% reduction from traditional approaches)
 - 2024-11-30: Added tissue-specific epigenetic clocks (12 tissue types)
 - 2024-11-30: Implemented blockchain audit trail with SHA-256 hash chain
 - 2024-11-30: Added mobile-responsive UI with role-based presets
