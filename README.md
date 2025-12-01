@@ -12,6 +12,9 @@
 
 [![Run Application](https://replit.com/badge?caption=Run)](https://replit.com/@zeynep111222333/EpiClockPrototype?v=1)
 
+> **☝️ Tek tıkla çalıştır!** Kurulum gereksiz, tarayıcıda anında açılır.  
+> Python, kütüphaneler ve veritabanı otomatik hazır - 5 saniyede başla!
+
 ![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
 ![License](https://img.shields.io/badge/License-Academic-success?style=flat-square)
