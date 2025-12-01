@@ -246,11 +246,11 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
     
-    /* Dark Theme Base */
+    /* Autumn Theme Base */
     .stApp {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f23 100%) !important;
+        background: linear-gradient(135deg, #FFF8F0 0%, #FAEBD7 50%, #FFE4C4 100%) !important;
     }
     
     .main .block-container {
@@ -258,14 +258,14 @@ st.markdown("""
         padding-top: 2rem;
     }
     
-    /* Sidebar Dark Theme */
+    /* Sidebar Autumn Theme */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0d0d0d 0%, #1a1a2e 100%) !important;
-        border-right: 1px solid #00ff4120;
+        background: linear-gradient(180deg, #5D4037 0%, #3E2723 100%) !important;
+        border-right: 1px solid #CD853F;
     }
     
     [data-testid="stSidebar"] * {
-        color: #e0e0e0 !important;
+        color: #FFF8F0 !important;
     }
     
     /* DNA Helix Animation Container */
@@ -297,16 +297,15 @@ st.markdown("""
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #00ff41;
-        box-shadow: 0 0 20px #00ff41, 0 0 40px #00ff4180, 0 0 60px #00ff4140;
-        animation: pulse 2s ease-in-out infinite;
+        background: #D2691E;
+        box-shadow: 0 0 20px #CD853F, 0 0 40px #DAA52080;
     }
     
     .nucleotide-pair {
         position: absolute;
         height: 3px;
-        background: linear-gradient(90deg, #00ff41, #00ff4180, #00ff41);
-        box-shadow: 0 0 10px #00ff4180;
+        background: linear-gradient(90deg, #8B4513, #CD853F, #8B4513);
+        box-shadow: 0 0 10px #CD853F80;
         transform-origin: left center;
     }
     
@@ -331,151 +330,150 @@ st.markdown("""
     
     /* Main Header */
     .main-header {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Playfair Display', serif;
         font-size: 3rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #00ff41 100%);
+        background: linear-gradient(135deg, #5D4037 0%, #8B4513 50%, #A0522D 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-align: center;
         margin-bottom: 0.5rem;
-        text-shadow: 0 0 30px #00ff4140;
         letter-spacing: 2px;
     }
     
     .sub-header {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Source Sans Pro', sans-serif;
         font-size: 1.2rem;
-        color: #00ff4180 !important;
+        color: #5D4037 !important;
         text-align: center;
         margin-bottom: 2rem;
         letter-spacing: 1px;
     }
     
-    /* Metric Cards - Dark Theme */
+    /* Metric Cards - Autumn Theme */
     .metric-card {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid #00ff4130;
+        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
+        border: 1px solid #DEB887;
         padding: 1.5rem;
         border-radius: 15px;
-        color: #00ff41;
+        color: #5D4037;
         text-align: center;
-        box-shadow: 0 0 20px #00ff4110, inset 0 0 20px #00ff4105;
+        box-shadow: 0 4px 15px rgba(93, 64, 55, 0.1);
         transition: all 0.3s ease;
     }
     
     .metric-card:hover {
-        border-color: #00ff4160;
-        box-shadow: 0 0 30px #00ff4120, inset 0 0 30px #00ff4110;
+        border-color: #CD853F;
+        box-shadow: 0 6px 20px rgba(93, 64, 55, 0.15);
         transform: translateY(-2px);
     }
     
     /* Section Headers */
     .section-header {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Playfair Display', serif;
         font-size: 1.5rem;
         font-weight: 600;
-        color: #00ff41 !important;
-        border-bottom: 2px solid #00ff4140;
+        color: #5D4037 !important;
+        border-bottom: 2px solid #DEB887;
         padding-bottom: 0.5rem;
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
     
-    /* Info Boxes - Dark Theme */
+    /* Info Boxes - Autumn Theme */
     .info-box {
-        background: linear-gradient(135deg, #0a192f 0%, #0d1b2a 100%);
-        border-left: 4px solid #00ff41;
+        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
+        border-left: 4px solid #8B4513;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #c0c0c0;
-        box-shadow: 0 0 15px #00ff4110;
+        color: #3E2723;
+        box-shadow: 0 2px 10px rgba(93, 64, 55, 0.1);
     }
     
     .warning-box {
-        background: linear-gradient(135deg, #1a1a0a 0%, #2d2d0a 100%);
-        border-left: 4px solid #ffd700;
+        background: linear-gradient(135deg, #FFF8DC 0%, #FAEBD7 100%);
+        border-left: 4px solid #DAA520;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #ffd700;
+        color: #8B4513;
     }
     
     .success-box {
-        background: linear-gradient(135deg, #0a1a0a 0%, #0d2d0d 100%);
-        border-left: 4px solid #00ff41;
+        background: linear-gradient(135deg, #F5DEB3 0%, #DEB887 100%);
+        border-left: 4px solid #8B4513;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #00ff41;
+        color: #3E2723;
     }
     
-    /* Tabs - Dark Theme */
+    /* Tabs - Autumn Theme */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
         background: transparent;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid #00ff4130;
+        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
+        border: 1px solid #DEB887;
         border-radius: 10px 10px 0 0;
         padding: 12px 24px;
-        color: #00ff4180 !important;
+        color: #5D4037 !important;
         transition: all 0.3s ease;
     }
     
     .stTabs [data-baseweb="tab"]:hover {
-        background: linear-gradient(135deg, #1a2a3e 0%, #1a3a4e 100%);
-        border-color: #00ff4160;
+        background: linear-gradient(135deg, #FAEBD7 0%, #FFE4C4 100%);
+        border-color: #CD853F;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%) !important;
-        border-color: #00ff41 !important;
-        color: #00ff41 !important;
-        box-shadow: 0 0 15px #00ff4130;
+        background: linear-gradient(135deg, #DEB887 0%, #D2B48C 100%) !important;
+        border-color: #8B4513 !important;
+        color: #3E2723 !important;
+        box-shadow: 0 2px 10px rgba(139, 69, 19, 0.2);
     }
     
-    /* Buttons - Neon Green */
+    /* Buttons - Autumn Theme */
     .stButton > button {
-        background: linear-gradient(135deg, #00ff4120 0%, #00cc3320 100%);
-        border: 1px solid #00ff41;
-        color: #00ff41;
+        background: linear-gradient(135deg, #DEB887 0%, #D2B48C 100%);
+        border: 1px solid #8B4513;
+        color: #3E2723;
         border-radius: 8px;
         padding: 0.5rem 1.5rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 0 10px #00ff4120;
+        box-shadow: 0 2px 8px rgba(139, 69, 19, 0.15);
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #00ff4140 0%, #00cc3340 100%);
-        box-shadow: 0 0 20px #00ff4140, 0 0 40px #00ff4120;
+        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%);
+        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.25);
         transform: translateY(-1px);
     }
     
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
-        color: #0a0a0a;
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        color: #FFF8F0;
         font-weight: 700;
     }
     
     /* Text Colors */
     .stMarkdown, .stText, p, span, label {
-        color: #c0c0c0 !important;
+        color: #3E2723 !important;
     }
     
     h1, h2, h3, h4, h5, h6 {
-        color: #00ff41 !important;
+        color: #5D4037 !important;
     }
     
     /* DataFrames */
     .stDataFrame {
-        background: #0a0a0a;
-        border: 1px solid #00ff4130;
+        background: #FFFAF5;
+        border: 1px solid #DEB887;
         border-radius: 10px;
     }
     
@@ -484,28 +482,29 @@ st.markdown("""
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
     .stTextArea > div > div > textarea {
-        background: #1a1a2e !important;
-        border: 1px solid #00ff4140 !important;
-        color: #e0e0e0 !important;
+        background: #FFFAF5 !important;
+        border: 1px solid #DEB887 !important;
+        color: #3E2723 !important;
         border-radius: 8px;
     }
     
     /* Metrics */
     [data-testid="stMetricValue"] {
-        color: #00ff41 !important;
-        font-family: 'Roboto Mono', monospace;
+        color: #5D4037 !important;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 700;
     }
     
     [data-testid="stMetricDelta"] {
-        color: #00cc33 !important;
+        color: #8B4513 !important;
     }
     
     /* Expander */
     .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid #00ff4130;
+        background: linear-gradient(135deg, #FFFAF5 0%, #FFF8F0 100%);
+        border: 1px solid #DEB887;
         border-radius: 10px;
-        color: #00ff41 !important;
+        color: #5D4037 !important;
     }
     
     /* Academic Footer */
@@ -514,22 +513,22 @@ st.markdown("""
         bottom: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(180deg, transparent 0%, #0a0a0a 20%, #0a0a0a 100%);
+        background: linear-gradient(180deg, transparent 0%, #FFF8F0 20%, #FFF8F0 100%);
         padding: 1.5rem 0 1rem 0;
         text-align: center;
         z-index: 1000;
     }
     
     .academic-credentials {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Source Sans Pro', sans-serif;
         font-size: 0.85rem;
-        color: #00ff4180;
+        color: #5D4037;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin: 0;
         padding: 0.5rem;
-        border-top: 1px solid #00ff4130;
-        background: linear-gradient(90deg, transparent 0%, #00ff4110 50%, transparent 100%);
+        border-top: 1px solid #DEB887;
+        background: linear-gradient(90deg, transparent 0%, #DEB88720 50%, transparent 100%);
     }
     
     .credential-line {
@@ -538,12 +537,12 @@ st.markdown("""
     }
     
     .credential-title {
-        color: #00ff41;
+        color: #5D4037;
         font-weight: 600;
     }
     
     .credential-degree {
-        color: #00cc33;
+        color: #8B4513;
         font-weight: 500;
     }
     
@@ -554,16 +553,16 @@ st.markdown("""
     }
     
     ::-webkit-scrollbar-track {
-        background: #0a0a0a;
+        background: #FFF8F0;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: #00ff4140;
+        background: #DEB887;
         border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: #00ff4160;
+        background: #CD853F;
     }
     
     /* Radio buttons */
@@ -572,9 +571,9 @@ st.markdown("""
     }
     
     .stRadio > div > label {
-        color: #c0c0c0 !important;
-        background: #1a1a2e;
-        border: 1px solid #00ff4120;
+        color: #3E2723 !important;
+        background: #FFFAF5;
+        border: 1px solid #DEB887;
         border-radius: 8px;
         padding: 0.5rem 1rem;
         margin: 0.25rem 0;
@@ -582,41 +581,41 @@ st.markdown("""
     }
     
     .stRadio > div > label:hover {
-        border-color: #00ff4160;
-        background: #1a2a3e;
+        border-color: #CD853F;
+        background: #FAEBD7;
     }
     
     /* Slider */
     .stSlider > div > div > div {
-        background: #00ff41 !important;
+        background: #CD853F !important;
     }
     
     /* Multiselect */
     .stMultiSelect > div > div {
-        background: #1a1a2e !important;
-        border-color: #00ff4140 !important;
+        background: #FFFAF5 !important;
+        border-color: #DEB887 !important;
     }
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #00ff41 0%, #00cc33 100%);
+        background: linear-gradient(90deg, #8B4513 0%, #CD853F 100%);
     }
     
     /* Code blocks */
     .stCodeBlock {
-        background: #0a0a0a !important;
-        border: 1px solid #00ff4130;
+        background: #FFFAF5 !important;
+        border: 1px solid #DEB887;
     }
     
     code {
-        color: #00ff41 !important;
-        background: #1a1a2e !important;
+        color: #5D4037 !important;
+        background: #FFF8F0 !important;
     }
     
     /* Alerts */
     .stAlert {
-        background: #1a1a2e;
-        border: 1px solid #00ff4140;
+        background: #FFFAF5;
+        border: 1px solid #DEB887;
         border-radius: 10px;
     }
 </style>
@@ -640,21 +639,21 @@ def render_professional_footer():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown("**🎓 EpiClock v4.0**")
-        st.markdown("Akademik Araştırma Platformu")
+        st.markdown("**EpiClock v4.0**")
+        st.markdown("Akademik Arastirma Platformu")
     
     with col2:
-        st.markdown("**Araştırmacı:**")
-        st.markdown("Dr. Nurcan Denli Bayır")
-        st.caption("Adli Tıp Doktoru")
+        st.markdown("**Arastirmaci:**")
+        st.markdown("Dr. Nurcan Denli Bayir")
+        st.caption("Adli Tip Doktoru")
     
     with col3:
-        st.markdown("**🕐 Son Güncelleme:**")
+        st.markdown("**Son Guncelleme:**")
         st.markdown(f"{timestamp}")
-        st.caption("Türkiye Saati")
+        st.caption("Turkiye Saati")
     
     st.markdown("---")
-    st.caption("© 2025 Dr. Nurcan Denli Bayır - Tüm Hakları Saklıdır")
+    st.caption("2025 Dr. Nurcan Denli Bayir - Tum Haklari Saklidir")
 
 @st.cache_resource
 def init_components():
@@ -860,32 +859,32 @@ def main():
 def render_dna_upload(components, selected_clocks):
     """Comprehensive Data Upload Interface for DNA, Variants, Genes, and CpG"""
     
-    st.markdown("## 📤 Genomik Veri Yükleme Merkezi")
+    st.markdown("## Genomik Veri Yukleme Merkezi")
     st.markdown("""
-    **DNA Metilasyon**, **Varyant (VCF)**, **Gen Listesi** ve **CpG Verilerinizi** yükleyin.
-    Kapsamlı epigenetik yaş analizi için tüm veri türlerini destekliyoruz.
+    **DNA Metilasyon**, **Varyant (VCF)**, **Gen Listesi** ve **CpG Verilerinizi** yukleyin.
+    Kapsamli epigenetik yas analizi icin tum veri turlerini destekliyoruz.
     """)
     
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); 
+    <div style="background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); 
                 padding: 20px; border-radius: 12px; margin-bottom: 20px;
-                border-left: 4px solid #00ff41;">
-        <h4 style="color: #00ff41; margin: 0;">🧬 Desteklenen Veri Türleri</h4>
+                border-left: 4px solid #DAA520;">
+        <h4 style="color: #FFF8F0; margin: 0;">Desteklenen Veri Turleri</h4>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
-            <div style="color: #e0e0e0;">
-                <b style="color: #7fcdbb;">🔬 DNA Metilasyon:</b><br>
-                Illumina EPIC/450K/27K beta değerleri
+            <div style="color: #FFF8F0;">
+                <b style="color: #DAA520;">DNA Metilasyon:</b><br>
+                Illumina EPIC/450K/27K beta degerleri
             </div>
-            <div style="color: #e0e0e0;">
-                <b style="color: #7fcdbb;">🧬 VCF Varyant:</b><br>
-                SNP, indel, yapısal varyantlar
+            <div style="color: #FFF8F0;">
+                <b style="color: #DAA520;">VCF Varyant:</b><br>
+                SNP, indel, yapisal varyantlar
             </div>
-            <div style="color: #e0e0e0;">
-                <b style="color: #7fcdbb;">📋 Gen Listesi:</b><br>
+            <div style="color: #FFF8F0;">
+                <b style="color: #DAA520;">Gen Listesi:</b><br>
                 HGNC gen sembolleri, Ensembl ID
             </div>
-            <div style="color: #e0e0e0;">
-                <b style="color: #7fcdbb;">🎯 CpG Verisi:</b><br>
+            <div style="color: #FFF8F0;">
+                <b style="color: #DAA520;">CpG Verisi:</b><br>
                 CpG site listesi, custom panel
             </div>
         </div>
@@ -893,15 +892,15 @@ def render_dna_upload(components, selected_clocks):
     """, unsafe_allow_html=True)
     
     main_tab1, main_tab2, main_tab3, main_tab4, main_tab5 = st.tabs([
-        "🔬 DNA Metilasyon", 
-        "🧬 VCF Varyant", 
-        "📋 Gen Listesi", 
-        "🎯 CpG Verisi",
-        "📊 Yüklü Veriler"
+        "DNA Metilasyon", 
+        "VCF Varyant", 
+        "Gen Listesi", 
+        "CpG Verisi",
+        "Yuklu Veriler"
     ])
     
     with main_tab1:
-        st.markdown("### 🔬 DNA Metilasyon Verisi Yükle")
+        st.markdown("### DNA Metilasyon Verisi Yukle")
         st.markdown("Illumina EPIC (850K), 450K veya 27K array verilerinizi yükleyin.")
         
         with st.expander("📖 Format Kılavuzu", expanded=False):
@@ -1695,8 +1694,8 @@ def render_home_page(components):
                 font=dict(size=16, color='#3E2723', family='Arial Black')
             ),
             xaxis_title=dict(text="Epigenetik Saat", font=dict(size=12, color='#5D4037')),
-            yaxis=dict(title="MAE (yil)", side='left', titlefont=dict(color='#5D4037')),
-            yaxis2=dict(title="R2", side='right', overlaying='y', range=[0.85, 1.0], titlefont=dict(color='#5D4037')),
+            yaxis=dict(title="MAE (yil)", side='left', title_font=dict(color='#5D4037')),
+            yaxis2=dict(title="R2", side='right', overlaying='y', range=[0.85, 1.0], title_font=dict(color='#5D4037')),
             template="plotly_white",
             legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99, font=dict(color='#3E2723')),
             height=400,
