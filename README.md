@@ -469,9 +469,30 @@ epi-clock-DNA-mtl-prototype/
 
 ---
 
-## 📜 License
+## 📜 License & Copyright
 
-This project is provided for **academic and research purposes only**.
+> ⚠️ **UYARI / WARNING**
+
+Bu proje **özel akademik lisans** ile korunmaktadır. Tüm hakları saklıdır.
+
+This project is protected under a **custom academic license**. All rights reserved.
+
+### İzin Verilen / Permitted:
+- ✅ Kişisel ve eğitim amaçlı görüntüleme
+- ✅ Akademik makalelerde atıf yapma
+- ✅ Değerlendirme amaçlı çalıştırma
+
+### Yasak / Prohibited:
+- ❌ Kopyalama veya çoğaltma
+- ❌ Değiştirme veya türev çalışma oluşturma
+- ❌ Ticari kullanım
+- ❌ Yeniden dağıtım
+- ❌ Kendi çalışmanız gibi sunma
+
+**İhlal durumunda yasal işlem başlatılacaktır.**  
+**Legal action will be taken in case of violation.**
+
+Detaylı lisans bilgisi için: [LICENSE](LICENSE)
 
 ---
 
@@ -479,8 +500,10 @@ This project is provided for **academic and research purposes only**.
 
 **© 2025 Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.**
 
-**Adli Tıp Uzmanı | Yazılım Mühendisi | Sağlık Hukuku Uzmanı**
+**Adli Tıp Doktoru | Yazılım Mühendisi | Sağlık Hukuku Uzmanı**
 
-*Forensic Medicine Specialist | Software Engineer | Health Law Expert*
+*Forensic Medicine Doctor | Software Engineer | Health Law Expert*
+
+**Tüm Hakları Saklıdır / All Rights Reserved**
 
 </div>

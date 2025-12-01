@@ -1,11 +1,31 @@
 """
-EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
+================================================================================
+EpiClock Prototype v4.0
+DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
 DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu
+================================================================================
 
-A comprehensive PROTOTYPE platform for detecting and quantifying epigenetic age acceleration 
-in addiction using DNA methylation clocks.
+COPYRIGHT (c) 2025 Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.
+Adli Tıp Doktoru / Forensic Medicine Doctor
+TÜM HAKLARI SAKLIDIR / ALL RIGHTS RESERVED
 
-IMPORTANT DISCLAIMER:
+================================================================================
+
+YASAL UYARI / LEGAL NOTICE:
+
+Bu yazılım telif hakkı yasaları ile korunmaktadır. İzinsiz kopyalama, 
+değiştirme, dağıtma veya ticari kullanım YASAKTIR. İhlal durumunda 
+Türkiye Cumhuriyeti ve uluslararası telif hakkı yasaları kapsamında 
+yasal işlem başlatılacaktır.
+
+This software is protected by copyright laws. Unauthorized copying, 
+modification, distribution, or commercial use is PROHIBITED. Legal 
+action will be taken under Turkish and international copyright laws 
+in case of violation.
+
+================================================================================
+
+PROTOTYPE DISCLAIMER:
 This is a PROTOTYPE/DEMONSTRATION platform that uses SIMULATED DATA to demonstrate
 the analytical workflow and methodology. The epigenetic clock coefficients and reference
 database are simulated based on published research statistics, not the actual coefficients.
@@ -17,8 +37,13 @@ For research or clinical use:
 - The reference database is simulated; actual methylation profiles require data access
   agreements from repositories like GEO.
 
-This platform demonstrates the complete analytical architecture and can integrate
-real coefficients and data when obtained through proper licensing channels.
+================================================================================
+
+CITATION / ATIF:
+Bayır, N.D. (2025). EpiClock Prototype: DNA Methylation-Based Epigenetic 
+Age Acceleration Analysis Platform. Version 4.0.
+
+================================================================================
 """
 
 import streamlit as st
