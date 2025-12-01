@@ -163,6 +163,7 @@ from modules.professional_theme import (
     render_sticker_badge,
     render_bio_card,
     render_info_box,
+    render_update_badge,
     get_last_update_timestamp,
     BIO_COLOR_PALETTE,
     BIO_ICONS,
@@ -5601,6 +5602,8 @@ def render_polygenic_risk(components):
         
         st.success(f"💰 **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
         st.info(f"📊 **İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
+    
+    render_update_badge()
 
 
 if __name__ == "__main__":

@@ -2,22 +2,39 @@
 EpiClock Professional Theme Module
 Prezi Biology Concept - Academic-Grade Scientific Visualization
 
-Author: Dr. Nurcan Denli Bayır
-Version: 2.0.0
+Author: Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.
+Version: 4.0.0
 """
 
 import streamlit as st
 from datetime import datetime
 import pytz
 
-EPICLOCK_VERSION = "2.0.0"
-BUILD_DATE = "2024-12-01"
+EPICLOCK_VERSION = "4.0.0"
+BUILD_DATE = "2025-12-01"
+LAST_UPDATE = "2025-12-01 14:30:00"
 
 def get_last_update_timestamp():
     """Get formatted last update timestamp in Turkish timezone"""
     turkey_tz = pytz.timezone('Europe/Istanbul')
     now = datetime.now(turkey_tz)
     return now.strftime("%d.%m.%Y %H:%M:%S")
+
+def render_update_badge():
+    """Render the last system update badge with live timestamp"""
+    turkey_tz = pytz.timezone('Europe/Istanbul')
+    now = datetime.now(turkey_tz)
+    timestamp = now.strftime("%d.%m.%Y %H:%M:%S")
+    
+    st.markdown(f"""
+    <div class="update-badge-container">
+        <div class="update-badge">
+            <span class="update-icon">🔄</span>
+            <span class="update-text">Son Güncelleme: <strong>{timestamp}</strong></span>
+            <span class="update-version">v{EPICLOCK_VERSION}</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 def inject_professional_css():
     """Inject professional Prezi Biology-style CSS"""
@@ -26,19 +43,68 @@ def inject_professional_css():
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
         
         :root {
-            --primary-dna: #1e3a5f;
-            --secondary-helix: #3d7ea6;
-            --accent-nucleotide: #7fcdbb;
-            --highlight-gene: #c7e9b4;
-            --warm-cytosine: #fdbe85;
-            --alert-adenine: #f03b20;
-            --background-cell: #f7f7f7;
+            --primary-dna: #0d4f4f;
+            --secondary-helix: #1a7a7a;
+            --accent-nucleotide: #2dd4bf;
+            --highlight-gene: #5eead4;
+            --warm-cytosine: #fbbf24;
+            --alert-adenine: #ef4444;
+            --background-cell: #f0fdfa;
             --surface-membrane: #ffffff;
-            --text-genome: #2c3e50;
-            --text-light: #7f8c8d;
-            --border-chromosome: #bdc3c7;
-            --gradient-bio: linear-gradient(135deg, #1e3a5f 0%, #3d7ea6 50%, #7fcdbb 100%);
-            --shadow-bio: 0 4px 20px rgba(30, 58, 95, 0.15);
+            --text-genome: #134e4a;
+            --text-light: #5f7472;
+            --border-chromosome: #99f6e4;
+            --gradient-bio: linear-gradient(135deg, #0d4f4f 0%, #1a7a7a 50%, #2dd4bf 100%);
+            --shadow-bio: 0 8px 32px rgba(13, 79, 79, 0.15);
+        }
+        
+        /* ============================================
+           UPDATE BADGE - SYSTEM STATUS
+           ============================================ */
+        
+        .update-badge-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .update-badge {
+            background: linear-gradient(135deg, #0d4f4f 0%, #1a7a7a 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(13, 79, 79, 0.3);
+            border: 2px solid #2dd4bf;
+            animation: badgePulse 3s ease-in-out infinite;
+        }
+        
+        .update-icon {
+            font-size: 1.1rem;
+            animation: iconSpin 4s linear infinite;
+        }
+        
+        .update-version {
+            background: rgba(45, 212, 191, 0.3);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(13, 79, 79, 0.3); }
+            50% { box-shadow: 0 4px 30px rgba(45, 212, 191, 0.5); }
+        }
+        
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         /* ============================================
@@ -47,10 +113,10 @@ def inject_professional_css():
         
         .stApp {
             background: linear-gradient(180deg, 
-                #f8fafc 0%, 
-                #e8f4f8 30%, 
-                #f0f9ff 70%, 
-                #f8fafc 100%) !important;
+                #f0fdfa 0%, 
+                #ccfbf1 30%, 
+                #e0f2fe 70%, 
+                #f0fdfa 100%) !important;
         }
         
         .main .block-container {
@@ -64,7 +130,7 @@ def inject_professional_css():
            ============================================ */
         
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #1e3a5f 0%, #2c5282 100%) !important;
+            background: linear-gradient(180deg, #0d4f4f 0%, #134e4a 100%) !important;
             border-right: 3px solid var(--accent-nucleotide);
         }
         
@@ -73,16 +139,17 @@ def inject_professional_css():
         }
         
         [data-testid="stSidebar"] .stRadio label {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin: 4px 0;
+            background: rgba(45, 212, 191, 0.1);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin: 5px 0;
             transition: all 0.3s ease;
-            border-left: 3px solid transparent;
+            border-left: 4px solid transparent;
+            font-weight: 500;
         }
         
         [data-testid="stSidebar"] .stRadio label:hover {
-            background: rgba(127, 205, 187, 0.2);
+            background: rgba(45, 212, 191, 0.25);
             border-left-color: var(--accent-nucleotide);
         }
         
