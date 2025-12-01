@@ -794,48 +794,48 @@ def main():
     components = init_components()
     
     render_dna_helix_animation()
-    st.markdown('<p class="main-header">🧬 EpiClock Prototype</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">EpiClock Prototype</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">DNA Metilasyon Tabanli Epigenetik Yas Ivmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
     
     with st.sidebar:
-        st.markdown("### 🧬 EpiClock")
-        st.markdown("### 📊 Analiz Modülleri")
+        st.markdown("### EpiClock")
+        st.markdown("### Analiz Modulleri")
         
         analysis_mode = st.radio(
-            "Analiz Türü Seçin:",
-            ["🏠 Ana Sayfa",
-             "📚 Kullanım Kılavuzu",
-             "📥 Veri Dışa Aktar",
-             "📤 DNA Verisi Yükle",
-             "🧬 CpG Veritabanı",
-             "🔬 Varyant Analizi",
-             "💊 Farmakogenomik",
-             "📊 Poligenik Risk Skoru",
-             "🌍 Dünya Veritabanları",
-             "👤 Bireysel Analiz",
-             "📁 Toplu Analiz",
-             "📈 Referans Veritabanı",
-             "🔬 Diferansiyel Metilasyon",
-             "🧪 Mediyasyon Analizi",
-             "📊 Model Performansı",
-             "📉 Longitudinal Takip",
-             "🧬 GSEA Pathway Analizi",
-             "💊 Klinik Karar Destek",
-             "🔗 Multi-Omik Entegrasyon",
-             "🧠 Postmortem Validasyon",
-             "⚖️ Moderasyon Analizi",
-             "🔄 Tersine Çevrilebilirlik",
-             "📊 Klinik Kovaryatlar",
-             "🫀 Doku-Spesifik Saatler",
-             "🔐 Blockchain Denetim",
-             "📚 Yayın Referansları",
-             "🗄️ Veritabanı Yönetimi",
-             "📋 Rapor Oluştur"],
+            "Analiz Turu Secin:",
+            ["Ana Sayfa",
+             "Kullanim Kilavuzu",
+             "Veri Disa Aktar",
+             "DNA Verisi Yukle",
+             "CpG Veritabani",
+             "Varyant Analizi",
+             "Farmakogenomik",
+             "Poligenik Risk Skoru",
+             "Dunya Veritabanlari",
+             "Bireysel Analiz",
+             "Toplu Analiz",
+             "Referans Veritabani",
+             "Diferansiyel Metilasyon",
+             "Mediyasyon Analizi",
+             "Model Performansi",
+             "Longitudinal Takip",
+             "GSEA Pathway Analizi",
+             "Klinik Karar Destek",
+             "Multi-Omik Entegrasyon",
+             "Postmortem Validasyon",
+             "Moderasyon Analizi",
+             "Tersine Cevrilebilirlik",
+             "Klinik Kovaryatlar",
+             "Doku-Spesifik Saatler",
+             "Blockchain Denetim",
+             "Yayin Referanslari",
+             "Veritabani Yonetimi",
+             "Rapor Olustur"],
             index=0
         )
         
         st.markdown("---")
-        st.markdown("### ⚙️ Ayarlar")
+        st.markdown("### Ayarlar")
         
         selected_clocks = st.multiselect(
             "Epigenetik Saatler:",
@@ -844,7 +844,7 @@ def main():
         )
         
         significance_level = st.slider(
-            "İstatistiksel Anlamlılık (α):",
+            "Istatistiksel Anlamlilik:",
             min_value=0.01,
             max_value=0.10,
             value=0.05,
@@ -852,12 +852,12 @@ def main():
         )
         
         st.markdown("---")
-        st.markdown("### 📚 Hakkında")
+        st.markdown("### Hakkinda")
         st.markdown("""
-        **EpiClock Prototype v1.0**
+        **EpiClock Prototype v4.0**
         
         Bu platform, DNA metilasyon verilerini 
-        kullanarak epigenetik yaş ivmelenmesini 
+        kullanarak epigenetik yas ivmelenmesini 
         tespit eder.
         
         **Desteklenen Saatler:**
@@ -867,65 +867,65 @@ def main():
         - GrimAge (1030 CpG)
         - DunedinPACE (173 CpG)
         
-        **Referans Veritabanı:**
+        **Referans Veritabani:**
         10,542 DNA metilasyon profili
         """)
     
-    if "🏠 Ana Sayfa" in analysis_mode:
+    if "Ana Sayfa" in analysis_mode:
         render_home_page(components)
-    elif "📚 Kullanım Kılavuzu" in analysis_mode:
+    elif "Kullanim Kilavuzu" in analysis_mode:
         render_academic_guide()
-    elif "📥 Veri Dışa Aktar" in analysis_mode:
+    elif "Veri Disa Aktar" in analysis_mode:
         render_data_export_page(components)
-    elif "📤 DNA Verisi Yükle" in analysis_mode:
+    elif "DNA Verisi Yukle" in analysis_mode:
         render_dna_upload(components, selected_clocks)
-    elif "🧬 CpG Veritabanı" in analysis_mode:
+    elif "CpG Veritabani" in analysis_mode:
         render_cpg_database(components)
-    elif "🔬 Varyant Analizi" in analysis_mode:
+    elif "Varyant Analizi" in analysis_mode:
         render_variant_analysis(components)
-    elif "💊 Farmakogenomik" in analysis_mode:
+    elif "Farmakogenomik" in analysis_mode:
         render_pharmacogenomics(components)
-    elif "📊 Poligenik Risk Skoru" in analysis_mode:
+    elif "Poligenik Risk Skoru" in analysis_mode:
         render_polygenic_risk(components)
-    elif "🌍 Dünya Veritabanları" in analysis_mode:
+    elif "Dunya Veritabanlari" in analysis_mode:
         render_world_databases(components)
-    elif "👤 Bireysel Analiz" in analysis_mode:
+    elif "Bireysel Analiz" in analysis_mode:
         render_individual_analysis(components, selected_clocks)
-    elif "📁 Toplu Analiz" in analysis_mode:
+    elif "Toplu Analiz" in analysis_mode:
         render_batch_analysis(components, selected_clocks)
-    elif "📈 Referans Veritabanı" in analysis_mode:
+    elif "Referans Veritabani" in analysis_mode:
         render_reference_database(components)
-    elif "🔬 Diferansiyel Metilasyon" in analysis_mode:
+    elif "Diferansiyel Metilasyon" in analysis_mode:
         render_differential_methylation(components, significance_level)
-    elif "🧪 Mediyasyon Analizi" in analysis_mode:
+    elif "Mediyasyon Analizi" in analysis_mode:
         render_mediation_analysis(components)
-    elif "📊 Model Performansı" in analysis_mode:
+    elif "Model Performansi" in analysis_mode:
         render_model_performance(components)
-    elif "📉 Longitudinal Takip" in analysis_mode:
+    elif "Longitudinal Takip" in analysis_mode:
         render_longitudinal_analysis(components)
-    elif "🧬 GSEA Pathway Analizi" in analysis_mode:
+    elif "GSEA Pathway Analizi" in analysis_mode:
         render_gsea_analysis(components)
-    elif "💊 Klinik Karar Destek" in analysis_mode:
+    elif "Klinik Karar Destek" in analysis_mode:
         render_clinical_decision_support(components)
-    elif "🔗 Multi-Omik Entegrasyon" in analysis_mode:
+    elif "Multi-Omik Entegrasyon" in analysis_mode:
         render_multiomics_analysis(components)
-    elif "🧠 Postmortem Validasyon" in analysis_mode:
+    elif "Postmortem Validasyon" in analysis_mode:
         render_postmortem_validation(components)
-    elif "⚖️ Moderasyon Analizi" in analysis_mode:
+    elif "Moderasyon Analizi" in analysis_mode:
         render_moderation_analysis(components)
-    elif "🔄 Tersine Çevrilebilirlik" in analysis_mode:
+    elif "Tersine Cevrilebilirlik" in analysis_mode:
         render_reversibility_analysis(components)
-    elif "📊 Klinik Kovaryatlar" in analysis_mode:
+    elif "Klinik Kovaryatlar" in analysis_mode:
         render_clinical_covariates(components)
-    elif "🫀 Doku-Spesifik Saatler" in analysis_mode:
+    elif "Doku-Spesifik Saatler" in analysis_mode:
         render_tissue_specific_clocks(components)
-    elif "🔐 Blockchain Denetim" in analysis_mode:
+    elif "Blockchain Denetim" in analysis_mode:
         render_blockchain_audit(components)
-    elif "📚 Yayın Referansları" in analysis_mode:
+    elif "Yayin Referanslari" in analysis_mode:
         render_publication_references()
-    elif "🗄️ Veritabanı Yönetimi" in analysis_mode:
+    elif "Veritabani Yonetimi" in analysis_mode:
         render_database_management(components)
-    elif "📋 Rapor Oluştur" in analysis_mode:
+    elif "Rapor Olustur" in analysis_mode:
         render_report_generator(components)
     
     render_professional_footer()
