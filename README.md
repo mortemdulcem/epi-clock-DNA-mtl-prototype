@@ -151,36 +151,191 @@
 
 ---
 
-## 🚀 Installation
+## 🧬 CpG Veritabanı (CpG Database)
+
+Platform, bağımlılık araştırmaları için kapsamlı bir CpG metilasyon veritabanı içerir:
+
+| Özellik | Değer |
+|:--------|------:|
+| **Toplam CpG Bölgesi** | 29,716+ |
+| **Madde Sınıfları** | 12 |
+| **Gen Sistemleri** | 10 |
+| **Kanıt Düzeyleri** | 3 (Güçlü/Orta/Düşük) |
+
+### Desteklenen Madde Sınıfları
+
+| Madde | Türkçe | Anahtar Genler |
+|:------|:-------|:---------------|
+| Alcohol | Alkol | AHRR, ADH1B, ALDH2 |
+| Opioids | Opioid | OPRM1, OPRD1, BDNF |
+| Stimulants | Stimülan | SLC6A3, DRD2, BDNF |
+| Nicotine | Nikotin | AHRR, F2RL3, GPR15 |
+| Cannabis | Esrar | CNR1, CNR2, FAAH |
+| Benzodiazepines | Benzodiazepin | GABRA2, GABRB3 |
+| Hallucinogens | Halüsinojen | HTR2A, HTR1B |
+| Dissociatives | Disosyatif | GRIN2B, GRIN1 |
+| Inhalants | İnhalan | TP53, ATM |
+| Anabolic Steroids | Anabolik Steroid | AR, STAT3 |
+| NPS | Yeni Psikoaktif | SLC6A3, DRD2 |
+| Polysubstance | Polisubstans | BDNF, AHRR, DRD2 |
+
+---
+
+## 📥 Veri Dışa Aktarma (Data Export)
+
+Platform, CpG verilerini **4 farklı formatta** dışa aktarabilir:
+
+### CSV Format
+```csv
+cpg_id,gene,chromosome,position,delta_beta,p_value,direction,evidence_level,substance
+cg05575921,AHRR,chr5,373378,-0.42,1.5e-78,Hypomethylation,Very Strong,nicotine
+```
+**Kullanım:** Excel, R, Python pandas ile analiz
+
+### BED Format (Genom Tarayıcı)
+```
+chr5    373378    373379    cg05575921    1000    -    AHRR    nicotine    Very Strong
+```
+**Kullanım:** UCSC Genome Browser, IGV, Ensembl
+
+### JSON Format
+```json
+{
+  "metadata": {"title": "EpiClock CpG Database", "version": "1.0.0"},
+  "substance_panels": {
+    "nicotine": {
+      "key_markers": [{"cpg_id": "cg05575921", "gene": "AHRR"}]
+    }
+  }
+}
+```
+**Kullanım:** Web uygulamaları, API entegrasyonu
+
+### SQL Format
+```sql
+CREATE TABLE cpg_markers (
+    id SERIAL PRIMARY KEY,
+    cpg_id VARCHAR(20) NOT NULL,
+    gene VARCHAR(50),
+    chromosome VARCHAR(10)
+);
+INSERT INTO cpg_markers VALUES ('cg05575921', 'AHRR', 'chr5');
+```
+**Kullanım:** PostgreSQL veritabanı oluşturma
+
+---
+
+## 🌍 Dünya Veritabanları Entegrasyonu
+
+| Veritabanı | Açıklama | Kayıt Sayısı |
+|:-----------|:---------|-------------:|
+| **GWAS Catalog** | Genom çapında ilişki çalışmaları | 500+ |
+| **EWAS Atlas** | Epigenom çapında ilişki çalışmaları | 300+ |
+| **PharmGKB** | Farmakogenomik bilgiler | 200+ |
+| **CPIC** | Klinik farmakogenetik kılavuzları | 50+ |
+
+---
+
+## 🚀 Kurulum (Installation)
 
 ```bash
-# Clone repository
+# 1. Repoyu klonla
 git clone https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype.git
 cd epi-clock-DNA-mtl-prototype
 
-# Install dependencies
+# 2. Bağımlılıkları yükle
 pip install -r requirements.txt
 
-# Run application
+# 3. Uygulamayı çalıştır
 streamlit run app.py --server.port 5000
+```
+
+### Gerekli Kütüphaneler
+
+```
+streamlit>=1.28.0
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+plotly>=5.18.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+scipy>=1.11.0
+statsmodels>=0.14.0
+reportlab>=4.0.0
+openpyxl>=3.1.0
+psycopg2-binary>=2.9.0
+sqlalchemy>=2.0.0
 ```
 
 ---
 
-## 📁 Project Structure
+## 📖 Kullanım Kılavuzu (User Guide)
+
+### 1. Bireysel Analiz
+1. Sol menüden **"🧪 Bireysel Analiz"** seçin
+2. Yaş ve cinsiyet bilgilerini girin
+3. Madde kullanım geçmişini işaretleyin
+4. **"Analiz Et"** butonuna tıklayın
+5. Epigenetik yaş ve EAA sonuçlarını görüntüleyin
+
+### 2. CpG Veritabanı Tarama
+1. **"🧬 CpG Veritabanı"** menüsüne gidin
+2. Madde sınıfı veya gen adına göre arama yapın
+3. CpG detaylarını ve kanıt düzeylerini inceleyin
+
+### 3. Veri Dışa Aktarma
+1. **"📥 Veri Dışa Aktarma"** menüsüne gidin
+2. İstediğiniz formatı seçin (CSV/BED/JSON/SQL)
+3. **"İndir"** butonuna tıklayın
+
+### 4. Dünya Veritabanları
+1. **"🌍 Dünya Veritabanları"** menüsüne gidin
+2. GWAS, EWAS veya PharmGKB sekmelerini inceleyin
+3. Madde-gen ilişkilerini araştırın
+
+### 5. Akademik Kılavuz
+1. **"📚 Akademik Kılavuz"** menüsüne gidin
+2. Metodoloji ve referansları inceleyin
+3. Atıf bilgilerini kopyalayın
+
+---
+
+## 💰 Maliyet Avantajı
+
+| Yöntem | Tahmini Maliyet | Süre |
+|:-------|----------------:|-----:|
+| Geleneksel GWAS Taraması | $50,000+ | 6+ ay |
+| Ticari Epigenetik Test | $5,000+ | 4-6 hafta |
+| **EpiClock Platformu** | **$0 (Açık Kaynak)** | **Anında** |
+
+> **%90-95 maliyet tasarrufu** - Açık kaynak araçlar ve kamu veritabanları kullanılarak
+
+---
+
+## 📁 Proje Yapısı (Project Structure)
 
 ```
 epi-clock-DNA-mtl-prototype/
-├── app.py                    # Main Application
-├── modules/                  # Analysis Modules (21 total)
-│   ├── epigenetic_clocks.py  # Clock Implementations
-│   ├── ml_models.py          # Machine Learning
-│   ├── tissue_clocks.py      # Tissue-Specific
-│   ├── audit.py              # Blockchain
-│   ├── dna_reader.py         # Data Import
-│   └── published_coefficients.py
-├── data/                     # Data Files
-└── attached_assets/          # Research Papers
+├── app.py                           # Ana Uygulama (3000+ satır)
+├── modules/                         # Analiz Modülleri (24 modül)
+│   ├── epigenetic_clocks.py         # 5 Epigenetik Saat
+│   ├── ml_models.py                 # Makine Öğrenmesi
+│   ├── tissue_clocks.py             # 12 Doku-Spesifik Saat
+│   ├── cpg_database.py              # CpG Veritabanı (29,716 site)
+│   ├── data_export.py               # Çoklu Format Export
+│   ├── academic_guide.py            # Akademik Kılavuz
+│   ├── world_databases.py           # GWAS/EWAS/PharmGKB
+│   ├── comprehensive_substance_database.py  # 2,800+ Gen
+│   ├── advanced_prs.py              # Poligenik Risk Skoru
+│   ├── audit.py                     # Blockchain Denetim
+│   ├── forensic.py                  # Adli Tıp Araçları
+│   └── ...                          # Diğer modüller
+├── data/                            # Veri Dosyaları
+├── attached_assets/                 # Araştırma Makaleleri
+├── .streamlit/config.toml           # Streamlit Ayarları
+└── pyproject.toml                   # Python Bağımlılıkları
 ```
 
 ---
