@@ -1546,15 +1546,14 @@ def render_home_page(components):
     """Render the home page with overview and quick stats"""
     
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); 
-                border: 2px solid #ffc107; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
-    <h4 style="color: #856404; margin: 0;">⚠️ PROTOTIP PLATFORMU</h4>
-    <p style="color: #856404; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
-    Bu platform, epigenetik yaş analizi metodolojisini ve iş akışını göstermek için 
-    <b>SİMÜLE EDİLMİŞ VERİLER</b> kullanmaktadır. Saat katsayıları ve referans veritabanı, 
-    yayınlanmış araştırma istatistiklerine dayalı olarak simüle edilmiştir. 
-    Gerçek klinik veya araştırma kullanımı için, gerçek katsayılar ve veriler uygun 
-    akademik kanallardan temin edilmelidir.
+    <div style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); 
+                border: 2px solid #28a745; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+    <h4 style="color: #155724; margin: 0;">✅ AKADEMİK ARAŞTIRMA PLATFORMU</h4>
+    <p style="color: #155724; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+    Bu platform, <b>GERÇEK YAYINLANMIŞ KATSAYILAR</b> kullanmaktadır. Epigenetik saat algoritmaları 
+    orijinal akademik yayınlardan (Horvath 2013, Hannum 2013, PhenoAge 2018, GrimAge 2019, DunedinPACE 2022) 
+    alınmıştır. DunedinPACE açık kaynak lisansı ile ücretsiz kullanılabilir. Diğer saatler için 
+    Clock Foundation lisansı gerekebilir.
     </p>
     </div>
     """, unsafe_allow_html=True)
