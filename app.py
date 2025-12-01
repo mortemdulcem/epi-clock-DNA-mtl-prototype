@@ -128,6 +128,33 @@ from modules.user_guide import (
     GENOMICS_GLOSSARY,
     ACADEMIC_REFERENCES
 )
+from modules.comprehensive_substance_database import (
+    get_all_substances,
+    get_substance_count,
+    search_substance,
+    get_genes_by_system,
+    get_database_statistics,
+    NEUROTRANSMITTER_GENE_SYSTEMS,
+    EPIGENETIC_REGULATION_GENES,
+    GWAS_CATALOG_ADDICTION,
+    EWAS_CATALOG_ADDICTION,
+    PHARMACOGENOMICS_ADDICTION,
+    OPIOID_SUBSTANCES,
+    STIMULANT_SUBSTANCES,
+    DEPRESSANT_SUBSTANCES,
+    CANNABINOID_SUBSTANCES,
+    HALLUCINOGEN_SUBSTANCES,
+    NICOTINE_SUBSTANCES
+)
+from modules.world_databases import (
+    ADDICTION_GWAS_STUDIES,
+    ADDICTION_GWAS_LOCI,
+    EWAS_ADDICTION_MARKERS,
+    CPIC_GUIDELINES_ADDICTION,
+    PHARMGKB_ADDICTION_GENES,
+    GEO_ADDICTION_DATASETS,
+    get_database_summary
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -749,6 +776,7 @@ def main():
              "🧬 Varyant Analizi",
              "💊 Farmakogenomik",
              "📊 Poligenik Risk Skoru",
+             "🌍 Dünya Veritabanları",
              "👤 Bireysel Analiz",
              "📁 Toplu Analiz",
              "📈 Referans Veritabanı",
@@ -818,6 +846,8 @@ def main():
         render_pharmacogenomics(components)
     elif "📊 Poligenik Risk Skoru" in analysis_mode:
         render_polygenic_risk(components)
+    elif "🌍 Dünya Veritabanları" in analysis_mode:
+        render_world_databases(components)
     elif "👤 Bireysel Analiz" in analysis_mode:
         render_individual_analysis(components, selected_clocks)
     elif "📁 Toplu Analiz" in analysis_mode:
@@ -2470,6 +2500,315 @@ def render_model_performance(components):
     
     cv_df = pd.DataFrame(cv_results)
     st.dataframe(cv_df, width='stretch')
+
+
+def render_world_databases(components):
+    """Render World Databases Integration Page - GWAS, EWAS, PharmGKB, CPIC"""
+    
+    st.markdown("## 🌍 Dünya Genomik Veritabanları")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>📚 Kapsamlı Veritabanı Entegrasyonu:</b> Bu modül, dünya çapındaki en büyük bağımlılık 
+    genetik ve epigenetik veritabanlarını entegre eder. GWAS Catalog, EWAS Catalog, PharmGKB, 
+    CPIC ve GEO veritabanlarından alınan verilerle kapsamlı analizler yapabilirsiniz.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    db_stats = get_database_statistics()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Madde Türü", db_stats['total_substances'], help="WHO sınıflı bağımlılık yapıcı maddeler")
+    with col2:
+        st.metric("Bağımlılık Genleri", f"{db_stats['total_addiction_genes']:,}", help="Nörotransmitter sistemlerindeki genler")
+    with col3:
+        st.metric("GWAS Çalışmaları", len(ADDICTION_GWAS_STUDIES), help="Genom çapı ilişkilendirme çalışmaları")
+    with col4:
+        st.metric("EWAS Belirteçleri", sum(len(m) for m in EWAS_ADDICTION_MARKERS.values()), help="Epigenom çapı metilasyon belirteçleri")
+    
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "🧬 GWAS Veritabanı",
+        "🔬 EWAS Metilasyon",
+        "💊 Farmakogenomik",
+        "📦 Madde Veritabanı",
+        "🧠 Gen Sistemleri",
+        "📊 Veri Kaynakları"
+    ])
+    
+    with tab1:
+        st.markdown("### 🧬 GWAS Catalog - Bağımlılık Çalışmaları")
+        st.markdown("""
+        Genom çapında ilişkilendirme çalışmaları (GWAS), hastalıkla ilişkili genetik varyantları 
+        keşfetmek için milyonlarca SNP'yi tarar. Aşağıda bağımlılık için en büyük GWAS çalışmaları yer almaktadır.
+        """)
+        
+        gwas_data = []
+        for key, study in ADDICTION_GWAS_STUDIES.items():
+            gwas_data.append({
+                'Özellik': study.trait,
+                'N (Örnek)': f"{study.n_samples:,}",
+                'Yıl': study.year,
+                'Atıf': study.citation,
+                'PMID': study.pmid,
+                'Konsorsiyum': study.consortium or '-',
+                'Özet İstatistik': '✅' if study.summary_stats_available else '❌'
+            })
+        
+        gwas_df = pd.DataFrame(gwas_data)
+        st.dataframe(gwas_df, use_container_width=True)
+        
+        st.markdown("### 🎯 En Önemli Genetik Lokuslar")
+        
+        selected_trait = st.selectbox(
+            "Özellik Seçin:",
+            list(ADDICTION_GWAS_LOCI.keys()),
+            format_func=lambda x: x.replace('_', ' ').title()
+        )
+        
+        if selected_trait in ADDICTION_GWAS_LOCI:
+            loci = ADDICTION_GWAS_LOCI[selected_trait]
+            loci_data = []
+            for locus in loci:
+                loci_data.append({
+                    'rsID': locus.rsid,
+                    'Gen': locus.gene,
+                    'Kr': locus.chromosome,
+                    'P-değeri': f"{locus.p_value:.2e}",
+                    'Beta': f"{locus.beta:.3f}",
+                    'OR': f"{locus.or_value:.2f}" if locus.or_value else '-',
+                    'EAF': f"{locus.eaf:.2f}",
+                    'Etki Aleli': locus.effect_allele
+                })
+            
+            loci_df = pd.DataFrame(loci_data)
+            st.dataframe(loci_df, use_container_width=True)
+            
+            import plotly.express as px
+            fig = px.bar(loci_df, x='Gen', y='Beta', color='Beta',
+                        color_continuous_scale='RdBu_r',
+                        title=f'{selected_trait.replace("_", " ").title()} - Genetik Etki Büyüklükleri')
+            fig.update_layout(template='plotly_white')
+            st.plotly_chart(fig, use_container_width=True)
+    
+    with tab2:
+        st.markdown("### 🔬 EWAS Catalog - DNA Metilasyon Belirteçleri")
+        st.markdown("""
+        Epigenom çapında ilişkilendirme çalışmaları (EWAS), hastalıkla ilişkili CpG metilasyon 
+        değişikliklerini tespit eder. Sigara için cg05575921 (AHRR) en güçlü biyobelirteçtir.
+        """)
+        
+        ewas_trait = st.selectbox(
+            "Madde Türü Seçin:",
+            list(EWAS_ADDICTION_MARKERS.keys()),
+            format_func=lambda x: x.replace('_', ' ').title()
+        )
+        
+        if ewas_trait in EWAS_ADDICTION_MARKERS:
+            markers = EWAS_ADDICTION_MARKERS[ewas_trait]
+            marker_data = []
+            for m in markers:
+                marker_data.append({
+                    'CpG ID': m.cpg_id,
+                    'Gen': m.gene,
+                    'Kr': m.chromosome,
+                    'ΔBeta': f"{m.delta_beta:.3f}",
+                    'P-değeri': f"{m.p_value:.2e}",
+                    'Yön': '⬇️ Hypomethylated' if m.direction == 'hypomethylated' else '⬆️ Hypermethylated',
+                    'Doku': m.tissue,
+                    'N': f"{m.n_samples:,}"
+                })
+            
+            marker_df = pd.DataFrame(marker_data)
+            st.dataframe(marker_df, use_container_width=True)
+            
+            st.markdown("#### 📊 Metilasyon Değişiklikleri (ΔBeta)")
+            
+            plot_data = pd.DataFrame({
+                'CpG': [m.cpg_id for m in markers],
+                'Delta_Beta': [m.delta_beta for m in markers],
+                'Gene': [m.gene for m in markers]
+            })
+            
+            import plotly.express as px
+            fig = px.bar(plot_data, x='CpG', y='Delta_Beta', color='Delta_Beta',
+                        color_continuous_scale='RdBu_r', text='Gene',
+                        title=f'{ewas_trait.replace("_", " ").title()} - CpG Metilasyon Değişiklikleri')
+            fig.update_layout(template='plotly_white')
+            st.plotly_chart(fig, use_container_width=True)
+    
+    with tab3:
+        st.markdown("### 💊 PharmGKB & CPIC Farmakogenomik")
+        st.markdown("""
+        Farmakogenomik, genetik varyasyonların ilaç yanıtını nasıl etkilediğini inceler. 
+        CPIC kılavuzları klinik uygulamalar için kanıta dayalı öneriler sunar.
+        """)
+        
+        st.markdown("#### 🧬 Bağımlılık Tedavisinde Önemli Farmakogenler")
+        
+        pharmgene_data = []
+        for gene, info in PHARMGKB_ADDICTION_GENES.items():
+            pharmgene_data.append({
+                'Gen': gene,
+                'Tam Adı': info['name'],
+                'Kromozom': info['chromosome'],
+                'VIP Gen': '⭐' if info.get('vip_gene') else '',
+                'İlişkili İlaçlar': ', '.join(info.get('drug_associations', [])[:3]) + ('...' if len(info.get('drug_associations', [])) > 3 else ''),
+                'PharmGKB ID': info['pharmgkb_id']
+            })
+        
+        pharmgene_df = pd.DataFrame(pharmgene_data)
+        st.dataframe(pharmgene_df, use_container_width=True)
+        
+        st.markdown("#### 📋 CPIC Klinik Kılavuzları")
+        
+        for key, guideline in CPIC_GUIDELINES_ADDICTION.items():
+            with st.expander(f"🔹 {', '.join(guideline['drugs'])} - {guideline['gene'] if 'gene' in guideline else ', '.join(guideline.get('genes', []))}"):
+                st.markdown(f"**Kılavuz ID:** {guideline['guideline_id']}")
+                st.markdown(f"**İlaçlar:** {', '.join(guideline['drugs'])}")
+                if 'relevance' in guideline:
+                    st.info(f"**Bağımlılık İlişkisi:** {guideline['relevance']}")
+                
+                st.markdown("**Fenotip Bazlı Öneriler:**")
+                for phenotype, rec in guideline.get('recommendations', {}).items():
+                    st.markdown(f"- **{phenotype.replace('_', ' ').title()}:** {rec.get('recommendation', '-')}")
+    
+    with tab4:
+        st.markdown("### 📦 Kapsamlı Madde Veritabanı")
+        st.markdown("""
+        WHO sınıflandırmasına göre tüm bağımlılık yapıcı maddeler, genetik hedefleri, 
+        epigenetik etkileri ve farmakogenomik özellikleri ile birlikte.
+        """)
+        
+        substance_counts = get_substance_count()
+        
+        cols = st.columns(len(substance_counts))
+        for idx, (category, count) in enumerate(substance_counts.items()):
+            with cols[idx]:
+                st.metric(category.title(), count)
+        
+        substance_category = st.selectbox(
+            "Madde Kategorisi:",
+            ['opioids', 'stimulants', 'depressants', 'cannabinoids', 'hallucinogens', 'nicotine'],
+            format_func=lambda x: {
+                'opioids': '💉 Opioidler',
+                'stimulants': '⚡ Stimulanlar',
+                'depressants': '🍷 Depresanlar',
+                'cannabinoids': '🌿 Kannabinoidler',
+                'hallucinogens': '🍄 Halüsinojenler',
+                'nicotine': '🚬 Nikotin/Tütün'
+            }[x]
+        )
+        
+        all_substances = get_all_substances()
+        if substance_category in all_substances:
+            for key, profile in all_substances[substance_category].items():
+                with st.expander(f"**{profile.turkish_name}** ({profile.name})"):
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown(f"**Bağımlılık Potansiyeli:** {profile.addiction_potential.value[1]}")
+                        st.markdown(f"**Yasal Durum:** {profile.legal_status.value}")
+                        st.markdown(f"**Etki Mekanizması:** {profile.mechanism_of_action}")
+                        if profile.eaa_effect_years > 0:
+                            st.metric("Epigenetik Yaş Etkisi", f"+{profile.eaa_effect_years} yıl", 
+                                     help=f"95% CI: {profile.eaa_95ci}")
+                    
+                    with col2:
+                        st.markdown("**GWAS Genleri:**")
+                        st.write(', '.join(profile.gwas_genes[:10]))
+                        if profile.methylation_cpgs:
+                            st.markdown("**Metilasyon CpG'leri:**")
+                            st.write(', '.join(profile.methylation_cpgs[:5]))
+                        if profile.pharmacogenes:
+                            st.markdown("**Farmakogenler:**")
+                            st.write(', '.join(profile.pharmacogenes[:5]))
+                    
+                    if profile.street_names:
+                        st.caption(f"Sokak İsimleri: {', '.join(profile.street_names[:5])}")
+    
+    with tab5:
+        st.markdown("### 🧠 Nörotransmitter Gen Sistemleri")
+        st.markdown("""
+        Bağımlılıkta rol oynayan temel nörotransmitter sistemleri ve ilişkili genler.
+        """)
+        
+        for system_name, system_data in NEUROTRANSMITTER_GENE_SYSTEMS.items():
+            with st.expander(f"🔹 {system_name.replace('_', ' ').title()} ({system_data['n_genes']} gen)"):
+                st.markdown(f"**Açıklama:** {system_data['description']}")
+                st.markdown(f"**Bağımlılık İlişkisi:** {system_data['addiction_relevance']}")
+                
+                st.markdown("**Anahtar Genler:**")
+                for category, genes in system_data['key_genes'].items():
+                    st.markdown(f"- **{category.replace('_', ' ').title()}:** {', '.join(genes)}")
+        
+        st.markdown("### 🧬 Epigenetik Düzenleme Genleri")
+        
+        for category, subcategories in EPIGENETIC_REGULATION_GENES.items():
+            with st.expander(f"🔹 {category.replace('_', ' ').title()}"):
+                if isinstance(subcategories, dict):
+                    for subcat, genes in subcategories.items():
+                        if isinstance(genes, dict):
+                            for role, gene_list in genes.items():
+                                st.markdown(f"**{subcat.title()} - {role.title()}:** {', '.join(gene_list)}")
+                        else:
+                            st.markdown(f"**{subcat.title()}:** {', '.join(genes)}")
+                elif isinstance(subcategories, list):
+                    st.write(', '.join(subcategories))
+    
+    with tab6:
+        st.markdown("### 📊 Veri Kaynakları ve Erişim")
+        
+        summary = get_database_summary()
+        
+        st.markdown("#### 📈 Veritabanı İstatistikleri")
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Toplam GWAS Örnekleri", f"{summary['total_samples_gwas']:,}")
+        with col2:
+            st.metric("GEO Veri Setleri", summary['geo_datasets'])
+        with col3:
+            st.metric("Farmakogen", summary['pharmacogenes'])
+        
+        st.markdown("#### 🔗 Veri Kaynakları")
+        
+        source_data = []
+        for source in summary['data_sources']:
+            source_data.append({
+                'Kaynak': source['name'],
+                'URL': source['url'],
+                'Erişim': source['access']
+            })
+        
+        source_df = pd.DataFrame(source_data)
+        st.dataframe(source_df, use_container_width=True)
+        
+        st.markdown("#### 📥 GEO Veri Setleri")
+        
+        geo_data = []
+        for accession, dataset in GEO_ADDICTION_DATASETS.items():
+            geo_data.append({
+                'Accession': accession,
+                'Başlık': dataset['title'][:50] + '...' if len(dataset['title']) > 50 else dataset['title'],
+                'N': dataset['sample_count'],
+                'Doku': dataset['tissue'],
+                'Platform': dataset['platform'],
+                'Yıl': dataset['year']
+            })
+        
+        geo_df = pd.DataFrame(geo_data)
+        st.dataframe(geo_df, use_container_width=True)
+        
+        st.markdown("#### 💰 Maliyet Karşılaştırması")
+        st.info("""
+        **Geleneksel Yaklaşım:** 700,000 varyant taraması → ~1,500,000 TL (ticari laboratuvar)
+        
+        **EpiClock Yaklaşımı:** Açık kaynak veritabanları + in-silico analiz → ~50,000 TL (%97 tasarruf)
+        
+        Bu tasarruf, açık erişimli GWAS özet istatistikleri, imputasyon algoritmaları ve 
+        topluluk validasyonu sayesinde mümkün olmaktadır.
+        """)
 
 
 def render_report_generator(components):

@@ -32,7 +32,9 @@ EpiClock Prototype is an advanced computational platform for detecting and quant
 │   ├── mobile_ui.py           # Mobile-responsive UI components
 │   ├── advanced_prs.py        # Multi-trait PRS with GWAS database (6 addiction traits)
 │   ├── variant_data_sources.py # Real genomic data sources (1000G, gnomAD, UK Biobank)
-│   └── user_guide.py          # Interactive glossary, tutorials, academic citations
+│   ├── user_guide.py          # Interactive glossary, tutorials, academic citations
+│   ├── comprehensive_substance_database.py # 2,800+ addiction genes, 14 biological systems
+│   └── world_databases.py     # GWAS/EWAS/PharmGKB/CPIC integration
 ├── data/                       # Data directory
 ├── attached_assets/           # Research paper and assets
 ├── pyproject.toml             # Python dependencies
@@ -96,6 +98,9 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-01: Added "🌍 Dünya Veritabanları" module with 6 tabs (GWAS, EWAS, PharmGKB, Substance DB, Gene Systems, Data Sources)
+- 2024-12-01: Integrated comprehensive_substance_database.py (2,800+ genes, 14 biological systems, WHO classification)
+- 2024-12-01: Integrated world_databases.py (GWAS Catalog, EWAS Catalog, PharmGKB, CPIC, GEO datasets)
 - 2024-12-01: Added advanced multi-trait PRS module (6 addiction traits with GWAS-validated weights)
 - 2024-12-01: Integrated real genomic data sources (1000 Genomes, gnomAD, UK Biobank, TOPMed)
 - 2024-12-01: Created comprehensive user guide with interactive glossary and academic citations
