@@ -73,6 +73,7 @@ from modules.mobile_ui import (
     init_mobile_ui
 )
 from modules.dna_reader import (
+    calculate_epigenetic_age,
     DNAMethylationReader,
     MethylationDataset,
     MethylationSample,
@@ -939,41 +940,68 @@ def render_dna_upload(components, selected_clocks):
             )
             
             if analysis_type == "Epigenetik Yaş Hesaplama":
+                st.markdown("""
+                **Gerçek Katsayılarla Hesaplama:**
+                Bu analiz, yayınlanmış epigenetik saat katsayılarını kullanarak 
+                yüklediğiniz DNA metilasyon verisinden epigenetik yaş hesaplar.
+                """)
+                
                 if st.button("🧬 Epigenetik Yaş Hesapla", type="primary"):
                     with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
-                        clock_calc = components['clock_calc']
                         
-                        results = []
+                        results_df = calculate_epigenetic_age(dataset)
+                        
+                        display_df = results_df.rename(columns={
+                            'sample_id': 'Örnek ID',
+                            'chronological_age': 'Kronolojik Yaş',
+                            'horvath_age': 'Horvath Yaş',
+                            'hannum_age': 'Hannum Yaş',
+                            'phenoage': 'PhenoAge',
+                            'dunedin_pace': 'DunedinPACE',
+                            'horvath_coverage': 'Horvath %',
+                            'hannum_coverage': 'Hannum %',
+                            'phenoage_coverage': 'PhenoAge %',
+                            'dunedin_coverage': 'DunedinPACE %'
+                        })
+                        
                         for sample in dataset.samples:
-                            sample_df = pd.DataFrame({sample.sample_id: sample.beta_values}).T
-                            
-                            chron_age = sample.chronological_age if sample.chronological_age else 40
-                            
-                            clock_results = clock_calc.calculate_all_clocks(
-                                sample_df, 
-                                chronological_age=chron_age
-                            )
-                            
-                            row = {
-                                'Örnek ID': sample.sample_id,
-                                'Kronolojik Yaş': chron_age,
-                                'Cinsiyet': sample.sex or 'Bilinmiyor',
-                                'Madde': sample.substance_type or 'Bilinmiyor'
-                            }
-                            
-                            for clock_name, result in clock_results.items():
-                                row[f'{clock_name.upper()} Yaş'] = result.predicted_age
-                                row[f'{clock_name.upper()} EAA'] = result.age_acceleration
-                            
-                            results.append(row)
+                            idx = display_df[display_df['Örnek ID'] == sample.sample_id].index
+                            if len(idx) > 0:
+                                if sample.sex:
+                                    display_df.loc[idx, 'Cinsiyet'] = sample.sex
+                                if sample.substance_type:
+                                    display_df.loc[idx, 'Madde'] = sample.substance_type
                         
-                        results_df = pd.DataFrame(results)
-                        st.session_state['analysis_results'] = results_df
+                        if 'Kronolojik Yaş' in display_df.columns:
+                            for clock in ['Horvath Yaş', 'Hannum Yaş', 'PhenoAge']:
+                                if clock in display_df.columns:
+                                    display_df[f'{clock.split()[0]} EAA'] = (
+                                        display_df[clock] - display_df['Kronolojik Yaş'].fillna(0)
+                                    ).round(2)
                         
-                        st.success("✅ Analiz tamamlandı!")
-                        st.dataframe(results_df, use_container_width=True)
+                        st.session_state['analysis_results'] = display_df
                         
-                        csv = results_df.to_csv(index=False)
+                        st.success("✅ Gerçek katsayılarla analiz tamamlandı!")
+                        
+                        st.markdown("### 📊 Sonuçlar")
+                        st.dataframe(display_df, use_container_width=True)
+                        
+                        st.markdown("### 📈 CpG Kapsama Oranları")
+                        coverage_cols = [c for c in display_df.columns if '%' in c]
+                        if coverage_cols:
+                            avg_coverage = display_df[coverage_cols].mean()
+                            
+                            col1, col2, col3, col4 = st.columns(4)
+                            with col1:
+                                st.metric("Horvath Kapsam", f"{avg_coverage.get('Horvath %', 0):.1f}%")
+                            with col2:
+                                st.metric("Hannum Kapsam", f"{avg_coverage.get('Hannum %', 0):.1f}%")
+                            with col3:
+                                st.metric("PhenoAge Kapsam", f"{avg_coverage.get('PhenoAge %', 0):.1f}%")
+                            with col4:
+                                st.metric("DunedinPACE Kapsam", f"{avg_coverage.get('DunedinPACE %', 0):.1f}%")
+                        
+                        csv = display_df.to_csv(index=False)
                         st.download_button(
                             "📥 Sonuçları İndir (CSV)",
                             csv,

@@ -526,6 +526,135 @@ class SampleAnnotationParser:
         return df
 
 
+def calculate_epigenetic_age(dataset: MethylationDataset) -> pd.DataFrame:
+    """
+    Calculate epigenetic age using published clock coefficients
+    
+    Args:
+        dataset: MethylationDataset with beta values
+        
+    Returns:
+        DataFrame with calculated ages for each clock
+    """
+    from .published_coefficients import (
+        HORVATH_353_COEFFICIENTS,
+        HANNUM_71_COEFFICIENTS,
+        PHENOAGE_513_TOP_COEFFICIENTS,
+        DUNEDINPACE_173_COEFFICIENTS
+    )
+    
+    beta_matrix = dataset.beta_matrix
+    results = []
+    
+    for sample in dataset.samples:
+        sample_id = sample.sample_id
+        beta_values = beta_matrix[sample_id]
+        
+        # Horvath Clock
+        horvath_age = _calculate_clock_age(
+            beta_values, 
+            HORVATH_353_COEFFICIENTS,
+            intercept=0.696,
+            transform='anti_trafo'
+        )
+        
+        # Hannum Clock
+        hannum_age = _calculate_clock_age(
+            beta_values,
+            HANNUM_71_COEFFICIENTS,
+            intercept=0.0,
+            transform='linear'
+        )
+        
+        # PhenoAge Clock
+        phenoage = _calculate_clock_age(
+            beta_values,
+            PHENOAGE_513_TOP_COEFFICIENTS,
+            intercept=60.664,
+            transform='linear'
+        )
+        
+        # DunedinPACE (pace of aging)
+        dunedin_pace = _calculate_clock_age(
+            beta_values,
+            DUNEDINPACE_173_COEFFICIENTS,
+            intercept=1.0,
+            transform='linear'
+        )
+        
+        # Calculate coverage for each clock
+        horvath_coverage = _calculate_coverage(beta_values, HORVATH_353_COEFFICIENTS)
+        hannum_coverage = _calculate_coverage(beta_values, HANNUM_71_COEFFICIENTS)
+        phenoage_coverage = _calculate_coverage(beta_values, PHENOAGE_513_TOP_COEFFICIENTS)
+        dunedin_coverage = _calculate_coverage(beta_values, DUNEDINPACE_173_COEFFICIENTS)
+        
+        results.append({
+            'sample_id': sample_id,
+            'chronological_age': sample.chronological_age,
+            'horvath_age': horvath_age,
+            'hannum_age': hannum_age,
+            'phenoage': phenoage,
+            'dunedin_pace': dunedin_pace,
+            'horvath_coverage': horvath_coverage,
+            'hannum_coverage': hannum_coverage,
+            'phenoage_coverage': phenoage_coverage,
+            'dunedin_coverage': dunedin_coverage
+        })
+    
+    return pd.DataFrame(results)
+
+
+def _calculate_clock_age(beta_values: pd.Series, 
+                         coefficients: Dict[str, float],
+                         intercept: float = 0.0,
+                         transform: str = 'linear') -> float:
+    """
+    Calculate clock age using weighted sum of CpG beta values
+    
+    Args:
+        beta_values: Series with CpG beta values
+        coefficients: Dictionary of CpG -> coefficient
+        intercept: Clock intercept value
+        transform: 'linear' or 'anti_trafo' (Horvath transformation)
+        
+    Returns:
+        Calculated age
+    """
+    age = intercept
+    matched_cpgs = 0
+    
+    for cpg, coef in coefficients.items():
+        if cpg in beta_values.index:
+            beta = beta_values[cpg]
+            if not pd.isna(beta):
+                age += beta * coef
+                matched_cpgs += 1
+    
+    # Scale if not all CpGs matched
+    if matched_cpgs < len(coefficients) and matched_cpgs > 0:
+        scale_factor = len(coefficients) / matched_cpgs
+        age = intercept + (age - intercept) * min(scale_factor, 1.5)
+    
+    # Apply Horvath anti-transformation if needed
+    if transform == 'anti_trafo':
+        # Horvath's anti-transformation: inverse of age transformation
+        # Original: transformed_age = log(age+1) - log(21+1) if age <= 20
+        #           transformed_age = (age - 20) / (21 + 1) if age > 20
+        if age < 0:
+            age = (21 + 1) * np.exp(age) - 1
+        else:
+            age = (21 + 1) * age + 20
+    
+    return round(max(0, age), 2)
+
+
+def _calculate_coverage(beta_values: pd.Series, 
+                        coefficients: Dict[str, float]) -> float:
+    """Calculate percentage of clock CpGs available in sample"""
+    available = sum(1 for cpg in coefficients.keys() if cpg in beta_values.index)
+    return round(available / len(coefficients) * 100, 1)
+
+
 def create_demo_methylation_data(n_samples: int = 10, 
                                  n_cpgs: int = 1000,
                                  include_clock_cpgs: bool = True) -> MethylationDataset:
