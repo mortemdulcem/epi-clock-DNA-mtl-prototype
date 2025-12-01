@@ -98,6 +98,13 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-01: Added "📥 Veri Dışa Aktar" module - multi-format export (CSV, BED, JSON, SQL)
+- 2024-12-01: Added "📚 Kullanım Kılavuzu" - comprehensive academic guide with 6 tabs
+- 2024-12-01: Created modules/data_export.py - export functions for all databases
+- 2024-12-01: Created modules/academic_guide.py - platform documentation module
+- 2024-12-01: Built PostgreSQL database schema with 5 tables (cpg_markers, substance_panels, gene_systems, epigenetic_clocks, platform_info)
+- 2024-12-01: Added BED format export for UCSC Genome Browser and IGV integration
+- 2024-12-01: Added SQL schema and INSERT statements export
 - 2024-12-01: Added "🌍 Dünya Veritabanları" module with 6 tabs (GWAS, EWAS, PharmGKB, Substance DB, Gene Systems, Data Sources)
 - 2024-12-01: Integrated comprehensive_substance_database.py (2,800+ genes, 14 biological systems, WHO classification)
 - 2024-12-01: Integrated world_databases.py (GWAS Catalog, EWAS Catalog, PharmGKB, CPIC, GEO datasets)

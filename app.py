@@ -182,6 +182,26 @@ from modules.cpg_database import (
     ILLUMINA_PLATFORM_INFO,
     HUMAN_GENOME_CPG_DISTRIBUTION
 )
+from modules.data_export import (
+    generate_cpg_csv_export,
+    generate_cpg_bed_export,
+    generate_cpg_json_export,
+    generate_sql_schema,
+    generate_sql_insert_statements,
+    get_export_statistics,
+    export_gwas_catalog_csv,
+    export_ewas_markers_csv,
+    export_pharmgkb_csv
+)
+from modules.academic_guide import (
+    render_academic_guide,
+    get_guide_statistics,
+    EPICLOCK_MODULES,
+    EPIGENETIC_CLOCKS_INFO,
+    SUBSTANCE_EAA_EFFECTS,
+    ACADEMIC_REFERENCES,
+    GLOSSARY_TERMS
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -784,6 +804,8 @@ def main():
         analysis_mode = st.radio(
             "Analiz Türü Seçin:",
             ["🏠 Ana Sayfa",
+             "📚 Kullanım Kılavuzu",
+             "📥 Veri Dışa Aktar",
              "📤 DNA Verisi Yükle",
              "🧬 CpG Veritabanı",
              "🔬 Varyant Analizi",
@@ -851,6 +873,10 @@ def main():
     
     if "🏠 Ana Sayfa" in analysis_mode:
         render_home_page(components)
+    elif "📚 Kullanım Kılavuzu" in analysis_mode:
+        render_academic_guide()
+    elif "📥 Veri Dışa Aktar" in analysis_mode:
+        render_data_export_page(components)
     elif "📤 DNA Verisi Yükle" in analysis_mode:
         render_dna_upload(components, selected_clocks)
     elif "🧬 CpG Veritabanı" in analysis_mode:
@@ -2812,6 +2838,240 @@ def render_cpg_database(components):
             file_name="epiclock_sample_data.csv",
             mime="text/csv"
         )
+
+
+def render_data_export_page(components):
+    """Render comprehensive data export page with multiple formats"""
+    
+    st.markdown("## 📥 Veri Dışa Aktarım Merkezi")
+    
+    st.markdown("""
+    <div class="info-box">
+    <b>🌍 Açık Veri Paylaşımı:</b> EpiClock'un tüm veritabanlarını farklı formatlarda indirin.
+    CSV, BED (Genome Browser), JSON ve SQL formatları desteklenmektedir.
+    Araştırmacılar bu verileri kendi analizlerinde kullanabilir.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    export_stats = get_export_statistics()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("CpG Siteleri", f"{export_stats['cpg_sites']['total']:,}", 
+                 help="Toplam CpG metilasyon belirteçleri")
+    with col2:
+        st.metric("GWAS Çalışmaları", export_stats['gwas_studies'],
+                 help="Bağımlılık GWAS çalışmaları")
+    with col3:
+        st.metric("EWAS Belirteçleri", export_stats['ewas_markers'],
+                 help="Epigenetik belirteçler")
+    with col4:
+        st.metric("Format Sayısı", len(export_stats['formats_available']),
+                 help="Desteklenen export formatları")
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📄 CSV Format",
+        "🧬 BED Format",
+        "📋 JSON Format",
+        "🗄️ SQL Database",
+        "📊 GWAS/EWAS"
+    ])
+    
+    with tab1:
+        st.markdown("### 📄 CSV Formatında Dışa Aktar")
+        st.markdown("""
+        **CSV (Comma-Separated Values)** formatı, Excel, R, Python ve diğer 
+        istatistik yazılımlarıyla uyumludur.
+        """)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### 🧬 CpG Veritabanı")
+            csv_data = generate_cpg_csv_export()
+            st.download_button(
+                label="📥 CpG Veritabanı (CSV)",
+                data=csv_data,
+                file_name=f"epiclock_cpg_database_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv",
+                key="download_cpg_csv"
+            )
+            st.caption("Tüm madde panellerinden CpG belirteçleri")
+        
+        with col2:
+            st.markdown("#### 📊 GWAS Catalog")
+            gwas_csv = export_gwas_catalog_csv()
+            st.download_button(
+                label="📥 GWAS Çalışmaları (CSV)",
+                data=gwas_csv,
+                file_name=f"epiclock_gwas_catalog_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv",
+                key="download_gwas_csv"
+            )
+            st.caption("Bağımlılık GWAS çalışmaları")
+        
+        col3, col4 = st.columns(2)
+        
+        with col3:
+            st.markdown("#### 🔬 EWAS Belirteçleri")
+            ewas_csv = export_ewas_markers_csv()
+            st.download_button(
+                label="📥 EWAS Belirteçleri (CSV)",
+                data=ewas_csv,
+                file_name=f"epiclock_ewas_markers_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv",
+                key="download_ewas_csv"
+            )
+            st.caption("Epigenom çapı metilasyon belirteçleri")
+        
+        with col4:
+            st.markdown("#### 💊 PharmGKB Genler")
+            pharmgkb_csv = export_pharmgkb_csv()
+            st.download_button(
+                label="📥 PharmGKB Genler (CSV)",
+                data=pharmgkb_csv,
+                file_name=f"epiclock_pharmgkb_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv",
+                key="download_pharmgkb_csv"
+            )
+            st.caption("Farmakogenomik gen verileri")
+    
+    with tab2:
+        st.markdown("### 🧬 BED Formatında Dışa Aktar")
+        st.markdown("""
+        **BED (Browser Extensible Data)** formatı, UCSC Genome Browser ve IGV gibi 
+        genom tarayıcılarında görselleştirme için standart formattır.
+        """)
+        
+        st.markdown("#### Kullanım Senaryoları")
+        st.markdown("""
+        - **UCSC Genome Browser**: Custom tracks olarak yükleyin
+        - **IGV (Integrative Genomics Viewer)**: Yerel görselleştirme
+        - **bedtools**: Genomik aralık işlemleri
+        - **Ensembl**: Genome annotation
+        """)
+        
+        bed_data = generate_cpg_bed_export()
+        st.download_button(
+            label="📥 CpG Veritabanı (BED)",
+            data=bed_data,
+            file_name=f"epiclock_cpg_database_{datetime.now().strftime('%Y%m%d')}.bed",
+            mime="text/plain",
+            key="download_bed"
+        )
+        
+        st.markdown("#### BED Format Yapısı")
+        st.code("""# chrom  chromStart  chromEnd  name        score  strand  gene   substance  evidence
+chr5    373378      373379    cg05575921  1000   +       AHRR   tobacco    Strong
+chr19   17000585    17000586  cg03636183  950    +       F2RL3  tobacco    Strong""", language="text")
+    
+    with tab3:
+        st.markdown("### 📋 JSON Formatında Dışa Aktar")
+        st.markdown("""
+        **JSON (JavaScript Object Notation)** formatı, web uygulamaları, API'ler ve 
+        programatik erişim için idealdir.
+        """)
+        
+        json_data = generate_cpg_json_export()
+        st.download_button(
+            label="📥 Tam Veritabanı (JSON)",
+            data=json_data,
+            file_name=f"epiclock_database_{datetime.now().strftime('%Y%m%d')}.json",
+            mime="application/json",
+            key="download_json"
+        )
+        
+        st.markdown("#### JSON Yapısı Önizleme")
+        st.json({
+            "metadata": {
+                "title": "EpiClock CpG Methylation Database",
+                "version": "1.0.0",
+                "author": "Dr. Nurcan Denli Bayır"
+            },
+            "substance_panels": "...",
+            "gene_systems": "...",
+            "references": "..."
+        })
+    
+    with tab4:
+        st.markdown("### 🗄️ SQL Veritabanı Şeması")
+        st.markdown("""
+        **PostgreSQL** şeması ve INSERT ifadeleri ile kendi veritabanınızı oluşturun.
+        """)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### Şema (CREATE TABLE)")
+            sql_schema = generate_sql_schema()
+            st.download_button(
+                label="📥 SQL Şema İndir",
+                data=sql_schema,
+                file_name=f"epiclock_schema_{datetime.now().strftime('%Y%m%d')}.sql",
+                mime="text/plain",
+                key="download_sql_schema"
+            )
+            st.caption("Tablo tanımları ve indeksler")
+        
+        with col2:
+            st.markdown("#### Veri (INSERT)")
+            sql_inserts = generate_sql_insert_statements()
+            st.download_button(
+                label="📥 SQL Veri İndir",
+                data=sql_inserts,
+                file_name=f"epiclock_data_{datetime.now().strftime('%Y%m%d')}.sql",
+                mime="text/plain",
+                key="download_sql_data"
+            )
+            st.caption("Veri ekleme ifadeleri")
+        
+        st.markdown("#### PostgreSQL Bağlantı Bilgisi")
+        st.info("""
+        EpiClock'un yerleşik PostgreSQL veritabanına bağlanmak için:
+        - Platform içinde otomatik olarak DATABASE_URL environment variable kullanılır
+        - Dışarıdan erişim için SQL şemasını kendi sunucunuzda çalıştırın
+        """)
+        
+        st.markdown("#### Tablo Yapısı")
+        st.markdown("""
+        | Tablo | Açıklama | Kayıt Sayısı |
+        |-------|----------|--------------|
+        | `substance_panels` | Madde bazlı CpG panelleri | 11 |
+        | `cpg_markers` | CpG metilasyon belirteçleri | 13+ |
+        | `gene_systems` | Nörotransmitter sistemleri | 7 |
+        | `epigenetic_clocks` | Epigenetik saat bilgileri | 5 |
+        | `platform_info` | Illumina platform bilgileri | 4 |
+        """)
+    
+    with tab5:
+        st.markdown("### 📊 GWAS ve EWAS Verileri")
+        st.markdown("""
+        Genom-çapı ve epigenom-çapı ilişkilendirme çalışmalarından elde edilen veriler.
+        """)
+        
+        st.markdown("#### GWAS Catalog Özeti")
+        gwas_summary = []
+        for key, study in ADDICTION_GWAS_STUDIES.items():
+            gwas_summary.append({
+                'Özellik': study.trait,
+                'N': f"{study.n_samples:,}",
+                'Yıl': study.year,
+                'Konsorsiyum': study.consortium or '-'
+            })
+        
+        gwas_df = pd.DataFrame(gwas_summary)
+        st.dataframe(gwas_df, use_container_width=True, hide_index=True)
+        
+        st.markdown("#### EWAS Belirteç Sayıları")
+        ewas_summary = []
+        for trait, markers in EWAS_ADDICTION_MARKERS.items():
+            ewas_summary.append({
+                'Özellik': trait,
+                'CpG Sayısı': len(markers)
+            })
+        
+        ewas_df = pd.DataFrame(ewas_summary)
+        st.dataframe(ewas_df, use_container_width=True, hide_index=True)
 
 
 def render_world_databases(components):
