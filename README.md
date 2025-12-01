@@ -2,7 +2,7 @@
 
 <img src="attached_assets/image_1764525193643.png" alt="DNA Double Helix" width="400"/>
 
-# 🧬 EpiClock Prototype
+# 🧬 EpiClock Prototype v4.0
 
 ### DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
 
@@ -10,10 +10,14 @@
 
 ---
 
-[![Run Application](https://replit.com/badge?caption=Run)](https://replit.com/@zeynep111222333/EpiClockPrototype?v=1)
+**Author:** Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.
 
-> **☝️ Tek tıkla çalıştır!** Kurulum gereksiz, tarayıcıda anında açılır.  
-> Python, kütüphaneler ve veritabanı otomatik hazır - 5 saniyede başla!
+---
+
+[![Clone and Run](https://img.shields.io/badge/Clone%20%26%20Run-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-repo/EpiClockPrototype)
+
+> **📤 Genomik Veri Yükleme:** DNA Metilasyon, VCF Varyant, Gen Listesi, CpG verilerinizi doğrudan yükleyin!  
+> **🧬 Epigenetik Yaş Hesaplama:** 5 major clock ile anında analiz yapın!
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
@@ -119,6 +123,27 @@
 | **Daubert Compliance** | Legal admissibility standards |
 | **Tamper Detection** | Automatic integrity verification |
 | **Postmortem Validation** | PMI correction algorithms |
+
+---
+
+## 📤 Genomik Veri Yükleme (Data Upload Center)
+
+Platform, **4 farklı veri türünü** tek merkezden yükleme ve analiz imkanı sunar:
+
+| Veri Türü | Format | Açıklama |
+|:----------|:-------|:---------|
+| 🔬 **DNA Metilasyon** | CSV, TXT, Excel, GEO Matrix | Illumina EPIC/450K/27K beta değerleri |
+| 🧬 **VCF Varyant** | VCF, VCF.gz | SNP, indel, yapısal varyantlar |
+| 📋 **Gen Listesi** | CSV, TXT, Excel | HGNC sembolleri, Ensembl ID |
+| 🎯 **CpG Verisi** | CSV, TXT, Excel | CpG site listesi, custom panel |
+
+### Desteklenen Özellikler
+
+- ✅ **Otomatik Format Algılama** - Dosya türü otomatik tanınır
+- ✅ **Kalite Kontrol** - Beta değer doğrulama, CpG kapsam analizi
+- ✅ **Demo Veri Oluşturma** - Test için simüle edilmiş veri
+- ✅ **Epigenetik Yaş Hesaplama** - 5 clock ile anında analiz
+- ✅ **Sonuç İndirme** - CSV formatında dışa aktarma
 
 ---
 
