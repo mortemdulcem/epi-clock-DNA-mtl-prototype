@@ -784,18 +784,44 @@ def render_academic_footer():
     timestamp = get_last_update_timestamp()
     
     st.markdown(f"""
-    <div class="academic-footer">
-        <div class="academic-footer-title">🎓 EpiClock Prototype - Akademik Araştırma Platformu</div>
-        <div class="academic-footer-text">
-            <strong>Araştırmacı:</strong> Dr. Nurcan Denli Bayır<br>
-            <strong>Platform:</strong> DNA Metilasyon Tabanlı Epigenetik Yaş Analizi<br>
-            <strong>Versiyon:</strong> {EPICLOCK_VERSION} | <strong>Build:</strong> {BUILD_DATE}<br><br>
-            
-            <em>Bu platform, bağımlılık araştırmalarında epigenetik yaş ivmelenmesini analiz etmek için 
-            tasarlanmış akademik bir araştırma aracıdır. Klinik kullanım öncesinde validasyon gerektirir.</em>
+    <style>
+    .academic-footer-custom {{
+        background: linear-gradient(135deg, #5D4037 0%, #4E342E 100%);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 2rem;
+        text-align: center;
+        border-top: 3px solid #CD853F;
+    }}
+    .academic-footer-custom .footer-title {{
+        color: #FFE4B5;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }}
+    .academic-footer-custom .footer-text {{
+        color: #FFF8DC;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }}
+    .academic-footer-custom .footer-timestamp {{
+        color: #CD853F;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }}
+    </style>
+    <div class="academic-footer-custom">
+        <div class="footer-title">EpiClock Prototype - Akademik Arastirma Platformu</div>
+        <div class="footer-text">
+            <strong>Arastirmaci:</strong> Dr. Nurcan Denli Bayir, M.D., Ph.D., M.Sc., J.D.<br>
+            <strong>Platform:</strong> DNA Metilasyon Tabanli Epigenetik Yas Analizi<br>
+            <strong>Versiyon:</strong> {EPICLOCK_VERSION} | <strong>Build:</strong> {BUILD_DATE}<br>
+            Bu platform, bagimlilik arastirmalarinda epigenetik yas ivmelenmesini analiz etmek icin 
+            tasarlanmis akademik bir arastirma aracidir.
         </div>
-        <div class="update-timestamp">
-            🕐 Son Güncelleme: {timestamp} (Türkiye Saati)
+        <div class="footer-timestamp">
+            Son Guncelleme: {timestamp} (Turkiye Saati)
         </div>
     </div>
     """, unsafe_allow_html=True)
