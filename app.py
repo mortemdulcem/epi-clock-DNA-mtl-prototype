@@ -817,6 +817,56 @@ def render_dna_upload(components, selected_clocks):
     Desteklenen formatlar: CSV, TXT, Excel, GEO Series Matrix
     """)
     
+    with st.expander("📖 Kullanım Kılavuzu", expanded=False):
+        st.markdown("""
+        ### CSV Dosya Formatı
+        
+        **Gerekli Format:**
+        - İlk sütun: CpG site isimleri (örn: cg00000029, cg00000165)
+        - Diğer sütunlar: Örnek beta değerleri (0-1 arası)
+        - İlk satır: Örnek ID'leri
+        
+        **Örnek CSV yapısı:**
+        ```
+        CpG_ID,Sample_1,Sample_2,Sample_3
+        cg00000029,0.234,0.456,0.321
+        cg00000165,0.567,0.234,0.890
+        cg00000236,0.123,0.678,0.456
+        ...
+        ```
+        
+        ### Adım Adım Kullanım
+        
+        1. **Dosya Yükle** sekmesinden CSV dosyanızı seçin
+        2. "Veriyi İşle ve Analiz Et" butonuna tıklayın
+        3. **Analiz** sekmesine geçin
+        4. "Epigenetik Yaş Hesapla" butonuna tıklayın
+        5. Sonuçları CSV olarak indirebilirsiniz
+        
+        ### Desteklenen Saatler
+        
+        | Saat | CpG Sayısı | Açıklama |
+        |------|------------|----------|
+        | Horvath | 353 | Multi-doku, pan-tissue clock |
+        | Hannum | 71 | Kan bazlı, yaşlanma belirteci |
+        | PhenoAge | 513 | Fenotipik yaş, mortalite tahmini |
+        | DunedinPACE | 173 | Yaşlanma hızı ölçümü |
+        
+        ### Veri Kaynakları
+        
+        - **Laboratuvar Çıktısı:** Illumina GenomeStudio veya minfi/sesame çıktısı
+        - **GEO Veritabanı:** NCBI GEO'dan indirilen series matrix dosyaları
+        - **Araştırma Verileri:** Yayınlanmış çalışmalardaki beta değer matrisleri
+        
+        ### Kalite Gereksinimleri
+        
+        - Beta değerleri 0-1 arasında olmalı
+        - En az %80 CpG kapsamı önerilir
+        - Eksik değerler otomatik olarak impute edilir
+        """)
+        
+        st.info("💡 **İpucu:** Demo veri oluşturarak önce sistemin nasıl çalıştığını test edebilirsiniz.")
+    
     tab1, tab2, tab3 = st.tabs(["📁 Dosya Yükle", "🧪 Demo Veri", "📊 Analiz"])
     
     with tab1:
