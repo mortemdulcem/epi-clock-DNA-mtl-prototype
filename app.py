@@ -85,6 +85,29 @@ from modules.published_coefficients import (
     LICENSING_INFO,
     get_coefficient_summary
 )
+from modules.variant_calling import (
+    VCFReader,
+    VariantCaller,
+    LowPassWGSAnalyzer,
+    TargetedSequencingPanel,
+    read_vcf_from_streamlit,
+    create_demo_vcf_data
+)
+from modules.variant_annotation import (
+    VariantAnnotator,
+    ClinVarDatabase,
+    GnomADDatabase,
+    PharmGKBDatabase
+)
+from modules.pharmacogenomics import (
+    PharmacogenomicsAnalyzer,
+    DrugDoseCalculator,
+    AddictionRiskCalculator
+)
+from modules.polygenic_risk import (
+    PolygenicRiskScoreCalculator,
+    IntegratedRiskModel
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -703,6 +726,9 @@ def main():
             "Analiz Türü Seçin:",
             ["🏠 Ana Sayfa",
              "📤 DNA Verisi Yükle",
+             "🧬 Varyant Analizi",
+             "💊 Farmakogenomik",
+             "📊 Poligenik Risk Skoru",
              "👤 Bireysel Analiz",
              "📁 Toplu Analiz",
              "📈 Referans Veritabanı",
@@ -766,6 +792,12 @@ def main():
         render_home_page(components)
     elif "📤 DNA Verisi Yükle" in analysis_mode:
         render_dna_upload(components, selected_clocks)
+    elif "🧬 Varyant Analizi" in analysis_mode:
+        render_variant_analysis(components)
+    elif "💊 Farmakogenomik" in analysis_mode:
+        render_pharmacogenomics(components)
+    elif "📊 Poligenik Risk Skoru" in analysis_mode:
+        render_polygenic_risk(components)
     elif "👤 Bireysel Analiz" in analysis_mode:
         render_individual_analysis(components, selected_clocks)
     elif "📁 Toplu Analiz" in analysis_mode:
@@ -4011,6 +4043,405 @@ def render_database_management(components):
                 
                 st.success(f"✅ {created} demo hasta oluşturuldu!")
                 st.rerun()
+
+
+def render_variant_analysis(components):
+    """Render variant analysis interface"""
+    
+    st.markdown("## 🧬 Varyant Analizi")
+    st.markdown("""
+    VCF dosyalarından genetik varyant analizi yapın. 700,000+ varyant taraması 
+    için maliyet-etkin çözüm.
+    """)
+    
+    with st.expander("📖 Maliyet Karşılaştırması", expanded=False):
+        st.markdown("""
+        ### Geleneksel Yaklaşım vs EpiClock Entegrasyonu
+        
+        | Yaklaşım | Maliyet | Açıklama |
+        |----------|---------|----------|
+        | **Geleneksel WGS (30×)** | ~1,500,000 TL | 100 örnek için |
+        | **Low-Pass WGS (1×) + Imputation** | ~75,000 TL | %95 tasarruf |
+        | **Targeted Panel** | ~70,000 TL | Bağımlılık genleri odaklı |
+        | **Array Genotyping** | ~175,000 TL | 700K SNP + imputation |
+        
+        **EpiClock Avantajı:** Tüm analiz pipeline'ı AÇIK KAYNAK!
+        """)
+    
+    tab1, tab2, tab3, tab4 = st.tabs(["📁 VCF Yükle", "🧪 Demo Veri", "📊 Maliyet Hesapla", "🎯 Panel Tasarımı"])
+    
+    with tab1:
+        st.markdown("### VCF Dosyası Yükle")
+        
+        uploaded_vcf = st.file_uploader(
+            "VCF Dosyası",
+            type=['vcf', 'gz'],
+            help="VCF veya VCF.GZ formatında varyant dosyası"
+        )
+        
+        if uploaded_vcf is not None:
+            if st.button("🔬 Varyantları Analiz Et", type="primary"):
+                with st.spinner("VCF dosyası okunuyor..."):
+                    try:
+                        variants_df, metrics = read_vcf_from_streamlit(uploaded_vcf)
+                        
+                        st.session_state['loaded_variants'] = variants_df
+                        st.session_state['variant_metrics'] = metrics
+                        
+                        st.success(f"✅ {metrics['total_variants']:,} varyant yüklendi!")
+                        
+                        col1, col2, col3, col4 = st.columns(4)
+                        with col1:
+                            st.metric("Toplam Varyant", f"{metrics['total_variants']:,}")
+                        with col2:
+                            st.metric("SNP", f"{metrics['snps']:,}")
+                        with col3:
+                            st.metric("InDel", f"{metrics['indels']:,}")
+                        with col4:
+                            st.metric("PASS", f"{metrics['pass_variants']:,}")
+                        
+                        st.markdown("### 📋 İlk 100 Varyant")
+                        st.dataframe(variants_df.head(100), use_container_width=True)
+                        
+                    except Exception as e:
+                        st.error(f"❌ Hata: {str(e)}")
+    
+    with tab2:
+        st.markdown("### 🧪 Demo Varyant Verisi Oluştur")
+        
+        n_variants = st.slider("Varyant Sayısı", 100, 5000, 1000)
+        
+        if st.button("🧬 Demo Veri Oluştur", type="primary", key="demo_vcf"):
+            with st.spinner("Demo varyantlar oluşturuluyor..."):
+                demo_variants = create_demo_vcf_data(n_variants)
+                st.session_state['loaded_variants'] = demo_variants
+                
+                st.success(f"✅ {len(demo_variants):,} demo varyant oluşturuldu!")
+                st.dataframe(demo_variants.head(50), use_container_width=True)
+    
+    with tab3:
+        st.markdown("### 📊 Maliyet Hesaplayıcı")
+        
+        n_samples = st.number_input("Örnek Sayısı", min_value=1, max_value=1000, value=100)
+        
+        analyzer = LowPassWGSAnalyzer()
+        cost_comparison = analyzer.calculate_cost_savings(n_samples)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### Geleneksel Yaklaşım")
+            st.metric("WGS (30×)", f"{cost_comparison['traditional']['wgs_30x']:,} TL")
+            st.metric("Biyoinformatik", f"{cost_comparison['traditional']['bioinformatics']:,} TL")
+            st.metric("Yazılım", f"{cost_comparison['traditional']['software']:,} TL")
+            st.metric("Personel", f"{cost_comparison['traditional']['personnel']:,} TL")
+            st.metric("**TOPLAM**", f"{cost_comparison['traditional']['total']:,} TL", delta=None)
+        
+        with col2:
+            st.markdown("#### Low-Pass WGS + EpiClock")
+            st.metric("WGS (1×)", f"{cost_comparison['low_pass']['wgs_1x']:,} TL")
+            st.metric("Imputation", f"{cost_comparison['low_pass']['imputation']:,} TL (ÜCRETSİZ)")
+            st.metric("Cloud", f"{cost_comparison['low_pass']['cloud_compute']:,} TL")
+            st.metric("Personel", f"{cost_comparison['low_pass']['personnel']:,} TL")
+            st.metric("**TOPLAM**", f"{cost_comparison['low_pass']['total']:,} TL", 
+                     delta=f"-{cost_comparison['savings_percent']:.0f}%")
+        
+        st.success(f"💰 **Tasarruf:** {cost_comparison['savings']:,} TL (%{cost_comparison['savings_percent']:.0f})")
+        st.info(f"📊 **Impute Edilen Varyant:** ~{cost_comparison['imputed_variants']:,}")
+    
+    with tab4:
+        st.markdown("### 🎯 Bağımlılık Genleri Panel Tasarımı")
+        
+        panel_designer = TargetedSequencingPanel()
+        
+        categories = st.multiselect(
+            "Gen Kategorileri:",
+            list(panel_designer.ADDICTION_PANEL_GENES.keys()),
+            default=list(panel_designer.ADDICTION_PANEL_GENES.keys())
+        )
+        
+        if categories:
+            panel = panel_designer.design_panel(categories)
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Toplam Gen", panel['total_genes'])
+            with col2:
+                st.metric("Panel Boyutu", f"{panel['total_size_mb']} Mb")
+            with col3:
+                st.metric("Anahtar Varyant", panel['key_variants'])
+            with col4:
+                st.metric("Örnek Başı", f"{panel['cost_per_sample']} TL")
+            
+            st.markdown("### Panel Gen Listesi")
+            genes_df = pd.DataFrame(panel['genes'])
+            st.dataframe(genes_df, use_container_width=True)
+            
+            n_panel_samples = st.number_input("Panel İçin Örnek Sayısı", 10, 500, 100, key="panel_samples")
+            panel_cost = panel_designer.calculate_panel_cost(n_panel_samples)
+            
+            st.info(f"""
+            **Panel Maliyet Özeti ({n_panel_samples} örnek):**
+            - Tasarım: {panel_cost['design_cost']:,} TL (tek seferlik)
+            - Sekanslama: {panel_cost['sequencing_cost']:,} TL
+            - **TOPLAM: {panel_cost['total_cost']:,} TL**
+            - Örnek başı: {panel_cost['cost_per_sample']:.0f} TL
+            """)
+
+
+def render_pharmacogenomics(components):
+    """Render pharmacogenomics analysis interface"""
+    
+    st.markdown("## 💊 Farmakogenomik Analizi")
+    st.markdown("""
+    Genetik varyantlara dayalı ilaç yanıtı tahmini. CPIC kılavuzlarına uygun 
+    kişiselleştirilmiş ilaç önerileri.
+    """)
+    
+    tab1, tab2, tab3 = st.tabs(["🧬 Analiz", "💉 İlaç Dozajı", "⚠️ Bağımlılık Riski"])
+    
+    with tab1:
+        st.markdown("### Farmakogenomik Profil")
+        
+        if 'loaded_variants' in st.session_state:
+            variants_df = st.session_state['loaded_variants']
+            
+            if st.button("🔬 Farmakogenomik Analiz", type="primary"):
+                with st.spinner("Farmakogenomik profil oluşturuluyor..."):
+                    annotator = VariantAnnotator()
+                    annotated_df = annotator.annotate(variants_df)
+                    
+                    pgx_analyzer = PharmacogenomicsAnalyzer()
+                    pgx_results = pgx_analyzer.analyze(annotated_df)
+                    
+                    st.session_state['pgx_results'] = pgx_results
+                    st.session_state['annotated_variants'] = annotated_df
+                    
+                    st.success("✅ Farmakogenomik analiz tamamlandı!")
+                    
+                    st.markdown("### 💊 Opioid Metabolizması")
+                    opioid = pgx_results['opioid']
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.metric("CYP2D6 Fenotip", opioid['cyp2d6_phenotype'])
+                    with col2:
+                        st.metric("OPRM1 Genotip", opioid['oprm1_genotype'])
+                    
+                    if opioid['recommendations']:
+                        st.markdown("#### İlaç Önerileri")
+                        for rec in opioid['recommendations']:
+                            with st.expander(f"💊 {rec['drug']}", expanded=True):
+                                st.markdown(f"""
+                                - **Gen:** {rec['gene']}
+                                - **Fenotip:** {rec['phenotype']}
+                                - **Öneri:** {rec['recommendation']}
+                                - **Güç:** {rec['strength']}
+                                - **Neden:** {rec['reason']}
+                                """)
+                                if rec.get('alternative'):
+                                    st.info(f"**Alternatif:** {rec['alternative']}")
+                    
+                    st.markdown("### 🍺 Alkol Metabolizması")
+                    alcohol = pgx_results['alcohol']
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("ADH1B Durumu", alcohol['adh1b_status'])
+                    with col2:
+                        st.metric("ALDH2 Durumu", alcohol['aldh2_status'])
+                    with col3:
+                        st.metric("Bağımlılık Riski", alcohol['addiction_risk'])
+        else:
+            st.info("⬆️ Önce 'Varyant Analizi' sayfasından VCF dosyası yükleyin.")
+    
+    with tab2:
+        st.markdown("### 💉 Kişiselleştirilmiş Doz Hesaplayıcı")
+        
+        calculator = DrugDoseCalculator()
+        
+        drug = st.selectbox(
+            "İlaç Seçin:",
+            list(calculator.STANDARD_DOSES.keys())
+        )
+        
+        phenotype = st.selectbox(
+            "CYP2D6 Metabolizer Durumu:",
+            ["Normal Metabolizer (NM)", "Intermediate Metabolizer (IM)", 
+             "Poor Metabolizer (PM)", "Ultrarapid Metabolizer (UM)"]
+        )
+        
+        if st.button("📊 Doz Hesapla"):
+            dose_info = calculator.calculate_adjusted_dose(drug, phenotype)
+            
+            if 'error' in dose_info:
+                st.error(dose_info['error'])
+            elif 'recommendation' in dose_info and 'AVOID' in dose_info['recommendation']:
+                st.error(f"⚠️ **{dose_info['recommendation']}**")
+                st.warning(dose_info['reason'])
+            else:
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Standart Doz", dose_info['standard_dose'])
+                with col2:
+                    st.metric("Ayarlanmış Doz", dose_info['adjusted_dose'])
+                with col3:
+                    st.metric("Düzeltme Faktörü", f"{dose_info['adjustment_factor']:.2f}×")
+                
+                st.info(f"**Kullanım:** {dose_info['frequency']}")
+    
+    with tab3:
+        st.markdown("### ⚠️ Genetik Bağımlılık Riski")
+        
+        if 'loaded_variants' in st.session_state:
+            variants_df = st.session_state['loaded_variants']
+            
+            if st.button("🧬 Risk Hesapla", type="primary"):
+                risk_calc = AddictionRiskCalculator()
+                risk_result = risk_calc.calculate_risk(variants_df)
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Kombine Risk Skoru", risk_result['combined_risk_score'])
+                with col2:
+                    st.metric("Risk Kategorisi", risk_result['risk_category'])
+                
+                st.markdown(f"**Yorum:** {risk_result['interpretation']}")
+                
+                if risk_result['variants_found']:
+                    st.markdown("### Bulunan Risk Varyantları")
+                    risk_df = pd.DataFrame(risk_result['variants_found'])
+                    st.dataframe(risk_df, use_container_width=True)
+        else:
+            st.info("⬆️ Önce 'Varyant Analizi' sayfasından VCF dosyası yükleyin.")
+
+
+def render_polygenic_risk(components):
+    """Render polygenic risk score analysis interface"""
+    
+    st.markdown("## 📊 Poligenik Risk Skoru (PRS)")
+    st.markdown("""
+    Birden fazla genetik varyanta dayalı hastalık ve özellik riski tahmini.
+    GWAS özet istatistiklerine dayalı - TÜM VERİLER ÜCRETSİZ.
+    """)
+    
+    tab1, tab2, tab3 = st.tabs(["📊 PRS Hesaplama", "🔗 Entegre Risk", "📚 GWAS Kaynakları"])
+    
+    with tab1:
+        st.markdown("### Poligenik Risk Skoru Hesaplama")
+        
+        if 'loaded_variants' in st.session_state:
+            variants_df = st.session_state['loaded_variants']
+            
+            prs_calc = PolygenicRiskScoreCalculator()
+            
+            available_traits = list(prs_calc.gwas_data.keys())
+            selected_traits = st.multiselect(
+                "Analiz Edilecek Özellikler:",
+                available_traits,
+                default=['alcohol_dependence', 'opioid_dependence', 'depression']
+            )
+            
+            if st.button("📊 PRS Hesapla", type="primary"):
+                with st.spinner("Poligenik risk skorları hesaplanıyor..."):
+                    results = {}
+                    for trait in selected_traits:
+                        results[trait] = prs_calc.calculate_prs(variants_df, trait)
+                    
+                    st.session_state['prs_results'] = results
+                    
+                    st.success("✅ PRS hesaplaması tamamlandı!")
+                    
+                    for trait, result in results.items():
+                        trait_name = trait.replace('_', ' ').title()
+                        
+                        with st.expander(f"📊 {trait_name}", expanded=True):
+                            col1, col2, col3 = st.columns(3)
+                            with col1:
+                                st.metric("PRS Skoru", result.score)
+                            with col2:
+                                st.metric("Persentil", f"{result.percentile:.1f}%")
+                            with col3:
+                                if result.risk_category in ['Very High', 'High']:
+                                    st.metric("Risk", result.risk_category, delta="↑", delta_color="inverse")
+                                elif result.risk_category in ['Very Low', 'Low']:
+                                    st.metric("Risk", result.risk_category, delta="↓")
+                                else:
+                                    st.metric("Risk", result.risk_category)
+                            
+                            st.markdown(f"**Yorum:** {result.interpretation}")
+                            st.caption(f"Eşleşen varyant sayısı: {result.n_variants}")
+        else:
+            st.info("⬆️ Önce 'Varyant Analizi' sayfasından VCF dosyası yükleyin.")
+    
+    with tab2:
+        st.markdown("### 🔗 Entegre Genetik-Epigenetik Risk")
+        
+        has_variants = 'loaded_variants' in st.session_state
+        has_eaa = 'analysis_results' in st.session_state
+        
+        if has_variants and has_eaa:
+            if st.button("🔬 Entegre Risk Hesapla", type="primary"):
+                with st.spinner("Entegre risk modeli çalıştırılıyor..."):
+                    variants_df = st.session_state['loaded_variants']
+                    eaa_results = st.session_state['analysis_results']
+                    
+                    integrated_model = IntegratedRiskModel()
+                    report = integrated_model.generate_integrated_report(
+                        variants_df, eaa_results, "Patient"
+                    )
+                    
+                    st.success("✅ Entegre risk analizi tamamlandı!")
+                    
+                    st.markdown("### Entegre Risk Değerlendirmesi")
+                    
+                    assessment = report['integrated_assessment']
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Genetik Bileşen", f"{assessment['prs_component']:.3f}")
+                    with col2:
+                        st.metric("Epigenetik Bileşen", f"{assessment['eaa_component']:.3f}")
+                    with col3:
+                        st.metric("Risk Persentili", f"{assessment['risk_percentile']:.1f}%")
+                    
+                    st.markdown(f"**Risk Kategorisi:** {assessment['risk_category']}")
+                    st.markdown(f"**Yorum:** {assessment['interpretation']}")
+                    
+                    st.markdown("### Öneriler")
+                    for rec in report['recommendations']:
+                        st.markdown(f"- {rec}")
+        else:
+            missing = []
+            if not has_variants:
+                missing.append("Varyant verisi")
+            if not has_eaa:
+                missing.append("Epigenetik yaş verisi")
+            st.warning(f"⚠️ Eksik veri: {', '.join(missing)}")
+            st.info("Entegre analiz için hem varyant hem de epigenetik yaş verisi gereklidir.")
+    
+    with tab3:
+        st.markdown("### 📚 GWAS Veri Kaynakları")
+        
+        prs_calc = PolygenicRiskScoreCalculator()
+        
+        sources = []
+        for trait, data in prs_calc.gwas_data.items():
+            sources.append({
+                'Özellik': trait.replace('_', ' ').title(),
+                'Kaynak': data['source'],
+                'Örnek Sayısı': f"{data['n_samples']:,}",
+                'Varyant Sayısı': data['n_variants'],
+                'Kalıtılabilirlik': f"{data['heritability']:.0%}"
+            })
+        
+        sources_df = pd.DataFrame(sources)
+        st.dataframe(sources_df, use_container_width=True)
+        
+        st.info("""
+        **Not:** Tüm GWAS özet istatistikleri kamuya açık ve ücretsiz kaynaklardan alınmıştır:
+        - GWAS Catalog (https://www.ebi.ac.uk/gwas/)
+        - PGC (Psychiatric Genomics Consortium)
+        - MVP (Million Veteran Program)
+        - GSCAN (GWAS & Sequencing Consortium of Alcohol and Nicotine use)
+        """)
 
 
 if __name__ == "__main__":
