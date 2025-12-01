@@ -14,7 +14,19 @@
 
 ---
 
-[![Clone and Run](https://img.shields.io/badge/Clone%20%26%20Run-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-repo/EpiClockPrototype)
+### 🚀 Hızlı Başlangıç (Quick Start)
+
+```bash
+# 1. Repoyu klonla
+git clone https://github.com/YOUR_USERNAME/EpiClockPrototype.git
+cd EpiClockPrototype
+
+# 2. Bağımlılıkları yükle
+pip install -r requirements.txt
+
+# 3. Uygulamayı çalıştır
+streamlit run app.py --server.port 5000
+```
 
 > **📤 Genomik Veri Yükleme:** DNA Metilasyon, VCF Varyant, Gen Listesi, CpG verilerinizi doğrudan yükleyin!  
 > **🧬 Epigenetik Yaş Hesaplama:** 5 major clock ile anında analiz yapın!
