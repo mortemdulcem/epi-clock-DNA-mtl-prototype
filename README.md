@@ -10,7 +10,7 @@
 
 ---
 
-**Author:** Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D.
+**Author:** Dr. Nurcan Denli Bayır, M.D., Ph.D., M.Sc., J.D. (Adli Tıp Doktoru)
 
 ---
 
