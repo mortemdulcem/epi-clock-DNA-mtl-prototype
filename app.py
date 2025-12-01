@@ -933,292 +933,615 @@ def main():
 
 
 def render_dna_upload(components, selected_clocks):
-    """DNA Methylation Data Upload and Analysis Interface"""
+    """Comprehensive Data Upload Interface for DNA, Variants, Genes, and CpG"""
     
-    st.markdown("## 📤 DNA Metilasyon Verisi Yükleme")
+    st.markdown("## 📤 Genomik Veri Yükleme Merkezi")
     st.markdown("""
-    Illumina EPIC (850K), 450K veya 27K array verilerinizi yükleyin.
-    Desteklenen formatlar: CSV, TXT, Excel, GEO Series Matrix
+    **DNA Metilasyon**, **Varyant (VCF)**, **Gen Listesi** ve **CpG Verilerinizi** yükleyin.
+    Kapsamlı epigenetik yaş analizi için tüm veri türlerini destekliyoruz.
     """)
     
-    with st.expander("📖 Kullanım Kılavuzu", expanded=False):
-        st.markdown("""
-        ### CSV Dosya Formatı
-        
-        **Gerekli Format:**
-        - İlk sütun: CpG site isimleri (örn: cg00000029, cg00000165)
-        - Diğer sütunlar: Örnek beta değerleri (0-1 arası)
-        - İlk satır: Örnek ID'leri
-        
-        **Örnek CSV yapısı:**
-        ```
-        CpG_ID,Sample_1,Sample_2,Sample_3
-        cg00000029,0.234,0.456,0.321
-        cg00000165,0.567,0.234,0.890
-        cg00000236,0.123,0.678,0.456
-        ...
-        ```
-        
-        ### Adım Adım Kullanım
-        
-        1. **Dosya Yükle** sekmesinden CSV dosyanızı seçin
-        2. "Veriyi İşle ve Analiz Et" butonuna tıklayın
-        3. **Analiz** sekmesine geçin
-        4. "Epigenetik Yaş Hesapla" butonuna tıklayın
-        5. Sonuçları CSV olarak indirebilirsiniz
-        
-        ### Desteklenen Saatler
-        
-        | Saat | CpG Sayısı | Açıklama |
-        |------|------------|----------|
-        | Horvath | 353 | Multi-doku, pan-tissue clock |
-        | Hannum | 71 | Kan bazlı, yaşlanma belirteci |
-        | PhenoAge | 513 | Fenotipik yaş, mortalite tahmini |
-        | DunedinPACE | 173 | Yaşlanma hızı ölçümü |
-        
-        ### Veri Kaynakları
-        
-        - **Laboratuvar Çıktısı:** Illumina GenomeStudio veya minfi/sesame çıktısı
-        - **GEO Veritabanı:** NCBI GEO'dan indirilen series matrix dosyaları
-        - **Araştırma Verileri:** Yayınlanmış çalışmalardaki beta değer matrisleri
-        
-        ### Kalite Gereksinimleri
-        
-        - Beta değerleri 0-1 arasında olmalı
-        - En az %80 CpG kapsamı önerilir
-        - Eksik değerler otomatik olarak impute edilir
-        """)
-        
-        st.info("💡 **İpucu:** Demo veri oluşturarak önce sistemin nasıl çalıştığını test edebilirsiniz.")
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); 
+                padding: 20px; border-radius: 12px; margin-bottom: 20px;
+                border-left: 4px solid #00ff41;">
+        <h4 style="color: #00ff41; margin: 0;">🧬 Desteklenen Veri Türleri</h4>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
+            <div style="color: #e0e0e0;">
+                <b style="color: #7fcdbb;">🔬 DNA Metilasyon:</b><br>
+                Illumina EPIC/450K/27K beta değerleri
+            </div>
+            <div style="color: #e0e0e0;">
+                <b style="color: #7fcdbb;">🧬 VCF Varyant:</b><br>
+                SNP, indel, yapısal varyantlar
+            </div>
+            <div style="color: #e0e0e0;">
+                <b style="color: #7fcdbb;">📋 Gen Listesi:</b><br>
+                HGNC gen sembolleri, Ensembl ID
+            </div>
+            <div style="color: #e0e0e0;">
+                <b style="color: #7fcdbb;">🎯 CpG Verisi:</b><br>
+                CpG site listesi, custom panel
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
-    tab1, tab2, tab3 = st.tabs(["📁 Dosya Yükle", "🧪 Demo Veri", "📊 Analiz"])
+    main_tab1, main_tab2, main_tab3, main_tab4, main_tab5 = st.tabs([
+        "🔬 DNA Metilasyon", 
+        "🧬 VCF Varyant", 
+        "📋 Gen Listesi", 
+        "🎯 CpG Verisi",
+        "📊 Yüklü Veriler"
+    ])
     
-    with tab1:
-        st.markdown("### Metilasyon Verisi Yükle")
+    with main_tab1:
+        st.markdown("### 🔬 DNA Metilasyon Verisi Yükle")
+        st.markdown("Illumina EPIC (850K), 450K veya 27K array verilerinizi yükleyin.")
         
-        col1, col2 = st.columns(2)
+        with st.expander("📖 Format Kılavuzu", expanded=False):
+            st.markdown("""
+            **CSV/Excel Formatı:**
+            ```
+            CpG_ID,Sample_1,Sample_2,Sample_3
+            cg00000029,0.234,0.456,0.321
+            cg00000165,0.567,0.234,0.890
+            ```
+            - Beta değerleri 0-1 arası olmalı
+            - En az %80 CpG kapsamı önerilir
+            """)
         
-        with col1:
-            uploaded_file = st.file_uploader(
-                "Beta Değerleri Dosyası",
-                type=['csv', 'txt', 'xlsx', 'xls'],
-                help="CpG satır, örnek sütun formatında beta değerleri (0-1 arası)"
-            )
+        tab1, tab2, tab3 = st.tabs(["📁 Dosya Yükle", "🧪 Demo Veri", "📊 Analiz"])
         
-        with col2:
-            phenotype_file = st.file_uploader(
-                "Fenotip/Klinik Veri (Opsiyonel)",
-                type=['csv', 'xlsx'],
-                help="Yaş, cinsiyet, madde kullanımı bilgileri"
-            )
-        
-        data_format = st.selectbox(
-            "Veri Formatı:",
-            ["Otomatik Algıla", "CSV (Virgülle Ayrılmış)", "TSV (Tab ile Ayrılmış)", 
-             "Excel", "GEO Series Matrix"],
-            index=0
-        )
-        
-        transpose_data = st.checkbox("Veriyi Transpoze Et (CpG'ler sütunlarda ise)", value=False)
-        
-        if uploaded_file is not None:
-            try:
-                reader = DNAMethylationReader()
-                
-                if st.button("🔬 Veriyi İşle ve Analiz Et", type="primary"):
-                    with st.spinner("Veri okunuyor ve işleniyor..."):
-                        dataset = reader.read_from_streamlit_upload(uploaded_file)
-                        
-                        st.session_state['loaded_dataset'] = dataset
-                        
-                        st.success(f"✅ Veri başarıyla yüklendi!")
-                        
-                        col1, col2, col3, col4 = st.columns(4)
-                        with col1:
-                            st.metric("Toplam CpG", f"{dataset.quality_metrics['total_cpgs']:,}")
-                        with col2:
-                            st.metric("Örnek Sayısı", dataset.quality_metrics['total_samples'])
-                        with col3:
-                            st.metric("Array Tipi", dataset.array_type)
-                        with col4:
-                            st.metric("Kalite Skoru", f"{(1-dataset.quality_metrics['missing_rate'])*100:.1f}%")
-                        
-                        st.markdown("### 🕐 Saat Kapsama Oranları")
-                        
-                        coverage_data = []
-                        for clock, coverage in dataset.quality_metrics['clock_coverage'].items():
-                            status = "✅" if coverage >= 80 else "⚠️" if coverage >= 50 else "❌"
-                            coverage_data.append({
-                                "Saat": clock.upper(),
-                                "Kapsam": f"{coverage:.1f}%",
-                                "Durum": status
-                            })
-                        
-                        st.dataframe(pd.DataFrame(coverage_data), use_container_width=True)
-                        
-                        if phenotype_file is not None:
-                            phenotype_df = pd.read_csv(phenotype_file) if phenotype_file.name.endswith('.csv') else pd.read_excel(phenotype_file)
-                            st.session_state['phenotype_data'] = phenotype_df
-                            st.success("✅ Fenotip verisi yüklendi!")
-                            st.dataframe(phenotype_df.head(), use_container_width=True)
-                        
-            except Exception as e:
-                st.error(f"❌ Veri okuma hatası: {str(e)}")
-    
-    with tab2:
-        st.markdown("### 🧪 Demo Veri Oluştur")
-        st.markdown("Test amaçlı simüle edilmiş DNA metilasyon verisi oluşturun.")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            n_samples = st.slider("Örnek Sayısı", 5, 50, 10)
-            n_cpgs = st.slider("CpG Sayısı", 500, 10000, 2000)
-        
-        with col2:
-            include_clock_cpgs = st.checkbox("Saat CpG'lerini Dahil Et", value=True)
-        
-        if st.button("🧬 Demo Veri Oluştur", type="primary"):
-            with st.spinner("Demo veri oluşturuluyor..."):
-                demo_dataset = create_demo_methylation_data(
-                    n_samples=n_samples,
-                    n_cpgs=n_cpgs,
-                    include_clock_cpgs=include_clock_cpgs
+        with tab1:
+            st.markdown("### Metilasyon Verisi Yükle")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                uploaded_file = st.file_uploader(
+                    "Beta Değerleri Dosyası",
+                    type=['csv', 'txt', 'xlsx', 'xls'],
+                    help="CpG satır, örnek sütun formatında beta değerleri (0-1 arası)",
+                    key="methylation_upload"
                 )
-                st.session_state['loaded_dataset'] = demo_dataset
-                
-                st.success("✅ Demo veri oluşturuldu!")
-                
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("CpG Sayısı", f"{len(demo_dataset.beta_matrix):,}")
-                with col2:
-                    st.metric("Örnek Sayısı", len(demo_dataset.samples))
-                with col3:
-                    st.metric("Kaynak", "Simüle")
-                
-                st.markdown("### Örnek Bilgileri")
-                st.dataframe(demo_dataset.sample_info, use_container_width=True)
-    
-    with tab3:
-        st.markdown("### 📊 Yüklü Veri Analizi")
-        
-        if 'loaded_dataset' in st.session_state:
-            dataset = st.session_state['loaded_dataset']
             
-            st.markdown(f"**Yüklü Veri:** {dataset.source} - {dataset.quality_metrics['total_samples']} örnek")
+            with col2:
+                phenotype_file = st.file_uploader(
+                    "Fenotip/Klinik Veri (Opsiyonel)",
+                    type=['csv', 'xlsx'],
+                    help="Yaş, cinsiyet, madde kullanımı bilgileri",
+                    key="phenotype_upload"
+                )
             
-            analysis_type = st.selectbox(
-                "Analiz Türü:",
-                ["Epigenetik Yaş Hesaplama", "Kalite Kontrol", "Beta Dağılımı", "CpG Korelasyonu"]
+            data_format = st.selectbox(
+                "Veri Formatı:",
+                ["Otomatik Algıla", "CSV (Virgülle Ayrılmış)", "TSV (Tab ile Ayrılmış)", 
+                 "Excel", "GEO Series Matrix"],
+                index=0,
+                key="methylation_format"
             )
             
-            if analysis_type == "Epigenetik Yaş Hesaplama":
-                st.markdown("""
-                **Gerçek Katsayılarla Hesaplama:**
-                Bu analiz, yayınlanmış epigenetik saat katsayılarını kullanarak 
-                yüklediğiniz DNA metilasyon verisinden epigenetik yaş hesaplar.
-                """)
-                
-                if st.button("🧬 Epigenetik Yaş Hesapla", type="primary"):
-                    with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
-                        
-                        results_df = calculate_epigenetic_age(dataset)
-                        
-                        display_df = results_df.rename(columns={
-                            'sample_id': 'Örnek ID',
-                            'chronological_age': 'Kronolojik Yaş',
-                            'horvath_age': 'Horvath Yaş',
-                            'hannum_age': 'Hannum Yaş',
-                            'phenoage': 'PhenoAge',
-                            'dunedin_pace': 'DunedinPACE',
-                            'horvath_coverage': 'Horvath %',
-                            'hannum_coverage': 'Hannum %',
-                            'phenoage_coverage': 'PhenoAge %',
-                            'dunedin_coverage': 'DunedinPACE %'
-                        })
-                        
-                        for sample in dataset.samples:
-                            idx = display_df[display_df['Örnek ID'] == sample.sample_id].index
-                            if len(idx) > 0:
-                                if sample.sex:
-                                    display_df.loc[idx, 'Cinsiyet'] = sample.sex
-                                if sample.substance_type:
-                                    display_df.loc[idx, 'Madde'] = sample.substance_type
-                        
-                        if 'Kronolojik Yaş' in display_df.columns:
-                            for clock in ['Horvath Yaş', 'Hannum Yaş', 'PhenoAge']:
-                                if clock in display_df.columns:
-                                    display_df[f'{clock.split()[0]} EAA'] = (
-                                        display_df[clock] - display_df['Kronolojik Yaş'].fillna(0)
-                                    ).round(2)
-                        
-                        st.session_state['analysis_results'] = display_df
-                        
-                        st.success("✅ Gerçek katsayılarla analiz tamamlandı!")
-                        
-                        st.markdown("### 📊 Sonuçlar")
-                        st.dataframe(display_df, use_container_width=True)
-                        
-                        st.markdown("### 📈 CpG Kapsama Oranları")
-                        coverage_cols = [c for c in display_df.columns if '%' in c]
-                        if coverage_cols:
-                            avg_coverage = display_df[coverage_cols].mean()
+            transpose_data = st.checkbox("Veriyi Transpoze Et (CpG'ler sütunlarda ise)", value=False, key="methylation_transpose")
+            
+            if uploaded_file is not None:
+                try:
+                    reader = DNAMethylationReader()
+                    
+                    if st.button("🔬 Veriyi İşle ve Analiz Et", type="primary", key="process_methylation"):
+                        with st.spinner("Veri okunuyor ve işleniyor..."):
+                            dataset = reader.read_from_streamlit_upload(uploaded_file)
+                            
+                            st.session_state['loaded_dataset'] = dataset
+                            
+                            st.success(f"✅ Veri başarıyla yüklendi!")
                             
                             col1, col2, col3, col4 = st.columns(4)
                             with col1:
-                                st.metric("Horvath Kapsam", f"{avg_coverage.get('Horvath %', 0):.1f}%")
+                                st.metric("Toplam CpG", f"{dataset.quality_metrics['total_cpgs']:,}")
                             with col2:
-                                st.metric("Hannum Kapsam", f"{avg_coverage.get('Hannum %', 0):.1f}%")
+                                st.metric("Örnek Sayısı", dataset.quality_metrics['total_samples'])
                             with col3:
-                                st.metric("PhenoAge Kapsam", f"{avg_coverage.get('PhenoAge %', 0):.1f}%")
+                                st.metric("Array Tipi", dataset.array_type)
                             with col4:
-                                st.metric("DunedinPACE Kapsam", f"{avg_coverage.get('DunedinPACE %', 0):.1f}%")
-                        
-                        csv = display_df.to_csv(index=False)
-                        st.download_button(
-                            "📥 Sonuçları İndir (CSV)",
-                            csv,
-                            "epiclock_results.csv",
-                            "text/csv"
-                        )
+                                st.metric("Kalite Skoru", f"{(1-dataset.quality_metrics['missing_rate'])*100:.1f}%")
+                            
+                            st.markdown("### 🕐 Saat Kapsama Oranları")
+                            
+                            coverage_data = []
+                            for clock, coverage in dataset.quality_metrics['clock_coverage'].items():
+                                status = "✅" if coverage >= 80 else "⚠️" if coverage >= 50 else "❌"
+                                coverage_data.append({
+                                    "Saat": clock.upper(),
+                                    "Kapsam": f"{coverage:.1f}%",
+                                    "Durum": status
+                                })
+                            
+                            st.dataframe(pd.DataFrame(coverage_data), use_container_width=True)
+                            
+                            if phenotype_file is not None:
+                                phenotype_df = pd.read_csv(phenotype_file) if phenotype_file.name.endswith('.csv') else pd.read_excel(phenotype_file)
+                                st.session_state['phenotype_data'] = phenotype_df
+                                st.success("✅ Fenotip verisi yüklendi!")
+                                st.dataframe(phenotype_df.head(), use_container_width=True)
+                            
+                except Exception as e:
+                    st.error(f"❌ Veri okuma hatası: {str(e)}")
+        
+        with tab2:
+            st.markdown("### 🧪 Demo Veri Oluştur")
+            st.markdown("Test amaçlı simüle edilmiş DNA metilasyon verisi oluşturun.")
             
-            elif analysis_type == "Kalite Kontrol":
-                st.markdown("#### Kalite Metrikleri")
-                
-                metrics = dataset.quality_metrics
-                
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Eksik Veri Oranı", f"{metrics['missing_rate']*100:.2f}%")
-                with col2:
-                    st.metric("Ortalama Beta", f"{metrics['mean_beta']:.3f}")
-                with col3:
-                    st.metric("Beta Std. Sapma", f"{metrics['std_beta']:.3f}")
+            col1, col2 = st.columns(2)
             
-            elif analysis_type == "Beta Dağılımı":
-                st.markdown("#### Beta Değer Dağılımı")
-                
-                import plotly.express as px
-                
-                sample_data = dataset.beta_matrix.iloc[:, 0].dropna()
-                fig = px.histogram(sample_data, nbins=50, title="İlk Örnek Beta Dağılımı")
-                fig.update_layout(xaxis_title="Beta Değeri", yaxis_title="Frekans")
-                st.plotly_chart(fig, use_container_width=True)
+            with col1:
+                n_samples = st.slider("Örnek Sayısı", 5, 50, 10, key="demo_samples")
+                n_cpgs = st.slider("CpG Sayısı", 500, 10000, 2000, key="demo_cpgs")
             
-            elif analysis_type == "CpG Korelasyonu":
-                st.markdown("#### Örnekler Arası Korelasyon")
+            with col2:
+                include_clock_cpgs = st.checkbox("Saat CpG'lerini Dahil Et", value=True, key="demo_clock_cpgs")
+            
+            if st.button("🧬 Demo Veri Oluştur", type="primary", key="create_demo"):
+                with st.spinner("Demo veri oluşturuluyor..."):
+                    demo_dataset = create_demo_methylation_data(
+                        n_samples=n_samples,
+                        n_cpgs=n_cpgs,
+                        include_clock_cpgs=include_clock_cpgs
+                    )
+                    st.session_state['loaded_dataset'] = demo_dataset
+                    
+                    st.success("✅ Demo veri oluşturuldu!")
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("CpG Sayısı", f"{len(demo_dataset.beta_matrix):,}")
+                    with col2:
+                        st.metric("Örnek Sayısı", len(demo_dataset.samples))
+                    with col3:
+                        st.metric("Kaynak", "Simüle")
+                    
+                    st.markdown("### Örnek Bilgileri")
+                    st.dataframe(demo_dataset.sample_info, use_container_width=True)
+        
+        with tab3:
+            st.markdown("### 📊 Yüklü Veri Analizi")
+            
+            if 'loaded_dataset' in st.session_state:
+                dataset = st.session_state['loaded_dataset']
                 
-                if len(dataset.beta_matrix.columns) > 1:
-                    corr_matrix = dataset.beta_matrix.corr()
+                st.markdown(f"**Yüklü Veri:** {dataset.source} - {dataset.quality_metrics['total_samples']} örnek")
+                
+                analysis_type = st.selectbox(
+                    "Analiz Türü:",
+                    ["Epigenetik Yaş Hesaplama", "Kalite Kontrol", "Beta Dağılımı", "CpG Korelasyonu"],
+                    key="methylation_analysis_type"
+                )
+                
+                if analysis_type == "Epigenetik Yaş Hesaplama":
+                    st.markdown("""
+                    **Gerçek Katsayılarla Hesaplama:**
+                    Bu analiz, yayınlanmış epigenetik saat katsayılarını kullanarak 
+                    yüklediğiniz DNA metilasyon verisinden epigenetik yaş hesaplar.
+                    """)
+                    
+                    if st.button("🧬 Epigenetik Yaş Hesapla", type="primary", key="calc_epi_age"):
+                        with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
+                            
+                            results_df = calculate_epigenetic_age(dataset)
+                            
+                            display_df = results_df.rename(columns={
+                                'sample_id': 'Örnek ID',
+                                'chronological_age': 'Kronolojik Yaş',
+                                'horvath_age': 'Horvath Yaş',
+                                'hannum_age': 'Hannum Yaş',
+                                'phenoage': 'PhenoAge',
+                                'dunedin_pace': 'DunedinPACE',
+                                'horvath_coverage': 'Horvath %',
+                                'hannum_coverage': 'Hannum %',
+                                'phenoage_coverage': 'PhenoAge %',
+                                'dunedin_coverage': 'DunedinPACE %'
+                            })
+                            
+                            for sample in dataset.samples:
+                                idx = display_df[display_df['Örnek ID'] == sample.sample_id].index
+                                if len(idx) > 0:
+                                    if sample.sex:
+                                        display_df.loc[idx, 'Cinsiyet'] = sample.sex
+                                    if sample.substance_type:
+                                        display_df.loc[idx, 'Madde'] = sample.substance_type
+                            
+                            if 'Kronolojik Yaş' in display_df.columns:
+                                for clock in ['Horvath Yaş', 'Hannum Yaş', 'PhenoAge']:
+                                    if clock in display_df.columns:
+                                        display_df[f'{clock.split()[0]} EAA'] = (
+                                            display_df[clock] - display_df['Kronolojik Yaş'].fillna(0)
+                                        ).round(2)
+                            
+                            st.session_state['analysis_results'] = display_df
+                            
+                            st.success("✅ Gerçek katsayılarla analiz tamamlandı!")
+                            
+                            st.markdown("### 📊 Sonuçlar")
+                            st.dataframe(display_df, use_container_width=True)
+                            
+                            st.markdown("### 📈 CpG Kapsama Oranları")
+                            coverage_cols = [c for c in display_df.columns if '%' in c]
+                            if coverage_cols:
+                                avg_coverage = display_df[coverage_cols].mean()
+                                
+                                col1, col2, col3, col4 = st.columns(4)
+                                with col1:
+                                    st.metric("Horvath Kapsam", f"{avg_coverage.get('Horvath %', 0):.1f}%")
+                                with col2:
+                                    st.metric("Hannum Kapsam", f"{avg_coverage.get('Hannum %', 0):.1f}%")
+                                with col3:
+                                    st.metric("PhenoAge Kapsam", f"{avg_coverage.get('PhenoAge %', 0):.1f}%")
+                                with col4:
+                                    st.metric("DunedinPACE Kapsam", f"{avg_coverage.get('DunedinPACE %', 0):.1f}%")
+                            
+                            csv = display_df.to_csv(index=False)
+                            st.download_button(
+                                "📥 Sonuçları İndir (CSV)",
+                                csv,
+                                "epiclock_results.csv",
+                                "text/csv",
+                                key="download_methylation_results"
+                            )
+                
+                elif analysis_type == "Kalite Kontrol":
+                    st.markdown("#### Kalite Metrikleri")
+                    
+                    metrics = dataset.quality_metrics
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Eksik Veri Oranı", f"{metrics['missing_rate']*100:.2f}%")
+                    with col2:
+                        st.metric("Ortalama Beta", f"{metrics['mean_beta']:.3f}")
+                    with col3:
+                        st.metric("Beta Std. Sapma", f"{metrics['std_beta']:.3f}")
+                
+                elif analysis_type == "Beta Dağılımı":
+                    st.markdown("#### Beta Değer Dağılımı")
                     
                     import plotly.express as px
-                    fig = px.imshow(corr_matrix, title="Örnek Korelasyon Matrisi")
+                    
+                    sample_data = dataset.beta_matrix.iloc[:, 0].dropna()
+                    fig = px.histogram(sample_data, nbins=50, title="İlk Örnek Beta Dağılımı")
+                    fig.update_layout(xaxis_title="Beta Değeri", yaxis_title="Frekans")
                     st.plotly_chart(fig, use_container_width=True)
-                else:
-                    st.info("Korelasyon için en az 2 örnek gerekli.")
+                
+                elif analysis_type == "CpG Korelasyonu":
+                    st.markdown("#### Örnekler Arası Korelasyon")
+                    
+                    if len(dataset.beta_matrix.columns) > 1:
+                        corr_matrix = dataset.beta_matrix.corr()
+                        
+                        import plotly.express as px
+                        fig = px.imshow(corr_matrix, title="Örnek Korelasyon Matrisi")
+                        st.plotly_chart(fig, use_container_width=True)
+                    else:
+                        st.info("Korelasyon için en az 2 örnek gerekli.")
+            else:
+                st.info("⬆️ Lütfen önce 'Dosya Yükle' veya 'Demo Veri' sekmesinden veri yükleyin.")
+    
+    with main_tab2:
+        st.markdown("### 🧬 VCF Varyant Dosyası Yükle")
+        st.markdown("Genetik varyant verilerinizi VCF formatında yükleyin.")
+        
+        with st.expander("📖 VCF Format Kılavuzu", expanded=False):
+            st.markdown("""
+            **VCF (Variant Call Format) Dosyası:**
+            ```
+            ##fileformat=VCFv4.2
+            #CHROM  POS     ID          REF ALT QUAL FILTER INFO
+            chr1    12345   rs123456    A   G   .    PASS   .
+            chr2    67890   rs789012    C   T   .    PASS   .
+            ```
+            - Desteklenen formatlar: .vcf, .vcf.gz
+            - SNP, indel ve yapısal varyantlar desteklenir
+            """)
+        
+        uploaded_vcf = st.file_uploader(
+            "VCF Dosyası Yükle",
+            type=['vcf', 'gz'],
+            help="Genetik varyant verilerini içeren VCF dosyası",
+            key="vcf_upload"
+        )
+        
+        if uploaded_vcf is not None:
+            if st.button("🧬 VCF Dosyasını İşle", type="primary", key="process_vcf"):
+                with st.spinner("VCF dosyası işleniyor..."):
+                    try:
+                        import io
+                        content = uploaded_vcf.read().decode('utf-8')
+                        lines = content.strip().split('\n')
+                        
+                        header_lines = [l for l in lines if l.startswith('##')]
+                        data_lines = [l for l in lines if not l.startswith('##') and l.strip()]
+                        
+                        if data_lines:
+                            header = data_lines[0].split('\t')
+                            variants = []
+                            for line in data_lines[1:]:
+                                parts = line.split('\t')
+                                if len(parts) >= 5:
+                                    variants.append({
+                                        'CHROM': parts[0],
+                                        'POS': parts[1],
+                                        'ID': parts[2],
+                                        'REF': parts[3],
+                                        'ALT': parts[4]
+                                    })
+                            
+                            vcf_df = pd.DataFrame(variants)
+                            st.session_state['uploaded_vcf'] = vcf_df
+                            
+                            st.success(f"✅ VCF dosyası yüklendi! {len(vcf_df):,} varyant bulundu.")
+                            
+                            col1, col2, col3 = st.columns(3)
+                            with col1:
+                                st.metric("Toplam Varyant", f"{len(vcf_df):,}")
+                            with col2:
+                                st.metric("Kromozom Sayısı", vcf_df['CHROM'].nunique())
+                            with col3:
+                                rs_count = vcf_df['ID'].str.startswith('rs').sum()
+                                st.metric("dbSNP ID (rs)", f"{rs_count:,}")
+                            
+                            st.markdown("### Örnek Varyantlar")
+                            st.dataframe(vcf_df.head(10), use_container_width=True)
+                    except Exception as e:
+                        st.error(f"❌ VCF okuma hatası: {str(e)}")
+        
+        if 'uploaded_vcf' in st.session_state:
+            st.markdown("---")
+            st.markdown("### 📊 Yüklü VCF Analizi")
+            vcf_df = st.session_state['uploaded_vcf']
+            
+            chrom_counts = vcf_df['CHROM'].value_counts()
+            import plotly.express as px
+            fig = px.bar(x=chrom_counts.index, y=chrom_counts.values, 
+                        title="Kromozom Başına Varyant Sayısı",
+                        labels={'x': 'Kromozom', 'y': 'Varyant Sayısı'})
+            st.plotly_chart(fig, use_container_width=True)
+    
+    with main_tab3:
+        st.markdown("### 📋 Gen Listesi Yükle")
+        st.markdown("Analiz etmek istediğiniz genlerin listesini yükleyin veya girin.")
+        
+        with st.expander("📖 Gen Listesi Formatı", expanded=False):
+            st.markdown("""
+            **Desteklenen Formatlar:**
+            - CSV/TXT: Her satırda bir gen sembolü
+            - Excel: İlk sütunda gen sembolleri
+            
+            **Örnek:**
+            ```
+            OPRM1
+            DRD2
+            COMT
+            BDNF
+            SLC6A4
+            ```
+            
+            **Desteklenen ID Türleri:**
+            - HGNC Gen Sembolleri (örn: OPRM1, DRD2)
+            - Ensembl Gene ID (örn: ENSG00000112038)
+            - Entrez Gene ID (örn: 4988)
+            """)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### Dosyadan Yükle")
+            gene_file = st.file_uploader(
+                "Gen Listesi Dosyası",
+                type=['csv', 'txt', 'xlsx'],
+                help="Her satırda bir gen sembolü",
+                key="gene_list_upload"
+            )
+            
+            if gene_file is not None:
+                try:
+                    if gene_file.name.endswith('.xlsx'):
+                        genes_df = pd.read_excel(gene_file, header=None)
+                    else:
+                        genes_df = pd.read_csv(gene_file, header=None)
+                    
+                    gene_list = genes_df.iloc[:, 0].dropna().tolist()
+                    st.session_state['uploaded_genes'] = gene_list
+                    st.success(f"✅ {len(gene_list)} gen yüklendi!")
+                except Exception as e:
+                    st.error(f"❌ Dosya okuma hatası: {str(e)}")
+        
+        with col2:
+            st.markdown("#### Manuel Giriş")
+            manual_genes = st.text_area(
+                "Gen Sembolleri (her satırda bir gen)",
+                placeholder="OPRM1\nDRD2\nCOMT\nBDNF",
+                height=150,
+                key="manual_genes"
+            )
+            
+            if st.button("📋 Genleri Ekle", key="add_manual_genes"):
+                if manual_genes.strip():
+                    gene_list = [g.strip() for g in manual_genes.split('\n') if g.strip()]
+                    st.session_state['uploaded_genes'] = gene_list
+                    st.success(f"✅ {len(gene_list)} gen eklendi!")
+        
+        if 'uploaded_genes' in st.session_state:
+            st.markdown("---")
+            st.markdown("### 📊 Yüklü Gen Analizi")
+            gene_list = st.session_state['uploaded_genes']
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Toplam Gen", len(gene_list))
+            with col2:
+                st.metric("Benzersiz Gen", len(set(gene_list)))
+            
+            st.markdown("**Gen Listesi:**")
+            st.dataframe(pd.DataFrame({'Gen Sembolü': gene_list}), use_container_width=True)
+            
+            csv = pd.DataFrame({'Gene_Symbol': gene_list}).to_csv(index=False)
+            st.download_button(
+                "📥 Gen Listesini İndir",
+                csv,
+                "gene_list.csv",
+                "text/csv",
+                key="download_genes"
+            )
+    
+    with main_tab4:
+        st.markdown("### 🎯 CpG Site Verisi Yükle")
+        st.markdown("Özel CpG site listesi veya metilasyon paneli yükleyin.")
+        
+        with st.expander("📖 CpG Format Kılavuzu", expanded=False):
+            st.markdown("""
+            **Desteklenen Formatlar:**
+            
+            **Basit CpG Listesi:**
+            ```
+            cg00000029
+            cg00000165
+            cg00000236
+            ```
+            
+            **Detaylı CpG Verisi (CSV):**
+            ```
+            CpG_ID,Chromosome,Position,Gene
+            cg00000029,chr16,53434200,RBL2
+            cg00000165,chr1,91194674,BARHL2
+            ```
+            
+            **Illumina Manifest Formatı:**
+            - EPIC (850K) manifest
+            - 450K manifest
+            - 27K manifest
+            """)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### Dosyadan Yükle")
+            cpg_file = st.file_uploader(
+                "CpG Dosyası",
+                type=['csv', 'txt', 'xlsx'],
+                help="CpG site listesi veya manifest dosyası",
+                key="cpg_list_upload"
+            )
+            
+            if cpg_file is not None:
+                try:
+                    if cpg_file.name.endswith('.xlsx'):
+                        cpg_df = pd.read_excel(cpg_file)
+                    else:
+                        cpg_df = pd.read_csv(cpg_file)
+                    
+                    if cpg_df.shape[1] == 1:
+                        cpg_list = cpg_df.iloc[:, 0].dropna().tolist()
+                        cpg_df = pd.DataFrame({'CpG_ID': cpg_list})
+                    
+                    st.session_state['uploaded_cpgs'] = cpg_df
+                    st.success(f"✅ {len(cpg_df):,} CpG site yüklendi!")
+                except Exception as e:
+                    st.error(f"❌ Dosya okuma hatası: {str(e)}")
+        
+        with col2:
+            st.markdown("#### Manuel Giriş")
+            manual_cpgs = st.text_area(
+                "CpG Site ID'leri (her satırda bir CpG)",
+                placeholder="cg00000029\ncg00000165\ncg00000236",
+                height=150,
+                key="manual_cpgs"
+            )
+            
+            if st.button("🎯 CpG'leri Ekle", key="add_manual_cpgs"):
+                if manual_cpgs.strip():
+                    cpg_list = [c.strip() for c in manual_cpgs.split('\n') if c.strip()]
+                    st.session_state['uploaded_cpgs'] = pd.DataFrame({'CpG_ID': cpg_list})
+                    st.success(f"✅ {len(cpg_list)} CpG eklendi!")
+        
+        if 'uploaded_cpgs' in st.session_state:
+            st.markdown("---")
+            st.markdown("### 📊 Yüklü CpG Analizi")
+            cpg_df = st.session_state['uploaded_cpgs']
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Toplam CpG", f"{len(cpg_df):,}")
+            with col2:
+                cg_count = cpg_df.iloc[:, 0].str.startswith('cg').sum() if len(cpg_df) > 0 else 0
+                st.metric("cg Prefix", f"{cg_count:,}")
+            with col3:
+                ch_count = cpg_df.iloc[:, 0].str.startswith('ch').sum() if len(cpg_df) > 0 else 0
+                st.metric("ch Prefix", f"{ch_count:,}")
+            
+            st.markdown("**CpG Listesi:**")
+            st.dataframe(cpg_df.head(20), use_container_width=True)
+    
+    with main_tab5:
+        st.markdown("### 📊 Yüklü Veriler Özeti")
+        st.markdown("Şu ana kadar yüklenen tüm verilerin özeti.")
+        
+        uploaded_data = []
+        
+        if 'loaded_dataset' in st.session_state:
+            dataset = st.session_state['loaded_dataset']
+            uploaded_data.append({
+                "Veri Türü": "🔬 DNA Metilasyon",
+                "Durum": "✅ Yüklü",
+                "Detay": f"{dataset.quality_metrics['total_cpgs']:,} CpG, {dataset.quality_metrics['total_samples']} örnek"
+            })
         else:
-            st.info("⬆️ Lütfen önce 'Dosya Yükle' veya 'Demo Veri' sekmesinden veri yükleyin.")
+            uploaded_data.append({"Veri Türü": "🔬 DNA Metilasyon", "Durum": "⏳ Bekleniyor", "Detay": "-"})
+        
+        if 'uploaded_vcf' in st.session_state:
+            vcf_df = st.session_state['uploaded_vcf']
+            uploaded_data.append({
+                "Veri Türü": "🧬 VCF Varyant",
+                "Durum": "✅ Yüklü",
+                "Detay": f"{len(vcf_df):,} varyant"
+            })
+        else:
+            uploaded_data.append({"Veri Türü": "🧬 VCF Varyant", "Durum": "⏳ Bekleniyor", "Detay": "-"})
+        
+        if 'uploaded_genes' in st.session_state:
+            gene_list = st.session_state['uploaded_genes']
+            uploaded_data.append({
+                "Veri Türü": "📋 Gen Listesi",
+                "Durum": "✅ Yüklü",
+                "Detay": f"{len(gene_list)} gen"
+            })
+        else:
+            uploaded_data.append({"Veri Türü": "📋 Gen Listesi", "Durum": "⏳ Bekleniyor", "Detay": "-"})
+        
+        if 'uploaded_cpgs' in st.session_state:
+            cpg_df = st.session_state['uploaded_cpgs']
+            uploaded_data.append({
+                "Veri Türü": "🎯 CpG Verisi",
+                "Durum": "✅ Yüklü",
+                "Detay": f"{len(cpg_df):,} CpG"
+            })
+        else:
+            uploaded_data.append({"Veri Türü": "🎯 CpG Verisi", "Durum": "⏳ Bekleniyor", "Detay": "-"})
+        
+        st.dataframe(pd.DataFrame(uploaded_data), use_container_width=True, hide_index=True)
+        
+        loaded_count = sum(1 for d in uploaded_data if d["Durum"] == "✅ Yüklü")
+        
+        if loaded_count > 0:
+            st.success(f"🎉 {loaded_count}/4 veri türü yüklendi!")
+            
+            if st.button("🗑️ Tüm Verileri Temizle", type="secondary", key="clear_all_data"):
+                keys_to_clear = ['loaded_dataset', 'uploaded_vcf', 'uploaded_genes', 'uploaded_cpgs', 
+                                'phenotype_data', 'analysis_results']
+                for key in keys_to_clear:
+                    if key in st.session_state:
+                        del st.session_state[key]
+                st.rerun()
+        else:
+            st.info("📤 Yukarıdaki sekmelerden veri yükleyerek başlayın.")
 
 
 def render_publication_references():
