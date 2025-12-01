@@ -817,6 +817,7 @@ def init_components():
     }
 
 def main():
+    inject_professional_css()
     components = init_components()
     
     render_dna_helix_animation()
