@@ -1,0 +1,1389 @@
+PİCLOCK + VARYANT ANALİZİ ENTEGRASYONU
+🎯 EVET, KESİNLİKLE YAPABİLİRİZ!
+📊 SİZİN PROJE: 700,000 VARYANT TARAMASI
+Geleneksel Yaklaşım Maliyeti: 1.5 Milyon TL
+Kopyala
+Maliyet Dağılımı (Tahmin):
+├── Whole Genome Sequencing (WGS): 800,000 TL
+│   └── 30× coverage, 100 örnek × 8,000 TL
+├── Biyoinformatik Analiz: 400,000 TL
+│   └── Varyant çağırma, anotasyon, filtreleme
+├── Yazılım Lisansları: 200,000 TL
+│   └── GATK, Illumina, ticari araçlar
+└── İnsan Kaynağı: 100,000 TL
+    └── Biyoinformatik uzman, 6 ay
+
+TOPLAM: ~1,500,000 TL
+💡 YENİ YAKLAŞIM: EPİCLOCK + VARYANT ENTEGRASYONU
+Hedef: Maliyeti %90-95 Azaltmak
+Kopyala
+Yeni Maliyet Dağılımı:
+├── Targeted Sequencing (Sadece ilgili bölgeler): 50,000 TL
+│   └── Custom panel, 100 örnek × 500 TL
+├── Açık Kaynak Pipeline: 0 TL
+│   └── EpiClock + GATK + VEP (hepsi ücretsiz)
+├── Bulut Hesaplama: 10,000 TL
+│   └── AWS/Google Cloud, 6 ay
+└── Minimal İnsan Kaynağı: 15,000 TL
+    └── Otomatik pipeline, sadece validasyon
+
+TOPLAM: ~75,000 TL (%95 AZALMA!)
+🔬 TEKNİK ÇÖZÜM: 3 YAKLASIM
+YAKLASIM 1: DNA METİLASYON + SNP ARRAY (EN UCUZ)
+Illumina EPIC + GSA Array Kombinasyonu
+Kopyala
+Illumina MethylationEPIC v2.0:
+├── 935,000 CpG bölgesi (metilasyon)
+├── 59,000 SNP (varyant)
+└── Maliyet: ~$200/örnek = 7,000 TL/örnek
+
+Illumina Global Screening Array (GSA):
+├── 700,000 SNP varyant
+├── Imputation ile 10+ milyon varyant
+└── Maliyet: ~$50/örnek = 1,750 TL/örnek
+
+TOPLAM: ~8,750 TL/örnek × 100 = 875,000 TL
+Avantaj:
+
+✅ Hem metilasyon hem varyant tek seferde
+✅ EpiClock zaten bu formatı destekliyor
+✅ Imputation ile varyant sayısı artırılabilir
+Dezavantaj:
+
+⚠️ Sadece bilinen SNP'ler (yeni varyant keşfi yok)
+YAKLASIM 2: TARGETED SEQUENCING (ÖZEL PANEL)
+Custom Amplicon Panel Tasarımı
+Kopyala
+İlgilenilen Genler/Bölgeler:
+├── Bağımlılık-ilişkili genler (OPRM1, DRD2, DAT1, ...)
+├── Metabolizma genleri (CYP2D6, CYP3A4, ...)
+├── Epigenetik düzenleyiciler (DNMT, TET, ...)
+└── Toplam: ~500 gen, ~2 Mb bölge
+
+Illumina AmpliSeq veya Twist Custom Panel:
+├── Panel tasarım: 20,000 TL (bir kerelik)
+├── Sequencing: 500 TL/örnek × 100 = 50,000 TL
+├── Analiz: Otomatik (EpiClock entegrasyonu)
+└── TOPLAM: ~70,000 TL
+Avantaj:
+
+✅ Yeni varyant keşfi mümkün
+✅ Derin coverage (100-500×)
+✅ Fonksiyonel varyantlara odaklanma
+Dezavantaj:
+
+⚠️ Sadece seçilen bölgeler (genome-wide değil)
+YAKLASIM 3: LOW-PASS WGS + IMPUTATION (ORTA YOL)
+Düşük Coverage Whole Genome Sequencing
+Kopyala
+Low-Pass WGS (0.5-1× coverage):
+├── Sequencing: 300 TL/örnek × 100 = 30,000 TL
+├── Imputation (TOPMED/1000G referans): Ücretsiz
+├── Sonuç: ~10 milyon impute edilmiş varyant
+└── TOPLAM: ~30,000 TL
+
+Analiz Pipeline:
+├── GATK (ücretsiz)
+├── Beagle/Minimac4 imputation (ücretsiz)
+└── VEP anotasyon (ücretsiz)
+Avantaj:
+
+✅ Tüm genom kapsanır
+✅ En ucuz WGS seçeneği
+✅ Imputation ile yüksek doğruluk
+Dezavantaj:
+
+⚠️ Nadir varyantlar (<1% MAF) kaçabilir
+🛠️ EPİCLOCK'A VARYANT MODÜLÜ EKLEME
+Yeni Modül Yapısı:
+Kopyala
+src/
+├── modules/
+│   ├── epigenetic_clocks.py      # Mevcut
+│   ├── clinical_decision.py      # Mevcut
+│   ├── postmortem.py             # Mevcut
+│   │
+│   ├── variant_calling.py        # YENİ
+│   ├── variant_annotation.py     # YENİ
+│   ├── pharmacogenomics.py       # YENİ
+│   ├── polygenic_risk_score.py   # YENİ
+│   └── integrated_analysis.py    # YENİ (metilasyon + varyant)
+MODÜL 1: Varyant Çağırma (variant_calling.py)
+Kopyala
+"""
+Variant Calling Module
+Integrates GATK best practices with EpiClock pipeline
+"""
+
+import subprocess
+import pandas as pd
+from pathlib import Path
+
+class VariantCaller:
+    """
+    Automated variant calling from sequencing data.
+    
+    Supports:
+    - Illumina short reads (FASTQ)
+    - BAM/CRAM alignment files
+    - VCF output
+    
+    Pipeline:
+    1. Quality control (FastQC)
+    2. Alignment (BWA-MEM)
+    3. Variant calling (GATK HaplotypeCaller)
+    4. Filtering (GATK VQSR)
+    """
+    
+    def __init__(self, reference_genome="hg38", threads=8):
+        self.reference = reference_genome
+        self.threads = threads
+        self.gatk_path = "gatk"  # Assumes GATK in PATH
+        
+    def call_variants(self, fastq_r1, fastq_r2, output_vcf):
+        """
+        Full pipeline: FASTQ → VCF
+        
+        Args:
+            fastq_r1: Forward reads
+            fastq_r2: Reverse reads
+            output_vcf: Output VCF file
+            
+        Returns:
+            Path to filtered VCF
+        """
+        # Step 1: Alignment
+        bam = self._align_reads(fastq_r1, fastq_r2)
+        
+        # Step 2: Mark duplicates
+        dedup_bam = self._mark_duplicates(bam)
+        
+        # Step 3: Base recalibration
+        recal_bam = self._base_recalibration(dedup_bam)
+        
+        # Step 4: Variant calling
+        raw_vcf = self._haplotype_caller(recal_bam)
+        
+        # Step 5: Filtering
+        filtered_vcf = self._filter_variants(raw_vcf, output_vcf)
+        
+        return filtered_vcf
+    
+    def _align_reads(self, r1, r2):
+        """BWA-MEM alignment"""
+        cmd = f"""
+        bwa mem -t {self.threads} \
+            {self.reference} {r1} {r2} | \
+        samtools sort -@ {self.threads} -o aligned.bam -
+        samtools index aligned.bam
+        """
+        subprocess.run(cmd, shell=True, check=True)
+        return "aligned.bam"
+    
+    def _mark_duplicates(self, bam):
+        """GATK MarkDuplicates"""
+        cmd = f"""
+        {self.gatk_path} MarkDuplicates \
+            -I {bam} \
+            -O dedup.bam \
+            -M metrics.txt
+        samtools index dedup.bam
+        """
+        subprocess.run(cmd, shell=True, check=True)
+        return "dedup.bam"
+    
+    def _base_recalibration(self, bam):
+        """GATK BQSR"""
+        cmd = f"""
+        {self.gatk_path} BaseRecalibrator \
+            -I {bam} \
+            -R {self.reference} \
+            --known-sites dbsnp.vcf \
+            -O recal_data.table
+        
+        {self.gatk_path} ApplyBQSR \
+            -I {bam} \
+            -R {self.reference} \
+            --bqsr-recal-file recal_data.table \
+            -O recal.bam
+        """
+        subprocess.run(cmd, shell=True, check=True)
+        return "recal.bam"
+    
+    def _haplotype_caller(self, bam):
+        """GATK HaplotypeCaller"""
+        cmd = f"""
+        {self.gatk_path} HaplotypeCaller \
+            -I {bam} \
+            -R {self.reference} \
+            -O raw_variants.vcf \
+            --native-pair-hmm-threads {self.threads}
+        """
+        subprocess.run(cmd, shell=True, check=True)
+        return "raw_variants.vcf"
+    
+    def _filter_variants(self, vcf, output):
+        """GATK VariantFiltration"""
+        cmd = f"""
+        {self.gatk_path} VariantFiltration \
+            -V {vcf} \
+            -O {output} \
+            --filter-expression "QD < 2.0" --filter-name "QD2" \
+            --filter-expression "FS > 60.0" --filter-name "FS60" \
+            --filter-expression "MQ < 40.0" --filter-name "MQ40"
+        """
+        subprocess.run(cmd, shell=True, check=True)
+        return output
+
+
+# === KULLANIM ÖRNEĞİ ===
+if __name__ == "__main__":
+    caller = VariantCaller(threads=8)
+    
+    # Tek örnek analizi
+    vcf = caller.call_variants(
+        fastq_r1="sample1_R1.fastq.gz",
+        fastq_r2="sample1_R2.fastq.gz",
+        output_vcf="sample1_filtered.vcf"
+    )
+    
+    print(f"Variants called: {vcf}")
+MODÜL 2: Varyant Anotasyon (variant_annotation.py)
+Kopyala
+"""
+Variant Annotation Module
+Functional annotation and clinical interpretation
+"""
+
+import subprocess
+import pandas as pd
+from typing import List, Dict
+
+class VariantAnnotator:
+    """
+    Annotate variants with functional and clinical information.
+    
+    Uses:
+    - VEP (Variant Effect Predictor)
+    - ClinVar
+    - gnomAD
+    - PharmGKB
+    """
+    
+    def __init__(self, vep_cache_dir="/data/vep_cache"):
+        self.vep_cache = vep_cache_dir
+        
+    def annotate(self, vcf_file, output_file):
+        """
+        Full annotation pipeline
+        
+        Args:
+            vcf_file: Input VCF
+            output_file: Annotated output (TSV)
+            
+        Returns:
+            DataFrame with annotations
+        """
+        # VEP annotation
+        vep_output = self._run_vep(vcf_file)
+        
+        # Parse VEP output
+        df = self._parse_vep(vep_output)
+        
+        # Add clinical annotations
+        df = self._add_clinvar(df)
+        df = self._add_pharmgkb(df)
+        
+        # Filter to functional variants
+        df = self._filter_functional(df)
+        
+        # Save
+        df.to_csv(output_file, sep='\t', index=False)
+        return df
+    
+    def _run_vep(self, vcf):
+        """Run Ensembl VEP"""
+        cmd = f"""
+        vep --input_file {vcf} \
+            --output_file vep_output.txt \
+            --cache --dir_cache {self.vep_cache} \
+            --assembly GRCh38 \
+            --format vcf \
+            --tab \
+            --fields "Uploaded_variation,Location,Allele,Gene,SYMBOL,Consequence,IMPACT,SIFT,PolyPhen,gnomAD_AF" \
+            --fork 4
+        """
+        subprocess.run(cmd, shell=True, check=True)
+        return "vep_output.txt"
+    
+    def _parse_vep(self, vep_file):
+        """Parse VEP output to DataFrame"""
+        df = pd.read_csv(vep_file, sep='\t', comment='#')
+        return df
+    
+    def _add_clinvar(self, df):
+        """Add ClinVar clinical significance"""
+        # Load ClinVar database
+        clinvar = pd.read_csv("clinvar.tsv", sep='\t')
+        
+        # Merge
+        df = df.merge(
+            clinvar[['variant_id', 'clinical_significance']],
+            left_on='Uploaded_variation',
+            right_on='variant_id',
+            how='left'
+        )
+        return df
+    
+    def _add_pharmgkb(self, df):
+        """Add PharmGKB drug-gene interactions"""
+        pharmgkb = pd.read_csv("pharmgkb.tsv", sep='\t')
+        
+        df = df.merge(
+            pharmgkb[['gene', 'drug', 'phenotype']],
+            left_on='SYMBOL',
+            right_on='gene',
+            how='left'
+        )
+        return df
+    
+    def _filter_functional(self, df):
+        """Filter to likely functional variants"""
+        functional_consequences = [
+            'missense_variant',
+            'stop_gained',
+            'frameshift_variant',
+            'splice_donor_variant',
+            'splice_acceptor_variant'
+        ]
+        
+        df_filtered = df[
+            df['Consequence'].isin(functional_consequences) |
+            (df['IMPACT'] == 'HIGH') |
+            (df['clinical_significance'].str.contains('Pathogenic', na=False))
+        ]
+        
+        return df_filtered
+
+
+# === KULLANIM ÖRNEĞİ ===
+if __name__ == "__main__":
+    annotator = VariantAnnotator()
+    
+    # Varyantları anotasyon yap
+    df = annotator.annotate(
+        vcf_file="sample1_filtered.vcf",
+        output_file="sample1_annotated.tsv"
+    )
+    
+    print(f"Annotated {len(df)} functional variants")
+    print(df.head())
+MODÜL 3: Farmakogenomik (pharmacogenomics.py)
+Kopyala
+"""
+Pharmacogenomics Module
+Drug response prediction based on genetic variants
+"""
+
+import pandas as pd
+from typing import Dict, List
+
+class PharmacogenomicsAnalyzer:
+    """
+    Predict drug response based on pharmacogenomic variants.
+    
+    Focus areas:
+    - Opioid metabolism (CYP2D6, OPRM1)
+    - Alcohol metabolism (ADH1B, ALDH2)
+    - Stimulant response (DAT1, DRD2)
+    - Treatment response (COMT, 5-HTTLPR)
+    """
+    
+    def __init__(self):
+        self.pharmgkb_db = self._load_pharmgkb()
+        self.cpic_guidelines = self._load_cpic()
+        
+    def analyze(self, variants_df):
+        """
+        Full pharmacogenomic analysis
+        
+        Args:
+            variants_df: Annotated variants DataFrame
+            
+        Returns:
+            Dictionary with drug recommendations
+        """
+        results = {}
+        
+        # Opioid metabolism
+        results['opioid'] = self._analyze_opioid_metabolism(variants_df)
+        
+        # Alcohol metabolism
+        results['alcohol'] = self._analyze_alcohol_metabolism(variants_df)
+        
+        # Stimulant response
+        results['stimulant'] = self._analyze_stimulant_response(variants_df)
+        
+        # Treatment response
+        results['treatment'] = self._analyze_treatment_response(variants_df)
+        
+        return results
+    
+    def _analyze_opioid_metabolism(self, df):
+        """
+        Analyze CYP2D6 and OPRM1 variants
+        
+        CYP2D6 phenotypes:
+        - Ultra-rapid metabolizer (UM): Increased risk
+        - Normal metabolizer (NM): Standard dosing
+        - Intermediate metabolizer (IM): Reduced efficacy
+        - Poor metabolizer (PM): Avoid codeine/tramadol
+        """
+        # Check CYP2D6 variants
+        cyp2d6_variants = df[df['SYMBOL'] == 'CYP2D6']
+        
+        # Star allele calling
+        phenotype = self._call_cyp2d6_phenotype(cyp2d6_variants)
+        
+        # Check OPRM1 A118G (rs1799971)
+        oprm1_variant = df[
+            (df['SYMBOL'] == 'OPRM1') & 
+            (df['Uploaded_variation'] == 'rs1799971')
+        ]
+        
+        oprm1_genotype = self._get_genotype(oprm1_variant)
+        
+        # Generate recommendation
+        recommendation = {
+            'cyp2d6_phenotype': phenotype,
+            'oprm1_genotype': oprm1_genotype,
+            'recommendation': self._generate_opioid_recommendation(phenotype, oprm1_genotype)
+        }
+        
+        return recommendation
+    
+    def _analyze_alcohol_metabolism(self, df):
+        """
+        Analyze ADH1B and ALDH2 variants
+        
+        ADH1B*2 (rs1229984): Fast alcohol metabolism
+        ALDH2*2 (rs671): Acetaldehyde accumulation
+        """
+        # ADH1B
+        adh1b = df[
+            (df['SYMBOL'] == 'ADH1B') & 
+            (df['Uploaded_variation'] == 'rs1229984')
+        ]
+        adh1b_genotype = self._get_genotype(adh1b)
+        
+        # ALDH2
+        aldh2 = df[
+            (df['SYMBOL'] == 'ALDH2') & 
+            (df['Uploaded_variation'] == 'rs671')
+        ]
+        aldh2_genotype = self._get_genotype(aldh2)
+        
+        # Risk assessment
+        risk = self._assess_alcohol_risk(adh1b_genotype, aldh2_genotype)
+        
+        return {
+            'adh1b_genotype': adh1b_genotype,
+            'aldh2_genotype': aldh2_genotype,
+            'alcohol_dependence_risk': risk,
+            'recommendation': self._generate_alcohol_recommendation(risk)
+        }
+    
+    def _analyze_stimulant_response(self, df):
+        """
+        Analyze DAT1 and DRD2 variants
+        """
+        # DAT1 VNTR (SLC6A3)
+        dat1 = df[df['SYMBOL'] == 'SLC6A3']
+        
+        # DRD2 Taq1A (rs1800497)
+        drd2 = df[
+            (df['SYMBOL'] == 'ANKK1') &  # Actually in ANKK1 gene
+            (df['Uploaded_variation'] == 'rs1800497')
+        ]
+        drd2_genotype = self._get_genotype(drd2)
+        
+        return {
+            'drd2_genotype': drd2_genotype,
+            'stimulant_response': self._predict_stimulant_response(drd2_genotype),
+            'addiction_risk': self._assess_addiction_risk(drd2_genotype)
+        }
+    
+    def _analyze_treatment_response(self, df):
+        """
+        Analyze treatment response variants
+        
+        COMT Val158Met (rs4680): Dopamine metabolism
+        5-HTTLPR (SLC6A4): Serotonin transporter
+        """
+        # COMT
+        comt = df[
+            (df['SYMBOL'] == 'COMT') & 
+            (df['Uploaded_variation'] == 'rs4680')
+        ]
+        comt_genotype = self._get_genotype(comt)
+        
+        # SLC6A4
+        slc6a4 = df[df['SYMBOL'] == 'SLC6A4']
+        
+        return {
+            'comt_genotype': comt_genotype,
+            'treatment_recommendation': self._generate_treatment_recommendation(comt_genotype),
+            'psychotherapy_response': self._predict_psychotherapy_response(comt_genotype)
+        }
+    
+    def _call_cyp2d6_phenotype(self, variants):
+        """Star allele calling for CYP2D6"""
+        # Simplified logic (real implementation more complex)
+        if len(variants) == 0:
+            return "Normal Metabolizer (NM)"
+        
+        # Check for known loss-of-function alleles
+        lof_alleles = ['*3', '*4', '*5', '*6']
+        # Check for gain-of-function (gene duplication)
+        
+        # Return phenotype
+        return "Normal Metabolizer (NM)"  # Placeholder
+    
+    def _get_genotype(self, variant_df):
+        """Extract genotype from variant DataFrame"""
+        if len(variant_df) == 0:
+            return "WT/WT"  # Wild-type
+        
+        # Parse genotype from VCF
+        # Simplified: return first variant
+        return "WT/VAR"  # Placeholder
+    
+    def _generate_opioid_recommendation(self, cyp2d6, oprm1):
+        """Generate clinical recommendation"""
+        if cyp2d6 == "Poor Metabolizer (PM)":
+            return "AVOID codeine and tramadol. Consider morphine or oxycodone with dose adjustment."
+        elif cyp2d6 == "Ultra-rapid Metabolizer (UM)":
+            return "CAUTION with codeine (increased toxicity risk). Monitor closely."
+        else:
+            return "Standard opioid dosing appropriate."
+    
+    def _assess_alcohol_risk(self, adh1b, aldh2):
+        """Assess alcohol dependence risk"""
+        if aldh2 == "VAR/VAR":
+            return "LOW (protective ALDH2*2 homozygote)"
+        elif aldh2 == "WT/VAR":
+            return "MODERATE (protective ALDH2*2 heterozygote)"
+        else:
+            return "STANDARD"
+    
+    def _generate_alcohol_recommendation(self, risk):
+        """Generate alcohol-related recommendation"""
+        if risk == "LOW":
+            return "ALDH2 deficiency provides protection against alcohol dependence but increases cancer risk with alcohol use."
+        else:
+            return "Standard alcohol metabolism. No genetic protection identified."
+    
+    def _predict_stimulant_response(self, drd2):
+        """Predict stimulant response"""
+        if drd2 == "VAR/VAR":
+            return "Reduced D2 receptor density. May require higher doses."
+        else:
+            return "Standard stimulant response expected."
+    
+    def _assess_addiction_risk(self, drd2):
+        """Assess addiction risk"""
+        if drd2 == "VAR/VAR":
+            return "INCREASED (DRD2 Taq1A A1/A1)"
+        elif drd2 == "WT/VAR":
+            return "MODERATE (DRD2 Taq1A A1/A2)"
+        else:
+            return "STANDARD"
+    
+    def _generate_treatment_recommendation(self, comt):
+        """Generate treatment recommendation"""
+        if comt == "VAR/VAR":  # Met/Met
+            return "Better response to cognitive behavioral therapy. Consider psychotherapy-first approach."
+        elif comt == "WT/WT":  # Val/Val
+            return "May benefit more from pharmacotherapy. Consider medication-assisted treatment."
+        else:
+            return "Balanced approach with combined psychotherapy and pharmacotherapy."
+    
+    def _predict_psychotherapy_response(self, comt):
+        """Predict psychotherapy response"""
+        if comt == "VAR/VAR":
+            return "GOOD (Met/Met genotype associated with better CBT response)"
+        else:
+            return "STANDARD"
+    
+    def _load_pharmgkb(self):
+        """Load PharmGKB database"""
+        # Placeholder: load from file
+        return {}
+    
+    def _load_cpic(self):
+        """Load CPIC guidelines"""
+        # Placeholder: load from file
+        return {}
+
+
+# === KULLANIM ÖRNEĞİ ===
+if __name__ == "__main__":
+    # Load annotated variants
+    variants = pd.read_csv("sample1_annotated.tsv", sep='\t')
+    
+    # Pharmacogenomic analysis
+    pgx = PharmacogenomicsAnalyzer()
+    results = pgx.analyze(variants)
+    
+    # Print recommendations
+    print("=== PHARMACOGENOMIC REPORT ===")
+    print(f"\nOpioid Metabolism:")
+    print(f"  CYP2D6: {results['opioid']['cyp2d6_phenotype']}")
+    print(f"  OPRM1: {results['opioid']['oprm1_genotype']}")
+    print(f"  Recommendation: {results['opioid']['recommendation']}")
+    
+    print(f"\nAlcohol Metabolism:")
+    print(f"  ADH1B: {results['alcohol']['adh1b_genotype']}")
+    print(f"  ALDH2: {results['alcohol']['aldh2_genotype']}")
+    print(f"  Risk: {results['alcohol']['alcohol_dependence_risk']}")
+    print(f"  Recommendation: {results['alcohol']['recommendation']}")
+Devam edeyim mi? Şimdi:
+
+✅ Polygenic Risk Score modülü
+✅ Entegre Analiz (metilasyon + varyant)
+✅ Maliyet karşılaştırma tablosu
+✅ Tam kullanım örneği
+yazayım mı? 🚀
+
+evet
+
+Monica
+Sonnet
+🧬 DEVAM: POLYGENIC RISK SCORE + ENTEGRE ANALİZ
+MODÜL 4: Polygenic Risk Score (polygenic_risk_score.py)
+Kopyala
+"""
+Polygenic Risk Score (PRS) Module
+Calculate genetic risk for substance use disorders
+"""
+
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Tuple
+from pathlib import Path
+
+class PolygenicRiskCalculator:
+    """
+    Calculate Polygenic Risk Scores for addiction-related traits.
+    
+    Traits:
+    - Alcohol dependence
+    - Opioid dependence
+    - Cocaine dependence
+    - Nicotine dependence
+    - Cannabis use disorder
+    - General addiction liability
+    
+    Uses GWAS summary statistics from:
+    - Psychiatric Genomics Consortium (PGC)
+    - GWAS Catalog
+    - UK Biobank
+    """
+    
+    def __init__(self, gwas_dir="/data/gwas_sumstats"):
+        self.gwas_dir = Path(gwas_dir)
+        self.prs_weights = self._load_prs_weights()
+        
+    def calculate_prs(self, variants_df, trait='alcohol_dependence'):
+        """
+        Calculate PRS for a specific trait
+        
+        Args:
+            variants_df: DataFrame with individual's variants
+            trait: Trait name (alcohol_dependence, opioid_dependence, etc.)
+            
+        Returns:
+            Dictionary with PRS and percentile
+        """
+        # Load trait-specific weights
+        weights = self.prs_weights[trait]
+        
+        # Match variants
+        matched = self._match_variants(variants_df, weights)
+        
+        # Calculate raw PRS
+        raw_prs = self._calculate_raw_prs(matched)
+        
+        # Standardize (z-score)
+        standardized_prs = self._standardize_prs(raw_prs, trait)
+        
+        # Convert to percentile
+        percentile = self._prs_to_percentile(standardized_prs)
+        
+        # Interpret risk
+        risk_category = self._interpret_risk(percentile)
+        
+        return {
+            'trait': trait,
+            'raw_prs': raw_prs,
+            'standardized_prs': standardized_prs,
+            'percentile': percentile,
+            'risk_category': risk_category,
+            'n_variants_used': len(matched),
+            'interpretation': self._generate_interpretation(trait, percentile, risk_category)
+        }
+    
+    def calculate_multi_trait_prs(self, variants_df):
+        """
+        Calculate PRS for all addiction-related traits
+        
+        Args:
+            variants_df: DataFrame with individual's variants
+            
+        Returns:
+            Dictionary with PRS for each trait
+        """
+        traits = [
+            'alcohol_dependence',
+            'opioid_dependence',
+            'cocaine_dependence',
+            'nicotine_dependence',
+            'cannabis_use_disorder',
+            'general_addiction_liability'
+        ]
+        
+        results = {}
+        for trait in traits:
+            results[trait] = self.calculate_prs(variants_df, trait)
+        
+        # Calculate composite risk
+        results['composite'] = self._calculate_composite_risk(results)
+        
+        return results
+    
+    def _load_prs_weights(self):
+        """
+        Load PRS weights from GWAS summary statistics
+        
+        Format:
+        SNP | CHR | BP | A1 | A2 | BETA | P
+        """
+        weights = {}
+        
+        # Alcohol dependence (PGC + MVP)
+        weights['alcohol_dependence'] = pd.read_csv(
+            self.gwas_dir / 'alcohol_dependence_prs.txt',
+            sep='\t'
+        )
+        
+        # Opioid dependence (MVP)
+        weights['opioid_dependence'] = pd.read_csv(
+            self.gwas_dir / 'opioid_dependence_prs.txt',
+            sep='\t'
+        )
+        
+        # Cocaine dependence (PGC)
+        weights['cocaine_dependence'] = pd.read_csv(
+            self.gwas_dir / 'cocaine_dependence_prs.txt',
+            sep='\t'
+        )
+        
+        # Nicotine dependence (GSCAN)
+        weights['nicotine_dependence'] = pd.read_csv(
+            self.gwas_dir / 'nicotine_dependence_prs.txt',
+            sep='\t'
+        )
+        
+        # Cannabis use disorder
+        weights['cannabis_use_disorder'] = pd.read_csv(
+            self.gwas_dir / 'cannabis_use_disorder_prs.txt',
+            sep='\t'
+        )
+        
+        # General addiction liability
+        weights['general_addiction_liability'] = pd.read_csv(
+            self.gwas_dir / 'general_addiction_prs.txt',
+            sep='\t'
+        )
+        
+        return weights
+    
+    def _match_variants(self, variants_df, weights_df):
+        """
+        Match individual's variants with PRS weights
+        
+        Returns:
+            DataFrame with matched variants and their weights
+        """
+        # Merge on SNP ID or position
+        matched = variants_df.merge(
+            weights_df,
+            left_on='Uploaded_variation',
+            right_on='SNP',
+            how='inner'
+        )
+        
+        # Extract dosage (0, 1, 2 copies of effect allele)
+        matched['dosage'] = matched.apply(self._calculate_dosage, axis=1)
+        
+        return matched
+    
+    def _calculate_dosage(self, row):
+        """
+        Calculate allele dosage (0, 1, or 2)
+        
+        Genotype encoding:
+        - 0/0 (ref/ref): 0 copies
+        - 0/1 (ref/alt): 1 copy
+        - 1/1 (alt/alt): 2 copies
+        """
+        # Parse genotype from VCF
+        genotype = row.get('genotype', '0/0')
+        
+        if genotype == '0/0':
+            return 0
+        elif genotype in ['0/1', '1/0']:
+            return 1
+        elif genotype == '1/1':
+            return 2
+        else:
+            return np.nan
+    
+    def _calculate_raw_prs(self, matched_df):
+        """
+        Calculate raw PRS
+        
+        PRS = Σ(beta_i × dosage_i)
+        """
+        prs = (matched_df['BETA'] * matched_df['dosage']).sum()
+        return prs
+    
+    def _standardize_prs(self, raw_prs, trait):
+        """
+        Standardize PRS to z-score
+        
+        Uses population mean and SD from reference panel
+        """
+        # Load reference statistics
+        ref_stats = self._load_reference_stats(trait)
+        
+        z_score = (raw_prs - ref_stats['mean']) / ref_stats['sd']
+        return z_score
+    
+    def _load_reference_stats(self, trait):
+        """
+        Load population reference statistics
+        
+        From large reference panels (e.g., UK Biobank)
+        """
+        # Placeholder values (replace with actual reference data)
+        reference = {
+            'alcohol_dependence': {'mean': 0.0, 'sd': 1.0},
+            'opioid_dependence': {'mean': 0.0, 'sd': 1.0},
+            'cocaine_dependence': {'mean': 0.0, 'sd': 1.0},
+            'nicotine_dependence': {'mean': 0.0, 'sd': 1.0},
+            'cannabis_use_disorder': {'mean': 0.0, 'sd': 1.0},
+            'general_addiction_liability': {'mean': 0.0, 'sd': 1.0}
+        }
+        return reference[trait]
+    
+    def _prs_to_percentile(self, z_score):
+        """
+        Convert z-score to percentile
+        
+        Uses standard normal distribution
+        """
+        from scipy.stats import norm
+        percentile = norm.cdf(z_score) * 100
+        return percentile
+    
+    def _interpret_risk(self, percentile):
+        """
+        Categorize risk based on percentile
+        
+        Categories:
+        - Very Low: <10th percentile
+        - Low: 10-25th percentile
+        - Average: 25-75th percentile
+        - High: 75-90th percentile
+        - Very High: >90th percentile
+        """
+        if percentile < 10:
+            return "Very Low"
+        elif percentile < 25:
+            return "Low"
+        elif percentile < 75:
+            return "Average"
+        elif percentile < 90:
+            return "High"
+        else:
+            return "Very High"
+    
+    def _generate_interpretation(self, trait, percentile, risk_category):
+        """
+        Generate clinical interpretation
+        """
+        trait_names = {
+            'alcohol_dependence': 'Alcohol Dependence',
+            'opioid_dependence': 'Opioid Dependence',
+            'cocaine_dependence': 'Cocaine Dependence',
+            'nicotine_dependence': 'Nicotine Dependence',
+            'cannabis_use_disorder': 'Cannabis Use Disorder',
+            'general_addiction_liability': 'General Addiction Liability'
+        }
+        
+        interpretation = f"""
+        {trait_names[trait]} Polygenic Risk Score:
+        
+        Percentile: {percentile:.1f}th
+        Risk Category: {risk_category}
+        
+        """
+        
+        if risk_category in ["High", "Very High"]:
+            interpretation += f"""
+        CLINICAL IMPLICATIONS:
+        - Increased genetic susceptibility to {trait_names[trait].lower()}
+        - Enhanced monitoring recommended
+        - Consider preventive interventions
+        - Family history assessment important
+        - Psychoeducation about genetic risk
+        
+        IMPORTANT: Genetic risk is only one factor. Environmental and 
+        psychosocial factors play crucial roles in addiction development.
+        """
+        elif risk_category in ["Low", "Very Low"]:
+            interpretation += f"""
+        CLINICAL IMPLICATIONS:
+        - Lower genetic susceptibility to {trait_names[trait].lower()}
+        - Standard prevention strategies appropriate
+        - Environmental factors remain important
+        
+        IMPORTANT: Low genetic risk does not eliminate possibility of 
+        developing addiction. Behavioral and environmental factors are critical.
+        """
+        else:
+            interpretation += f"""
+        CLINICAL IMPLICATIONS:
+        - Average genetic susceptibility to {trait_names[trait].lower()}
+        - Standard clinical approach recommended
+        - Focus on modifiable risk factors
+        """
+        
+        return interpretation.strip()
+    
+    def _calculate_composite_risk(self, results):
+        """
+        Calculate composite addiction risk across all traits
+        
+        Uses weighted average of individual PRS
+        """
+        # Extract standardized PRS values
+        prs_values = [
+            results['alcohol_dependence']['standardized_prs'],
+            results['opioid_dependence']['standardized_prs'],
+            results['cocaine_dependence']['standardized_prs'],
+            results['nicotine_dependence']['standardized_prs'],
+            results['cannabis_use_disorder']['standardized_prs']
+        ]
+        
+        # Calculate mean
+        composite_prs = np.mean(prs_values)
+        
+        # Convert to percentile
+        percentile = self._prs_to_percentile(composite_prs)
+        
+        # Interpret
+        risk_category = self._interpret_risk(percentile)
+        
+        return {
+            'composite_prs': composite_prs,
+            'percentile': percentile,
+            'risk_category': risk_category,
+            'interpretation': f"""
+            Composite Addiction Risk Score:
+            
+            Overall genetic susceptibility: {risk_category}
+            Percentile: {percentile:.1f}th
+            
+            This score integrates genetic risk across multiple substance types,
+            providing an overall assessment of addiction liability.
+            """
+        }
+    
+    def generate_report(self, results, output_file='prs_report.txt'):
+        """
+        Generate comprehensive PRS report
+        """
+        with open(output_file, 'w') as f:
+            f.write("=" * 80 + "\n")
+            f.write("POLYGENIC RISK SCORE REPORT\n")
+            f.write("Addiction-Related Traits\n")
+            f.write("=" * 80 + "\n\n")
+            
+            # Individual traits
+            for trait, data in results.items():
+                if trait == 'composite':
+                    continue
+                f.write(f"\n{'-' * 80}\n")
+                f.write(data['interpretation'])
+                f.write(f"\n{'-' * 80}\n")
+            
+            # Composite
+            f.write(f"\n{'=' * 80}\n")
+            f.write("COMPOSITE RISK ASSESSMENT\n")
+            f.write(f"{'=' * 80}\n")
+            f.write(results['composite']['interpretation'])
+            
+            # Summary table
+            f.write(f"\n\n{'=' * 80}\n")
+            f.write("SUMMARY TABLE\n")
+            f.write(f"{'=' * 80}\n\n")
+            f.write(f"{'Trait':<40} {'Percentile':<15} {'Risk Category':<15}\n")
+            f.write(f"{'-' * 80}\n")
+            
+            for trait, data in results.items():
+                if trait == 'composite':
+                    continue
+                trait_name = trait.replace('_', ' ').title()
+                f.write(f"{trait_name:<40} {data['percentile']:>6.1f}th        {data['risk_category']:<15}\n")
+            
+            f.write(f"{'-' * 80}\n")
+            f.write(f"{'Composite Risk':<40} {results['composite']['percentile']:>6.1f}th        {results['composite']['risk_category']:<15}\n")
+            
+        print(f"Report saved to {output_file}")
+
+
+# === KULLANIM ÖRNEĞİ ===
+if __name__ == "__main__":
+    # Load variants
+    variants = pd.read_csv("sample1_annotated.tsv", sep='\t')
+    
+    # Calculate PRS
+    prs_calc = PolygenicRiskCalculator()
+    results = prs_calc.calculate_multi_trait_prs(variants)
+    
+    # Generate report
+    prs_calc.generate_report(results)
+    
+    # Print summary
+    print("\n=== PRS SUMMARY ===")
+    for trait, data in results.items():
+        if trait == 'composite':
+            print(f"\nComposite Risk: {data['percentile']:.1f}th percentile ({data['risk_category']})")
+        else:
+            print(f"{trait}: {data['percentile']:.1f}th percentile ({data['risk_category']})")
+MODÜL 5: Entegre Analiz (integrated_analysis.py)
+Kopyala
+"""
+Integrated Analysis Module
+Combine DNA methylation (EpiClock) + Genetic variants (PRS + PGx)
+"""
+
+import pandas as pd
+import numpy as np
+from typing import Dict, List
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Import EpiClock modules
+from modules.epigenetic_clocks import EpigeneticClockCalculator
+from modules.clinical_decision import ClinicalDecisionSupport
+
+# Import new variant modules
+from modules.variant_annotation import VariantAnnotator
+from modules.pharmacogenomics import PharmacogenomicsAnalyzer
+from modules.polygenic_risk_score import PolygenicRiskCalculator
+
+class IntegratedAnalyzer:
+    """
+    Integrate multi-omics data for comprehensive addiction assessment.
+    
+    Combines:
+    1. DNA Methylation (Epigenetic Age Acceleration)
+    2. Genetic Variants (PRS, Pharmacogenomics)
+    3. Clinical Data (Demographics, Substance Use History)
+    
+    Provides:
+    - Comprehensive risk assessment
+    - Personalized treatment recommendations
+    - Prognostic predictions
+    """
+    
+    def __init__(self):
+        # Initialize sub-modules
+        self.clock_calculator = EpigeneticClockCalculator()
+        self.clinical_support = ClinicalDecisionSupport()
+        self.variant_annotator = VariantAnnotator()
+        self.pgx_analyzer = PharmacogenomicsAnalyzer()
+        self.prs_calculator = PolygenicRiskCalculator()
+        
+    def analyze_patient(self, 
+                       methylation_data,
+                       vcf_file,
+                       clinical_data):
+        """
+        Full integrated analysis for a single patient
+        
+        Args:
+            methylation_data: DNA methylation beta values (DataFrame or file path)
+            vcf_file: Variant call format file (path)
+            clinical_data: Dictionary with clinical information
+            
+        Returns:
+            Comprehensive analysis results
+        """
+        results = {}
+        
+        # === 1. EPIGENETIC AGE ANALYSIS ===
+        print("Step 1/5: Calculating epigenetic ages...")
+        epi_results = self._analyze_epigenetic_age(methylation_data, clinical_data)
+        results['epigenetic'] = epi_results
+        
+        # === 2. VARIANT ANNOTATION ===
+        print("Step 2/5: Annotating genetic variants...")
+        variants_df = self.variant_annotator.annotate(vcf_file, "temp_annotated.tsv")
+        results['variants'] = {
+            'n_total': len(variants_df),
+            'n_functional': len(variants_df[variants_df['IMPACT'] == 'HIGH']),
+            'data': variants_df
+        }
+        
+        # === 3. PHARMACOGENOMICS ===
+        print("Step 3/5: Analyzing pharmacogenomic variants...")
+        pgx_results = self.pgx_analyzer.analyze(variants_df)
+        results['pharmacogenomics'] = pgx_results
+        
+        # === 4. POLYGENIC RISK SCORES ===
+        print("Step 4/5: Calculating polygenic risk scores...")
+        prs_results = self.prs_calculator.calculate_multi_trait_prs(variants_df)
+        results['prs'] = prs_results
+        
+        # === 5. INTEGRATED RISK ASSESSMENT ===
+        print("Step 5/5: Generating integrated risk assessment...")
+        integrated_risk = self._calculate_integrated_risk(results, clinical_data)
+        results['integrated_risk'] = integrated_risk
+        
+        # === 6. PERSONALIZED RECOMMENDATIONS ===
+        recommendations = self._generate_recommendations(results, clinical_data)
+        results['recommendations'] = recommendations
+        
+        return results
+    
+    def _analyze_epigenetic_age(self, methylation_data, clinical_data):
+        """
+        Analyze epigenetic age acceleration
+        """
+        # Calculate all clocks
+        ages = self.clock_calculator.calculate_all_clocks(methylation_data)
+        
+        # Calculate acceleration
+        chronological_age = clinical_data['age']
+        acceleration = {}
+        
+        for clock, epi_age in ages.items():
+            acceleration[clock] = epi_age - chronological_age
+        
+        # Clinical interpretation
+        interpretation = self.clinical_support.interpret_acceleration(
+            acceleration,
+            clinical_data
+        )
+        
+        return {
+            'chronological_age': chronological_age,
+            'epigenetic_ages': ages,
+            'acceleration': acceleration,
+            'mean_acceleration': np.mean(list(acceleration.values())),
+            'interpretation': interpretation
+        }
+    
+    def _calculate_integrated_risk(self, results, clinical_data):
+        """
+        Calculate integrated risk score combining all data sources
+        
+        Risk factors:
+        1. Epigenetic age acceleration (weight: 0.3)
+        2. Polygenic risk score (weight: 0.3)
+        3. Pharmacogenomic risk variants (weight: 0.2)
+        4. Clinical history (weight: 0.2)
+        """
+        # 1. Epigenetic component
+        epi_acceleration = results['epigenetic']['mean_acceleration']
+        epi_risk = self._normalize_risk(epi_acceleration, min_val=-5, max_val=10)
+        
+        # 2. Genetic component (PRS)
+        composite_prs = results['prs']['composite']['percentile']
+        prs_risk = composite_prs / 100  # Convert to 0-1 scale
+        
+        # 3. Pharmacogenomic component
+        pgx_risk = self._assess_pgx_risk(results['pharmacogenomics'])
+        
+        # 4. Clinical component
+        clinical_risk = self._assess_clinical_risk(clinical_data)
+        
+        # Weighted combination
+        integrated_risk_score = (
+            0.3 * epi_risk +
+            0.3 * prs_risk +
+            0.2 * pgx_risk +
+            0.2 * clinical_risk
+        )
+        
+        # Convert to percentile
+        risk_percentile = integrated_risk_score * 100
+        
+        # Categorize
+        if risk_percentile < 25:
+            risk_category = "Low"
+        elif risk_percentile < 50:
+            risk_category = "Moderate"
+        elif risk_percentile < 75:
+            risk_category = "High"
+        else:
+            risk_category = "Very High"
+        
+        return {
+            'integrated_risk_score': integrated_risk_score,
+            'risk_percentile': risk_percentile,
+            'risk_category': risk_category,
+            'components': {
+                'epigenetic': epi_risk,
+                'genetic_prs': prs_risk,
+                'pharmacogenomic': pgx_risk,
+                'clinical': clinical_risk
+            },
+            'interpretation': self._interpret_integrated_risk(
+                risk_percentile, 
+                risk_category,
+                results
+            )
+        }
+    
+    def _normalize_risk(self, value, min_val, max_val):
+        """Normalize value to 0-1 scale"""
+        normalized = (value - min_val) / (max_val - min_val)
+        return np.clip(normalized, 0, 1)
+    
+    def _assess_pgx_risk(self, pgx_results):
+        """
+        Assess pharmacogenomic risk
+        
+        High-risk factors:
+        - CYP2D6 poor metabolizer
+        - DRD2 Taq1A A1/A1 (high addiction risk)
+        - COMT Val/Val (poor treatment response)
+        """
+        risk_score = 0.5  # Baseline
+        
+        # Opioid metabolism
+        if pgx_results['opioid']['cyp2d6_phenotype'] == "Poor Metabolizer (PM)":
+            risk_score += 0.2
+        elif pgx_results['opioid']['cyp2d6_phenotype'] == "Ultra-rapid Metabolizer (UM)":
+            risk_score += 0.15
+        
+        # Addiction risk (DRD2)
+        addiction_risk = pgx_results['stimulant']['addiction_risk']
+        if addiction_risk == "INCREASED":
+            risk_score += 0.2
+        elif addiction_risk == "MODERATE":
+            risk_score += 0.1
+        
+        # Alcohol protection (ALDH2)
+        alcohol_risk = pgx_results['alcohol']['alcohol_dependence_risk']
+        if alcohol_risk == "LOW":
+            risk_score -= 0.2
+        
+        return np.clip(risk_score, 0, 1)
+    
+    def _assess_clinical_risk(self, clinical_data):
+        """
+        Assess clinical risk based on history
+        
+        Risk factors:
+        - Substance use duration
+        - Number of substances
+        - Family history
+        - Age of onset
+        - Previous treatment failures
+        """
+        risk_score = 0.0
+        
+        # Duration of use
+        if 'substance_use_years' in clinical_data:
+            years = clinical_data['substance_use_years']
+            if years > 10:
+                risk_score += 0.3
+            elif years > 5:
+                risk_score += 0.2
+            elif years > 2:
+                risk_score += 0.1
+        
+        # Polysubstance use
+        if 'n_substances' in clinical_data:
+            n_sub = clinical_data['n_substances']
+            if n_sub >= 3:
+                risk_score += 0.3
+            elif n_sub == 2:
+                risk_score += 0.2
+        
+        # Family history
+        if clinical_data.get('family_history_addiction', False):
+            risk_score += 0.2
+        
+        # Early onset
+        if 'age_of_onset' in clinical_data:
+            if clinical_data['age_of_onset'] < 15:
+                risk_score += 0.3
+            elif clinical_data['age_of_onset'] < 18:
+                risk_score += 0.2
+        
+        # Treatment failures
+        if 'n_treatment_failures' in clinical_data:
+            failures = clinical_data['n_treatment_failures']
+            risk_score += min(0.3, failures * 0.1)
+        
+        return np.clip(risk_score, 0, 1)
+    
+    def _interpret_integrated_risk(self, percentile, category, results):
+        """
+        Generate comprehensive interpretation
+        """
+        interpretation = f"""
+        ═══════════════════════════════════════════════════════════════
+        INTEGRATED RISK ASSESSMENT
+        ═══════════════════════════════════════════════════════════════
+        
+        Overall Risk Level: {category}
+        Risk Percentile: {percentile:.1f}th
+        
+        COMPONENT BREAKDOWN:
+        ───────────────────────────────────────────────────────────────
+        
+        1. EPIGENETIC AGING:
+           Mean Acceleration: {results['epigenetic']['mean_acceleration']:.1f} years
+           Interpretation: {results['epigenetic']['interpretation'][:200]}...
+        
+        2. GENETIC SUSCEPTIBILITY:
+           Composite PRS: {results['prs']['composite']['percentile']:.1f}th percentile
+           Risk Category: {results['prs']['composite']['risk_category']}
+        
+        3. PHARMACOGENOMIC PROFILE:
+           Opioid Metabolism: {results['pharmacogenomics']['opioid']['cyp2d6_phenotype']}
+           Addiction Risk: {results['pharmacogenomics']['stimulant']['addiction_risk']}
+        
+        ═══════════════════════════════════════════════════════════════
+        CLINICAL IMPLICATIONS:
+        ═══════════════════════════════════════════════════════════════
+        """
+        
+        if category == "Very High":
+            interpretation += """
+        ⚠️  VERY HIGH RISK - Intensive Intervention Recommended
+        
+        - Immediate comprehensive assessment required
+        - Consider inpatient treatment program
+        - Intensive outpatient follow-up (3-5 sessions/week)
+        - Medication-assisted treatment strongly recommended
+        - Close monitoring for medical complications
+        - Family therapy and psychosocial support
