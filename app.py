@@ -719,48 +719,48 @@ def main():
     components = init_components()
     
     render_dna_helix_animation()
-    st.markdown('<p class="main-header">🧬 EpiClock</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">EpiClock</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">DNA Metilasyon Tabanli Epigenetik Yas Ivmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
     
     with st.sidebar:
-        st.markdown("### 🧬 EpiClock")
-        st.markdown("### 📊 Analiz Modülleri")
+        st.markdown("### EpiClock v4.0")
+        st.markdown("### Analiz Modulleri")
         
         analysis_mode = st.radio(
-            "Analiz Türü Seçin:",
-            ["🏠 Ana Sayfa",
-             "📚 Kullanım Kılavuzu",
-             "📥 Veri Dışa Aktar",
-             "📤 DNA Verisi Yükle",
-             "🧬 CpG Veritabanı",
-             "🔬 Varyant Analizi",
-             "💊 Farmakogenomik",
-             "📊 Poligenik Risk Skoru",
-             "🌍 Dünya Veritabanları",
-             "👤 Bireysel Analiz",
-             "📁 Toplu Analiz",
-             "📈 Referans Veritabanı",
-             "🔬 Diferansiyel Metilasyon",
-             "🧪 Mediyasyon Analizi",
-             "📊 Model Performansı",
-             "📉 Longitudinal Takip",
-             "🧬 GSEA Pathway Analizi",
-             "💊 Klinik Karar Destek",
-             "🔗 Multi-Omik Entegrasyon",
-             "🧠 Postmortem Validasyon",
-             "⚖️ Moderasyon Analizi",
-             "🔄 Tersine Çevrilebilirlik",
-             "📊 Klinik Kovaryatlar",
-             "🫀 Doku-Spesifik Saatler",
-             "🔐 Blockchain Denetim",
-             "📚 Yayın Referansları",
-             "🗄️ Veritabanı Yönetimi",
-             "📋 Rapor Oluştur"],
+            "Analiz Turu Secin:",
+            ["Ana Sayfa",
+             "Kullanim Kilavuzu",
+             "Veri Disa Aktar",
+             "DNA Verisi Yukle",
+             "CpG Veritabani",
+             "Varyant Analizi",
+             "Farmakogenomik",
+             "Poligenik Risk Skoru",
+             "Dunya Veritabanlari",
+             "Bireysel Analiz",
+             "Toplu Analiz",
+             "Referans Veritabani",
+             "Diferansiyel Metilasyon",
+             "Mediyasyon Analizi",
+             "Model Performansi",
+             "Longitudinal Takip",
+             "GSEA Pathway Analizi",
+             "Klinik Karar Destek",
+             "Multi-Omik Entegrasyon",
+             "Postmortem Validasyon",
+             "Moderasyon Analizi",
+             "Tersine Cevrilebilirlik",
+             "Klinik Kovaryatlar",
+             "Doku-Spesifik Saatler",
+             "Blockchain Denetim",
+             "Yayin Referanslari",
+             "Veritabani Yonetimi",
+             "Rapor Olustur"],
             index=0
         )
         
         st.markdown("---")
-        st.markdown("### ⚙️ Ayarlar")
+        st.markdown("### Ayarlar")
         
         selected_clocks = st.multiselect(
             "Epigenetik Saatler:",
@@ -777,13 +777,13 @@ def main():
         )
         
         st.markdown("---")
-        st.markdown("### 📚 Hakkında")
+        st.markdown("### Hakkinda")
         st.markdown("""
         **EpiClock v4.0**
-        *Akademik Araştırma & Demo*
+        *Akademik Arastirma & Demo*
         
         Epigenetik saat metodolojisini 
-        gösteren DNA metilasyon 
+        gosteren DNA metilasyon 
         analiz platformu.
         
         **Desteklenen Saatler:**
@@ -793,65 +793,65 @@ def main():
         - GrimAge (1030 CpG)
         - DunedinPACE (173 CpG)
         
-        **Referans Veritabanı:**
+        **Referans Veritabani:**
         10,542 DNA metilasyon profili
         """)
     
-    if "🏠 Ana Sayfa" in analysis_mode:
+    if "Ana Sayfa" in analysis_mode:
         render_home_page(components)
-    elif "📚 Kullanım Kılavuzu" in analysis_mode:
+    elif "Kullanim Kilavuzu" in analysis_mode:
         render_academic_guide()
-    elif "📥 Veri Dışa Aktar" in analysis_mode:
+    elif "Veri Disa Aktar" in analysis_mode:
         render_data_export_page(components)
-    elif "📤 DNA Verisi Yükle" in analysis_mode:
+    elif "DNA Verisi Yukle" in analysis_mode:
         render_dna_upload(components, selected_clocks)
-    elif "🧬 CpG Veritabanı" in analysis_mode:
+    elif "CpG Veritabani" in analysis_mode:
         render_cpg_database(components)
-    elif "🔬 Varyant Analizi" in analysis_mode:
+    elif "Varyant Analizi" in analysis_mode:
         render_variant_analysis(components)
-    elif "💊 Farmakogenomik" in analysis_mode:
+    elif "Farmakogenomik" in analysis_mode:
         render_pharmacogenomics(components)
-    elif "📊 Poligenik Risk Skoru" in analysis_mode:
+    elif "Poligenik Risk Skoru" in analysis_mode:
         render_polygenic_risk(components)
-    elif "🌍 Dünya Veritabanları" in analysis_mode:
+    elif "Dunya Veritabanlari" in analysis_mode:
         render_world_databases(components)
-    elif "👤 Bireysel Analiz" in analysis_mode:
+    elif "Bireysel Analiz" in analysis_mode:
         render_individual_analysis(components, selected_clocks)
-    elif "📁 Toplu Analiz" in analysis_mode:
+    elif "Toplu Analiz" in analysis_mode:
         render_batch_analysis(components, selected_clocks)
-    elif "📈 Referans Veritabanı" in analysis_mode:
+    elif "Referans Veritabani" in analysis_mode:
         render_reference_database(components)
-    elif "🔬 Diferansiyel Metilasyon" in analysis_mode:
+    elif "Diferansiyel Metilasyon" in analysis_mode:
         render_differential_methylation(components, significance_level)
-    elif "🧪 Mediyasyon Analizi" in analysis_mode:
+    elif "Mediyasyon Analizi" in analysis_mode:
         render_mediation_analysis(components)
-    elif "📊 Model Performansı" in analysis_mode:
+    elif "Model Performansi" in analysis_mode:
         render_model_performance(components)
-    elif "📉 Longitudinal Takip" in analysis_mode:
+    elif "Longitudinal Takip" in analysis_mode:
         render_longitudinal_analysis(components)
-    elif "🧬 GSEA Pathway Analizi" in analysis_mode:
+    elif "GSEA Pathway Analizi" in analysis_mode:
         render_gsea_analysis(components)
-    elif "💊 Klinik Karar Destek" in analysis_mode:
+    elif "Klinik Karar Destek" in analysis_mode:
         render_clinical_decision_support(components)
-    elif "🔗 Multi-Omik Entegrasyon" in analysis_mode:
+    elif "Multi-Omik Entegrasyon" in analysis_mode:
         render_multiomics_analysis(components)
-    elif "🧠 Postmortem Validasyon" in analysis_mode:
+    elif "Postmortem Validasyon" in analysis_mode:
         render_postmortem_validation(components)
-    elif "⚖️ Moderasyon Analizi" in analysis_mode:
+    elif "Moderasyon Analizi" in analysis_mode:
         render_moderation_analysis(components)
-    elif "🔄 Tersine Çevrilebilirlik" in analysis_mode:
+    elif "Tersine Cevrilebilirlik" in analysis_mode:
         render_reversibility_analysis(components)
-    elif "📊 Klinik Kovaryatlar" in analysis_mode:
+    elif "Klinik Kovaryatlar" in analysis_mode:
         render_clinical_covariates(components)
-    elif "🫀 Doku-Spesifik Saatler" in analysis_mode:
+    elif "Doku-Spesifik Saatler" in analysis_mode:
         render_tissue_specific_clocks(components)
-    elif "🔐 Blockchain Denetim" in analysis_mode:
+    elif "Blockchain Denetim" in analysis_mode:
         render_blockchain_audit(components)
-    elif "📚 Yayın Referansları" in analysis_mode:
+    elif "Yayin Referanslari" in analysis_mode:
         render_publication_references()
-    elif "🗄️ Veritabanı Yönetimi" in analysis_mode:
+    elif "Veritabani Yonetimi" in analysis_mode:
         render_database_management(components)
-    elif "📋 Rapor Oluştur" in analysis_mode:
+    elif "Rapor Olustur" in analysis_mode:
         render_report_generator(components)
     
     render_professional_footer()
@@ -1605,15 +1605,13 @@ def render_home_page(components):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### 📊 Madde Tipine Göre EAA Etkileri")
+        st.markdown("### Madde Tipine Gore EAA Etkileri")
         
         ref_db = components['ref_db']
         effect_summary = ref_db.get_substance_effect_summary()
         
-        visualizer = components['visualizer']
-        
         effect_summary['substance_tr'] = effect_summary['substance'].map({
-            'polysubstance': 'Çoklu Madde',
+            'polysubstance': 'Coklu Madde',
             'methamphetamine': 'Metamfetamin',
             'cocaine': 'Kokain',
             'alcohol': 'Alkol',
@@ -1623,6 +1621,12 @@ def render_home_page(components):
         
         import plotly.graph_objects as go
         
+        autumn_colors = ['#8B4513', '#A0522D', '#CD853F', '#D2691E', '#B8860B', '#DAA520']
+        
+        clock_names = ['Horvath', 'Hannum', 'PhenoAge', 'GrimAge', 'DunedinPACE']
+        
+        clock_tab = st.selectbox("Epigenetik Saat Secin:", clock_names, index=3, key="eaa_clock_select")
+        
         fig = go.Figure()
         
         fig.add_trace(go.Bar(
@@ -1630,71 +1634,82 @@ def render_home_page(components):
             x=effect_summary['effect_vs_control'],
             orientation='h',
             marker=dict(
-                color=effect_summary['effect_vs_control'],
-                colorscale='Reds',
-                showscale=True,
-                colorbar=dict(title="EAA (yıl)")
+                color=autumn_colors[:len(effect_summary)],
+                line=dict(color='#5D4037', width=1)
             ),
             error_x=dict(
                 type='data',
                 symmetric=False,
                 array=effect_summary['ci_upper'] - effect_summary['effect_vs_control'],
-                arrayminus=effect_summary['effect_vs_control'] - effect_summary['ci_lower']
+                arrayminus=effect_summary['effect_vs_control'] - effect_summary['ci_lower'],
+                color='#3E2723'
             ),
-            hovertemplate="<b>%{y}</b><br>EAA: %{x:.1f} yıl<br>n=%{customdata}<extra></extra>",
+            hovertemplate="<b>%{y}</b><br>EAA: %{x:.1f} yil<br>n=%{customdata}<extra></extra>",
             customdata=effect_summary['n_samples']
         ))
         
         fig.update_layout(
-            title="GrimAge Epigenetik Yaş İvmelenmesi (Kontrole Göre)",
-            xaxis_title="Epigenetik Yaş İvmelenmesi (yıl)",
+            title=dict(
+                text=f"{clock_tab} - Epigenetik Yas Ivmelenmesi",
+                font=dict(size=16, color='#3E2723', family='Arial Black')
+            ),
+            xaxis_title=dict(text="Epigenetik Yas Ivmelenmesi (yil)", font=dict(size=12, color='#5D4037')),
             yaxis_title="",
             template="plotly_white",
-            height=400
+            height=400,
+            paper_bgcolor='#FFF8F0',
+            plot_bgcolor='#FFF8F0',
+            font=dict(family='Arial', size=12, color='#3E2723')
         )
         
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     with col2:
-        st.markdown("### 🎯 Epigenetik Saat Performansları")
+        st.markdown("### Epigenetik Saat Performanslari")
         
         clock_perf = ref_db.get_clock_performance_summary()
         
         fig = go.Figure()
         
         fig.add_trace(go.Bar(
-            name='MAE (yıl)',
+            name='MAE (yil)',
             x=clock_perf['clock'],
             y=clock_perf['mae'],
-            marker_color='steelblue',
+            marker_color='#8B4513',
             yaxis='y'
         ))
         
         fig.add_trace(go.Scatter(
-            name='R²',
+            name='R2',
             x=clock_perf['clock'],
             y=clock_perf['r_squared'],
             mode='lines+markers',
-            marker=dict(size=12, color='coral'),
-            line=dict(width=3),
+            marker=dict(size=12, color='#D2691E'),
+            line=dict(width=3, color='#CD853F'),
             yaxis='y2'
         ))
         
         fig.update_layout(
-            title="Epigenetik Saat Doğruluk Karşılaştırması",
-            xaxis_title="Epigenetik Saat",
-            yaxis=dict(title="MAE (yıl)", side='left'),
-            yaxis2=dict(title="R²", side='right', overlaying='y', range=[0.85, 1.0]),
+            title=dict(
+                text="Epigenetik Saat Dogruluk Karsilastirmasi",
+                font=dict(size=16, color='#3E2723', family='Arial Black')
+            ),
+            xaxis_title=dict(text="Epigenetik Saat", font=dict(size=12, color='#5D4037')),
+            yaxis=dict(title="MAE (yil)", side='left', titlefont=dict(color='#5D4037')),
+            yaxis2=dict(title="R2", side='right', overlaying='y', range=[0.85, 1.0], titlefont=dict(color='#5D4037')),
             template="plotly_white",
-            legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99),
-            height=400
+            legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99, font=dict(color='#3E2723')),
+            height=400,
+            paper_bgcolor='#FFF8F0',
+            plot_bgcolor='#FFF8F0',
+            font=dict(family='Arial', size=12, color='#3E2723')
         )
         
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     st.markdown("---")
     
-    st.markdown("### 📖 Metodoloji ve Bilimsel Arka Plan")
+    st.markdown("### Metodoloji ve Bilimsel Arka Plan")
     
     with st.expander("DNA Metilasyonu ve Epigenetik Saatler", expanded=False):
         st.markdown("""
