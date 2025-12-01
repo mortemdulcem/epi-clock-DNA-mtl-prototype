@@ -10,7 +10,7 @@
 
 ---
 
-[![Run on Replit](https://replit.com/badge?caption=Run%20on%20Replit)](https://replit.com/@zeynep111222333/EpiClockPrototype?v=1)
+[![Run Application](https://replit.com/badge?caption=Run)](https://replit.com/@zeynep111222333/EpiClockPrototype?v=1)
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
