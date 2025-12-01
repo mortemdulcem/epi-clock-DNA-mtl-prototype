@@ -615,148 +615,38 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def render_dna_helix_animation():
-    """Render animated DNA helix with phosphorescent green color"""
-    st.markdown('''
-    <div class="dna-container">
-        <svg class="dna-helix-svg" viewBox="0 0 200 150" width="350" height="200">
-            <defs>
-                <filter id="glow">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                    <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
-                <linearGradient id="phosphorGreen" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#00ff41;stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:#00cc33;stop-opacity:0.8" />
-                    <stop offset="100%" style="stop-color:#00ff41;stop-opacity:1" />
-                </linearGradient>
-            </defs>
-            
-            <!-- DNA Strand 1 -->
-            <g filter="url(#glow)">
-                <path d="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20" 
-                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
-                    <animate attributeName="d" 
-                             values="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20;
-                                     M 30 25 Q 50 5 70 25 Q 90 45 110 25 Q 130 5 150 25 Q 170 45 190 25;
-                                     M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20"
-                             dur="3s" repeatCount="indefinite"/>
-                </path>
-            </g>
-            
-            <!-- DNA Strand 2 -->
-            <g filter="url(#glow)">
-                <path d="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50" 
-                      stroke="url(#phosphorGreen)" stroke-width="3" fill="none">
-                    <animate attributeName="d" 
-                             values="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50;
-                                     M 30 45 Q 50 65 70 45 Q 90 25 110 45 Q 130 65 150 45 Q 170 25 190 45;
-                                     M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50"
-                             dur="3s" repeatCount="indefinite"/>
-                </path>
-            </g>
-            
-            <!-- Connecting Base Pairs with Animation -->
-            <g filter="url(#glow)" stroke="#00ff41" stroke-width="2" opacity="0.7">
-                <line x1="40" y1="35" x2="40" y2="35">
-                    <animate attributeName="y1" values="25;30;25" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="45;40;45" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <line x1="60" y1="25" x2="60" y2="45">
-                    <animate attributeName="y1" values="30;20;30" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="40;50;40" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <line x1="80" y1="15" x2="80" y2="55">
-                    <animate attributeName="y1" values="15;25;15" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="55;45;55" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <line x1="100" y1="25" x2="100" y2="45">
-                    <animate attributeName="y1" values="25;15;25" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="45;55;45" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <line x1="120" y1="35" x2="120" y2="35">
-                    <animate attributeName="y1" values="35;25;35" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="35;45;35" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <line x1="140" y1="25" x2="140" y2="45">
-                    <animate attributeName="y1" values="25;35;25" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="45;35;45" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <line x1="160" y1="15" x2="160" y2="55">
-                    <animate attributeName="y1" values="15;25;15" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="55;45;55" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <line x1="180" y1="25" x2="180" y2="45">
-                    <animate attributeName="y1" values="25;15;25" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="45;55;45" dur="3s" repeatCount="indefinite"/>
-                </line>
-            </g>
-            
-            <!-- Nucleotide Dots -->
-            <g filter="url(#glow)">
-                <circle cx="40" cy="25" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="25;30;25" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="40" cy="45" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="45;40;45" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="80" cy="15" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="80" cy="55" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="120" cy="35" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="35;25;35" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="120" cy="35" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="35;45;35" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="160" cy="15" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="160" cy="55" r="4" fill="#00ff41">
-                    <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
-                </circle>
-            </g>
-            
-            <!-- Second DNA Helix Layer (offset) -->
-            <g transform="translate(0, 70)" filter="url(#glow)" opacity="0.8">
-                <path d="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20" 
-                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
-                    <animate attributeName="d" 
-                             values="M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20;
-                                     M 20 25 Q 40 45 60 25 Q 80 5 100 25 Q 120 45 140 25 Q 160 5 180 25;
-                                     M 20 20 Q 40 0 60 20 Q 80 40 100 20 Q 120 0 140 20 Q 160 40 180 20"
-                             dur="4s" repeatCount="indefinite"/>
-                </path>
-                <path d="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50" 
-                      stroke="url(#phosphorGreen)" stroke-width="2.5" fill="none">
-                    <animate attributeName="d" 
-                             values="M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50;
-                                     M 20 45 Q 40 25 60 45 Q 80 65 100 45 Q 120 25 140 45 Q 160 65 180 45;
-                                     M 20 50 Q 40 70 60 50 Q 80 30 100 50 Q 120 70 140 50 Q 160 30 180 50"
-                             dur="4s" repeatCount="indefinite"/>
-                </path>
-            </g>
-        </svg>
-    </div>
-    ''', unsafe_allow_html=True)
+    """Render simple DNA helix banner without complex SVG"""
+    pass
 
 def render_professional_footer():
     """Render professional academic footer with timestamp"""
-    from modules.professional_theme import render_academic_footer as theme_footer
-    theme_footer()
+    from datetime import datetime
+    import pytz
+    
+    turkey_tz = pytz.timezone('Europe/Istanbul')
+    now = datetime.now(turkey_tz)
+    timestamp = now.strftime("%d.%m.%Y %H:%M:%S")
+    
+    st.markdown("---")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("**🎓 EpiClock Prototype v4.0**")
+        st.markdown("Akademik Araştırma Platformu")
+    
+    with col2:
+        st.markdown("**Araştırmacı:**")
+        st.markdown("Dr. Nurcan Denli Bayır")
+        st.caption("Adli Tıp Doktoru")
+    
+    with col3:
+        st.markdown("**🕐 Son Güncelleme:**")
+        st.markdown(f"{timestamp}")
+        st.caption("Türkiye Saati")
+    
+    st.markdown("---")
+    st.caption("© 2025 Dr. Nurcan Denli Bayır - Tüm Hakları Saklıdır")
 
 @st.cache_resource
 def init_components():
@@ -786,7 +676,7 @@ def init_components():
     chain_of_custody = ForensicChainOfCustody()
     role_ui = RoleBasedUI()
     
-    X_train, y_train = generate_synthetic_training_data(n_samples=500, n_cpgs=200)
+    X_train, y_train = generate_synthetic_training_data(n_samples=100, n_cpgs=50)
     ml_predictor.fit(X_train, y_train)
     
     return {
