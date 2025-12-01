@@ -108,6 +108,26 @@ from modules.polygenic_risk import (
     PolygenicRiskScoreCalculator,
     IntegratedRiskModel
 )
+from modules.advanced_prs import (
+    AdvancedPRSCalculator,
+    IntegratedGenomicEpigeneticRisk,
+    get_gwas_sources_summary,
+    get_variant_annotation_table,
+    COMPREHENSIVE_GWAS_DATABASE
+)
+from modules.variant_data_sources import (
+    VariantDataSourceManager,
+    create_demo_variants_from_sources,
+    ADDICTION_GENE_SYSTEMS
+)
+from modules.user_guide import (
+    render_glossary_sidebar,
+    render_methodology_panel,
+    render_academic_citations,
+    render_evidence_badge,
+    GENOMICS_GLOSSARY,
+    ACADEMIC_REFERENCES
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -4315,133 +4335,361 @@ def render_pharmacogenomics(components):
 
 
 def render_polygenic_risk(components):
-    """Render polygenic risk score analysis interface"""
+    """Render advanced polygenic risk score analysis interface with user guide"""
     
-    st.markdown("## 📊 Poligenik Risk Skoru (PRS)")
-    st.markdown("""
-    Birden fazla genetik varyanta dayalı hastalık ve özellik riski tahmini.
-    GWAS özet istatistiklerine dayalı - TÜM VERİLER ÜCRETSİZ.
-    """)
+    st.markdown("## 📊 Gelişmiş Poligenik Risk Skoru (PRS) Analizi")
     
-    tab1, tab2, tab3 = st.tabs(["📊 PRS Hesaplama", "🔗 Entegre Risk", "📚 GWAS Kaynakları"])
+    with st.expander("📖 **BAŞLAMADAN ÖNCE OKUYUN** - Kolay Kullanım Rehberi", expanded=False):
+        st.markdown("""
+        ### 🎯 Bu Sayfa Ne İşe Yarar?
+        
+        **Basit Açıklama:** DNA'nızdaki binlerce küçük farklılığa bakarak, belirli hastalıklara 
+        veya özelliklere genetik olarak ne kadar yatkın olduğunuzu hesaplıyoruz.
+        
+        ---
+        
+        ### 📋 Adım Adım Nasıl Kullanılır?
+        
+        **1️⃣ ADIM: Varyant Verisi Yükleyin**
+        - Sol menüden "🧬 Varyant Analizi" sayfasına gidin
+        - VCF dosyanızı yükleyin VEYA "Demo Veri Oluştur" butonuna tıklayın
+        - Bu adım tamamlanmadan PRS hesaplanamaz
+        
+        **2️⃣ ADIM: Analiz Edilecek Özellikleri Seçin**
+        - Listeden analiz etmek istediğiniz özellikleri işaretleyin
+        - Örnek: Alkol Bağımlılığı, Opioid Bağımlılığı, Nikotin Bağımlılığı
+        
+        **3️⃣ ADIM: PRS Hesapla Butonuna Tıklayın**
+        - Sistem birkaç saniye içinde sonuçları hesaplayacak
+        
+        **4️⃣ ADIM: Sonuçları Okuyun**
+        - Her özellik için ayrı ayrı risk skorları gösterilir
+        - Persentil: 100 kişi arasında kaçıncı sırada olduğunuz
+        - Risk Kategorisi: Çok Düşük, Düşük, Ortalama, Yüksek, Çok Yüksek
+        
+        ---
+        
+        ### 🔬 Bilimsel Arka Plan (Merak Edenler İçin)
+        
+        **PRS Nedir?**
+        - Poligenik Risk Skoru, birçok genin küçük etkilerinin toplamıdır
+        - Formül: PRS = β₁×Genotip₁ + β₂×Genotip₂ + ... + βₙ×Genotipₙ
+        - β (beta): Her varyantın hastalık riskine katkısı (GWAS'tan)
+        - Genotip: 0, 1 veya 2 (risk alel sayısı)
+        
+        **Veriler Nereden?**
+        - Psychiatric Genomics Consortium (PGC)
+        - Million Veteran Program (MVP)
+        - GSCAN Konsorsiyumu
+        - UK Biobank
+        - Tümü akademik ve ücretsiz!
+        
+        ---
+        
+        ### ⚠️ Önemli Uyarılar
+        
+        ❌ **Genetik risk = Kader DEĞİLDİR!**
+        - Yüksek risk = Kesin hasta olacaksınız demek değil
+        - Düşük risk = Asla hasta olmayacaksınız demek değil
+        
+        ✅ **Çevresel faktörler çok önemli:**
+        - Yaşam tarzı, stres, sosyal destek
+        - Erken müdahale riski azaltabilir
+        
+        🏥 **Klinik kararlar için:**
+        - Bu sonuçlar yalnızca bilgilendirme amaçlıdır
+        - Tıbbi kararlar için mutlaka uzman görüşü alın
+        """)
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📊 PRS Hesaplama",
+        "🎯 Detaylı Varyant Analizi", 
+        "🔗 Entegre Risk",
+        "📚 Veri Kaynakları",
+        "🧬 Gen Sistemleri"
+    ])
     
     with tab1:
-        st.markdown("### Poligenik Risk Skoru Hesaplama")
+        st.markdown("### 📊 Çoklu-Özellik PRS Hesaplama")
+        
+        col_status, col_action = st.columns([2, 1])
+        
+        with col_status:
+            if 'loaded_variants' in st.session_state:
+                n_variants = len(st.session_state['loaded_variants'])
+                st.success(f"✅ Veri Hazır: {n_variants:,} varyant yüklü")
+            else:
+                st.warning("⚠️ Varyant verisi yüklenmemiş")
+                st.info("👉 Sol menüden '🧬 Varyant Analizi' sayfasına gidip veri yükleyin veya demo veri oluşturun")
+        
+        with col_action:
+            if 'loaded_variants' not in st.session_state:
+                if st.button("🚀 Hızlı Demo Veri Oluştur", type="secondary"):
+                    demo_variants = create_demo_vcf_data(1500)
+                    st.session_state['loaded_variants'] = demo_variants
+                    st.rerun()
         
         if 'loaded_variants' in st.session_state:
             variants_df = st.session_state['loaded_variants']
             
-            prs_calc = PolygenicRiskScoreCalculator()
+            st.markdown("---")
+            st.markdown("#### Analiz Edilecek Özellikler")
             
-            available_traits = list(prs_calc.gwas_data.keys())
+            from modules.advanced_prs import AdvancedPRSCalculator, get_gwas_sources_summary
+            
+            adv_prs = AdvancedPRSCalculator()
+            
+            trait_options = {
+                'alcohol_dependence': '🍺 Alkol Bağımlılığı',
+                'opioid_dependence': '💊 Opioid Bağımlılığı',
+                'nicotine_dependence': '🚬 Nikotin Bağımlılığı',
+                'cocaine_dependence': '❄️ Kokain Bağımlılığı',
+                'cannabis_use_disorder': '🌿 Esrar Kullanım Bozukluğu',
+                'general_addiction_liability': '⚠️ Genel Bağımlılık Eğilimi'
+            }
+            
             selected_traits = st.multiselect(
-                "Analiz Edilecek Özellikler:",
-                available_traits,
-                default=['alcohol_dependence', 'opioid_dependence', 'depression']
+                "Analiz edilecek özellikleri seçin (birden fazla seçebilirsiniz):",
+                list(trait_options.keys()),
+                default=['alcohol_dependence', 'opioid_dependence', 'nicotine_dependence'],
+                format_func=lambda x: trait_options.get(x, x)
             )
             
-            if st.button("📊 PRS Hesapla", type="primary"):
-                with st.spinner("Poligenik risk skorları hesaplanıyor..."):
-                    results = {}
-                    for trait in selected_traits:
-                        results[trait] = prs_calc.calculate_prs(variants_df, trait)
-                    
-                    st.session_state['prs_results'] = results
-                    
-                    st.success("✅ PRS hesaplaması tamamlandı!")
-                    
-                    for trait, result in results.items():
-                        trait_name = trait.replace('_', ' ').title()
+            if selected_traits:
+                if st.button("📊 Poligenik Risk Skorlarını Hesapla", type="primary", use_container_width=True):
+                    with st.spinner("Gelişmiş PRS analizi çalışıyor..."):
+                        results = {}
+                        for trait in selected_traits:
+                            results[trait] = adv_prs.calculate_single_trait_prs(variants_df, trait)
                         
-                        with st.expander(f"📊 {trait_name}", expanded=True):
-                            col1, col2, col3 = st.columns(3)
-                            with col1:
-                                st.metric("PRS Skoru", result.score)
-                            with col2:
-                                st.metric("Persentil", f"{result.percentile:.1f}%")
-                            with col3:
-                                if result.risk_category in ['Very High', 'High']:
-                                    st.metric("Risk", result.risk_category, delta="↑", delta_color="inverse")
-                                elif result.risk_category in ['Very Low', 'Low']:
-                                    st.metric("Risk", result.risk_category, delta="↓")
-                                else:
-                                    st.metric("Risk", result.risk_category)
-                            
-                            st.markdown(f"**Yorum:** {result.interpretation}")
-                            st.caption(f"Eşleşen varyant sayısı: {result.n_variants}")
-        else:
-            st.info("⬆️ Önce 'Varyant Analizi' sayfasından VCF dosyası yükleyin.")
+                        composite = adv_prs.calculate_composite_prs(results)
+                        
+                        st.session_state['advanced_prs_results'] = results
+                        st.session_state['composite_prs'] = composite
+                        
+                        st.success("✅ PRS analizi tamamlandı!")
+                        
+                        st.markdown("---")
+                        st.markdown("### 📈 Sonuçlar")
+                        
+                        st.markdown("#### Birleşik Risk Değerlendirmesi")
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.metric("Birleşik Skor", f"{composite.composite_score:.3f}")
+                        with col2:
+                            st.metric("Risk Persentili", f"{composite.risk_percentile:.1f}")
+                        with col3:
+                            risk_color = "🔴" if composite.risk_percentile > 75 else ("🟡" if composite.risk_percentile > 50 else "🟢")
+                            st.metric("Risk Kategorisi", f"{risk_color} {composite.risk_category.value}")
+                        
+                        st.markdown("---")
+                        st.markdown("#### Özellik Bazında Sonuçlar")
+                        
+                        for trait, result in results.items():
+                            with st.expander(f"{trait_options.get(trait, trait)} - {result.risk_category.value}", expanded=True):
+                                col1, col2, col3, col4 = st.columns(4)
+                                with col1:
+                                    st.metric("Ham Skor", f"{result.raw_prs:.4f}")
+                                with col2:
+                                    st.metric("Z-Skor", f"{result.standardized_prs:.2f}")
+                                with col3:
+                                    st.metric("Persentil", f"{result.percentile:.1f}")
+                                with col4:
+                                    st.metric("Eşleşen Varyant", f"{result.n_variants_matched}/{result.n_variants_total}")
+                                
+                                st.markdown(f"**Kaynak:** {result.gwas_source} (n={result.gwas_n_samples:,})")
+                                st.markdown(f"**Kalıtılabilirlik:** {result.heritability:.0%}")
+                                
+                                if result.clinical_implications:
+                                    st.markdown("**Klinik Çıkarımlar:**")
+                                    for impl in result.clinical_implications:
+                                        st.markdown(f"- {impl}")
+                                
+                                if result.recommendations:
+                                    st.markdown("**Öneriler:**")
+                                    for rec in result.recommendations:
+                                        st.markdown(f"- {rec}")
     
     with tab2:
-        st.markdown("### 🔗 Entegre Genetik-Epigenetik Risk")
+        st.markdown("### 🎯 Risk Varyantları Detay Görünümü")
+        
+        if 'advanced_prs_results' in st.session_state:
+            results = st.session_state['advanced_prs_results']
+            
+            selected_trait_detail = st.selectbox(
+                "Detayını görmek istediğiniz özelliği seçin:",
+                list(results.keys()),
+                format_func=lambda x: trait_options.get(x, x)
+            )
+            
+            if selected_trait_detail:
+                result = results[selected_trait_detail]
+                
+                st.markdown(f"#### {trait_options.get(selected_trait_detail, selected_trait_detail)}")
+                st.info(result.interpretation)
+                
+                if result.contributing_variants:
+                    st.markdown("#### Katkıda Bulunan Varyantlar")
+                    
+                    variants_data = []
+                    for v in result.contributing_variants:
+                        variants_data.append({
+                            'rsID': v['rsid'],
+                            'Gen': v['gene'],
+                            'Beta': v['beta'],
+                            'Dozaj': v['dosage'],
+                            'Katkı': v['contribution'],
+                            'Kanıt': v['evidence'].split(' (')[0],
+                            'Klinik Not': v['clinical_note'][:50] + '...' if len(v['clinical_note']) > 50 else v['clinical_note']
+                        })
+                    
+                    variants_table = pd.DataFrame(variants_data)
+                    st.dataframe(variants_table, use_container_width=True)
+        else:
+            st.info("⬆️ Önce 'PRS Hesaplama' sekmesinden analiz yapın.")
+    
+    with tab3:
+        st.markdown("### 🔗 Entegre Genetik-Epigenetik Risk Modeli")
+        
+        st.markdown("""
+        Bu modül, genetik (PRS) ve epigenetik (yaş ivmelenmesi) verileri birleştirerek 
+        kapsamlı bir risk değerlendirmesi sunar.
+        
+        **Risk Bileşenleri:**
+        - 🧬 Genetik (PRS): %40 ağırlık
+        - ⏰ Epigenetik (EAA): %30 ağırlık
+        - 🏥 Klinik/Çevresel: %30 ağırlık
+        """)
         
         has_variants = 'loaded_variants' in st.session_state
         has_eaa = 'analysis_results' in st.session_state
         
-        if has_variants and has_eaa:
-            if st.button("🔬 Entegre Risk Hesapla", type="primary"):
-                with st.spinner("Entegre risk modeli çalıştırılıyor..."):
-                    variants_df = st.session_state['loaded_variants']
-                    eaa_results = st.session_state['analysis_results']
+        col1, col2 = st.columns(2)
+        with col1:
+            if has_variants:
+                st.success("✅ Varyant verisi hazır")
+            else:
+                st.error("❌ Varyant verisi yok")
+        with col2:
+            if has_eaa:
+                st.success("✅ Epigenetik yaş verisi hazır")
+            else:
+                st.warning("⚠️ Epigenetik yaş verisi yok (opsiyonel)")
+        
+        if has_variants:
+            st.markdown("---")
+            
+            st.markdown("#### Klinik Bilgiler (Opsiyonel)")
+            col1, col2 = st.columns(2)
+            with col1:
+                substance_years = st.number_input("Madde kullanım süresi (yıl)", 0, 50, 0)
+                family_history = st.checkbox("Ailede bağımlılık öyküsü var")
+            with col2:
+                age_onset = st.number_input("Başlangıç yaşı", 10, 60, 25)
+                polysubstance = st.checkbox("Çoklu madde kullanımı")
+            
+            if st.button("🔬 Entegre Risk Hesapla", type="primary", use_container_width=True):
+                with st.spinner("Çok-omik risk modeli çalıştırılıyor..."):
+                    from modules.advanced_prs import IntegratedGenomicEpigeneticRisk
                     
-                    integrated_model = IntegratedRiskModel()
-                    report = integrated_model.generate_integrated_report(
-                        variants_df, eaa_results, "Patient"
+                    variants_df = st.session_state['loaded_variants']
+                    eaa_data = st.session_state.get('analysis_results', None)
+                    
+                    clinical_data = {
+                        'substance_use_years': substance_years,
+                        'family_history': family_history,
+                        'age_of_onset': age_onset,
+                        'polysubstance': polysubstance
+                    }
+                    
+                    integrated_model = IntegratedGenomicEpigeneticRisk()
+                    result = integrated_model.calculate_integrated_risk(
+                        variants_df, eaa_data, clinical_data
                     )
                     
                     st.success("✅ Entegre risk analizi tamamlandı!")
                     
                     st.markdown("### Entegre Risk Değerlendirmesi")
                     
-                    assessment = report['integrated_assessment']
                     col1, col2, col3 = st.columns(3)
                     with col1:
-                        st.metric("Genetik Bileşen", f"{assessment['prs_component']:.3f}")
+                        st.metric("Entegre Skor", f"{result['integrated_score']:.3f}")
                     with col2:
-                        st.metric("Epigenetik Bileşen", f"{assessment['eaa_component']:.3f}")
+                        st.metric("Risk Persentili", f"{result['integrated_percentile']:.1f}")
                     with col3:
-                        st.metric("Risk Persentili", f"{assessment['risk_percentile']:.1f}%")
+                        st.metric("Kategori", result['risk_category'])
                     
-                    st.markdown(f"**Risk Kategorisi:** {assessment['risk_category']}")
-                    st.markdown(f"**Yorum:** {assessment['interpretation']}")
+                    st.warning(f"**Aciliyet:** {result['urgency_level']}")
                     
-                    st.markdown("### Öneriler")
-                    for rec in report['recommendations']:
+                    st.markdown("#### Bileşen Katkıları")
+                    comp_data = []
+                    for comp_name, comp_info in result['components'].items():
+                        comp_data.append({
+                            'Bileşen': comp_name.title(),
+                            'Skor': f"{comp_info['score']:.3f}",
+                            'Ağırlık': f"{comp_info['weight']:.0%}"
+                        })
+                    st.dataframe(pd.DataFrame(comp_data), use_container_width=True)
+                    
+                    st.markdown("#### Öneriler")
+                    for rec in result['recommendations']:
                         st.markdown(f"- {rec}")
-        else:
-            missing = []
-            if not has_variants:
-                missing.append("Varyant verisi")
-            if not has_eaa:
-                missing.append("Epigenetik yaş verisi")
-            st.warning(f"⚠️ Eksik veri: {', '.join(missing)}")
-            st.info("Entegre analiz için hem varyant hem de epigenetik yaş verisi gereklidir.")
     
-    with tab3:
+    with tab4:
         st.markdown("### 📚 GWAS Veri Kaynakları")
         
-        prs_calc = PolygenicRiskScoreCalculator()
+        from modules.advanced_prs import get_gwas_sources_summary
         
-        sources = []
-        for trait, data in prs_calc.gwas_data.items():
-            sources.append({
-                'Özellik': trait.replace('_', ' ').title(),
-                'Kaynak': data['source'],
-                'Örnek Sayısı': f"{data['n_samples']:,}",
-                'Varyant Sayısı': data['n_variants'],
-                'Kalıtılabilirlik': f"{data['heritability']:.0%}"
-            })
-        
-        sources_df = pd.DataFrame(sources)
+        sources_df = get_gwas_sources_summary()
         st.dataframe(sources_df, use_container_width=True)
         
+        st.markdown("---")
+        st.markdown("### 🌐 Açık Erişim Veri Tabanları")
+        
+        from modules.variant_data_sources import VariantDataSourceManager
+        
+        manager = VariantDataSourceManager()
+        comparison_df = manager.get_source_comparison()
+        st.dataframe(comparison_df, use_container_width=True)
+        
         st.info("""
-        **Not:** Tüm GWAS özet istatistikleri kamuya açık ve ücretsiz kaynaklardan alınmıştır:
-        - GWAS Catalog (https://www.ebi.ac.uk/gwas/)
-        - PGC (Psychiatric Genomics Consortium)
-        - MVP (Million Veteran Program)
-        - GSCAN (GWAS & Sequencing Consortium of Alcohol and Nicotine use)
+        **Akademik Referanslar:**
+        - Walters et al. (2018) Nat Neurosci - Alkol bağımlılığı GWAS
+        - Polimanti et al. (2020) Nat Neurosci - Opioid bağımlılığı GWAS
+        - Liu et al. (2019) Nat Genet - GSCAN sigara/alkol GWAS
+        - Demontis et al. (2019) Nat Genet - ADHD-bağımlılık ilişkisi
         """)
+    
+    with tab5:
+        st.markdown("### 🧬 Bağımlılık-İlişkili Gen Sistemleri")
+        
+        from modules.variant_data_sources import VariantDataSourceManager
+        
+        manager = VariantDataSourceManager()
+        genes_df = manager.get_addiction_genes_summary()
+        st.dataframe(genes_df, use_container_width=True)
+        
+        total_genes = len(manager.get_all_addiction_genes())
+        st.success(f"📊 Toplam {total_genes} bağımlılık-ilişkili gen analiz edilmektedir")
+        
+        st.markdown("---")
+        st.markdown("### 💰 Maliyet Tasarruf Hesaplayıcı")
+        
+        n_samples = st.slider("Analiz edilecek örnek sayısı:", 10, 500, 100)
+        
+        cost_result = manager.calculate_cost_savings(n_samples)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("#### Geleneksel Yaklaşım")
+            st.metric("Toplam Maliyet", f"{cost_result['traditional']['total']:,} TL")
+        with col2:
+            st.markdown("#### EpiClock Yaklaşımı")
+            st.metric("Toplam Maliyet", f"{cost_result['epiclock']['total']:,} TL",
+                     delta=f"-{cost_result['savings_percent']:.0f}%")
+        
+        st.success(f"💰 **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
+        st.info(f"📊 **İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
 
 
 if __name__ == "__main__":
