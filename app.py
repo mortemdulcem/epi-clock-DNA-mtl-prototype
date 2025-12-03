@@ -1716,6 +1716,42 @@ def render_dna_upload(components, selected_clocks):
                 yüklediğiniz DNA metilasyon verisinden epigenetik yaş hesaplar.
                 """)
                 
+                st.markdown("---")
+                st.markdown("### 🏥 Kronik Hastalık Etkisi (Opsiyonel)")
+                st.markdown("""
+                Kronik hastalıklar epigenetik yaşı etkileyebilir. Varsa hastalıkları seçin,
+                toplam EAA hesaplamasına dahil edilecektir.
+                """)
+                
+                chronic_analyzer = get_chronic_disease_analyzer()
+                disease_options = {disease.disease_name: key for key, disease in CHRONIC_DISEASE_EAA_DATABASE.items()}
+                
+                selected_chronic_diseases = st.multiselect(
+                    "Kronik Hastalıkları Seçin (varsa):",
+                    options=list(disease_options.keys()),
+                    default=[],
+                    help="Birden fazla seçebilirsiniz. Komorbidite etkileri otomatik hesaplanır."
+                )
+                
+                chronic_disease_effect = None
+                if selected_chronic_diseases:
+                    disease_keys = [disease_options[name] for name in selected_chronic_diseases]
+                    chronic_result = chronic_analyzer.calculate_total_eaa(disease_keys)
+                    chronic_disease_effect = chronic_result
+                    
+                    col_d1, col_d2, col_d3 = st.columns(3)
+                    with col_d1:
+                        st.metric("Temel Hastalık EAA", f"+{chronic_result['base_eaa']} yıl")
+                    with col_d2:
+                        st.metric("Etkileşim Çarpanı", f"x{chronic_result['interaction_multiplier']}")
+                    with col_d3:
+                        st.metric("Toplam Hastalık EAA", f"+{chronic_result['total_eaa']} yıl")
+                    
+                    if chronic_result['interactions']:
+                        st.info(f"Tespit edilen komorbidite etkileşimleri: {len(chronic_result['interactions'])}")
+                
+                st.markdown("---")
+                
                 if st.button("🧬 Epigenetik Yaş Hesapla", type="primary"):
                     with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
                         
@@ -1749,7 +1785,18 @@ def render_dna_upload(components, selected_clocks):
                                         display_df[clock] - display_df['Kronolojik Yaş'].fillna(0)
                                     ).round(2)
                         
+                        if chronic_disease_effect:
+                            display_df['Kronik Hastalık EAA'] = chronic_disease_effect['total_eaa']
+                            display_df['Seçilen Hastalıklar'] = ', '.join(selected_chronic_diseases[:3]) + ('...' if len(selected_chronic_diseases) > 3 else '')
+                            
+                            for clock in ['Horvath', 'Hannum', 'PhenoAge']:
+                                if f'{clock} EAA' in display_df.columns:
+                                    display_df[f'{clock} Toplam EAA'] = (
+                                        display_df[f'{clock} EAA'] + chronic_disease_effect['total_eaa']
+                                    ).round(2)
+                        
                         st.session_state['analysis_results'] = display_df
+                        st.session_state['chronic_disease_effect'] = chronic_disease_effect
                         
                         st.success("✅ Gerçek katsayılarla analiz tamamlandı!")
                         
@@ -1770,6 +1817,38 @@ def render_dna_upload(components, selected_clocks):
                                 st.metric("PhenoAge Kapsam", f"{avg_coverage.get('PhenoAge %', 0):.1f}%")
                             with col4:
                                 st.metric("DunedinPACE Kapsam", f"{avg_coverage.get('DunedinPACE %', 0):.1f}%")
+                        
+                        if chronic_disease_effect:
+                            st.markdown("### 🏥 Kronik Hastalık Etkisi Özeti")
+                            
+                            import plotly.graph_objects as go
+                            
+                            fig = go.Figure()
+                            
+                            avg_dna_eaa = 0
+                            eaa_cols = [c for c in display_df.columns if 'EAA' in c and 'Toplam' not in c and 'Kronik' not in c]
+                            if eaa_cols:
+                                avg_dna_eaa = display_df[eaa_cols].mean().mean()
+                            
+                            fig.add_trace(go.Bar(
+                                x=['DNA Bazlı EAA', 'Kronik Hastalık EAA', 'TOPLAM EAA'],
+                                y=[avg_dna_eaa, chronic_disease_effect['total_eaa'], avg_dna_eaa + chronic_disease_effect['total_eaa']],
+                                marker_color=['#8B4513', '#CD853F', '#D2691E'],
+                                text=[f'+{avg_dna_eaa:.1f}', f'+{chronic_disease_effect["total_eaa"]:.1f}', f'+{avg_dna_eaa + chronic_disease_effect["total_eaa"]:.1f}'],
+                                textposition='outside'
+                            ))
+                            
+                            fig.update_layout(
+                                title="Toplam Epigenetik Yaş İvmelenmesi",
+                                yaxis_title="EAA (yıl)",
+                                template="plotly_white",
+                                showlegend=False
+                            )
+                            st.plotly_chart(fig, use_container_width=True)
+                            
+                            st.markdown("**Seçilen Hastalıklar ve Etkileri:**")
+                            for disease in chronic_disease_effect['diseases']:
+                                st.write(f"- {disease['name']}: +{disease['eaa']} yıl")
                         
                         csv = display_df.to_csv(index=False)
                         st.download_button(
