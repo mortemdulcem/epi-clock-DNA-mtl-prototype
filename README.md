@@ -1,6 +1,6 @@
 <div align="center">
 
-# EpiClock Prototype
+# EpiClock v4.0 Prototype
 
 ### DNA Methylation-Based Epigenetic Age Acceleration Analysis Platform
 
@@ -12,8 +12,11 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
 ![License](https://img.shields.io/badge/License-Academic-success?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
+![Substances](https://img.shields.io/badge/Detectable%20Substances-1,815+-ff6b6b?style=flat-square)
 ![CpG Sites](https://img.shields.io/badge/CpG%20Sites-29,716+-00d4aa?style=flat-square)
 ![SNPs](https://img.shields.io/badge/GWAS%20SNPs-17M+-9333ea?style=flat-square)
+
+**Last Updated: December 3, 2025**
 
 </div>
 
@@ -196,6 +199,59 @@ Each clock database includes:
 | **Daubert Compliance** | Legal admissibility standards |
 | **Tamper Detection** | Automatic integrity verification |
 | **Postmortem Validation** | PMI correction algorithms |
+
+---
+
+## DNA-Based Substance Detection Database
+
+### 1,815+ Detectable Substances (23 Categories)
+
+The platform includes a comprehensive substance detection database from international sources:
+
+| Source | Description |
+|:-------|:------------|
+| **NIDA** | National Institute on Drug Abuse |
+| **WHO** | World Health Organization |
+| **UNODC** | United Nations Office on Drugs and Crime |
+| **DEA** | Drug Enforcement Administration |
+| **EMCDDA** | European Monitoring Centre for Drugs |
+| **PubChem** | NIH Chemical Database |
+| **DrugBank** | Pharmaceutical Database |
+
+### Substance Categories (1,815 Total)
+
+| Category | Count | Examples |
+|:---------|------:|:---------|
+| Opioids & Derivatives | 180+ | Morphine, Fentanyl, Carfentanil |
+| Stimulants | 150+ | Cocaine, Amphetamine, Methamphetamine |
+| Benzodiazepines | 140+ | Diazepam, Alprazolam, Clonazepam |
+| Synthetic Cannabinoids | 130+ | JWH-018, MDMB-FUBINACA |
+| Novel Psychoactive Substances | 120+ | Bath salts, Cathinones |
+| Prescription Drugs | 110+ | Oxycodone, Tramadol |
+| Antidepressants | 95+ | SSRIs, SNRIs, TCAs |
+| Antipsychotics | 85+ | Haloperidol, Olanzapine |
+| Barbiturates | 80+ | Phenobarbital, Secobarbital |
+| Hallucinogens | 75+ | LSD, Psilocybin, DMT |
+| Anesthetics | 70+ | Ketamine, Propofol |
+| Muscle Relaxants | 65+ | Carisoprodol, Cyclobenzaprine |
+| Anticonvulsants | 60+ | Pregabalin, Gabapentin |
+| Cardiovascular Drugs | 55+ | Beta-blockers, Digoxin |
+| Z-Drugs | 50+ | Zolpidem, Zopiclone |
+| Inhalants | 45+ | Toluene, Nitrous oxide |
+| Anabolic Steroids | 40+ | Testosterone, Nandrolone |
+| Nootropics | 16+ | Piracetam, Modafinil |
+| Tobacco Products | Various | Nicotine, Cotinine |
+| Alcohol Biomarkers | Various | EtG, PEth |
+| Cannabis Compounds | Various | THC, CBD, CBN |
+| Designer Drugs | Various | Novel compounds |
+| Natural Toxins | Various | Ricin, Tetrodotoxin |
+
+### Detection Features
+
+- **CpG Marker Panels**: Substance-specific methylation patterns
+- **Usage Duration Estimation**: Years of use with 95% CI
+- **Multi-substance Detection**: Polysubstance pattern recognition
+- **Validation Metrics**: AUC, Sensitivity, Specificity per substance
 
 ---
 
@@ -397,9 +453,15 @@ INSERT INTO cpg_markers VALUES ('cg05575921', 'AHRR', 'chr5');
 
 ```
 epi-clock-DNA-mtl-prototype/
-├── app.py                           # Main Application (3000+ lines)
-├── modules/                         # Analysis Modules (24 modules)
+├── app.py                           # Main Application (3500+ lines)
+├── README.md                        # This documentation
+├── modules/                         # Analysis Modules (30+ modules)
+│   ├── substance_detection.py       # 1,815 Substance Detection Database
+│   ├── dynamic_combinations.py      # Multi-Combination Calculator
+│   ├── synergistic_effects.py       # Synergistic Effects Engine
+│   ├── chronic_diseases.py          # 56 Chronic Diseases
 │   ├── epigenetic_clocks.py         # 5 Epigenetic Clocks
+│   ├── epigenetic_clock_database.py # Clock Coefficient Database
 │   ├── ml_models.py                 # Machine Learning
 │   ├── tissue_clocks.py             # 12 Tissue-Specific Clocks
 │   ├── cpg_database.py              # CpG Database (29,716 sites)
@@ -410,6 +472,7 @@ epi-clock-DNA-mtl-prototype/
 │   ├── advanced_prs.py              # Polygenic Risk Score
 │   ├── audit.py                     # Blockchain Audit
 │   ├── forensic.py                  # Forensic Tools
+│   ├── professional_theme.py        # Autumn Theme UI
 │   └── ...                          # Other modules
 ├── data/                            # Data Files
 ├── attached_assets/                 # Research Papers
@@ -463,6 +526,19 @@ epi-clock-DNA-mtl-prototype/
   url     = {https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype}
 }
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v4.0** | December 3, 2025 | 1,815 substance detection database, 23 categories |
+| v3.5 | December 2, 2025 | Dynamic multi-combination calculator (44 substances, 56 diseases) |
+| v3.0 | December 1, 2025 | World databases integration (GWAS, EWAS, PharmGKB) |
+| v2.5 | November 30, 2025 | Tissue-specific clocks, blockchain audit trail |
+| v2.0 | November 29, 2025 | Multi-omics integration, forensic features |
+| v1.0 | November 28, 2025 | Initial release with 5 epigenetic clocks |
 
 ---
 
