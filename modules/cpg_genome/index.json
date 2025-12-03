@@ -1,0 +1,200 @@
+{
+  "version": "1.0.0",
+  "total_cpg_sites": 29400000,
+  "genome_build": "hg38/GRCh38",
+  "chromosomes": {
+    "chr1": {
+      "cpg_count": 2847000,
+      "start_index": 0,
+      "end_index": 2846999,
+      "file": "chr1_cpg.tsv.gz",
+      "length": 248956422
+    },
+    "chr2": {
+      "cpg_count": 2421000,
+      "start_index": 2847000,
+      "end_index": 5267999,
+      "file": "chr2_cpg.tsv.gz",
+      "length": 242193529
+    },
+    "chr3": {
+      "cpg_count": 1987000,
+      "start_index": 5268000,
+      "end_index": 7254999,
+      "file": "chr3_cpg.tsv.gz",
+      "length": 198295559
+    },
+    "chr4": {
+      "cpg_count": 1654000,
+      "start_index": 7255000,
+      "end_index": 8908999,
+      "file": "chr4_cpg.tsv.gz",
+      "length": 190214555
+    },
+    "chr5": {
+      "cpg_count": 1812000,
+      "start_index": 8909000,
+      "end_index": 10720999,
+      "file": "chr5_cpg.tsv.gz",
+      "length": 181538259
+    },
+    "chr6": {
+      "cpg_count": 1723000,
+      "start_index": 10721000,
+      "end_index": 12443999,
+      "file": "chr6_cpg.tsv.gz",
+      "length": 170805979
+    },
+    "chr7": {
+      "cpg_count": 1598000,
+      "start_index": 12444000,
+      "end_index": 14041999,
+      "file": "chr7_cpg.tsv.gz",
+      "length": 159345973
+    },
+    "chr8": {
+      "cpg_count": 1456000,
+      "start_index": 14042000,
+      "end_index": 15497999,
+      "file": "chr8_cpg.tsv.gz",
+      "length": 145138636
+    },
+    "chr9": {
+      "cpg_count": 1234000,
+      "start_index": 15498000,
+      "end_index": 16731999,
+      "file": "chr9_cpg.tsv.gz",
+      "length": 138394717
+    },
+    "chr10": {
+      "cpg_count": 1345000,
+      "start_index": 16732000,
+      "end_index": 18076999,
+      "file": "chr10_cpg.tsv.gz",
+      "length": 133797422
+    },
+    "chr11": {
+      "cpg_count": 1387000,
+      "start_index": 18077000,
+      "end_index": 19463999,
+      "file": "chr11_cpg.tsv.gz",
+      "length": 135086622
+    },
+    "chr12": {
+      "cpg_count": 1334000,
+      "start_index": 19464000,
+      "end_index": 20797999,
+      "file": "chr12_cpg.tsv.gz",
+      "length": 133275309
+    },
+    "chr13": {
+      "cpg_count": 876000,
+      "start_index": 20798000,
+      "end_index": 21673999,
+      "file": "chr13_cpg.tsv.gz",
+      "length": 114364328
+    },
+    "chr14": {
+      "cpg_count": 912000,
+      "start_index": 21674000,
+      "end_index": 22585999,
+      "file": "chr14_cpg.tsv.gz",
+      "length": 107043718
+    },
+    "chr15": {
+      "cpg_count": 834000,
+      "start_index": 22586000,
+      "end_index": 23419999,
+      "file": "chr15_cpg.tsv.gz",
+      "length": 101991189
+    },
+    "chr16": {
+      "cpg_count": 923000,
+      "start_index": 23420000,
+      "end_index": 24342999,
+      "file": "chr16_cpg.tsv.gz",
+      "length": 90338345
+    },
+    "chr17": {
+      "cpg_count": 845000,
+      "start_index": 24343000,
+      "end_index": 25187999,
+      "file": "chr17_cpg.tsv.gz",
+      "length": 83257441
+    },
+    "chr18": {
+      "cpg_count": 756000,
+      "start_index": 25188000,
+      "end_index": 25943999,
+      "file": "chr18_cpg.tsv.gz",
+      "length": 80373285
+    },
+    "chr19": {
+      "cpg_count": 678000,
+      "start_index": 25944000,
+      "end_index": 26621999,
+      "file": "chr19_cpg.tsv.gz",
+      "length": 58617616
+    },
+    "chr20": {
+      "cpg_count": 645000,
+      "start_index": 26622000,
+      "end_index": 27266999,
+      "file": "chr20_cpg.tsv.gz",
+      "length": 64444167
+    },
+    "chr21": {
+      "cpg_count": 387000,
+      "start_index": 27267000,
+      "end_index": 27653999,
+      "file": "chr21_cpg.tsv.gz",
+      "length": 46709983
+    },
+    "chr22": {
+      "cpg_count": 423000,
+      "start_index": 27654000,
+      "end_index": 28076999,
+      "file": "chr22_cpg.tsv.gz",
+      "length": 50818468
+    },
+    "chrX": {
+      "cpg_count": 1234000,
+      "start_index": 28077000,
+      "end_index": 29310999,
+      "file": "chrX_cpg.tsv.gz",
+      "length": 156040895
+    },
+    "chrY": {
+      "cpg_count": 89000,
+      "start_index": 29311000,
+      "end_index": 29399999,
+      "file": "chrY_cpg.tsv.gz",
+      "length": 57227415
+    }
+  },
+  "sources": [
+    "UCSC Genome Browser",
+    "Illumina Infinium 450K",
+    "Illumina Infinium EPIC",
+    "Illumina Infinium EPIC v2",
+    "ENCODE Project",
+    "Roadmap Epigenomics"
+  ],
+  "island_types": [
+    "island",
+    "shore_n",
+    "shore_s",
+    "shelf_n",
+    "shelf_s",
+    "open_sea"
+  ],
+  "functional_types": [
+    "promoter",
+    "exon",
+    "intron",
+    "utr5",
+    "utr3",
+    "intergenic",
+    "enhancer"
+  ]
+}
