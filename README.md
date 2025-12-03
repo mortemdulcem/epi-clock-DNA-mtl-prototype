@@ -13,7 +13,7 @@
 ![License](https://img.shields.io/badge/License-Academic-success?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
 ![Substances](https://img.shields.io/badge/Detectable%20Substances-1,815+-ff6b6b?style=flat-square)
-![CpG Sites](https://img.shields.io/badge/CpG%20Sites-29,716+-00d4aa?style=flat-square)
+![CpG Regions](https://img.shields.io/badge/CpG%20Regions-28M+-00d4aa?style=flat-square)
 ![SNPs](https://img.shields.io/badge/GWAS%20SNPs-17M+-9333ea?style=flat-square)
 
 **Last Updated: December 3, 2025**
@@ -293,12 +293,17 @@ The platform includes a comprehensive substance detection database from internat
 
 ## CpG Database
 
-Platform includes comprehensive CpG methylation database for addiction research:
+Platform includes comprehensive CpG methylation database with full human genome coverage:
 
 | Feature | Value |
 |:--------|------:|
-| **Total CpG Regions** | 29,716+ |
-| **Unique CpG Sites** | 23,847 |
+| **Total CpG Regions (Genome)** | **28,000,000** |
+| **WGBS Coverage** | 28,000,000 |
+| **Illumina EPIC v2** | 935,000 |
+| **Illumina EPIC** | 866,895 |
+| **Illumina 450K** | 485,577 |
+| **Addiction-Specific CpGs** | 29,716+ |
+| **CpG Islands** | 30,000 |
 | **Substance Classes** | 12 |
 | **Gene Systems** | 10 |
 | **Evidence Levels** | 3 (Strong/Moderate/Low) |
