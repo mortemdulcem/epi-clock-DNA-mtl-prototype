@@ -117,15 +117,41 @@ Open your browser and navigate to: `http://localhost:5000`
 
 ---
 
-## Epigenetic Clocks
+## Epigenetic Clock Databases
 
-| Clock | CpG Sites | Application | Accuracy |
-|:------|:---------:|:------------|:--------:|
-| **Horvath** | 353 | Multi-tissue age prediction | MAE: 3.6 yrs |
-| **Hannum** | 71 | Blood-based prediction | MAE: 4.9 yrs |
-| **PhenoAge** | 513 | Mortality-calibrated | MAE: 2.5 yrs |
-| **GrimAge** | 1,030 | Mortality risk | MAE: 2.1 yrs |
-| **DunedinPACE** | 173 | Pace of aging | R2: 0.96 |
+### Complete CpG Databases (Total: 2,140 CpG Sites)
+
+| Clock | CpG Sites | Year | Application | Accuracy | Source |
+|:------|:---------:|:----:|:------------|:--------:|:-------|
+| **Horvath** | 353 | 2013 | Multi-tissue age prediction | MAE: 3.6 yrs | Genome Biology |
+| **Hannum** | 71 | 2013 | Blood-based prediction | MAE: 3.9 yrs | Molecular Cell |
+| **PhenoAge** | 513 | 2018 | Mortality-calibrated phenotypic age | MAE: 2.8 yrs | Aging |
+| **GrimAge** | 1,030 | 2019 | Mortality risk (9 protein surrogates) | MAE: 2.4 yrs | Aging |
+| **DunedinPACE** | 173 | 2022 | Pace of aging (Open Source) | R2: 0.89 | eLife |
+
+### Database Features
+
+Each clock database includes:
+- **CpG Site ID** (Illumina format)
+- **Coefficient** (regression weight)
+- **Gene Name** (mapped annotation)
+- **Chromosome** and **Position** (hg19/GRCh37)
+- **Direction** (hyper/hypomethylation)
+- **Functional Description**
+
+### GrimAge Protein Surrogates
+
+| Surrogate | Protein | CpG Count | Description |
+|:----------|:--------|:---------:|:------------|
+| DNAmADM | Adrenomedullin | ~130 | Cardiovascular marker |
+| DNAmB2M | Beta-2 microglobulin | ~130 | Immune function |
+| DNAmCystatinC | Cystatin C | ~130 | Kidney function |
+| DNAmGDF15 | Growth Differentiation Factor 15 | ~130 | Inflammation |
+| DNAmLeptin | Leptin | ~130 | Metabolic marker |
+| DNAmPAI1 | Plasminogen Activator Inhibitor 1 | ~130 | Coagulation |
+| DNAmTIMP1 | TIMP Metallopeptidase Inhibitor 1 | ~130 | Tissue remodeling |
+| DNAmPackYears | Smoking Pack-Years | ~90 | Tobacco exposure |
+| DNAmAge | Age Component | ~20 | Chronological age |
 
 ---
 
