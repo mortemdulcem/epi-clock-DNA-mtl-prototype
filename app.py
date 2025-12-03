@@ -227,6 +227,20 @@ from modules.synergistic_effects import (
     SUBSTANCE_EAA_DATABASE,
     SUBSTANCE_DISEASE_SYNERGY
 )
+from modules.dynamic_combinations import (
+    DynamicCombinationCalculator,
+    get_dynamic_calculator,
+    get_substance_count as get_dynamic_substance_count,
+    get_disease_count as get_dynamic_disease_count,
+    get_total_synergy_count,
+    get_synergy_breakdown,
+    SUBSTANCE_DATABASE as DYNAMIC_SUBSTANCE_DB,
+    DISEASE_DATABASE as DYNAMIC_DISEASE_DB,
+    SUBSTANCE_SUBSTANCE_SYNERGY,
+    DISEASE_DISEASE_SYNERGY,
+    SUBSTANCE_DISEASE_SYNERGY as DYNAMIC_CROSS_SYNERGY,
+    RiskLevel
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -1333,248 +1347,537 @@ def render_chronic_diseases(components):
 
 
 def render_synergistic_effects(components):
-    """Render synergistic effects analysis between substance use and chronic diseases"""
+    """Render ADVANCED synergistic effects with dynamic multi-combination support"""
     import plotly.graph_objects as go
     import plotly.express as px
     
-    st.markdown("## Bagimlilik + Kronik Hastalik Sinerjik Etkileri")
+    st.markdown("## 🔬 Gelismis Dinamik Kombinasyon Analizi")
     st.markdown("""
-    Bu modul, madde kullanimi ve kronik hastaliklar arasindaki sinerjik etkilesimi hesaplar.
-    Ornegin alkol bagimliligi + karaciger hastaligi kombinasyonu, her birinin tek basina etkisinden
-    cok daha buyuk bir epigenetik yas ivmelenmesine (EAA) yol acar.
+    **EN İLERİ SEVİYE SİNERJİK ETKİ HESAPLAYICI**
+    
+    Bu modül, sınırsız sayıda madde ve kronik hastalık kombinasyonunu analiz eder:
+    - ✅ **Madde + Madde** sinerjileri (örn: alkol + opioid, kokain + metamfetamin)
+    - ✅ **Hastalık + Hastalık** sinerjileri (örn: diyabet + hipertansiyon)
+    - ✅ **Madde + Hastalık** çapraz sinerjileri (örn: alkol + siroz)
+    - ✅ **Karmaşıklık bonusu** (çoklu kombinasyonlarda ek EAA)
     """)
     
-    synergy_calc = get_synergistic_calculator()
-    chronic_analyzer = get_chronic_disease_analyzer()
+    dynamic_calc = get_dynamic_calculator()
+    synergy_breakdown = get_synergy_breakdown()
     
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
-        st.metric("Madde Turu", get_synergy_substance_count())
+        st.metric("Madde Türü", get_dynamic_substance_count())
     with col2:
-        st.metric("Kronik Hastalik", get_disease_count())
+        st.metric("Kronik Hastalık", get_dynamic_disease_count())
     with col3:
-        st.metric("Sinerjik Etkilesim", get_synergy_count())
+        st.metric("Madde-Madde Sinerji", synergy_breakdown['substance_substance'])
     with col4:
-        high_risk = synergy_calc.get_high_risk_combinations(min_multiplier=2.0)
-        st.metric("Yuksek Riskli Kombinasyon", len(high_risk))
+        st.metric("Hastalık-Hastalık Sinerji", synergy_breakdown['disease_disease'])
+    with col5:
+        st.metric("Çapraz Sinerji", synergy_breakdown['substance_disease'])
     
     st.markdown("---")
     
     tabs = st.tabs([
-        "Kombine EAA Hesaplayici",
-        "Madde Veritabani",
-        "Sinerjik Etkilesimler",
-        "Yuksek Riskli Kombinasyonlar",
-        "Bilimsel Kanitlar"
+        "🧮 Dinamik Kombinasyon Hesaplayıcı",
+        "💊 Madde Veritabanı (44 Tür)",
+        "🏥 Hastalık Veritabanı (56 Tür)",
+        "⚡ Madde-Madde Sinerjileri",
+        "🔗 Hastalık-Hastalık Sinerjileri",
+        "⚠️ Yüksek Riskli Kombinasyonlar",
+        "📚 Bilimsel Kanıtlar"
     ])
     
     with tabs[0]:
-        st.markdown("### Kombine EAA Hesaplayici")
+        st.markdown("### 🧮 Dinamik Çoklu Kombinasyon Hesaplayıcı")
         st.markdown("""
-        Madde kullanimi ve kronik hastaliklari secin. Sistem otomatik olarak:
-        1. Her birinin temel EAA etkisini hesaplar
-        2. Sinerjik etkilesimleri tespit eder
-        3. Toplam EAA'yi hesaplar (temel + sinerji bonusu)
+        **Sınırsız kombinasyon desteği!** İstediğiniz kadar madde ve hastalık ekleyin.
+        Sistem tüm olası sinerjik etkileşimleri otomatik olarak hesaplar.
         """)
         
-        col_a, col_b = st.columns(2)
+        if 'selected_substances' not in st.session_state:
+            st.session_state.selected_substances = []
+        if 'selected_diseases' not in st.session_state:
+            st.session_state.selected_diseases = []
         
-        with col_a:
-            st.markdown("#### Madde Kullanimi")
-            substance_options = get_substance_options()
-            selected_substances = st.multiselect(
-                "Madde/Bagimlilik Turleri:",
-                options=list(substance_options.keys()),
-                default=[],
-                help="Birden fazla secebilirsiniz"
-            )
+        st.markdown("---")
         
-        with col_b:
-            st.markdown("#### Kronik Hastaliklar")
-            disease_options = {disease.disease_name: key for key, disease in CHRONIC_DISEASE_EAA_DATABASE.items()}
-            selected_diseases = st.multiselect(
-                "Kronik Hastaliklar:",
-                options=list(disease_options.keys()),
-                default=[],
-                help="Birden fazla secebilirsiniz"
-            )
+        col_left, col_right = st.columns(2)
         
-        if selected_substances or selected_diseases:
-            substance_keys = [substance_options[name] for name in selected_substances]
-            disease_keys = [disease_options[name] for name in selected_diseases]
+        with col_left:
+            st.markdown("### 💊 Madde Seçimi")
             
-            disease_eaa_dict = {}
-            for dis_name in selected_diseases:
-                dis_key = disease_options[dis_name]
-                if dis_key in CHRONIC_DISEASE_EAA_DATABASE:
-                    disease_eaa_dict[dis_key] = CHRONIC_DISEASE_EAA_DATABASE[dis_key].eaa_effect
-            
-            result = synergy_calc.calculate_combined_eaa(
-                substance_keys, 
-                disease_keys, 
-                disease_eaa_dict
+            substance_categories = dynamic_calc.get_substance_categories()
+            selected_sub_category = st.selectbox(
+                "Kategori Filtresi:",
+                ["Tümü"] + substance_categories,
+                key="sub_cat_filter"
             )
             
-            st.markdown("---")
-            st.markdown("### Sonuclar")
+            if selected_sub_category == "Tümü":
+                available_substances = dynamic_calc.get_all_substances()
+            else:
+                available_substances = dynamic_calc.get_substances_by_category(selected_sub_category)
             
-            col1, col2, col3, col4 = st.columns(4)
+            substance_name_to_key = {f"{s['name_tr']} (+{s['base_eaa']} yıl)": s['key'] for s in available_substances}
+            
+            add_substance = st.selectbox(
+                "Madde Ekle:",
+                ["-- Seçin --"] + list(substance_name_to_key.keys()),
+                key="add_sub_select"
+            )
+            
+            col_add, col_clear = st.columns(2)
+            with col_add:
+                if st.button("➕ Madde Ekle", key="add_sub_btn", use_container_width=True):
+                    if add_substance != "-- Seçin --":
+                        sub_key = substance_name_to_key[add_substance]
+                        if sub_key not in st.session_state.selected_substances:
+                            st.session_state.selected_substances.append(sub_key)
+                            st.rerun()
+            with col_clear:
+                if st.button("🗑️ Tümünü Temizle", key="clear_sub_btn", use_container_width=True):
+                    st.session_state.selected_substances = []
+                    st.rerun()
+            
+            if st.session_state.selected_substances:
+                st.markdown("**Seçili Maddeler:**")
+                for sub_key in st.session_state.selected_substances:
+                    if sub_key in DYNAMIC_SUBSTANCE_DB:
+                        sub = DYNAMIC_SUBSTANCE_DB[sub_key]
+                        col1, col2 = st.columns([4, 1])
+                        with col1:
+                            st.write(f"• {sub.name_tr} (+{sub.base_eaa} yıl)")
+                        with col2:
+                            if st.button("❌", key=f"remove_sub_{sub_key}"):
+                                st.session_state.selected_substances.remove(sub_key)
+                                st.rerun()
+            else:
+                st.info("Henüz madde seçilmedi. Yukarıdan madde ekleyin.")
+        
+        with col_right:
+            st.markdown("### 🏥 Hastalık Seçimi")
+            
+            disease_categories = dynamic_calc.get_disease_categories()
+            selected_dis_category = st.selectbox(
+                "Kategori Filtresi:",
+                ["Tümü"] + disease_categories,
+                key="dis_cat_filter"
+            )
+            
+            if selected_dis_category == "Tümü":
+                available_diseases = dynamic_calc.get_all_diseases()
+            else:
+                available_diseases = dynamic_calc.get_diseases_by_category(selected_dis_category)
+            
+            disease_name_to_key = {f"{d['name_tr']} (+{d['base_eaa']} yıl)": d['key'] for d in available_diseases}
+            
+            add_disease = st.selectbox(
+                "Hastalık Ekle:",
+                ["-- Seçin --"] + list(disease_name_to_key.keys()),
+                key="add_dis_select"
+            )
+            
+            col_add, col_clear = st.columns(2)
+            with col_add:
+                if st.button("➕ Hastalık Ekle", key="add_dis_btn", use_container_width=True):
+                    if add_disease != "-- Seçin --":
+                        dis_key = disease_name_to_key[add_disease]
+                        if dis_key not in st.session_state.selected_diseases:
+                            st.session_state.selected_diseases.append(dis_key)
+                            st.rerun()
+            with col_clear:
+                if st.button("🗑️ Tümünü Temizle", key="clear_dis_btn", use_container_width=True):
+                    st.session_state.selected_diseases = []
+                    st.rerun()
+            
+            if st.session_state.selected_diseases:
+                st.markdown("**Seçili Hastalıklar:**")
+                for dis_key in st.session_state.selected_diseases:
+                    if dis_key in DYNAMIC_DISEASE_DB:
+                        dis = DYNAMIC_DISEASE_DB[dis_key]
+                        col1, col2 = st.columns([4, 1])
+                        with col1:
+                            st.write(f"• {dis.name_tr} (+{dis.base_eaa} yıl)")
+                        with col2:
+                            if st.button("❌", key=f"remove_dis_{dis_key}"):
+                                st.session_state.selected_diseases.remove(dis_key)
+                                st.rerun()
+            else:
+                st.info("Henüz hastalık seçilmedi. Yukarıdan hastalık ekleyin.")
+        
+        st.markdown("---")
+        
+        if st.session_state.selected_substances or st.session_state.selected_diseases:
+            st.markdown("## 📊 Analiz Sonuçları")
+            
+            result = dynamic_calc.calculate_full_combination(
+                st.session_state.selected_substances,
+                st.session_state.selected_diseases
+            )
+            
+            st.markdown(f"""
+            <div style="
+                background: linear-gradient(135deg, {result['risk_color']}22, {result['risk_color']}11);
+                border: 2px solid {result['risk_color']};
+                border-radius: 10px;
+                padding: 20px;
+                margin: 10px 0;
+                text-align: center;
+            ">
+                <h2 style="color: {result['risk_color']}; margin: 0;">
+                    TOPLAM EAA: +{result['total_eaa']} YIL
+                </h2>
+                <h3 style="color: {result['risk_color']}; margin: 10px 0 0 0;">
+                    Risk Seviyesi: {result['risk_level']}
+                </h3>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            col1, col2, col3, col4, col5 = st.columns(5)
             with col1:
-                st.metric("Madde EAA", f"+{result['substance_eaa']} yil")
+                st.metric("Madde EAA", f"+{result['substance_eaa']} yıl")
             with col2:
-                st.metric("Hastalik EAA", f"+{result['disease_eaa']} yil")
+                st.metric("Hastalık EAA", f"+{result['disease_eaa']} yıl")
             with col3:
-                st.metric("Sinerji Bonusu", f"+{result['synergy_bonus']} yil", 
-                         delta="Etkilesim etkisi" if result['synergy_bonus'] > 0 else None)
+                st.metric("Sinerji Bonusu", f"+{result['synergy_bonus']} yıl")
             with col4:
-                delta_color = "inverse" if result['total_eaa'] > 10 else "normal"
-                st.metric("TOPLAM EAA", f"+{result['total_eaa']} yil")
+                st.metric("Karmaşıklık Bonusu", f"+{result['complexity_bonus']} yıl")
+            with col5:
+                st.metric("Tespit Edilen Sinerji", result['num_synergies_found'])
             
-            if result['risk_level']:
-                risk_colors = {
-                    'Cok Yuksek': '🔴',
-                    'Yuksek': '🟠',
-                    'Orta-Yuksek': '🟡',
-                    'Orta': '🟢',
-                    'Dusuk-Orta': '🔵'
-                }
-                risk_icon = risk_colors.get(result['risk_level'], '⚪')
-                st.markdown(f"### {risk_icon} Risk Seviyesi: **{result['risk_level']}**")
-            
-            if result['warning_messages']:
-                for warning in result['warning_messages']:
-                    st.warning(warning)
-            
-            if result['synergies']:
-                st.markdown("#### Tespit Edilen Sinerjik Etkilesimler")
-                for syn in result['synergies']:
-                    sub_name = SUBSTANCE_EAA_DATABASE[syn['substance']].substance_name if syn['substance'] in SUBSTANCE_EAA_DATABASE else syn['substance']
-                    with st.expander(f"{sub_name} + {syn['disease']} (x{syn['multiplier']})"):
-                        st.markdown(f"""
-                        **Sinerjik Carpan:** x{syn['multiplier']}
-                        
-                        **Ek EAA:** +{syn['bonus_eaa']} yil
-                        
-                        **Mekanizma:** {syn['mechanism']}
-                        
-                        **Kanit Duzeyi:** {syn['evidence']}
-                        
-                        **Referans:** {syn['reference']}
-                        """)
+            if result['warnings']:
+                st.markdown("### ⚠️ Klinik Uyarılar")
+                for warning in result['warnings']:
+                    st.error(warning)
             
             fig = go.Figure(go.Waterfall(
                 name="EAA",
                 orientation="v",
-                measure=["relative", "relative", "relative", "total"],
-                x=["Madde EAA", "Hastalik EAA", "Sinerji Bonusu", "TOPLAM"],
-                y=[result['substance_eaa'], result['disease_eaa'], result['synergy_bonus'], result['total_eaa']],
-                text=[f"+{result['substance_eaa']}", f"+{result['disease_eaa']}", f"+{result['synergy_bonus']}", f"+{result['total_eaa']}"],
+                measure=["relative", "relative", "relative", "relative", "total"],
+                x=["Madde EAA", "Hastalık EAA", "Sinerji Bonusu", "Karmaşıklık", "TOPLAM"],
+                y=[result['substance_eaa'], result['disease_eaa'], result['synergy_bonus'], 
+                   result['complexity_bonus'], result['total_eaa']],
+                text=[f"+{result['substance_eaa']}", f"+{result['disease_eaa']}", 
+                      f"+{result['synergy_bonus']}", f"+{result['complexity_bonus']}", 
+                      f"+{result['total_eaa']}"],
                 connector={"line": {"color": "rgb(63, 63, 63)"}},
                 increasing={"marker": {"color": "#CD853F"}},
                 decreasing={"marker": {"color": "#8B4513"}},
-                totals={"marker": {"color": "#D2691E"}}
+                totals={"marker": {"color": result['risk_color']}}
             ))
             fig.update_layout(
-                title="Kumulatif EAA Bilesenler",
-                yaxis_title="EAA (yil)",
+                title="Kümülatif EAA Bileşenleri",
+                yaxis_title="EAA (yıl)",
                 template="plotly_white",
-                showlegend=False
+                showlegend=False,
+                height=400
             )
             st.plotly_chart(fig, use_container_width=True)
             
-            if result['substances'] or result['diseases']:
-                st.markdown("#### Detayli Breakdown")
+            if result['synergies']:
+                st.markdown("### ⚡ Tespit Edilen Sinerjik Etkileşimler")
                 
-                col_x, col_y = st.columns(2)
+                synergy_df = pd.DataFrame([{
+                    'Tür': s['type'],
+                    'Bileşen 1': s['name1'],
+                    'Bileşen 2': s['name2'],
+                    'Çarpan': f"x{s['multiplier']}",
+                    'Bonus EAA': f"+{s['bonus']:.1f} yıl",
+                    'Kanıt': s['evidence']
+                } for s in result['synergies']])
+                st.dataframe(synergy_df, use_container_width=True)
                 
-                with col_x:
-                    if result['substances']:
-                        st.markdown("**Madde Etkileri:**")
-                        for sub in result['substances']:
-                            st.write(f"- {sub['name']}: +{sub['eaa']} yil")
-                
-                with col_y:
-                    if result['diseases']:
-                        st.markdown("**Hastalik Etkileri:**")
-                        for dis in result['diseases']:
-                            dis_name = [name for name, key in disease_options.items() if key == dis['key']]
-                            dis_name = dis_name[0] if dis_name else dis['key']
-                            st.write(f"- {dis_name}: +{dis['eaa']} yil")
+                for syn in result['synergies']:
+                    with st.expander(f"🔗 {syn['name1']} + {syn['name2']} (x{syn['multiplier']})"):
+                        st.markdown(f"""
+                        **Etkileşim Türü:** {syn['type']}
+                        
+                        **Sinerjik Çarpan:** x{syn['multiplier']}
+                        
+                        **Ek EAA:** +{syn['bonus']:.1f} yıl
+                        
+                        **Mekanizma:** {syn['mechanism']}
+                        
+                        **Kanıt Düzeyi:** {syn['evidence']}
+                        """)
+            
+            col_x, col_y = st.columns(2)
+            with col_x:
+                if result['substances']:
+                    st.markdown("### 💊 Seçili Maddeler Detayı")
+                    for sub in result['substances']:
+                        with st.expander(f"{sub['name_tr']} (+{sub['eaa']} yıl)"):
+                            st.write(f"**Kategori:** {sub['category']}")
+                            st.write(f"**Mekanizma:** {sub['mechanism']}")
+            
+            with col_y:
+                if result['diseases']:
+                    st.markdown("### 🏥 Seçili Hastalıklar Detayı")
+                    for dis in result['diseases']:
+                        with st.expander(f"{dis['name_tr']} (+{dis['eaa']} yıl)"):
+                            st.write(f"**Kategori:** {dis['category']}")
+                            st.write(f"**Mekanizma:** {dis['mechanism']}")
         else:
-            st.info("Hesaplama icin en az bir madde veya hastalik secin.")
+            st.info("📌 Hesaplama için en az bir madde veya hastalık ekleyin. Ekle/Çıkar butonlarını kullanın.")
     
     with tabs[1]:
-        st.markdown("### Madde Kullanimi ve EAA Etkileri")
+        st.markdown("### 💊 Genişletilmiş Madde Veritabanı (44 Tür)")
+        st.markdown("""
+        **Kapsamlı bağımlılık yapıcı madde veritabanı.** Her madde için:
+        - Temel EAA etkisi ve güven aralığı
+        - Kategorilere göre gruplandırma
+        - Etkilenen organ sistemleri
+        - Bilimsel referanslar
+        """)
         
-        substance_df = synergy_calc.get_substance_summary_table()
-        st.dataframe(substance_df, use_container_width=True, height=400)
+        substance_data = []
+        for key, sub in DYNAMIC_SUBSTANCE_DB.items():
+            substance_data.append({
+                'Anahtar': key,
+                'Madde': sub.name_tr,
+                'İngilizce': sub.name_en,
+                'Kategori': sub.category,
+                'EAA (yıl)': sub.base_eaa,
+                '95% GA Alt': sub.ci_lower,
+                '95% GA Üst': sub.ci_upper,
+                'Saat': sub.clock_type,
+                'Mekanizma': sub.mechanism[:50] + '...' if len(sub.mechanism) > 50 else sub.mechanism,
+                'Örneklem': sub.sample_size
+            })
+        
+        substance_df = pd.DataFrame(substance_data)
+        
+        category_filter = st.selectbox(
+            "Kategori Filtresi:",
+            ["Tümü"] + list(substance_df['Kategori'].unique()),
+            key="sub_db_filter"
+        )
+        
+        if category_filter != "Tümü":
+            display_df = substance_df[substance_df['Kategori'] == category_filter]
+        else:
+            display_df = substance_df
+        
+        st.dataframe(display_df, use_container_width=True, height=400)
         
         fig = px.bar(
-            substance_df,
-            x="EAA (yil)",
-            y="Madde",
+            display_df.sort_values('EAA (yıl)', ascending=True),
+            x='EAA (yıl)',
+            y='Madde',
             orientation='h',
-            color="Tur",
-            title="Madde Turlerine Gore EAA Etkileri",
-            error_x=substance_df["95% GA Ust"] - substance_df["EAA (yil)"]
+            color='Kategori',
+            title="Madde Türlerine Göre EAA Etkileri",
+            error_x=display_df['95% GA Üst'] - display_df['EAA (yıl)']
         )
         fig.update_layout(
             template="plotly_white",
-            height=500,
+            height=max(400, len(display_df) * 25),
             yaxis={'categoryorder': 'total ascending'}
         )
         st.plotly_chart(fig, use_container_width=True)
     
     with tabs[2]:
-        st.markdown("### Tum Sinerjik Etkilesimler")
+        st.markdown("### 🏥 Genişletilmiş Hastalık Veritabanı (56 Tür)")
         st.markdown("""
-        Asagidaki tablo, bilimsel literaturde kanitlanmis madde-hastalik sinerjik 
-        etkilesimlerini gostermektedir. Sinerjik carpan, kombinasyonun basit toplamdan
-        ne kadar fazla etki yaptigini gosterir.
+        **Kapsamlı kronik hastalık veritabanı.** Her hastalık için:
+        - Temel EAA etkisi ve güven aralığı
+        - Kategorilere göre gruplandırma
+        - Etkilenen organ sistemleri
+        - Prevalans bilgisi
         """)
         
-        synergy_df = synergy_calc.get_synergy_summary_table()
-        st.dataframe(synergy_df, use_container_width=True, height=500)
+        disease_data = []
+        for key, dis in DYNAMIC_DISEASE_DB.items():
+            disease_data.append({
+                'Anahtar': key,
+                'Hastalık': dis.name_tr,
+                'İngilizce': dis.name_en,
+                'Kategori': dis.category,
+                'EAA (yıl)': dis.base_eaa,
+                '95% GA Alt': dis.ci_lower,
+                '95% GA Üst': dis.ci_upper,
+                'Mekanizma': dis.mechanism[:50] + '...' if len(dis.mechanism) > 50 else dis.mechanism,
+                'Prevalans (%)': dis.prevalence
+            })
         
-        fig = px.scatter(
-            synergy_df,
-            x="Madde",
-            y="Hastalik",
-            size="Sinerjik Carpan",
-            color="Kanit Duzeyi",
-            hover_data=["Mekanizma"],
-            title="Sinerjik Etkilesim Haritasi"
+        disease_df = pd.DataFrame(disease_data)
+        
+        dis_category_filter = st.selectbox(
+            "Kategori Filtresi:",
+            ["Tümü"] + list(disease_df['Kategori'].unique()),
+            key="dis_db_filter"
         )
-        fig.update_layout(template="plotly_white", height=500)
+        
+        if dis_category_filter != "Tümü":
+            display_dis_df = disease_df[disease_df['Kategori'] == dis_category_filter]
+        else:
+            display_dis_df = disease_df
+        
+        st.dataframe(display_dis_df, use_container_width=True, height=400)
+        
+        fig = px.bar(
+            display_dis_df.sort_values('EAA (yıl)', ascending=True),
+            x='EAA (yıl)',
+            y='Hastalık',
+            orientation='h',
+            color='Kategori',
+            title="Hastalık Türlerine Göre EAA Etkileri",
+            error_x=display_dis_df['95% GA Üst'] - display_dis_df['EAA (yıl)']
+        )
+        fig.update_layout(
+            template="plotly_white",
+            height=max(400, len(display_dis_df) * 20),
+            yaxis={'categoryorder': 'total ascending'}
+        )
         st.plotly_chart(fig, use_container_width=True)
     
     with tabs[3]:
-        st.markdown("### Yuksek Riskli Kombinasyonlar")
-        st.markdown("""
-        Asagidaki kombinasyonlar ozellikle tehlikelidir (sinerjik carpan >= 1.8).
-        Bu kombinasyonlarda epigenetik yaslanma dramatik sekilde hizlanir.
+        st.markdown("### ⚡ Madde-Madde Sinerjik Etkileşimleri")
+        st.markdown(f"""
+        **{len(SUBSTANCE_SUBSTANCE_SYNERGY)} tanımlanmış madde-madde sinerjisi.**
+        İki veya daha fazla madde birlikte kullanıldığında ortaya çıkan tehlikeli etkileşimler.
         """)
         
-        high_risk_combos = synergy_calc.get_high_risk_combinations(min_multiplier=1.8)
+        sub_sub_data = []
+        for (key1, key2), syn in SUBSTANCE_SUBSTANCE_SYNERGY.items():
+            sub1 = DYNAMIC_SUBSTANCE_DB.get(key1)
+            sub2 = DYNAMIC_SUBSTANCE_DB.get(key2)
+            if sub1 and sub2:
+                sub_sub_data.append({
+                    'Madde 1': sub1.name_tr,
+                    'Madde 2': sub2.name_tr,
+                    'Çarpan': syn.multiplier,
+                    'Kanıt': syn.evidence_level,
+                    'Uyarı': syn.clinical_warning,
+                    'Mekanizma': syn.mechanism
+                })
         
-        for combo in high_risk_combos:
-            with st.expander(f"⚠️ {combo['substance']} + {combo['disease']} (x{combo['multiplier']})"):
+        sub_sub_df = pd.DataFrame(sub_sub_data)
+        st.dataframe(sub_sub_df, use_container_width=True, height=400)
+        
+        st.markdown("#### 🔴 En Tehlikeli Madde Kombinasyonları")
+        high_risk_sub = sorted(sub_sub_data, key=lambda x: x['Çarpan'], reverse=True)[:10]
+        for combo in high_risk_sub:
+            with st.expander(f"⚠️ {combo['Madde 1']} + {combo['Madde 2']} (x{combo['Çarpan']})"):
+                st.error(combo['Uyarı'])
                 st.markdown(f"""
-                **Sinerjik Carpan:** x{combo['multiplier']}
+                **Sinerjik Çarpan:** x{combo['Çarpan']}
                 
-                **Mekanizma:** {combo['mechanism']}
+                **Mekanizma:** {combo['Mekanizma']}
                 
-                **Kanit Duzeyi:** {combo['evidence']}
-                
-                ---
-                
-                **Klinik Onemi:**
-                Bu kombinasyon, epigenetik yaslanmayi tek basina her bir faktorun
-                toplaminin {combo['multiplier']} kati kadar hizlandirir.
+                **Kanıt Düzeyi:** {combo['Kanıt']}
                 """)
     
     with tabs[4]:
-        st.markdown("### Bilimsel Kanitlar ve Referanslar")
+        st.markdown("### 🔗 Hastalık-Hastalık Sinerjik Etkileşimleri")
+        st.markdown(f"""
+        **{len(DISEASE_DISEASE_SYNERGY)} tanımlanmış hastalık-hastalık sinerjisi.**
+        Komorbid durumların birlikte var olduğunda yarattığı ek riskler.
+        """)
+        
+        dis_dis_data = []
+        for (key1, key2), syn in DISEASE_DISEASE_SYNERGY.items():
+            dis1 = DYNAMIC_DISEASE_DB.get(key1)
+            dis2 = DYNAMIC_DISEASE_DB.get(key2)
+            if dis1 and dis2:
+                dis_dis_data.append({
+                    'Hastalık 1': dis1.name_tr,
+                    'Hastalık 2': dis2.name_tr,
+                    'Çarpan': syn.multiplier,
+                    'Kanıt': syn.evidence_level,
+                    'Uyarı': syn.clinical_warning,
+                    'Mekanizma': syn.mechanism
+                })
+        
+        dis_dis_df = pd.DataFrame(dis_dis_data)
+        st.dataframe(dis_dis_df, use_container_width=True, height=400)
+        
+        st.markdown("#### 🔴 En Yüksek Riskli Hastalık Kombinasyonları")
+        high_risk_dis = sorted(dis_dis_data, key=lambda x: x['Çarpan'], reverse=True)[:10]
+        for combo in high_risk_dis:
+            with st.expander(f"⚠️ {combo['Hastalık 1']} + {combo['Hastalık 2']} (x{combo['Çarpan']})"):
+                st.warning(combo['Uyarı'])
+                st.markdown(f"""
+                **Sinerjik Çarpan:** x{combo['Çarpan']}
+                
+                **Mekanizma:** {combo['Mekanizma']}
+                
+                **Kanıt Düzeyi:** {combo['Kanıt']}
+                """)
+    
+    with tabs[5]:
+        st.markdown("### ⚠️ Tüm Yüksek Riskli Kombinasyonlar")
+        st.markdown("""
+        **Çarpan >= 2.0 olan tüm tehlikeli kombinasyonlar.**
+        Bu kombinasyonlarda epigenetik yaşlanma dramatik şekilde hızlanır.
+        """)
+        
+        all_high_risk = []
+        
+        for (key1, key2), syn in SUBSTANCE_SUBSTANCE_SYNERGY.items():
+            if syn.multiplier >= 2.0:
+                sub1 = DYNAMIC_SUBSTANCE_DB.get(key1)
+                sub2 = DYNAMIC_SUBSTANCE_DB.get(key2)
+                if sub1 and sub2:
+                    all_high_risk.append({
+                        'Tür': '💊 Madde-Madde',
+                        'Bileşen 1': sub1.name_tr,
+                        'Bileşen 2': sub2.name_tr,
+                        'Çarpan': syn.multiplier,
+                        'Uyarı': syn.clinical_warning,
+                        'Mekanizma': syn.mechanism
+                    })
+        
+        for (key1, key2), syn in DISEASE_DISEASE_SYNERGY.items():
+            if syn.multiplier >= 2.0:
+                dis1 = DYNAMIC_DISEASE_DB.get(key1)
+                dis2 = DYNAMIC_DISEASE_DB.get(key2)
+                if dis1 and dis2:
+                    all_high_risk.append({
+                        'Tür': '🏥 Hastalık-Hastalık',
+                        'Bileşen 1': dis1.name_tr,
+                        'Bileşen 2': dis2.name_tr,
+                        'Çarpan': syn.multiplier,
+                        'Uyarı': syn.clinical_warning,
+                        'Mekanizma': syn.mechanism
+                    })
+        
+        for (key1, key2), syn in DYNAMIC_CROSS_SYNERGY.items():
+            if syn.multiplier >= 2.0:
+                sub = DYNAMIC_SUBSTANCE_DB.get(key1)
+                dis = DYNAMIC_DISEASE_DB.get(key2)
+                if sub and dis:
+                    all_high_risk.append({
+                        'Tür': '🔗 Madde-Hastalık',
+                        'Bileşen 1': sub.name_tr,
+                        'Bileşen 2': dis.name_tr,
+                        'Çarpan': syn.multiplier,
+                        'Uyarı': syn.clinical_warning,
+                        'Mekanizma': syn.mechanism
+                    })
+        
+        all_high_risk_sorted = sorted(all_high_risk, key=lambda x: x['Çarpan'], reverse=True)
+        
+        st.metric("Toplam Kritik Kombinasyon", len(all_high_risk_sorted))
+        
+        high_risk_df = pd.DataFrame(all_high_risk_sorted)
+        st.dataframe(high_risk_df, use_container_width=True, height=400)
+        
+        for combo in all_high_risk_sorted[:15]:
+            with st.expander(f"🔴 {combo['Bileşen 1']} + {combo['Bileşen 2']} (x{combo['Çarpan']})"):
+                st.error(combo['Uyarı'])
+                st.markdown(f"""
+                **Etkileşim Türü:** {combo['Tür']}
+                
+                **Sinerjik Çarpan:** x{combo['Çarpan']}
+                
+                **Mekanizma:** {combo['Mekanizma']}
+                """)
+    
+    with tabs[6]:
+        st.markdown("### 📚 Bilimsel Kanıtlar ve Referanslar")
         
         st.markdown("""
         #### Sinerjik Etkilerin Biyolojik Temeli
