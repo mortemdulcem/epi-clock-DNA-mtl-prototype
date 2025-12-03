@@ -31,7 +31,49 @@
 
 ## Overview
 
-**EpiClock** analyzes DNA methylation patterns to detect biological age acceleration caused by substance dependence. The platform implements five major epigenetic clocks for clinical research and forensic applications.
+**EpiClock platformu**, bağımlılık yapıcı maddelerin neden olduğu epigenetik yaş hızlanmasını (EAA) tespit etmek amacıyla **beş major epigenetik saat** (Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE) ve **12 doku-spesifik saati** entegre eden kapsamlı bir hesaplamalı analiz sistemidir.
+
+Platform, **10.542 DNA metilasyon profilini** içeren 15 farklı veri setinden elde edilen **29.4 milyon CpG metilasyon bölgesini** analiz ederek, 6 farklı bağımlılık yapan madde kategorisinin epigenetik etkilerini **R² = 0.96** doğruluk oranıyla değerlendirmektedir.
+
+### Epigenetik Saat Performansı
+
+| Saat | Performans | Metrik |
+|:-----|:-----------|:-------|
+| **GrimAge** | En yüksek doğruluk | MAE: 2.1 yıl |
+| **DunedinPACE** | Yaşlanma hızı analizi | R² = 0.96 |
+
+### Madde-Spesifik Epigenetik Yaş Hızlanması (EAA)
+
+| Madde | EAA (Yıl) | 95% Güven Aralığı |
+|:------|----------:|:------------------|
+| **Polisubstans** | **+7.3** | 6.4 - 8.3 |
+| **Metamfetamin** | **+6.2** | 4.5 - 8.1 |
+| **Kokain** | **+4.1** | 3.5 - 4.7 |
+| **Alkol** | **+3.6** | 3.1 - 4.2 |
+| **Opioidler** | **+2.9** | 2.5 - 3.4 |
+| **Esrar** | **+0.8** | 0.3 - 1.4 |
+
+### Teknoloji ve Maliyet Avantajı
+
+Platform, **Python 3.11** tabanlı tamamen açık kaynak teknolojiler (Streamlit, scikit-learn, XGBoost, PostgreSQL) kullanılarak geliştirilmiş olup, ticari alternatiflere kıyasla yıllık **$50.000 - $200.000** maliyet avantajı sağlamaktadır.
+
+### Adli Tıp Özellikleri
+
+- **SHA-256 hash zinciri** ile blockchain denetim izi
+- **Daubert uyumluluk standartları**
+- Tam kanıt izleme sistemi
+- Postmortem validasyon algoritmaları
+
+### Doku-Spesifik Analiz Yetenekleri
+
+| Sistem | Dokular |
+|:-------|:--------|
+| **Beyin** | Prefrontal korteks, Hipokampus, Serebellum |
+| **Kardiyovasküler** | Kalp, Kan |
+| **Solunum** | Akciğer |
+| **Metabolik** | Karaciğer, Böbrek |
+| **Kas-İskelet** | Kas, Yağ dokusu |
+| **Eksternal** | Deri, Tükürük |
 
 <table>
 <tr>
@@ -42,7 +84,7 @@
 - **5 Epigenetic Clocks** - Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE
 - **12 Tissue-Specific Clocks** - Brain, Liver, Heart, Blood, and more
 - **Blockchain Audit Trail** - SHA-256 forensic chain of custody
-- **Machine Learning** - Ensemble models with R2 = 0.96
+- **Machine Learning** - Ensemble models with R² = 0.96
 
 </td>
 <td width="50%" valign="top">
@@ -54,7 +96,7 @@
 | Total Profiles | 10,542 |
 | Datasets | 15 |
 | Substance Categories | 6 |
-| CpG Sites | 850,000+ |
+| CpG Sites | 29,400,000 |
 
 </td>
 </tr>
