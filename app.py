@@ -221,7 +221,7 @@ from modules.chronic_diseases import (
 from modules.synergistic_effects import (
     SynergisticEffectCalculator,
     get_synergistic_calculator,
-    get_substance_count,
+    get_substance_count as get_synergy_substance_count,
     get_synergy_count,
     get_substance_options,
     SUBSTANCE_EAA_DATABASE,
@@ -1349,7 +1349,7 @@ def render_synergistic_effects(components):
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Madde Turu", get_substance_count())
+        st.metric("Madde Turu", get_synergy_substance_count())
     with col2:
         st.metric("Kronik Hastalik", get_disease_count())
     with col3:
