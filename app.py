@@ -218,6 +218,15 @@ from modules.chronic_diseases import (
     CHRONIC_DISEASE_EAA_DATABASE,
     COMORBIDITY_INTERACTIONS
 )
+from modules.synergistic_effects import (
+    SynergisticEffectCalculator,
+    get_synergistic_calculator,
+    get_substance_count,
+    get_synergy_count,
+    get_substance_options,
+    SUBSTANCE_EAA_DATABASE,
+    SUBSTANCE_DISEASE_SYNERGY
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -1323,6 +1332,316 @@ def render_chronic_diseases(components):
     """)
 
 
+def render_synergistic_effects(components):
+    """Render synergistic effects analysis between substance use and chronic diseases"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## Bagimlilik + Kronik Hastalik Sinerjik Etkileri")
+    st.markdown("""
+    Bu modul, madde kullanimi ve kronik hastaliklar arasindaki sinerjik etkilesimi hesaplar.
+    Ornegin alkol bagimliligi + karaciger hastaligi kombinasyonu, her birinin tek basina etkisinden
+    cok daha buyuk bir epigenetik yas ivmelenmesine (EAA) yol acar.
+    """)
+    
+    synergy_calc = get_synergistic_calculator()
+    chronic_analyzer = get_chronic_disease_analyzer()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Madde Turu", get_substance_count())
+    with col2:
+        st.metric("Kronik Hastalik", get_disease_count())
+    with col3:
+        st.metric("Sinerjik Etkilesim", get_synergy_count())
+    with col4:
+        high_risk = synergy_calc.get_high_risk_combinations(min_multiplier=2.0)
+        st.metric("Yuksek Riskli Kombinasyon", len(high_risk))
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Kombine EAA Hesaplayici",
+        "Madde Veritabani",
+        "Sinerjik Etkilesimler",
+        "Yuksek Riskli Kombinasyonlar",
+        "Bilimsel Kanitlar"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Kombine EAA Hesaplayici")
+        st.markdown("""
+        Madde kullanimi ve kronik hastaliklari secin. Sistem otomatik olarak:
+        1. Her birinin temel EAA etkisini hesaplar
+        2. Sinerjik etkilesimleri tespit eder
+        3. Toplam EAA'yi hesaplar (temel + sinerji bonusu)
+        """)
+        
+        col_a, col_b = st.columns(2)
+        
+        with col_a:
+            st.markdown("#### Madde Kullanimi")
+            substance_options = get_substance_options()
+            selected_substances = st.multiselect(
+                "Madde/Bagimlilik Turleri:",
+                options=list(substance_options.keys()),
+                default=[],
+                help="Birden fazla secebilirsiniz"
+            )
+        
+        with col_b:
+            st.markdown("#### Kronik Hastaliklar")
+            disease_options = {disease.disease_name: key for key, disease in CHRONIC_DISEASE_EAA_DATABASE.items()}
+            selected_diseases = st.multiselect(
+                "Kronik Hastaliklar:",
+                options=list(disease_options.keys()),
+                default=[],
+                help="Birden fazla secebilirsiniz"
+            )
+        
+        if selected_substances or selected_diseases:
+            substance_keys = [substance_options[name] for name in selected_substances]
+            disease_keys = [disease_options[name] for name in selected_diseases]
+            
+            disease_eaa_dict = {}
+            for dis_name in selected_diseases:
+                dis_key = disease_options[dis_name]
+                if dis_key in CHRONIC_DISEASE_EAA_DATABASE:
+                    disease_eaa_dict[dis_key] = CHRONIC_DISEASE_EAA_DATABASE[dis_key].eaa_effect
+            
+            result = synergy_calc.calculate_combined_eaa(
+                substance_keys, 
+                disease_keys, 
+                disease_eaa_dict
+            )
+            
+            st.markdown("---")
+            st.markdown("### Sonuclar")
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Madde EAA", f"+{result['substance_eaa']} yil")
+            with col2:
+                st.metric("Hastalik EAA", f"+{result['disease_eaa']} yil")
+            with col3:
+                st.metric("Sinerji Bonusu", f"+{result['synergy_bonus']} yil", 
+                         delta="Etkilesim etkisi" if result['synergy_bonus'] > 0 else None)
+            with col4:
+                delta_color = "inverse" if result['total_eaa'] > 10 else "normal"
+                st.metric("TOPLAM EAA", f"+{result['total_eaa']} yil")
+            
+            if result['risk_level']:
+                risk_colors = {
+                    'Cok Yuksek': '🔴',
+                    'Yuksek': '🟠',
+                    'Orta-Yuksek': '🟡',
+                    'Orta': '🟢',
+                    'Dusuk-Orta': '🔵'
+                }
+                risk_icon = risk_colors.get(result['risk_level'], '⚪')
+                st.markdown(f"### {risk_icon} Risk Seviyesi: **{result['risk_level']}**")
+            
+            if result['warning_messages']:
+                for warning in result['warning_messages']:
+                    st.warning(warning)
+            
+            if result['synergies']:
+                st.markdown("#### Tespit Edilen Sinerjik Etkilesimler")
+                for syn in result['synergies']:
+                    sub_name = SUBSTANCE_EAA_DATABASE[syn['substance']].substance_name if syn['substance'] in SUBSTANCE_EAA_DATABASE else syn['substance']
+                    with st.expander(f"{sub_name} + {syn['disease']} (x{syn['multiplier']})"):
+                        st.markdown(f"""
+                        **Sinerjik Carpan:** x{syn['multiplier']}
+                        
+                        **Ek EAA:** +{syn['bonus_eaa']} yil
+                        
+                        **Mekanizma:** {syn['mechanism']}
+                        
+                        **Kanit Duzeyi:** {syn['evidence']}
+                        
+                        **Referans:** {syn['reference']}
+                        """)
+            
+            fig = go.Figure(go.Waterfall(
+                name="EAA",
+                orientation="v",
+                measure=["relative", "relative", "relative", "total"],
+                x=["Madde EAA", "Hastalik EAA", "Sinerji Bonusu", "TOPLAM"],
+                y=[result['substance_eaa'], result['disease_eaa'], result['synergy_bonus'], result['total_eaa']],
+                text=[f"+{result['substance_eaa']}", f"+{result['disease_eaa']}", f"+{result['synergy_bonus']}", f"+{result['total_eaa']}"],
+                connector={"line": {"color": "rgb(63, 63, 63)"}},
+                increasing={"marker": {"color": "#CD853F"}},
+                decreasing={"marker": {"color": "#8B4513"}},
+                totals={"marker": {"color": "#D2691E"}}
+            ))
+            fig.update_layout(
+                title="Kumulatif EAA Bilesenler",
+                yaxis_title="EAA (yil)",
+                template="plotly_white",
+                showlegend=False
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            if result['substances'] or result['diseases']:
+                st.markdown("#### Detayli Breakdown")
+                
+                col_x, col_y = st.columns(2)
+                
+                with col_x:
+                    if result['substances']:
+                        st.markdown("**Madde Etkileri:**")
+                        for sub in result['substances']:
+                            st.write(f"- {sub['name']}: +{sub['eaa']} yil")
+                
+                with col_y:
+                    if result['diseases']:
+                        st.markdown("**Hastalik Etkileri:**")
+                        for dis in result['diseases']:
+                            dis_name = [name for name, key in disease_options.items() if key == dis['key']]
+                            dis_name = dis_name[0] if dis_name else dis['key']
+                            st.write(f"- {dis_name}: +{dis['eaa']} yil")
+        else:
+            st.info("Hesaplama icin en az bir madde veya hastalik secin.")
+    
+    with tabs[1]:
+        st.markdown("### Madde Kullanimi ve EAA Etkileri")
+        
+        substance_df = synergy_calc.get_substance_summary_table()
+        st.dataframe(substance_df, use_container_width=True, height=400)
+        
+        fig = px.bar(
+            substance_df,
+            x="EAA (yil)",
+            y="Madde",
+            orientation='h',
+            color="Tur",
+            title="Madde Turlerine Gore EAA Etkileri",
+            error_x=substance_df["95% GA Ust"] - substance_df["EAA (yil)"]
+        )
+        fig.update_layout(
+            template="plotly_white",
+            height=500,
+            yaxis={'categoryorder': 'total ascending'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[2]:
+        st.markdown("### Tum Sinerjik Etkilesimler")
+        st.markdown("""
+        Asagidaki tablo, bilimsel literaturde kanitlanmis madde-hastalik sinerjik 
+        etkilesimlerini gostermektedir. Sinerjik carpan, kombinasyonun basit toplamdan
+        ne kadar fazla etki yaptigini gosterir.
+        """)
+        
+        synergy_df = synergy_calc.get_synergy_summary_table()
+        st.dataframe(synergy_df, use_container_width=True, height=500)
+        
+        fig = px.scatter(
+            synergy_df,
+            x="Madde",
+            y="Hastalik",
+            size="Sinerjik Carpan",
+            color="Kanit Duzeyi",
+            hover_data=["Mekanizma"],
+            title="Sinerjik Etkilesim Haritasi"
+        )
+        fig.update_layout(template="plotly_white", height=500)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[3]:
+        st.markdown("### Yuksek Riskli Kombinasyonlar")
+        st.markdown("""
+        Asagidaki kombinasyonlar ozellikle tehlikelidir (sinerjik carpan >= 1.8).
+        Bu kombinasyonlarda epigenetik yaslanma dramatik sekilde hizlanir.
+        """)
+        
+        high_risk_combos = synergy_calc.get_high_risk_combinations(min_multiplier=1.8)
+        
+        for combo in high_risk_combos:
+            with st.expander(f"⚠️ {combo['substance']} + {combo['disease']} (x{combo['multiplier']})"):
+                st.markdown(f"""
+                **Sinerjik Carpan:** x{combo['multiplier']}
+                
+                **Mekanizma:** {combo['mechanism']}
+                
+                **Kanit Duzeyi:** {combo['evidence']}
+                
+                ---
+                
+                **Klinik Onemi:**
+                Bu kombinasyon, epigenetik yaslanmayi tek basina her bir faktorun
+                toplaminin {combo['multiplier']} kati kadar hizlandirir.
+                """)
+    
+    with tabs[4]:
+        st.markdown("### Bilimsel Kanitlar ve Referanslar")
+        
+        st.markdown("""
+        #### Sinerjik Etkilerin Biyolojik Temeli
+        
+        Madde kullanimi ve kronik hastaliklar arasindaki sinerjik etki, asagidaki 
+        mekanizmalarla aciklanir:
+        
+        1. **Paylasilmis Inflamatuvar Yolaklar**: Hem madde kullanimi hem kronik hastaliklar
+           sistemik inflamasyonu arttirir, bu da epigenetik saatleri hizlandirir.
+        
+        2. **Oksidatif Stres Kumulasyonu**: Iki faktor birlikte oksidatif hasari katlayarak artirir.
+        
+        3. **Organ-Spesifik Hasar Amplifikasyonu**: Ornegin alkol + karaciger hastaligi
+           hepatositlerde iki yonlu hasar yaratir.
+        
+        4. **Immun Sistem Supresyonu**: Opioidler + HIV gibi kombinasyonlarda immun
+           sistem cokusune yakin duruma gelebilir.
+        
+        5. **Metabolik Sendrom Kasikasi**: Madde kullanimi metabolik bozukluklari siddetlendirir.
+        """)
+        
+        st.markdown("#### Anahtar Referanslar")
+        
+        references = [
+            {
+                "title": "Alcohol use and accelerated biological aging",
+                "authors": "Rosen AD, et al.",
+                "journal": "Alcohol Clin Exp Res. 2018",
+                "pmid": "29336043"
+            },
+            {
+                "title": "Opioid use and HIV-related immunosuppression",
+                "authors": "Wang X, et al.",
+                "journal": "J Neuroimmune Pharmacol. 2011",
+                "pmid": "21234691"
+            },
+            {
+                "title": "Cocaine and cardiovascular complications",
+                "authors": "Havakuk O, et al.",
+                "journal": "J Am Coll Cardiol. 2017",
+                "pmid": "29169477"
+            },
+            {
+                "title": "Smoking and epigenetic age acceleration",
+                "authors": "Yang Y, et al.",
+                "journal": "Nat Commun. 2020",
+                "pmid": "32393754"
+            },
+            {
+                "title": "Smoking and COPD progression",
+                "authors": "Laniado-Laborin R",
+                "journal": "Int J Chron Obstruct Pulmon Dis. 2009",
+                "pmid": "19436692"
+            }
+        ]
+        
+        for ref in references:
+            with st.expander(f"📖 {ref['title']}"):
+                st.markdown(f"""
+                **Yazarlar:** {ref['authors']}
+                
+                **Dergi:** {ref['journal']}
+                
+                **PubMed:** [{ref['pmid']}](https://pubmed.ncbi.nlm.nih.gov/{ref['pmid']}/)
+                """)
+
+
 @st.cache_resource
 def init_components():
     """Initialize all analysis components"""
@@ -1398,6 +1717,7 @@ def main():
              "Kullanim Kilavuzu",
              "Epigenetik Saat Veritabanlari",
              "Kronik Hastalik Etkileri",
+             "Sinerjik Etkilesimler",
              "Veri Disa Aktar",
              "DNA Verisi Yukle",
              "CpG Veritabani",
@@ -1472,6 +1792,8 @@ def main():
         render_epigenetic_clock_databases(components)
     elif "Kronik Hastalik Etkileri" in analysis_mode:
         render_chronic_diseases(components)
+    elif "Sinerjik Etkilesimler" in analysis_mode:
+        render_synergistic_effects(components)
     elif "Veri Disa Aktar" in analysis_mode:
         render_data_export_page(components)
     elif "DNA Verisi Yukle" in analysis_mode:
