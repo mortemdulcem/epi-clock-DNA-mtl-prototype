@@ -209,6 +209,15 @@ from modules.epigenetic_clock_database import (
     get_total_cpg_count,
     get_clock_database_instance
 )
+from modules.chronic_diseases import (
+    ChronicDiseaseAnalyzer,
+    DiseaseCategory,
+    get_chronic_disease_analyzer,
+    get_disease_count,
+    get_category_list,
+    CHRONIC_DISEASE_EAA_DATABASE,
+    COMORBIDITY_INTERACTIONS
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -1016,6 +1025,304 @@ def render_epigenetic_clock_databases(components):
     st.dataframe(pd.DataFrame(comparison_data), use_container_width=True)
 
 
+def render_chronic_diseases(components):
+    """Render chronic diseases and epigenetic age acceleration analysis"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## Kronik Hastaliklar ve Epigenetik Yas Ivmelenmesi")
+    st.markdown("""
+    Bu modul, cesitli kronik hastaliklarin epigenetik yas uzerindeki etkilerini 
+    gostermektedir. Veriler hakemli bilimsel yayinlardan derlenmistir.
+    """)
+    
+    analyzer = get_chronic_disease_analyzer()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Toplam Hastalik", get_disease_count())
+    with col2:
+        st.metric("Kategori", len(get_category_list()))
+    with col3:
+        summary_df = analyzer.get_disease_summary_table()
+        st.metric("Max EAA", f"+{summary_df['EAA (yil)'].max()} yil")
+    with col4:
+        st.metric("Komorbidite Etkilesimi", len(COMORBIDITY_INTERACTIONS))
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Hastalik Listesi", 
+        "Kategori Analizi", 
+        "Komorbidite Hesaplayici",
+        "En Yuksek Etkiler",
+        "Tersine Cevrilebilirlik",
+        "Hastalik Ara"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Tum Kronik Hastaliklar ve EAA Etkileri")
+        
+        category_filter = st.selectbox(
+            "Kategori Filtrele:",
+            ["Tumu"] + get_category_list()
+        )
+        
+        if category_filter == "Tumu":
+            df = analyzer.get_disease_summary_table()
+        else:
+            category_enum = [cat for cat in DiseaseCategory if cat.value == category_filter][0]
+            diseases = analyzer.get_diseases_by_category(category_enum)
+            data = []
+            for key, disease in diseases.items():
+                data.append({
+                    "Hastalik": disease.disease_name,
+                    "Hastalik (EN)": disease.disease_name_en,
+                    "Kategori": disease.category.value,
+                    "EAA (yil)": disease.eaa_effect,
+                    "95% GA Alt": disease.ci_lower,
+                    "95% GA Ust": disease.ci_upper,
+                    "n": disease.sample_size,
+                    "Saat": disease.clock_type,
+                    "Tersine Cevrilebilirlik": disease.reversibility
+                })
+            df = pd.DataFrame(data).sort_values("EAA (yil)", ascending=False)
+        
+        st.dataframe(df, use_container_width=True, height=500)
+        
+        fig = px.bar(
+            df.head(15),
+            x="EAA (yil)",
+            y="Hastalik",
+            orientation='h',
+            color="Kategori",
+            title="Hastaliklara Gore EAA Etkileri",
+            error_x=df.head(15).apply(lambda row: row["95% GA Ust"] - row["EAA (yil)"], axis=1)
+        )
+        fig.update_layout(template="plotly_white", height=500, yaxis={'categoryorder':'total ascending'})
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[1]:
+        st.markdown("### Kategorilere Gore Analiz")
+        
+        cat_summary = analyzer.get_category_summary()
+        
+        col_a, col_b = st.columns(2)
+        
+        with col_a:
+            st.dataframe(cat_summary, use_container_width=True)
+        
+        with col_b:
+            fig = px.bar(
+                cat_summary,
+                x="Kategori",
+                y="Ortalama EAA",
+                color="Hastalik Sayisi",
+                title="Kategorilere Gore Ortalama EAA"
+            )
+            fig.update_layout(template="plotly_white")
+            st.plotly_chart(fig, use_container_width=True)
+        
+        fig2 = px.scatter(
+            cat_summary,
+            x="Hastalik Sayisi",
+            y="Ortalama EAA",
+            size="Toplam n",
+            color="Kategori",
+            hover_name="Kategori",
+            title="Kategori Dagilimi (Boyut: Toplam Ornek Sayisi)"
+        )
+        fig2.update_layout(template="plotly_white")
+        st.plotly_chart(fig2, use_container_width=True)
+    
+    with tabs[2]:
+        st.markdown("### Komorbidite Hesaplayici")
+        st.markdown("""
+        Birden fazla kronik hastalik varliginda toplam EAA etkisini hesaplayin.
+        Hastaliklar arasi sinerjistik etkiler otomatik olarak hesaba katilir.
+        """)
+        
+        disease_options = {disease.disease_name: key for key, disease in CHRONIC_DISEASE_EAA_DATABASE.items()}
+        
+        selected_diseases = st.multiselect(
+            "Hastaliklari Secin:",
+            options=list(disease_options.keys()),
+            default=[]
+        )
+        
+        if selected_diseases:
+            disease_keys = [disease_options[name] for name in selected_diseases]
+            result = analyzer.calculate_total_eaa(disease_keys)
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("Temel EAA", f"+{result['base_eaa']} yil")
+            with col2:
+                st.metric("Etkilesim Carpani", f"x{result['interaction_multiplier']}")
+            with col3:
+                st.metric("Toplam EAA", f"+{result['total_eaa']} yil", 
+                         delta=f"+{round(result['total_eaa'] - result['base_eaa'], 1)} yil (etkilesim)")
+            
+            if result['interactions']:
+                st.markdown("#### Tespit Edilen Komorbidite Etkilesimleri:")
+                for interaction in result['interactions']:
+                    st.info(f"{interaction['pair']} → Carpan: x{interaction['multiplier']}")
+            
+            st.markdown("#### Hastalik Detaylari:")
+            for disease in result['diseases']:
+                st.write(f"- **{disease['name']}**: +{disease['eaa']} yil")
+            
+            fig = go.Figure(go.Waterfall(
+                name="EAA",
+                orientation="v",
+                measure=["relative"] * len(result['diseases']) + ["total"],
+                x=[d['name'][:15] + "..." if len(d['name']) > 15 else d['name'] for d in result['diseases']] + ["TOPLAM"],
+                y=[d['eaa'] for d in result['diseases']] + [result['total_eaa']],
+                text=[f"+{d['eaa']}" for d in result['diseases']] + [f"+{result['total_eaa']}"],
+                connector={"line": {"color": "rgb(63, 63, 63)"}},
+            ))
+            fig.update_layout(
+                title="Kumulatif EAA Etkisi",
+                template="plotly_white",
+                showlegend=False
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("Hesaplama yapmak icin en az bir hastalik secin.")
+    
+    with tabs[3]:
+        st.markdown("### En Yuksek EAA Etkisine Sahip Hastaliklar")
+        
+        top_n = st.slider("Gosterilecek Hastalik Sayisi:", 5, 20, 10)
+        top_diseases = analyzer.get_top_diseases(top_n)
+        
+        fig = go.Figure()
+        
+        fig.add_trace(go.Bar(
+            y=top_diseases["Hastalik"],
+            x=top_diseases["EAA (yil)"],
+            orientation='h',
+            marker_color='#8B4513',
+            error_x=dict(
+                type='data',
+                symmetric=False,
+                array=top_diseases["95% GA Ust"] - top_diseases["EAA (yil)"],
+                arrayminus=top_diseases["EAA (yil)"] - top_diseases["95% GA Alt"]
+            )
+        ))
+        
+        fig.update_layout(
+            title=f"En Yuksek EAA Etkisi - Top {top_n}",
+            xaxis_title="Epigenetik Yas Ivmelenmesi (yil)",
+            yaxis_title="",
+            template="plotly_white",
+            height=max(400, top_n * 35),
+            yaxis={'categoryorder': 'total ascending'}
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("### Hastalik Mekanizmalari")
+        for idx, row in top_diseases.head(5).iterrows():
+            disease_key = [k for k, v in CHRONIC_DISEASE_EAA_DATABASE.items() if v.disease_name == row["Hastalik"]][0]
+            disease = CHRONIC_DISEASE_EAA_DATABASE[disease_key]
+            
+            with st.expander(f"{disease.disease_name} (+{disease.eaa_effect} yil)"):
+                st.markdown(f"""
+                **Ingilizce:** {disease.disease_name_en}
+                
+                **Kategori:** {disease.category.value}
+                
+                **Mekanizma:** {disease.mechanism}
+                
+                **Kullanilan Saat:** {disease.clock_type}
+                
+                **Tersine Cevrilebilirlik:** {disease.reversibility}
+                
+                **Referans:** {disease.reference}
+                
+                **PubMed ID:** [{disease.pmid}](https://pubmed.ncbi.nlm.nih.gov/{disease.pmid}/)
+                """)
+    
+    with tabs[4]:
+        st.markdown("### Tersine Cevrilebilirlik Analizi")
+        st.markdown("""
+        Bazi kronik hastaliklarin epigenetik yas uzerindeki etkisi yasam tarzi 
+        degisiklikleri veya tedavi ile kismi ya da tam olarak tersine cevrilebilir.
+        """)
+        
+        rev_df = analyzer.get_reversibility_analysis()
+        
+        col_a, col_b = st.columns(2)
+        
+        with col_a:
+            st.dataframe(rev_df, use_container_width=True)
+        
+        with col_b:
+            fig = px.pie(
+                rev_df,
+                values="Hastalik Sayisi",
+                names="Tersine Cevrilebilirlik",
+                title="Tersine Cevrilebilirlik Dagilimi",
+                color_discrete_sequence=["#2E7D32", "#FFA726", "#D32F2F", "#9E9E9E", "#7B1FA2"]
+            )
+            fig.update_layout(template="plotly_white")
+            st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("""
+        #### Tersine Cevrilebilirlik Kategorileri:
+        
+        | Kategori | Aciklama | Ornek Mudahaleler |
+        |:---------|:---------|:------------------|
+        | **Evet** | Tam tersine cevrilebilir | Kilo verme, egzersiz, diyet degisikligi |
+        | **Kismi** | Kismi iyilesme mumkun | Ilac tedavisi, yasam tarzi degisikligi |
+        | **Hayir** | Geri donusum mumkun degil | Norodejeneratif hastaliklar, bazi kanserler |
+        | **Degisken** | Duruma bagli | Kanser tipi ve evresine gore degisir |
+        | **Belirsiz** | Henuz yeterli veri yok | Yeni hastaliklar (COVID-19 gibi) |
+        """)
+    
+    with tabs[5]:
+        st.markdown("### Hastalik Arama")
+        
+        search_query = st.text_input("Hastalik Adi Ara:", placeholder="ornek: diyabet, kalp, kanser")
+        
+        if search_query:
+            results = analyzer.search_disease(search_query)
+            
+            if not results.empty:
+                st.success(f"{len(results)} sonuc bulundu")
+                st.dataframe(results, use_container_width=True)
+                
+                for idx, row in results.iterrows():
+                    details = analyzer.get_mechanism_details(row["Anahtar"])
+                    if details:
+                        with st.expander(f"{details['disease_name']}"):
+                            st.markdown(f"""
+                            **EAA Etkisi:** +{details['eaa_effect']} yil
+                            
+                            **Mekanizma:** {details['mechanism']}
+                            
+                            **Tersine Cevrilebilirlik:** {details['reversibility']}
+                            
+                            **Referans:** {details['reference']}
+                            """)
+            else:
+                st.warning("Sonuc bulunamadi")
+    
+    st.markdown("---")
+    st.markdown("### Kaynak ve Referanslar")
+    st.markdown("""
+    Bu moduldeki veriler asagidaki hakemli bilimsel yayinlardan derlenmistir:
+    
+    1. Horvath S, Raj K. DNA methylation-based biomarkers and the epigenetic clock theory of ageing. *Nature Reviews Genetics*. 2018
+    2. Levine ME et al. An epigenetic biomarker of aging for lifespan and healthspan. *Aging*. 2018
+    3. Lu AT et al. DNA methylation GrimAge strongly predicts lifespan and healthspan. *Aging*. 2019
+    4. Hillary RF et al. Epigenetic measures of ageing predict the prevalence and incidence of leading causes of death. *Clinical Epigenetics*. 2020
+    """)
+
+
 @st.cache_resource
 def init_components():
     """Initialize all analysis components"""
@@ -1090,6 +1397,7 @@ def main():
             ["Ana Sayfa",
              "Kullanim Kilavuzu",
              "Epigenetik Saat Veritabanlari",
+             "Kronik Hastalik Etkileri",
              "Veri Disa Aktar",
              "DNA Verisi Yukle",
              "CpG Veritabani",
@@ -1162,6 +1470,8 @@ def main():
         render_academic_guide()
     elif "Epigenetik Saat Veritabanlari" in analysis_mode:
         render_epigenetic_clock_databases(components)
+    elif "Kronik Hastalik Etkileri" in analysis_mode:
+        render_chronic_diseases(components)
     elif "Veri Disa Aktar" in analysis_mode:
         render_data_export_page(components)
     elif "DNA Verisi Yukle" in analysis_mode:
