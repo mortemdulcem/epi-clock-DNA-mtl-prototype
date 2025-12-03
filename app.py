@@ -203,6 +203,12 @@ from modules.academic_guide import (
     ACADEMIC_REFERENCES,
     GLOSSARY_TERMS
 )
+from modules.epigenetic_clock_database import (
+    EpigeneticClockDatabase,
+    CLOCK_INFO,
+    get_total_cpg_count,
+    get_clock_database_instance
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -732,6 +738,284 @@ def render_professional_footer():
     from modules.professional_theme import render_academic_footer as theme_footer
     theme_footer()
 
+
+def render_epigenetic_clock_databases(components):
+    """Render comprehensive epigenetic clock databases with all 5 clocks"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## Epigenetik Saat Veritabanlari")
+    st.markdown("""
+    Bu modul, bes major epigenetik saatin (Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE) 
+    tam CpG veritabanlarini icerir. Toplam 2,140 CpG sitesi gen anotasyonlari ile birlikte sunulmaktadir.
+    """)
+    
+    clock_db = get_clock_database_instance()
+    summary = clock_db.get_clock_summary()
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    
+    with col1:
+        st.metric("Horvath", f"{summary['horvath']['cpg_count']} CpG", "Pan-tissue")
+    with col2:
+        st.metric("Hannum", f"{summary['hannum']['cpg_count']} CpG", "Kan-spesifik")
+    with col3:
+        st.metric("PhenoAge", f"{summary['phenoage']['cpg_count']} CpG", "Fenotipik yas")
+    with col4:
+        st.metric("GrimAge", f"{summary['grimage']['cpg_count']} CpG", "Mortalite")
+    with col5:
+        st.metric("DunedinPACE", f"{summary['dunedinpace']['cpg_count']} CpG", "Yaslanma hizi")
+    
+    st.markdown("---")
+    
+    tabs = st.tabs(["Horvath (353)", "Hannum (71)", "PhenoAge (513)", "GrimAge (1030)", "DunedinPACE (173)", "Arama", "Disa Aktar"])
+    
+    with tabs[0]:
+        st.markdown("### Horvath Pan-Tissue Clock (2013)")
+        st.markdown("""
+        **Aciklama:** Tum dokular icin genel yas tahmini. 51 saglikli doku ve hucre tipinden 
+        elde edilen 353 CpG sitesi kullanir.
+        
+        **Kaynak:** Horvath S. Genome Biology 2013, 14:R115  
+        **DOI:** 10.1186/gb-2013-14-10-r115  
+        **Dogruluk:** MAE = 3.6 yil, R2 = 0.96
+        """)
+        
+        horvath_df = clock_db.get_clock_database("horvath")
+        
+        col_a, col_b = st.columns([2, 1])
+        
+        with col_a:
+            st.dataframe(
+                horvath_df[["cpg_id", "chr", "pos", "gene", "coef", "dir"]].head(50),
+                use_container_width=True,
+                height=400
+            )
+        
+        with col_b:
+            gene_counts = horvath_df["gene"].value_counts().head(10)
+            fig = px.bar(
+                x=gene_counts.values,
+                y=gene_counts.index,
+                orientation='h',
+                title="En Cok CpG Iceren Genler",
+                labels={"x": "CpG Sayisi", "y": "Gen"}
+            )
+            fig.update_layout(template="plotly_white", height=400)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        st.info(f"Toplam {len(horvath_df)} CpG sitesi, {horvath_df['gene'].nunique()} benzersiz gen")
+    
+    with tabs[1]:
+        st.markdown("### Hannum Blood Clock (2013)")
+        st.markdown("""
+        **Aciklama:** Kan hucrelerine ozel epigenetik saat. 71 CpG sitesi ile kan dokusunda 
+        yuksek dogruluk saglar.
+        
+        **Kaynak:** Hannum G et al. Molecular Cell 2013, 49(2):359-367  
+        **DOI:** 10.1016/j.molcel.2012.10.016  
+        **Dogruluk:** MAE = 3.9 yil, R2 = 0.94
+        """)
+        
+        hannum_df = clock_db.get_clock_database("hannum")
+        
+        st.dataframe(
+            hannum_df[["cpg_id", "chr", "pos", "gene", "coef", "dir"]],
+            use_container_width=True,
+            height=500
+        )
+        
+        st.success(f"Toplam {len(hannum_df)} CpG sitesi - Tam veritabani")
+    
+    with tabs[2]:
+        st.markdown("### PhenoAge Clock (2018)")
+        st.markdown("""
+        **Aciklama:** Fiziksel saglik durumu ve hastalik riskini yansitir. Mortalite ve 
+        morbidite ile iliskilendirilmis 513 CpG sitesi.
+        
+        **Kaynak:** Levine ME et al. Aging 2018, 10(4):573-591  
+        **DOI:** 10.18632/aging.101414  
+        **Dogruluk:** MAE = 2.8 yil, R2 = 0.95
+        """)
+        
+        phenoage_df = clock_db.get_clock_database("phenoage")
+        
+        col_a, col_b = st.columns([2, 1])
+        
+        with col_a:
+            st.dataframe(
+                phenoage_df[["cpg_id", "chr", "pos", "gene", "coef", "dir"]].head(100),
+                use_container_width=True,
+                height=400
+            )
+        
+        with col_b:
+            chr_counts = phenoage_df["chr"].value_counts()
+            fig = px.pie(
+                values=chr_counts.values,
+                names=chr_counts.index,
+                title="Kromozom Dagilimi"
+            )
+            fig.update_layout(template="plotly_white", height=400)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        st.info(f"Toplam {len(phenoage_df)} CpG sitesi, {phenoage_df['gene'].nunique()} benzersiz gen")
+    
+    with tabs[3]:
+        st.markdown("### GrimAge Clock (2019)")
+        st.markdown("""
+        **Aciklama:** Olum riskini en iyi tahmin eden saat. 7 protein surogate ve sigara 
+        paket-yili dahil 1030 CpG sitesi.
+        
+        **Kaynak:** Lu AT et al. Aging 2019, 11(2):303-327  
+        **DOI:** 10.18632/aging.101684  
+        **Dogruluk:** MAE = 2.4 yil, R2 = 0.94
+        
+        **Protein Surogatlar:**
+        - DNAmADM (Adrenomedullin)
+        - DNAmB2M (Beta-2 microglobulin)
+        - DNAmCystatinC
+        - DNAmGDF15
+        - DNAmLeptin
+        - DNAmPAI1
+        - DNAmTIMP1
+        - DNAmPackYears
+        """)
+        
+        grimage_df = clock_db.get_clock_database("grimage")
+        
+        col_a, col_b = st.columns([2, 1])
+        
+        with col_a:
+            st.dataframe(
+                grimage_df[["cpg_id", "chr", "pos", "gene", "coef", "dir", "surrogate"]].head(100),
+                use_container_width=True,
+                height=400
+            )
+        
+        with col_b:
+            if "surrogate" in grimage_df.columns:
+                surr_counts = grimage_df["surrogate"].value_counts()
+                fig = px.bar(
+                    x=surr_counts.values,
+                    y=surr_counts.index,
+                    orientation='h',
+                    title="Surogate Basina CpG",
+                    labels={"x": "CpG Sayisi", "y": "Surogate"}
+                )
+                fig.update_layout(template="plotly_white", height=400)
+                st.plotly_chart(fig, use_container_width=True)
+        
+        st.info(f"Toplam {len(grimage_df)} CpG sitesi, 9 protein surogate")
+    
+    with tabs[4]:
+        st.markdown("### DunedinPACE Clock (2022)")
+        st.markdown("""
+        **Aciklama:** Yaslanma hizini olcer. Dunedin longitudinal calismasindan 173 CpG sitesi. 
+        **ACIK KAYNAK** - GitHub uzerinden erisim.
+        
+        **Kaynak:** Belsky DW et al. eLife 2022, 11:e73420  
+        **DOI:** 10.7554/eLife.73420  
+        **GitHub:** https://github.com/danbelsky/DunedinPACE  
+        **Dogruluk:** R2 = 0.89
+        """)
+        
+        dunedinpace_df = clock_db.get_clock_database("dunedinpace")
+        
+        st.dataframe(
+            dunedinpace_df[["cpg_id", "chr", "pos", "gene", "coef", "dir"]],
+            use_container_width=True,
+            height=500
+        )
+        
+        st.success(f"Toplam {len(dunedinpace_df)} CpG sitesi - Acik kaynak veritabani")
+    
+    with tabs[5]:
+        st.markdown("### CpG Sitesi Arama")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            search_query = st.text_input("CpG ID veya Gen Adi Ara:", placeholder="ornek: cg00075967 veya ELOVL2")
+        
+        with col2:
+            selected_clock = st.selectbox(
+                "Saat Secin:",
+                ["Tum Saatler", "horvath", "hannum", "phenoage", "grimage", "dunedinpace"]
+            )
+        
+        if search_query:
+            if selected_clock == "Tum Saatler":
+                results = clock_db.search_cpg(search_query)
+            else:
+                results = clock_db.search_cpg(search_query, selected_clock)
+            
+            if not results.empty:
+                st.success(f"{len(results)} sonuc bulundu")
+                st.dataframe(results, use_container_width=True)
+            else:
+                st.warning("Sonuc bulunamadi")
+    
+    with tabs[6]:
+        st.markdown("### Veritabani Disa Aktarma")
+        
+        export_clock = st.selectbox(
+            "Disa Aktarilacak Saat:",
+            ["horvath", "hannum", "phenoage", "grimage", "dunedinpace"],
+            format_func=lambda x: f"{x.upper()} ({summary[x]['cpg_count']} CpG)"
+        )
+        
+        export_format = st.radio(
+            "Format Secin:",
+            ["CSV", "BED (Genome Browser)", "JSON"],
+            horizontal=True
+        )
+        
+        if st.button("Disa Aktar", type="primary"):
+            db = clock_db.get_clock_database(export_clock)
+            
+            if export_format == "CSV":
+                csv_data = db.to_csv(index=False)
+                st.download_button(
+                    label="CSV Indir",
+                    data=csv_data,
+                    file_name=f"{export_clock}_cpg_database.csv",
+                    mime="text/csv"
+                )
+            elif export_format == "BED (Genome Browser)":
+                bed_data = clock_db.export_to_bed(export_clock)
+                st.download_button(
+                    label="BED Indir",
+                    data=bed_data,
+                    file_name=f"{export_clock}_cpg_database.bed",
+                    mime="text/plain"
+                )
+            else:
+                json_data = db.to_json(orient="records", indent=2)
+                st.download_button(
+                    label="JSON Indir",
+                    data=json_data,
+                    file_name=f"{export_clock}_cpg_database.json",
+                    mime="application/json"
+                )
+    
+    st.markdown("---")
+    st.markdown("### Saat Karsilastirma Ozeti")
+    
+    comparison_data = []
+    for clock_name, info in summary.items():
+        comparison_data.append({
+            "Saat": info["name"],
+            "Yil": info["year"],
+            "CpG Sayisi": info["cpg_count"],
+            "Aciklama": info["description"],
+            "Kaynak": info["source"],
+            "Dogruluk": info["accuracy"]
+        })
+    
+    st.dataframe(pd.DataFrame(comparison_data), use_container_width=True)
+
+
 @st.cache_resource
 def init_components():
     """Initialize all analysis components"""
@@ -805,6 +1089,7 @@ def main():
             "Analiz Turu Secin:",
             ["Ana Sayfa",
              "Kullanim Kilavuzu",
+             "Epigenetik Saat Veritabanlari",
              "Veri Disa Aktar",
              "DNA Verisi Yukle",
              "CpG Veritabani",
@@ -875,6 +1160,8 @@ def main():
         render_home_page(components)
     elif "Kullanim Kilavuzu" in analysis_mode:
         render_academic_guide()
+    elif "Epigenetik Saat Veritabanlari" in analysis_mode:
+        render_epigenetic_clock_databases(components)
     elif "Veri Disa Aktar" in analysis_mode:
         render_data_export_page(components)
     elif "DNA Verisi Yukle" in analysis_mode:
