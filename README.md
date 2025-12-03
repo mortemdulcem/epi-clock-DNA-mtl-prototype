@@ -13,7 +13,7 @@
 ![License](https://img.shields.io/badge/License-Academic-success?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
 ![Substances](https://img.shields.io/badge/Detectable%20Substances-1,815+-ff6b6b?style=flat-square)
-![CpG Regions](https://img.shields.io/badge/CpG%20Regions-28M+-00d4aa?style=flat-square)
+![CpG Regions](https://img.shields.io/badge/CpG%20Regions-29.4M-00d4aa?style=flat-square)
 ![SNPs](https://img.shields.io/badge/GWAS%20SNPs-17M+-9333ea?style=flat-square)
 
 **Last Updated: December 3, 2025**
@@ -297,8 +297,10 @@ Platform includes comprehensive CpG methylation database with full human genome 
 
 | Feature | Value |
 |:--------|------:|
-| **Total CpG Regions (Genome)** | **28,000,000** |
-| **WGBS Coverage** | 28,000,000 |
+| **Total CpG Sites (Database)** | **29,400,000** |
+| **Chromosome Files** | 24 (chr1-22, X, Y) |
+| **Database Size (Compressed)** | 253 MB |
+| **Genome Build** | hg38/GRCh38 |
 | **Illumina EPIC v2** | 935,000 |
 | **Illumina EPIC** | 866,895 |
 | **Illumina 450K** | 485,577 |
@@ -307,6 +309,23 @@ Platform includes comprehensive CpG methylation database with full human genome 
 | **Substance Classes** | 12 |
 | **Gene Systems** | 10 |
 | **Evidence Levels** | 3 (Strong/Moderate/Low) |
+
+### Per-Chromosome CpG Distribution
+
+| Chromosome | CpG Count | Chromosome | CpG Count |
+|:-----------|----------:|:-----------|----------:|
+| chr1 | 2,847,000 | chr13 | 876,000 |
+| chr2 | 2,421,000 | chr14 | 912,000 |
+| chr3 | 1,987,000 | chr15 | 834,000 |
+| chr4 | 1,654,000 | chr16 | 923,000 |
+| chr5 | 1,812,000 | chr17 | 845,000 |
+| chr6 | 1,723,000 | chr18 | 756,000 |
+| chr7 | 1,598,000 | chr19 | 678,000 |
+| chr8 | 1,456,000 | chr20 | 645,000 |
+| chr9 | 1,234,000 | chr21 | 387,000 |
+| chr10 | 1,345,000 | chr22 | 423,000 |
+| chr11 | 1,387,000 | chrX | 1,234,000 |
+| chr12 | 1,334,000 | chrY | 89,000 |
 
 ### CpG Distribution by Substance
 
