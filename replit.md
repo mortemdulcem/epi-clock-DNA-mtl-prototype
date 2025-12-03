@@ -98,6 +98,16 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-03: Added "🔬 Madde Tespiti ve Süre Tahmini" module - DNA'dan madde kullanımı tespiti
+  - 18 tespit edilebilir madde türü (sigara, alkol, kokain, eroin, metamfetamin, esrar, vb.)
+  - CpG marker tabanlı imza analizi (AHRR, F2RL3 genler için 100+ marker)
+  - Kullanım süresi tahmini (yıl olarak, 95% güven aralığı ile)
+  - Demo simülasyon modu (gerçek vs tahmin karşılaştırması)
+  - Bilimsel referanslar ve validasyon metrikleri (AUC, duyarlılık, özgüllük)
+- 2024-12-03: Added dynamic multi-combination calculator with 44 substances, 56 diseases, 100+ synergies
+  - Substance-substance synergies (e.g., alcohol+opioid x2.8 multiplier)
+  - Disease-disease synergies (e.g., diabetes+hypertension x1.8 multiplier)
+  - Cross synergies with add/remove buttons and category filtering
 - 2024-12-01: Added "📥 Veri Dışa Aktar" module - multi-format export (CSV, BED, JSON, SQL)
 - 2024-12-01: Added "📚 Kullanım Kılavuzu" - comprehensive academic guide with 6 tabs
 - 2024-12-01: Created modules/data_export.py - export functions for all databases

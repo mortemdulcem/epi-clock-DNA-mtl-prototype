@@ -241,6 +241,15 @@ from modules.dynamic_combinations import (
     SUBSTANCE_DISEASE_SYNERGY as DYNAMIC_CROSS_SYNERGY,
     RiskLevel
 )
+from modules.substance_detection import (
+    SubstanceDetectionEngine,
+    get_detection_engine,
+    get_detectable_substance_count,
+    get_total_marker_count,
+    get_substance_categories as get_detection_categories,
+    SUBSTANCE_SIGNATURES,
+    DetectionConfidence
+)
 
 st.set_page_config(
     page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
@@ -1945,6 +1954,414 @@ def render_synergistic_effects(components):
                 """)
 
 
+def render_substance_detection(components):
+    """DNA Metilasyon Verisi Üzerinden Madde Tespiti ve Kullanım Süresi Tahmini"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## 🔬 DNA'dan Madde Tespiti ve Kullanım Süresi Tahmini")
+    st.markdown("""
+    **İLERİ SEVİYE ANALİZ MODÜLÜ**
+    
+    Bu modül, DNA metilasyon verilerini analiz ederek:
+    - ✅ **Hangi maddelerin kullanıldığını** tespit eder
+    - ✅ **Ne kadar süre kullanıldığını** tahmin eder (yıl olarak)
+    - ✅ **Güven aralıkları** ile sonuçları raporlar
+    
+    **Bilimsel Temel:** Her bağımlılık yapıcı madde, DNA üzerinde karakteristik metilasyon 
+    imzaları bırakır. Bu imzalar yıllar sonra bile tespit edilebilir.
+    """)
+    
+    detection_engine = get_detection_engine()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Tespit Edilebilir Madde", get_detectable_substance_count())
+    with col2:
+        st.metric("Toplam CpG Marker", get_total_marker_count())
+    with col3:
+        categories = get_detection_categories()
+        st.metric("Madde Kategorisi", len(categories))
+    with col4:
+        avg_auc = np.mean([sig.auc for sig in SUBSTANCE_SIGNATURES.values()])
+        st.metric("Ortalama AUC", f"{avg_auc:.2f}")
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "📤 DNA Verisi Yükle ve Analiz Et",
+        "🧪 Demo Analiz (Simülasyon)",
+        "📊 Tespit Edilebilir Maddeler",
+        "🧬 CpG Marker Veritabanı",
+        "📚 Bilimsel Referanslar"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### 📤 DNA Metilasyon Verisi Yükle")
+        st.markdown("""
+        **Desteklenen formatlar:**
+        - CSV dosyası (CpG sütunu + Beta değerleri)
+        - İlk sütun: CpG ID'leri (örn: cg00000029)
+        - İkinci sütun: Beta değerleri (0-1 arası)
+        """)
+        
+        uploaded_file = st.file_uploader(
+            "DNA Metilasyon Dosyası Yükle",
+            type=['csv', 'txt', 'xlsx'],
+            key="substance_detection_upload"
+        )
+        
+        if uploaded_file is not None:
+            try:
+                if uploaded_file.name.endswith('.xlsx'):
+                    df = pd.read_excel(uploaded_file)
+                else:
+                    df = pd.read_csv(uploaded_file)
+                
+                st.success(f"✅ Dosya yüklendi: {len(df)} satır, {len(df.columns)} sütun")
+                
+                st.markdown("#### Veri Önizleme")
+                st.dataframe(df.head(10), use_container_width=True)
+                
+                if st.button("🔬 Madde Tespiti Başlat", key="run_detection"):
+                    with st.spinner("DNA metilasyon imzaları analiz ediliyor..."):
+                        results = detection_engine.analyze_methylation_data(df)
+                        summary = detection_engine.get_detection_summary(results)
+                    
+                    st.markdown("---")
+                    st.markdown("## 📊 Analiz Sonuçları")
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Tespit Edilen Madde", summary['total_detected'])
+                    with col2:
+                        st.metric("Toplam Kullanım Süresi", f"{summary['cumulative_years']} yıl")
+                    with col3:
+                        if summary['most_severe']:
+                            st.metric("En Uzun Kullanım", summary['most_severe'])
+                    
+                    detected_results = [r for r in results.values() if r.detected]
+                    
+                    if detected_results:
+                        st.markdown("### ⚠️ Tespit Edilen Maddeler")
+                        
+                        for result in sorted(detected_results, key=lambda x: x.confidence_percent, reverse=True):
+                            confidence_color = "#28a745" if result.confidence_percent >= 85 else "#ffc107" if result.confidence_percent >= 70 else "#dc3545"
+                            
+                            with st.expander(f"🔴 {result.substance_name_tr} - Güven: %{result.confidence_percent} | Süre: ~{result.estimated_duration_years} yıl"):
+                                st.markdown(f"""
+                                <div style="
+                                    background: linear-gradient(135deg, {confidence_color}22, {confidence_color}11);
+                                    border-left: 4px solid {confidence_color};
+                                    padding: 15px;
+                                    border-radius: 5px;
+                                    margin-bottom: 10px;
+                                ">
+                                    <h4 style="color: {confidence_color}; margin: 0;">
+                                        {result.confidence.value}
+                                    </h4>
+                                </div>
+                                """, unsafe_allow_html=True)
+                                
+                                col_a, col_b, col_c = st.columns(3)
+                                with col_a:
+                                    st.metric("Tahmini Kullanım Süresi", f"{result.estimated_duration_years} yıl")
+                                with col_b:
+                                    st.metric("95% Güven Aralığı", f"{result.duration_ci_lower}-{result.duration_ci_upper} yıl")
+                                with col_c:
+                                    st.metric("Tespit Oranı", f"{result.num_markers_detected}/{result.total_markers} marker")
+                                
+                                st.markdown(f"**Klinik Yorum:** {result.clinical_interpretation}")
+                                st.markdown(f"**Etkilenen Genler:** {', '.join(result.affected_genes)}")
+                                st.markdown(f"**Mekanizma:** {result.mechanism}")
+                                st.markdown(f"**Referans:** {result.reference}")
+                        
+                        fig = go.Figure(go.Bar(
+                            x=[r.estimated_duration_years for r in detected_results],
+                            y=[r.substance_name_tr for r in detected_results],
+                            orientation='h',
+                            marker_color=['#dc3545' if r.confidence_percent >= 85 else '#ffc107' if r.confidence_percent >= 70 else '#6c757d' for r in detected_results],
+                            text=[f"{r.estimated_duration_years} yıl (%{r.confidence_percent})" for r in detected_results],
+                            textposition='outside'
+                        ))
+                        fig.update_layout(
+                            title="Tespit Edilen Maddeler ve Kullanım Süreleri",
+                            xaxis_title="Tahmini Kullanım Süresi (yıl)",
+                            yaxis_title="Madde",
+                            template="plotly_white",
+                            height=max(300, len(detected_results) * 50)
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
+                    else:
+                        st.success("✅ Hiçbir madde kullanımı tespit edilmedi.")
+                    
+            except Exception as e:
+                st.error(f"Dosya işleme hatası: {str(e)}")
+    
+    with tabs[1]:
+        st.markdown("### 🧪 Demo Analiz - Simüle Edilmiş Veri")
+        st.markdown("""
+        **Gerçek veri olmadan sistemi test edin!**
+        
+        Aşağıda belirli maddelerin kullanıldığı varsayılan simüle edilmiş DNA metilasyon verisi oluşturabilirsiniz.
+        Sistem bu veriyi analiz ederek tespit doğruluğunu gösterecektir.
+        """)
+        
+        st.markdown("#### Simülasyon Ayarları")
+        
+        available_substances = detection_engine.get_substance_list()
+        substance_options = {f"{s['name_tr']} ({s['category']})": s['key'] for s in available_substances}
+        
+        selected_for_sim = st.multiselect(
+            "Simüle edilecek maddeleri seçin:",
+            options=list(substance_options.keys()),
+            default=["Tütün/Sigara (Nikotin)", "Kronik Alkol Kullanımı (Depresan)"],
+            key="sim_substances"
+        )
+        
+        years_dict = {}
+        if selected_for_sim:
+            st.markdown("#### Her madde için kullanım süresi (yıl):")
+            cols = st.columns(min(3, len(selected_for_sim)))
+            for i, sub_name in enumerate(selected_for_sim):
+                sub_key = substance_options[sub_name]
+                with cols[i % 3]:
+                    years_dict[sub_key] = st.slider(
+                        sub_name.split(" (")[0],
+                        min_value=1,
+                        max_value=30,
+                        value=10,
+                        key=f"years_{sub_key}"
+                    )
+        
+        if st.button("🧪 Simülasyon Başlat", key="run_simulation"):
+            with st.spinner("Simüle edilmiş DNA verisi oluşturuluyor ve analiz ediliyor..."):
+                selected_keys = [substance_options[name] for name in selected_for_sim]
+                
+                sim_data = detection_engine.generate_sample_methylation_data(
+                    substances_used=selected_keys,
+                    years_of_use=years_dict
+                )
+                
+                results = detection_engine.analyze_methylation_data(sim_data)
+                summary = detection_engine.get_detection_summary(results)
+            
+            st.markdown("---")
+            st.markdown("## 📊 Simülasyon Sonuçları")
+            
+            st.markdown("### Karşılaştırma: Gerçek vs Tahmin")
+            
+            comparison_data = []
+            for sub_name in selected_for_sim:
+                sub_key = substance_options[sub_name]
+                actual_years = years_dict[sub_key]
+                
+                if sub_key in results:
+                    result = results[sub_key]
+                    predicted_years = result.estimated_duration_years
+                    error = abs(predicted_years - actual_years)
+                    accuracy = max(0, 100 - (error / actual_years * 100)) if actual_years > 0 else 0
+                    
+                    comparison_data.append({
+                        'Madde': sub_name.split(" (")[0],
+                        'Gerçek Süre (yıl)': actual_years,
+                        'Tahmin (yıl)': predicted_years,
+                        'Hata (yıl)': round(error, 1),
+                        'Doğruluk (%)': round(accuracy, 1),
+                        'Tespit': '✅ Evet' if result.detected else '❌ Hayır',
+                        'Güven': f'%{result.confidence_percent}'
+                    })
+            
+            if comparison_data:
+                comparison_df = pd.DataFrame(comparison_data)
+                st.dataframe(comparison_df, use_container_width=True)
+                
+                avg_accuracy = np.mean([c['Doğruluk (%)'] for c in comparison_data])
+                st.metric("Ortalama Tahmin Doğruluğu", f"%{avg_accuracy:.1f}")
+                
+                fig = go.Figure()
+                fig.add_trace(go.Bar(
+                    name='Gerçek Süre',
+                    x=[c['Madde'] for c in comparison_data],
+                    y=[c['Gerçek Süre (yıl)'] for c in comparison_data],
+                    marker_color='#2196F3'
+                ))
+                fig.add_trace(go.Bar(
+                    name='Tahmin',
+                    x=[c['Madde'] for c in comparison_data],
+                    y=[c['Tahmin (yıl)'] for c in comparison_data],
+                    marker_color='#FF9800'
+                ))
+                fig.update_layout(
+                    title="Gerçek vs Tahmin Edilen Kullanım Süreleri",
+                    barmode='group',
+                    yaxis_title="Süre (yıl)",
+                    template="plotly_white"
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            st.markdown("### Tüm Analiz Sonuçları")
+            for key, result in results.items():
+                if result.detected:
+                    with st.expander(f"✅ {result.substance_name_tr} - %{result.confidence_percent} güven"):
+                        st.write(f"**Tahmini Süre:** {result.estimated_duration_years} yıl (95% GA: {result.duration_ci_lower}-{result.duration_ci_upper})")
+                        st.write(f"**Klinik Yorum:** {result.clinical_interpretation}")
+    
+    with tabs[2]:
+        st.markdown("### 📊 Tespit Edilebilir Maddeler Listesi")
+        st.markdown(f"**Toplam {get_detectable_substance_count()} madde türü** tespit edilebilir.")
+        
+        substances = detection_engine.get_substance_list()
+        sub_df = pd.DataFrame(substances)
+        sub_df.columns = ['Anahtar', 'Türkçe', 'İngilizce', 'Kategori', 'Duyarlılık', 'Özgüllük', 'AUC', 'Marker Sayısı', 'Referans']
+        
+        category_filter = st.selectbox(
+            "Kategori Filtresi:",
+            ["Tümü"] + list(sub_df['Kategori'].unique()),
+            key="detection_cat_filter"
+        )
+        
+        if category_filter != "Tümü":
+            display_df = sub_df[sub_df['Kategori'] == category_filter]
+        else:
+            display_df = sub_df
+        
+        st.dataframe(display_df, use_container_width=True, height=400)
+        
+        fig = px.bar(
+            display_df,
+            x='AUC',
+            y='Türkçe',
+            orientation='h',
+            color='Kategori',
+            title="Madde Tespit Performansı (AUC)"
+        )
+        fig.update_layout(
+            template="plotly_white",
+            height=max(400, len(display_df) * 30),
+            yaxis={'categoryorder': 'total ascending'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[3]:
+        st.markdown("### 🧬 CpG Marker Veritabanı")
+        st.markdown("""
+        Her madde için kullanılan CpG marker'ları ve etkilenen genler.
+        Bu marker'lar bilimsel literatürde validasyon görmüş sitelerdir.
+        """)
+        
+        selected_substance = st.selectbox(
+            "Madde Seçin:",
+            options=[f"{sig.substance_name_tr} ({sig.category})" for sig in SUBSTANCE_SIGNATURES.values()],
+            key="marker_substance_select"
+        )
+        
+        selected_key = None
+        for key, sig in SUBSTANCE_SIGNATURES.items():
+            if f"{sig.substance_name_tr} ({sig.category})" == selected_substance:
+                selected_key = key
+                break
+        
+        if selected_key:
+            sig = SUBSTANCE_SIGNATURES[selected_key]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"**Madde:** {sig.substance_name_tr}")
+                st.markdown(f"**İngilizce:** {sig.substance_name_en}")
+                st.markdown(f"**Kategori:** {sig.category}")
+                st.markdown(f"**Metilasyon Yönü:** {sig.direction}")
+            with col2:
+                st.markdown(f"**Duyarlılık:** {sig.sensitivity*100:.0f}%")
+                st.markdown(f"**Özgüllük:** {sig.specificity*100:.0f}%")
+                st.markdown(f"**AUC:** {sig.auc}")
+                st.markdown(f"**Marker Sayısı:** {len(sig.marker_cpgs)}")
+            
+            st.markdown("#### CpG Marker Listesi")
+            marker_df = pd.DataFrame({
+                'CpG ID': sig.marker_cpgs,
+                'Referans Beta (Sağlıklı)': [sig.reference_beta_healthy] * len(sig.marker_cpgs),
+                'Eşik Delta': [sig.threshold_delta] * len(sig.marker_cpgs),
+                'Maksimum Delta': [sig.max_delta] * len(sig.marker_cpgs)
+            })
+            st.dataframe(marker_df, use_container_width=True)
+            
+            st.markdown("#### Etkilenen Genler")
+            st.markdown(", ".join([f"**{gene}**" for gene in sig.affected_genes]))
+            
+            st.markdown("#### Biyolojik Mekanizma")
+            st.info(sig.biological_mechanism)
+            
+            st.markdown("#### Bilimsel Referans")
+            st.markdown(f"📖 {sig.reference}")
+    
+    with tabs[4]:
+        st.markdown("### 📚 Bilimsel Referanslar ve Metodoloji")
+        
+        st.markdown("""
+        #### Metodoloji
+        
+        DNA metilasyon tabanlı madde tespiti, aşağıdaki prensipler üzerine kurulmuştur:
+        
+        1. **Epigenetik İmza Kavramı**: Her madde, belirli CpG sitelerinde karakteristik 
+           metilasyon değişikliklerine neden olur. Bu değişiklikler madde bırakıldıktan 
+           yıllar sonra bile tespit edilebilir.
+        
+        2. **Doz-Tepki İlişkisi**: Metilasyon değişikliğinin büyüklüğü, kullanım süresi 
+           ve yoğunluğu ile korelasyon gösterir. Bu ilişki, kullanım süresini tahmin 
+           etmek için kullanılır.
+        
+        3. **Panel Yaklaşımı**: Her madde için 10+ CpG marker'dan oluşan paneller 
+           kullanılarak güvenilirlik artırılır.
+        
+        #### Sınırlamalar
+        
+        - Bu PROTOTIP simüle edilmiş katsayılar kullanmaktadır
+        - Gerçek klinik kullanım için validasyon çalışmaları gereklidir
+        - Çevresel faktörler sonuçları etkileyebilir
+        - Polimadde kullanımı tespit doğruluğunu azaltabilir
+        """)
+        
+        st.markdown("#### Anahtar Yayınlar")
+        
+        key_refs = [
+            {
+                "title": "Epigenome-wide association study of cigarette smoking",
+                "authors": "Joehanes R, Just AC, Marioni RE, et al.",
+                "journal": "Circ Cardiovasc Genet. 2016;9(5):436-447",
+                "pmid": "27651444"
+            },
+            {
+                "title": "DNA methylation signature of alcohol consumption",
+                "authors": "Liu C, Marioni RE, Hedman ÅK, et al.",
+                "journal": "Mol Psychiatry. 2018;23(2):422-433",
+                "pmid": "27922638"
+            },
+            {
+                "title": "Cannabis use and DNA methylation",
+                "authors": "Markunas CA, Hancock DB, Xu Z, et al.",
+                "journal": "Clin Epigenetics. 2021;13(1):1-15",
+                "pmid": "33419475"
+            },
+            {
+                "title": "Cocaine-associated DNA methylation changes",
+                "authors": "Vaillancourt K, Yang J, Chen GG, et al.",
+                "journal": "Transl Psychiatry. 2021;11(1):1-12",
+                "pmid": "34193816"
+            }
+        ]
+        
+        for ref in key_refs:
+            with st.expander(f"📖 {ref['title']}"):
+                st.markdown(f"""
+                **Yazarlar:** {ref['authors']}
+                
+                **Dergi:** {ref['journal']}
+                
+                **PubMed:** [{ref['pmid']}](https://pubmed.ncbi.nlm.nih.gov/{ref['pmid']}/)
+                """)
+
+
 @st.cache_resource
 def init_components():
     """Initialize all analysis components"""
@@ -2021,6 +2438,7 @@ def main():
              "Epigenetik Saat Veritabanlari",
              "Kronik Hastalik Etkileri",
              "Sinerjik Etkilesimler",
+             "Madde Tespiti ve Sure Tahmini",
              "Veri Disa Aktar",
              "DNA Verisi Yukle",
              "CpG Veritabani",
@@ -2097,6 +2515,8 @@ def main():
         render_chronic_diseases(components)
     elif "Sinerjik Etkilesimler" in analysis_mode:
         render_synergistic_effects(components)
+    elif "Madde Tespiti ve Sure Tahmini" in analysis_mode:
+        render_substance_detection(components)
     elif "Veri Disa Aktar" in analysis_mode:
         render_data_export_page(components)
     elif "DNA Verisi Yukle" in analysis_mode:
