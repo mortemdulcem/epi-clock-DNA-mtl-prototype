@@ -1954,6 +1954,301 @@ def render_synergistic_effects(components):
                 """)
 
 
+def render_cheminformatics(components):
+    """Chemoinformatics - Molecular Structure Analysis Module"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    from modules.cheminformatics import (
+        ChemoinformaticsEngine, 
+        get_cheminformatics_stats,
+        KNOWN_SUBSTANCE_SMILES,
+        METABOLITE_PATHWAYS
+    )
+    
+    st.markdown("## 🧪 Chemoinformatics - Moleküler Yapı Analizi")
+    st.markdown("""
+    **MOLEKÜLER ANALİZ VE VARYANT TARAMA MODÜLÜ**
+    
+    Bu modül, 1815 bağımlılık yapıcı maddenin moleküler yapılarını analiz ederek:
+    - ✅ **SMILES/InChI** moleküler yapıları
+    - ✅ **Moleküler benzerlik** (Tanimoto) analizi
+    - ✅ **Yapısal varyant/analog** tarama
+    - ✅ **Metabolit tahmin** ve yolak analizi
+    - ✅ **PubChem entegrasyonu** (111M+ bileşik)
+    """)
+    
+    engine = ChemoinformaticsEngine()
+    stats = get_cheminformatics_stats()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Bilinen SMILES", stats['known_substances_with_smiles'])
+    with col2:
+        st.metric("Metabolit Yolakları", stats['substances_with_metabolites'])
+    with col3:
+        st.metric("Toplam Metabolit", stats['total_known_metabolites'])
+    with col4:
+        st.metric("PubChem", "111M+ Bileşik")
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "🔍 Madde Ara ve Analiz Et",
+        "🧬 Moleküler Benzerlik",
+        "💊 Metabolit Yolakları",
+        "📊 SMILES Veritabanı",
+        "🌐 PubChem Entegrasyonu"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### 🔍 Madde Moleküler Analizi")
+        
+        substance_options = list(KNOWN_SUBSTANCE_SMILES.keys())
+        selected_substance = st.selectbox(
+            "Analiz edilecek maddeyi seçin:",
+            options=substance_options,
+            format_func=lambda x: f"{x.replace('_', ' ').title()} - {KNOWN_SUBSTANCE_SMILES[x][2]}"
+        )
+        
+        if st.button("🧬 Moleküler Analiz Başlat", type="primary"):
+            with st.spinner("Moleküler veriler çekiliyor..."):
+                smiles, cid, name = KNOWN_SUBSTANCE_SMILES[selected_substance]
+                report = engine.generate_molecular_report(
+                    selected_substance, 
+                    name, 
+                    name
+                )
+                
+                st.success(f"✅ {name} analiz tamamlandı!")
+                
+                st.markdown("#### Moleküler Yapı")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"**PubChem CID:** [{cid}](https://pubchem.ncbi.nlm.nih.gov/compound/{cid})")
+                    st.markdown(f"**Moleküler Formül:** {report['molecular_data'].get('molecular_formula', 'N/A')}")
+                    st.markdown(f"**Moleküler Ağırlık:** {report['molecular_data'].get('molecular_weight', 'N/A')} g/mol")
+                
+                with col2:
+                    st.markdown(f"**XLogP:** {report['molecular_data'].get('xlogp', 'N/A')}")
+                    st.markdown(f"**TPSA:** {report['molecular_data'].get('tpsa', 'N/A')} Å²")
+                    st.markdown(f"**Kompleksite:** {report['molecular_data'].get('complexity', 'N/A')}")
+                
+                st.markdown("#### SMILES Yapısı")
+                st.code(smiles, language="text")
+                
+                if report['molecular_data'].get('inchi'):
+                    st.markdown("#### InChI")
+                    st.code(report['molecular_data']['inchi'], language="text")
+                
+                if report['metabolites']:
+                    st.markdown("#### Bilinen Metabolitler")
+                    met_data = []
+                    for m in report['metabolites']:
+                        met_data.append({
+                            'Metabolit': m['name'],
+                            'Reaksiyon': m['reaction'],
+                            'Enzim': m['enzyme'] or 'N/A',
+                            'PubChem CID': m['cid'] or 'N/A'
+                        })
+                    st.dataframe(pd.DataFrame(met_data), use_container_width=True)
+                
+                if report['variants']:
+                    st.markdown("#### Yapısal Varyantlar")
+                    var_data = []
+                    for v in report['variants'][:10]:
+                        var_data.append({
+                            'Varyant': v['name'],
+                            'Benzerlik': f"{v['similarity']*100:.0f}%",
+                            'PubChem CID': v['cid']
+                        })
+                    st.dataframe(pd.DataFrame(var_data), use_container_width=True)
+    
+    with tabs[1]:
+        st.markdown("### 🧬 Moleküler Benzerlik Analizi")
+        st.markdown("İki madde arasındaki yapısal benzerliği Tanimoto skoru ile hesaplayın.")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            substance1 = st.selectbox(
+                "İlk Madde:",
+                options=substance_options,
+                format_func=lambda x: x.replace('_', ' ').title(),
+                key="sim_sub1"
+            )
+        with col2:
+            substance2 = st.selectbox(
+                "İkinci Madde:",
+                options=substance_options,
+                format_func=lambda x: x.replace('_', ' ').title(),
+                key="sim_sub2",
+                index=1
+            )
+        
+        if st.button("📊 Benzerlik Hesapla"):
+            smiles1 = KNOWN_SUBSTANCE_SMILES[substance1][0]
+            smiles2 = KNOWN_SUBSTANCE_SMILES[substance2][0]
+            
+            similarity = engine.calculate_tanimoto_similarity(smiles1, smiles2)
+            
+            fig = go.Figure(go.Indicator(
+                mode="gauge+number",
+                value=similarity * 100,
+                domain={'x': [0, 1], 'y': [0, 1]},
+                title={'text': "Tanimoto Benzerlik Skoru (%)"},
+                gauge={
+                    'axis': {'range': [0, 100]},
+                    'bar': {'color': "#8B4513"},
+                    'steps': [
+                        {'range': [0, 30], 'color': "#f0f0f0"},
+                        {'range': [30, 60], 'color': "#ffe4c4"},
+                        {'range': [60, 100], 'color': "#deb887"}
+                    ],
+                    'threshold': {
+                        'line': {'color': "red", 'width': 4},
+                        'thickness': 0.75,
+                        'value': 70
+                    }
+                }
+            ))
+            fig.update_layout(height=300)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            if similarity > 0.7:
+                st.success(f"🔗 Yüksek yapısal benzerlik - Bu maddeler muhtemelen benzer biyolojik etkilere sahiptir.")
+            elif similarity > 0.4:
+                st.info(f"📊 Orta düzeyde yapısal benzerlik - Bazı ortak yapısal özellikler mevcut.")
+            else:
+                st.warning(f"⚠️ Düşük yapısal benzerlik - Bu maddeler yapısal olarak farklıdır.")
+    
+    with tabs[2]:
+        st.markdown("### 💊 Metabolit Yolakları")
+        st.markdown("Maddelerin vücutta nasıl metabolize edildiğini görün.")
+        
+        met_substance = st.selectbox(
+            "Metabolit yolağını görüntüle:",
+            options=list(METABOLITE_PATHWAYS.keys()),
+            format_func=lambda x: x.replace('_', ' ').title()
+        )
+        
+        if met_substance in METABOLITE_PATHWAYS:
+            metabolites = METABOLITE_PATHWAYS[met_substance]
+            
+            st.markdown(f"#### {met_substance.replace('_', ' ').title()} Metabolit Yolağı")
+            
+            met_data = []
+            for i, m in enumerate(metabolites, 1):
+                met_data.append({
+                    'Sıra': i,
+                    'Metabolit': m['name'],
+                    'Reaksiyon Tipi': m['reaction'].title(),
+                    'Enzim': m.get('enzyme', 'Bilinmiyor'),
+                    'PubChem CID': m.get('cid', 'N/A')
+                })
+            
+            st.dataframe(pd.DataFrame(met_data), use_container_width=True)
+            
+            fig = go.Figure()
+            
+            fig.add_trace(go.Sankey(
+                node=dict(
+                    pad=15,
+                    thickness=20,
+                    line=dict(color="black", width=0.5),
+                    label=[met_substance.title()] + [m['name'] for m in metabolites],
+                    color=["#8B4513"] + ["#CD853F"] * len(metabolites)
+                ),
+                link=dict(
+                    source=[0] * len(metabolites),
+                    target=list(range(1, len(metabolites) + 1)),
+                    value=[1] * len(metabolites),
+                    label=[m['reaction'] for m in metabolites]
+                )
+            ))
+            
+            fig.update_layout(
+                title=f"{met_substance.title()} → Metabolitler",
+                font_size=12,
+                height=400
+            )
+            st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[3]:
+        st.markdown("### 📊 SMILES Veritabanı")
+        st.markdown(f"Toplam **{len(KNOWN_SUBSTANCE_SMILES)}** maddenin moleküler yapısı kayıtlı.")
+        
+        smiles_data = []
+        for key, (smiles, cid, name) in KNOWN_SUBSTANCE_SMILES.items():
+            smiles_data.append({
+                'Anahtar': key,
+                'İsim': name,
+                'PubChem CID': cid,
+                'SMILES': smiles[:50] + '...' if len(smiles) > 50 else smiles
+            })
+        
+        st.dataframe(pd.DataFrame(smiles_data), use_container_width=True, height=400)
+        
+        csv = pd.DataFrame(smiles_data).to_csv(index=False)
+        st.download_button(
+            "📥 SMILES Veritabanını İndir (CSV)",
+            csv,
+            "epiclock_smiles_database.csv",
+            "text/csv"
+        )
+    
+    with tabs[4]:
+        st.markdown("### 🌐 PubChem Entegrasyonu")
+        st.markdown("""
+        PubChem, NIH tarafından yönetilen ve **111 milyon+** kimyasal bileşik içeren 
+        dünyanın en büyük açık kimya veritabanıdır.
+        
+        Bu modül üzerinden:
+        - Madde adı veya CID ile arama
+        - Moleküler özellikler çekme
+        - Benzer bileşik tarama
+        - SMILES/InChI dönüşümü
+        """)
+        
+        search_term = st.text_input("PubChem'de ara (madde adı veya CID):", "aspirin")
+        
+        if st.button("🔍 PubChem'de Ara"):
+            with st.spinner("PubChem sorgulanıyor..."):
+                try:
+                    import pubchempy as pcp
+                    
+                    if search_term.isdigit():
+                        compounds = [pcp.Compound.from_cid(int(search_term))]
+                    else:
+                        compounds = pcp.get_compounds(search_term, 'name')
+                    
+                    if compounds:
+                        comp = compounds[0]
+                        st.success(f"✅ Bulunan: {comp.iupac_name or search_term}")
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.metric("PubChem CID", comp.cid)
+                            st.metric("Moleküler Ağırlık", f"{comp.molecular_weight} g/mol")
+                            st.metric("XLogP", comp.xlogp or "N/A")
+                        with col2:
+                            st.metric("H-Bond Donor", comp.h_bond_donor_count)
+                            st.metric("H-Bond Acceptor", comp.h_bond_acceptor_count)
+                            st.metric("Rotatable Bonds", comp.rotatable_bond_count)
+                        
+                        st.markdown("#### Canonical SMILES")
+                        st.code(comp.canonical_smiles, language="text")
+                        
+                        if comp.inchi:
+                            st.markdown("#### InChI")
+                            st.code(comp.inchi, language="text")
+                        
+                        st.markdown(f"[🔗 PubChem'de Görüntüle](https://pubchem.ncbi.nlm.nih.gov/compound/{comp.cid})")
+                    else:
+                        st.warning("Sonuç bulunamadı.")
+                except Exception as e:
+                    st.error(f"PubChem sorgu hatası: {e}")
+
+
 def render_substance_detection(components):
     """DNA Metilasyon Verisi Üzerinden Madde Tespiti ve Kullanım Süresi Tahmini"""
     import plotly.graph_objects as go
@@ -2439,6 +2734,7 @@ def main():
              "Kronik Hastalik Etkileri",
              "Sinerjik Etkilesimler",
              "Madde Tespiti ve Sure Tahmini",
+             "Chemoinformatics",
              "Veri Disa Aktar",
              "DNA Verisi Yukle",
              "CpG Veritabani",
@@ -2517,6 +2813,8 @@ def main():
         render_synergistic_effects(components)
     elif "Madde Tespiti ve Sure Tahmini" in analysis_mode:
         render_substance_detection(components)
+    elif "Chemoinformatics" in analysis_mode:
+        render_cheminformatics(components)
     elif "Veri Disa Aktar" in analysis_mode:
         render_data_export_page(components)
     elif "DNA Verisi Yukle" in analysis_mode:
