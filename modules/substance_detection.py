@@ -3745,12 +3745,52 @@ def get_chemical_modification_stats() -> Dict:
     except:
         return {}
 
+def get_polysubstance_count() -> int:
+    """Polimadde kombinasyon sayısı - nrcdnl94"""
+    try:
+        from modules.polysubstance_reactions import get_total_reaction_count
+        return get_total_reaction_count()['total']
+    except:
+        return 0
+
+def get_comprehensive_database_stats() -> Dict:
+    """Kapsamlı veritabanı istatistikleri - nrcdnl94"""
+    base_count = len(SUBSTANCE_SIGNATURES)
+    nps_count = get_nps_derivative_count()
+    
+    try:
+        from modules.polysubstance_reactions import get_total_reaction_count
+        poly_stats = get_total_reaction_count()
+    except:
+        poly_stats = {"polysubstance_combinations": 0, "chemical_reactions": 0, "metabolic_pathways": 0, "total": 0}
+    
+    total = base_count + nps_count + poly_stats['total']
+    
+    return {
+        "base_substances": base_count,
+        "nps_derivatives": nps_count,
+        "polysubstance_combinations": poly_stats['polysubstance_combinations'],
+        "chemical_reactions": poly_stats['chemical_reactions'],
+        "metabolic_pathways": poly_stats['metabolic_pathways'],
+        "grand_total": total
+    }
+
+def get_dangerous_combinations_list() -> List:
+    """Tehlikeli kombinasyonlar listesi - nrcdnl94"""
+    try:
+        from modules.polysubstance_reactions import get_dangerous_combinations
+        dangerous = get_dangerous_combinations()[:20]
+        return [{"name": c.name_turkish, "fatality": c.fatality_rate, "risk": c.risk_level.value} for c in dangerous]
+    except:
+        return []
 
 # İstatistikleri yazdır - nrcdnl94
 if __name__ == "__main__":
     print(f"Temel Madde Sayısı: {len(SUBSTANCE_SIGNATURES)}")
     print(f"NPS Türev Sayısı: {get_nps_derivative_count()}")
-    print(f"TOPLAM: {get_detectable_substance_count()}")
+    print(f"Polimadde Sayısı: {get_polysubstance_count()}")
+    stats = get_comprehensive_database_stats()
+    print(f"GENEL TOPLAM: {stats['grand_total']}")
     print(f"Toplam CpG Marker: {get_total_marker_count()}")
     print(f"Kategoriler: {get_substance_categories()}")
 

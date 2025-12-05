@@ -101,6 +101,17 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-05: MAJOR UPDATE - Comprehensive Polysubstance & Chemical Reactions Database
+  - 257 Polysubstance combinations (Speedball, Candy Flip, Grey Death, etc.)
+  - 31 Chemical synthesis reactions (precursor → product)
+  - 48 Metabolic pathways (drug → metabolite conversions)
+  - Dangerous combinations with fatality rates (up to 50%)
+  - Synergy multipliers and toxicity factors
+- 2024-12-05: Expanded NPS Combinatorial Database to 2,822 derivatives
+  - Systematic chemical modifications (halogenation, N-alkylation, ring substitution)
+  - 9 NPS classes: Cannabinoids (784), Cathinones (840), Opioids (416), etc.
+  - Potency ratios up to 1000x morphine (Etonitazene)
+- 2024-12-05: TOTAL DATABASE: 4,973 detectable substances/combinations
 - 2024-12-03: Added "🔬 Madde Tespiti ve Süre Tahmini" module - DNA'dan madde kullanımı tespiti
   - 18 tespit edilebilir madde türü (sigara, alkol, kokain, eroin, metamfetamin, esrar, vb.)
   - CpG marker tabanlı imza analizi (AHRR, F2RL3 genler için 100+ marker)
