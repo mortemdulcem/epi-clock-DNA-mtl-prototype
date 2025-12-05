@@ -3710,8 +3710,22 @@ def get_detection_engine() -> SubstanceDetectionEngine:
     return _detection_engine
 
 def get_detectable_substance_count() -> int:
-    """Tespit edilebilir madde sayısı"""
-    return len(SUBSTANCE_SIGNATURES)
+    """Tespit edilebilir madde sayısı (NPS türevleri dahil) - nrcdnl94"""
+    base_count = len(SUBSTANCE_SIGNATURES)
+    try:
+        from modules.nps_derivatives import generate_nps_database
+        nps_count = len(generate_nps_database())
+        return base_count + nps_count
+    except:
+        return base_count
+
+def get_nps_derivative_count() -> int:
+    """NPS türev sayısı - nrcdnl94"""
+    try:
+        from modules.nps_derivatives import generate_nps_database
+        return len(generate_nps_database())
+    except:
+        return 0
 
 def get_total_marker_count() -> int:
     """Toplam benzersiz CpG marker sayısı"""
@@ -3723,10 +3737,20 @@ def get_substance_categories() -> List[str]:
     engine = get_detection_engine()
     return engine.get_categories()
 
+def get_chemical_modification_stats() -> Dict:
+    """Kimyasal modifikasyon istatistikleri - nrcdnl94"""
+    try:
+        from modules.nps_derivatives import get_nps_statistics
+        return get_nps_statistics()
+    except:
+        return {}
 
-# İstatistikleri yazdır
+
+# İstatistikleri yazdır - nrcdnl94
 if __name__ == "__main__":
-    print(f"Toplam Madde Sayısı: {get_detectable_substance_count()}")
+    print(f"Temel Madde Sayısı: {len(SUBSTANCE_SIGNATURES)}")
+    print(f"NPS Türev Sayısı: {get_nps_derivative_count()}")
+    print(f"TOPLAM: {get_detectable_substance_count()}")
     print(f"Toplam CpG Marker: {get_total_marker_count()}")
     print(f"Kategoriler: {get_substance_categories()}")
 

@@ -8,7 +8,7 @@ EpiClock Prototype is an advanced computational platform for detecting and quant
 ## Project Structure
 ```
 ├── app.py                      # Main Streamlit application (3000+ lines)
-├── modules/                    # Core analysis modules (24+ modules)
+├── modules/                    # Core analysis modules (28+ modules)
 │   ├── __init__.py
 │   ├── epigenetic_clocks.py   # Epigenetic clock implementations
 │   ├── ml_models.py           # Machine learning ensemble models
@@ -34,6 +34,9 @@ EpiClock Prototype is an advanced computational platform for detecting and quant
 │   ├── variant_data_sources.py # Real genomic data sources (1000G, gnomAD, UK Biobank)
 │   ├── user_guide.py          # Interactive glossary, tutorials, academic citations
 │   ├── comprehensive_substance_database.py # 2,800+ addiction genes, 14 biological systems
+│   ├── nps_derivatives.py     # NPS derivatives with chemical modifications (190+ compounds)
+│   ├── code_protection.py     # Code protection and anti-copy mechanisms
+│   ├── unodc_theme.py         # UNODC-inspired professional UI theme
 │   └── world_databases.py     # GWAS/EWAS/PharmGKB/CPIC integration
 ├── data/                       # Data directory
 ├── attached_assets/           # Research paper and assets
