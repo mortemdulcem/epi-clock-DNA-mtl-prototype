@@ -1,0 +1,72 @@
+1. Nitazenler (Benzimidazol Opioidler) – Şu An En Yüksek Risk
+Fentanil dışı sentetik opioidlerdir. Kimyasal yapıları fentanilden tamamen farklıdır, bu yüzden standart fentanil test şeritlerinde çıkmazlar ama çok daha güçlü olabilirler (örn. Etonitazene, Isotonitazene).
+
+Veritabanı Stratejisi (Yapısal İskelet):
+Çekirdek: Benzimidazol halkası.
+Değişken Bölgeler (R-Grupları):
+Nitro grubu: Genellikle 5. pozisyonda bir nitro (-NO2) grubu bulunur (aktivite için kritiktir).
+Yan zincir: Dietilaminoetil, piperidinil vb. amin grupları.
+Benzil grubu: Halka üzerindeki p-etoksi, p-izopropoksi gibi substitüsyonlar.
+Sistem Tanımı: "Benzimidazol çekirdeği içeren ve 5-nitro / 5-siyano substitüsyonu olan tüm yapılar potansiyel opioid agonistidir" kuralı eklenmeli.
+2. Fenetilaminler (2C-x, DOx ve NBOMe Serisi)
+MDMA ve Meskalin benzeri, hem halüsinojenik hem uyarıcı etki gösteren geniş bir ailedir.
+
+Veritabanı Stratejisi:
+Çekirdek: Fenetilamin iskeleti.
+2C Serisi Varyasyonu: 2. ve 5. pozisyonda metoksi (-OCH3) grubu sabittir. 4. pozisyondaki grup değişir (Br, I, Cl, Etil, Propil vb.).
+Örn: 2C-B (Brom), 2C-I (İyot).
+NBOMe Varyasyonu: Fenetilamin azotuna (N) büyük bir "N-2-metoksibenzil" grubu eklenir.
+Etki: Potens inanılmaz artar, tespit zorlaşır.
+Sistem Tanımı: "Fenetilamin azotuna bağlı hacimli hidrofobik gruplar (benzil türevleri) varsa, yüksek potensli NBOMe türevi olarak işaretle."
+3. Triptaminler (DMT ve Analogları)
+Klasik halüsinojenlerin (DMT, Psilosibin) sentetik türevleridir.
+
+Veritabanı Stratejisi:
+Çekirdek: İndol halkası + etilamin yan zinciri.
+Değişken Bölgeler:
+Halka: 4-HO, 5-MeO, 5-Br gibi eklemeler.
+Azot (N) ucu: Dimetil (DMT), Dietil (DET), Diizopropil (DiPT), Diallil (DALT).
+Sistem Tanımı: İndol halkasının 4. veya 5. pozisyonundaki oksijenli/halojenli türevler ile N-alkil zincir kombinasyonlarının tamamı sanal kütüphanede olmalı.
+4. Tasarımcı Benzodiazepinler ("Designer Benzos")
+Yasal ilaç olan benzodiazepinlerin (Xanax, Valium vb.) kimyasal yapısının modifiye edilmesiyle üretilirler (örn. Etizolam, Flualprazolam, Clonazolam).
+
+Veritabanı Stratejisi:
+Çekirdek: 1,4-benzodiazepin halkası.
+Varyasyonlar:
+Halka Füzyonu: Triazol halkası eklenmesi (Triazolobenzodiazepinler).
+Halojen Değişimi: Klor yerine Flor veya Brom koymak (Potensi çok değiştirir).
+Tiyofen Halkası: Benzen halkası yerine tiyofen halkası (Etizolam gibi).
+Sistem Tanımı: Standart benzodiazepin iskeletindeki halojen değişimlerini (F <-> Cl <-> Br) ve triazol eklemelerini otomatik taramalı.
+5. Disosiyatifler (Arilsikloheksilaminler)
+Ketamin ve PCP (Fensiklidin) türevleridir.
+
+Veritabanı Stratejisi:
+Çekirdek: Sikloheksan halkasına bağlı bir aromatik halka ve bir amin grubu.
+Varyasyonlar:
+Amin grubu: Metilamino, etilamino, piperidin, morfolin.
+Aromatik halka: 2-kloro, 3-metoksi, 3-hidroksi (MXE, 3-MeO-PCP gibi).
+Keton grubu: Sikloheksan halkasında keton varlığı (Ketamin benzerleri) veya yokluğu (PCP benzerleri).
+Veritabanını "Genişletme" İçin Teknik Öneri: Markush Yapıları
+Sisteminin "hiçbir maddeyi kaçırmaması" için tek tek madde kaydetmek yerine Markush Yapıları (Genelleştirilmiş Yapı Tanımları) kullanmalısın.
+
+Örnek Veritabanı Mantığı (Pseudo-Code):
+
+Eğer veritabanına şu kuralı girersen:
+
+Kopyala
+RULE: PHENETHYLAMINE_SCAFFOLD
+  CORE: Benzene_Ring -- C -- C -- Nitrogen
+  SUBSTITUENTS:
+    Position_2,5: Methoxy (-OCH3) OR Ethoxy (-OCH2CH3)
+    Position_4: ANY Halogen (F, Cl, Br, I) OR Alkyl (C1-C4) OR Alkylthio (-S-R)
+    Nitrogen: H OR Methyl OR Benzyl_Derivative
+  ACTION:
+    IF match found -> FLAG as "Phenethylamine Analog"
+    IF Nitrogen has Benzyl -> FLAG as "High Potency NBOMe-like"
+Bu kural sayesinde, üreticiler 4. pozisyona henüz hiç denenmemiş "Propil" grubunu taksalar bile, senin sistemin:
+
+İskeleti tanır.
+pozisyondaki değişimi fark eder.
+"Bu yeni bir fenetilamin türevidir" diyerek alarm verir.
+Özetle:
+Sadece "bilinen" maddeleri değil, "kimyasal olarak mümkün olan" kombinasyonları

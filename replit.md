@@ -101,7 +101,16 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
-- 2024-12-05: MAJOR UPDATE - Comprehensive Polysubstance & Chemical Reactions Database
+- 2024-12-05: MAJOR UPDATE - Pharmacophore Virtual Library with In Silico Analysis
+  - 1,920 virtual compounds with SMILES representations
+  - 16 pharmacophore cores (phenethylamine, tryptamine, fentanyl, benzodiazepine, etc.)
+  - In silico descriptors: logP, pKa, PSA, MW, HBA/HBD, rotatable bonds
+  - ADMET predictions: BBB permeability, CYP inhibition, hepatotoxicity, hERG
+  - Receptor affinity predictions (Ki, nM) for DAT, SERT, 5-HT2A, OPRM1, CB1, GABA-A
+  - 6,240 predicted metabolites (Phase I/II, pyrolysis products)
+  - Forensic markers with GC-MS/LC-MS retention times
+  - Abuse potential and DEA Schedule predictions
+- 2024-12-05: Comprehensive Polysubstance & Chemical Reactions Database
   - 257 Polysubstance combinations (Speedball, Candy Flip, Grey Death, etc.)
   - 31 Chemical synthesis reactions (precursor → product)
   - 48 Metabolic pathways (drug → metabolite conversions)
@@ -111,7 +120,7 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
   - Systematic chemical modifications (halogenation, N-alkylation, ring substitution)
   - 9 NPS classes: Cannabinoids (784), Cathinones (840), Opioids (416), etc.
   - Potency ratios up to 1000x morphine (Etonitazene)
-- 2024-12-05: TOTAL DATABASE: 4,973 detectable substances/combinations
+- 2024-12-05: TOTAL DATABASE: 6,893 unique records (13,133 with predicted metabolites)
 - 2024-12-03: Added "🔬 Madde Tespiti ve Süre Tahmini" module - DNA'dan madde kullanımı tespiti
   - 18 tespit edilebilir madde türü (sigara, alkol, kokain, eroin, metamfetamin, esrar, vb.)
   - CpG marker tabanlı imza analizi (AHRR, F2RL3 genler için 100+ marker)
