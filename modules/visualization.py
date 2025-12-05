@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Advanced Visualization Module for Epigenetic Age Analysis
 Interactive Plotly charts, scientific visualizations, and publication-ready figures
@@ -16,6 +19,7 @@ import base64
 
 
 class EpigeneticVisualizer:
+    # nrcdnl94
     """
     Comprehensive visualization toolkit for epigenetic age analysis.
     Includes interactive Plotly charts and publication-ready matplotlib figures.
@@ -655,3 +659,6 @@ class EpigeneticVisualizer:
         )
         
         return fig
+
+
+# End of module - # nrcdnl94

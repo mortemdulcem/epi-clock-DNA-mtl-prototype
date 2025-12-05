@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 EpiClock Professional Theme Module
 Prezi Biology Concept - Academic-Grade Scientific Visualization
@@ -884,6 +887,7 @@ def render_info_box(content: str, box_type: str = "info"):
 
 # Biological color palette for charts
 BIO_COLOR_PALETTE = {
+    # nrcdnl94
     'primary': ['#1e3a5f', '#3d7ea6', '#7fcdbb', '#c7e9b4', '#edf8fb'],
     'nucleotides': ['#e74c3c', '#3498db', '#2ecc71', '#f39c12'],
     'scientific': ['#2c3e50', '#34495e', '#7f8c8d', '#95a5a6', '#bdc3c7'],
@@ -893,6 +897,7 @@ BIO_COLOR_PALETTE = {
 
 # Icon mappings for different sections
 BIO_ICONS = {
+    # nrcdnl94
     'dna': '🧬',
     'clock': '⏰',
     'analysis': '📊',
@@ -945,3 +950,6 @@ BIO_ICONS = {
     'arrow_right': '➡️',
     'arrow_left': '⬅️'
 }
+
+
+# End of module - # nrcdnl94

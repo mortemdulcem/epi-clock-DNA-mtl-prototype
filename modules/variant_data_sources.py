@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Real Variant Data Sources Module
 700,000+ variant integration from open-access genomic databases
@@ -22,6 +25,7 @@ import hashlib
 
 
 class DataSource(Enum):
+    # nrcdnl94
     """Available genomic data sources"""
     THOUSAND_GENOMES = "1000 Genomes Project"
     GNOMAD = "gnomAD v4.0"
@@ -31,7 +35,9 @@ class DataSource(Enum):
 
 
 @dataclass
+# nrcdnl94
 class DataSourceInfo:
+    # nrcdnl94
     """Information about a genomic data source"""
     name: str
     source: DataSource
@@ -49,6 +55,7 @@ class DataSourceInfo:
 
 
 DATA_SOURCES_DATABASE = {
+    # nrcdnl94
     '1000_genomes': DataSourceInfo(
         name="1000 Genomes Project - Phase 3",
         source=DataSource.THOUSAND_GENOMES,
@@ -184,6 +191,7 @@ DATA_SOURCES_DATABASE = {
 
 
 ADDICTION_GENE_SYSTEMS = {
+    # nrcdnl94
     'opioid_system': {
         'description': 'Opioid Reseptör Sistemi',
         'genes': ['OPRM1', 'OPRD1', 'OPRK1', 'OPRL1', 'PDYN', 'PENK', 'POMC',
@@ -272,6 +280,7 @@ ADDICTION_GENE_SYSTEMS = {
 
 
 class VariantDataSourceManager:
+    # nrcdnl94
     """Manage variant data from multiple genomic sources"""
     
     def __init__(self):
@@ -577,3 +586,6 @@ def create_demo_variants_from_sources(n_variants: int = 1000) -> pd.DataFrame:
     df = df.sort_values(['CHROM', 'POS'])
     
     return df
+
+
+# End of module - # nrcdnl94

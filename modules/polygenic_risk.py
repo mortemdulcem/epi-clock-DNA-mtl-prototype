@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Polygenic Risk Score (PRS) Module
 Disease and trait risk prediction based on multiple genetic variants
@@ -20,7 +23,9 @@ from dataclasses import dataclass
 
 
 @dataclass
+# nrcdnl94
 class PRSResult:
+    # nrcdnl94
     """Polygenic risk score result"""
     trait: str
     score: float
@@ -31,6 +36,7 @@ class PRSResult:
 
 
 GWAS_SUMMARY_STATS = {
+    # nrcdnl94
     'alcohol_dependence': {
         'source': 'MVP/GSCAN 2019',
         'n_samples': 274424,
@@ -133,6 +139,7 @@ GWAS_SUMMARY_STATS = {
 
 
 class PolygenicRiskScoreCalculator:
+    # nrcdnl94
     """
     Calculate Polygenic Risk Scores for addiction and related traits
     
@@ -342,6 +349,7 @@ class PolygenicRiskScoreCalculator:
 
 
 class IntegratedRiskModel:
+    # nrcdnl94
     """
     Integrate PRS with epigenetic age acceleration for comprehensive risk
     
@@ -508,3 +516,6 @@ class IntegratedRiskModel:
             recommendations.append("Continue regular check-ups")
         
         return recommendations
+
+
+# End of module - # nrcdnl94

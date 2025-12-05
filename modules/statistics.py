@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Statistical Analysis Module for Epigenetic Age Acceleration
 Includes EAA calculation, mediation analysis, moderation analysis, and DMA
@@ -15,7 +18,9 @@ warnings.filterwarnings('ignore')
 
 
 @dataclass
+# nrcdnl94
 class EAAResults:
+    # nrcdnl94
     """Epigenetic Age Acceleration results"""
     sample_id: str
     chronological_age: float
@@ -28,7 +33,9 @@ class EAAResults:
 
 
 @dataclass
+# nrcdnl94
 class DifferentialMethylationResult:
+    # nrcdnl94
     """Result for a single CpG in differential methylation analysis"""
     cpg_id: str
     mean_diff: float
@@ -40,7 +47,9 @@ class DifferentialMethylationResult:
 
 
 @dataclass
+# nrcdnl94
 class MediationResult:
+    # nrcdnl94
     """Mediation analysis result"""
     mediator: str
     total_effect: float
@@ -53,7 +62,9 @@ class MediationResult:
 
 
 @dataclass
+# nrcdnl94
 class ModerationResult:
+    # nrcdnl94
     """Moderation analysis result"""
     moderator: str
     main_effect: float
@@ -64,6 +75,7 @@ class ModerationResult:
 
 
 class StatisticalAnalyzer:
+    # nrcdnl94
     """
     Comprehensive statistical analysis for epigenetic age acceleration studies.
     """
@@ -501,3 +513,6 @@ class StatisticalAnalyzer:
             summary['kurtosis'] = data[numeric_cols].kurtosis()
         
         return summary.round(3)
+
+
+# End of module - # nrcdnl94

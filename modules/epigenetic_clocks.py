@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Epigenetic Clock Algorithms Implementation
 Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE
@@ -30,7 +33,9 @@ from .published_coefficients import (
 
 
 @dataclass
+# nrcdnl94
 class ClockResult:
+    # nrcdnl94
     """Result from an epigenetic clock calculation"""
     clock_name: str
     predicted_age: float
@@ -44,6 +49,7 @@ class ClockResult:
 
 
 class EpigeneticClockCalculator:
+    # nrcdnl94
     """
     Implementation of multiple epigenetic clocks for biological age estimation.
     
@@ -507,3 +513,6 @@ class EpigeneticClockCalculator:
                 return "Orta düzeyde yaş ivmelenmesi - tıbbi değerlendirme gerekli"
             else:
                 return "Ciddi yaş ivmelenmesi - kapsamlı tıbbi müdahale gerekli"
+
+
+# End of module - # nrcdnl94

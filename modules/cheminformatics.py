@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Chemoinformatics Module for EpiClock Platform
 Molecular structure analysis, similarity search, and variant detection
@@ -25,7 +28,9 @@ import hashlib
 # ============================================================================
 
 @dataclass
+# nrcdnl94
 class MolecularData:
+    # nrcdnl94
     """Molecular structure data for a substance"""
     substance_key: str
     name_tr: str
@@ -49,7 +54,9 @@ class MolecularData:
     dea_schedule: Optional[str] = None
 
 @dataclass 
+# nrcdnl94
 class SimilarityResult:
+    # nrcdnl94
     """Result of molecular similarity search"""
     query_substance: str
     similar_cid: int
@@ -59,7 +66,9 @@ class SimilarityResult:
     molecular_weight: Optional[float] = None
 
 @dataclass
+# nrcdnl94
 class MetaboliteResult:
+    # nrcdnl94
     """Predicted metabolite information"""
     parent_substance: str
     metabolite_name: str
@@ -74,6 +83,7 @@ class MetaboliteResult:
 # ============================================================================
 
 KNOWN_SUBSTANCE_SMILES = {
+    # nrcdnl94
     # Opioids
     'heroin': ('CC(=O)Oc1ccc2CC3C(C=Cc12)C(OC(C)=O)C4N(C)CCC34', 5462328, 'Diacetylmorphine'),
     'morphine': ('CN1CCC23C4C1CC5=C2C(=C(C=C5)O)OC3C(C=C4)O', 5288826, 'Morphine'),
@@ -154,6 +164,7 @@ KNOWN_SUBSTANCE_SMILES = {
 # ============================================================================
 
 METABOLITE_PATHWAYS = {
+    # nrcdnl94
     'heroin': [
         {'name': '6-Monoacetylmorphine', 'reaction': 'hydrolysis', 'enzyme': 'Esterases', 'cid': 5462501},
         {'name': 'Morphine', 'reaction': 'hydrolysis', 'enzyme': 'Esterases', 'cid': 5288826},
@@ -209,6 +220,7 @@ METABOLITE_PATHWAYS = {
 # ============================================================================
 
 class ChemoinformaticsEngine:
+    # nrcdnl94
     """
     Chemoinformatics analysis engine for substance molecular data
     """
@@ -603,3 +615,6 @@ def get_metabolites_quick(substance_name: str) -> List[Dict]:
         {'name': m.metabolite_name, 'reaction': m.reaction_type, 'enzyme': m.enzyme}
         for m in metabolites
     ]
+
+
+# End of module - # nrcdnl94

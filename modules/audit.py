@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Blockchain-Based Audit Trail Module
 ====================================
@@ -32,6 +35,7 @@ import pandas as pd
 
 
 class AuditAction(Enum):
+    # nrcdnl94
     """Types of auditable actions in the system"""
     SAMPLE_CREATED = "sample_created"
     SAMPLE_UPDATED = "sample_updated"
@@ -52,7 +56,9 @@ class AuditAction(Enum):
 
 
 @dataclass
+# nrcdnl94
 class AuditBlock:
+    # nrcdnl94
     """Single block in the audit chain"""
     block_id: str
     timestamp: str
@@ -77,7 +83,9 @@ class AuditBlock:
 
 
 @dataclass
+# nrcdnl94
 class ChainValidationResult:
+    # nrcdnl94
     """Result of chain validation"""
     is_valid: bool
     total_blocks: int
@@ -89,6 +97,7 @@ class ChainValidationResult:
 
 
 class BlockchainAuditLedger:
+    # nrcdnl94
     """
     Append-only hash-chained ledger for forensic audit trails.
     Implements blockchain-like integrity verification without
@@ -388,6 +397,7 @@ class BlockchainAuditLedger:
 
 
 class ForensicChainOfCustody:
+    # nrcdnl94
     """
     Chain-of-custody tracking for forensic applications
     with evidence handling compliance
@@ -588,6 +598,7 @@ class ForensicChainOfCustody:
 
 
 class TamperDetectionSimulator:
+    # nrcdnl94
     """
     Utility for demonstrating tamper detection capabilities
     """
@@ -680,3 +691,6 @@ def get_audit_summary_table(ledger: BlockchainAuditLedger) -> pd.DataFrame:
     ]
     
     return pd.DataFrame(data)
+
+
+# End of module - # nrcdnl94

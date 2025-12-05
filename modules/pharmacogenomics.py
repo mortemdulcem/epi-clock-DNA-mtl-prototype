@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Pharmacogenomics Module
 Drug response prediction based on genetic variants
@@ -21,7 +24,9 @@ from dataclasses import dataclass
 
 
 @dataclass
+# nrcdnl94
 class DrugRecommendation:
+    # nrcdnl94
     """Drug recommendation based on pharmacogenomics"""
     drug: str
     gene: str
@@ -33,6 +38,7 @@ class DrugRecommendation:
 
 
 CYP2D6_ALLELES = {
+    # nrcdnl94
     '*1': {'function': 'Normal', 'activity': 1.0},
     '*2': {'function': 'Normal', 'activity': 1.0},
     '*3': {'function': 'No function', 'activity': 0.0},
@@ -49,6 +55,7 @@ CYP2D6_ALLELES = {
 }
 
 CYP2D6_PHENOTYPES = {
+    # nrcdnl94
     (0.0, 0.0): 'Poor Metabolizer (PM)',
     (0.0, 0.5): 'Intermediate Metabolizer (IM)',
     (0.5, 0.5): 'Intermediate Metabolizer (IM)',
@@ -59,6 +66,7 @@ CYP2D6_PHENOTYPES = {
 }
 
 CYP2C19_ALLELES = {
+    # nrcdnl94
     '*1': {'function': 'Normal', 'activity': 1.0},
     '*2': {'function': 'No function', 'activity': 0.0},
     '*3': {'function': 'No function', 'activity': 0.0},
@@ -66,6 +74,7 @@ CYP2C19_ALLELES = {
 }
 
 OPRM1_VARIANTS = {
+    # nrcdnl94
     'rs1799971': {
         'A/A': {'phenotype': 'Normal opioid sensitivity', 'effect': 'Standard response'},
         'A/G': {'phenotype': 'Reduced opioid sensitivity', 'effect': 'May need higher doses'},
@@ -75,6 +84,7 @@ OPRM1_VARIANTS = {
 
 
 class PharmacogenomicsAnalyzer:
+    # nrcdnl94
     """
     Predict drug response based on pharmacogenomic variants.
     
@@ -420,6 +430,7 @@ class PharmacogenomicsAnalyzer:
 
 
 class DrugDoseCalculator:
+    # nrcdnl94
     """
     Calculate personalized drug doses based on pharmacogenomics
     """
@@ -477,6 +488,7 @@ class DrugDoseCalculator:
 
 
 class AddictionRiskCalculator:
+    # nrcdnl94
     """
     Calculate genetic addiction risk based on multiple variants
     """
@@ -550,3 +562,6 @@ class AddictionRiskCalculator:
                 "Environmental and behavioral factors play a significant role "
                 "in addiction susceptibility."
             )
+
+
+# End of module - # nrcdnl94

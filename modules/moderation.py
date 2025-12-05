@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Moderasyon Analizi Modülü
 DERS (Duygu Düzenleme) ve SCS-B (Öz-Kontrol) moderasyon etkileri
@@ -12,7 +15,9 @@ from scipy import stats
 
 
 @dataclass
+# nrcdnl94
 class ModerationResult:
+    # nrcdnl94
     """Moderasyon analizi sonucu"""
     moderator: str
     interaction_beta: float
@@ -25,6 +30,7 @@ class ModerationResult:
 
 
 class EmotionRegulationModerator:
+    # nrcdnl94
     """
     Duygu Düzenleme (DERS) Moderasyon Analizi
     PDF Tablo 14-16'ya dayanmaktadır
@@ -190,6 +196,7 @@ class EmotionRegulationModerator:
 
 
 class SelfControlModerator:
+    # nrcdnl94
     """
     Öz-Kontrol (SCS-B) Moderasyon Analizi
     PDF Tablo 17-21'e dayanmaktadır
@@ -375,6 +382,7 @@ class SelfControlModerator:
 
 
 class ReversibilityAnalysis:
+    # nrcdnl94
     """
     Epigenetik Yaş İvmelenmesinin Tersine Çevrilebilirliği
     PDF Bölüm 3.10 ve 4.6'ya dayanmaktadır
@@ -531,6 +539,7 @@ class ReversibilityAnalysis:
 
 
 class ClinicalCovariates:
+    # nrcdnl94
     """
     Klinik ve Demografik Kovaryatlar
     PDF Tablo 26-32'ye dayanmaktadır
@@ -677,3 +686,6 @@ class ClinicalCovariates:
                 'Bağımsız R²': var['ind_r2']
             })
         return pd.DataFrame(data)
+
+
+# End of module - # nrcdnl94

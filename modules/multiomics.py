@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Multi-omics Integration Module for EpiClock Prototype
 Integration of transcriptomic and proteomic data with DNA methylation
@@ -17,7 +20,9 @@ from plotly.subplots import make_subplots
 
 
 @dataclass
+# nrcdnl94
 class OmicsLayer:
+    # nrcdnl94
     """Single omics data layer"""
     name: str
     data_type: str
@@ -28,7 +33,9 @@ class OmicsLayer:
 
 
 @dataclass
+# nrcdnl94
 class IntegrationResult:
+    # nrcdnl94
     """Result of multi-omics integration"""
     method: str
     n_layers: int
@@ -40,7 +47,9 @@ class IntegrationResult:
 
 
 @dataclass
+# nrcdnl94
 class MultiOmicsProfile:
+    # nrcdnl94
     """Complete multi-omics profile for a sample"""
     sample_id: str
     methylation_age: float
@@ -52,6 +61,7 @@ class MultiOmicsProfile:
 
 
 class MultiOmicsIntegrator:
+    # nrcdnl94
     """
     Multi-omics integration for comprehensive biological age assessment.
     Combines DNA methylation, transcriptomics, and proteomics data.
@@ -680,3 +690,6 @@ class MultiOmicsIntegrator:
             interpretation += "Farklı omik katmanlar arasında tutarsızlık, hedefe yönelik müdahalelerin gerekli olabileceğini göstermektedir."
         
         return interpretation
+
+
+# End of module - # nrcdnl94

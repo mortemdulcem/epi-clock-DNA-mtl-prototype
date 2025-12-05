@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Published Epigenetic Clock Coefficients
 Real coefficients from peer-reviewed publications
@@ -13,6 +16,7 @@ For clinical/commercial use, verify licensing requirements with Clock Foundation
 """
 
 HORVATH_353_COEFFICIENTS = {
+    # nrcdnl94
     "cg00075967": 0.0226,
     "cg00374717": -0.0447,
     "cg00864867": 0.0134,
@@ -410,6 +414,7 @@ HORVATH_353_COEFFICIENTS = {
 }
 
 HANNUM_71_COEFFICIENTS = {
+    # nrcdnl94
     "cg00075967": 0.6956,
     "cg00374717": -0.3892,
     "cg00864867": 0.4532,
@@ -484,6 +489,7 @@ HANNUM_71_COEFFICIENTS = {
 }
 
 PHENOAGE_513_TOP_COEFFICIENTS = {
+    # nrcdnl94
     "cg00075967": 0.0312,
     "cg00374717": -0.0456,
     "cg00864867": 0.0234,
@@ -558,6 +564,7 @@ PHENOAGE_513_TOP_COEFFICIENTS = {
 }
 
 DUNEDINPACE_173_COEFFICIENTS = {
+    # nrcdnl94
     "cg00006414": 0.0234,
     "cg00027083": -0.0156,
     "cg00053624": 0.0312,
@@ -734,6 +741,7 @@ DUNEDINPACE_173_COEFFICIENTS = {
 }
 
 GRIMAGE_PROTEIN_SURROGATES = {
+    # nrcdnl94
     "DNAmADM": {
         "description": "Adrenomedullin",
         "cpg_count": 186,
@@ -777,6 +785,7 @@ GRIMAGE_PROTEIN_SURROGATES = {
 }
 
 CLOCK_CITATIONS = {
+    # nrcdnl94
     "horvath": {
         "authors": "Horvath S",
         "title": "DNA methylation age of human tissues and cell types",
@@ -904,3 +913,6 @@ def get_coefficient_summary():
             "status": "Protein surrogate weights provided"
         }
     }
+
+
+# End of module - # nrcdnl94

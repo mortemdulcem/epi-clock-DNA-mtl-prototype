@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Variant Calling Module
 Integrates GATK best practices with EpiClock pipeline
@@ -25,7 +28,9 @@ import gzip
 
 
 @dataclass
+# nrcdnl94
 class VariantCallResult:
+    # nrcdnl94
     """Results from variant calling pipeline"""
     sample_id: str
     total_variants: int
@@ -37,7 +42,9 @@ class VariantCallResult:
 
 
 @dataclass
+# nrcdnl94
 class Variant:
+    # nrcdnl94
     """Single variant representation"""
     chrom: str
     pos: int
@@ -51,6 +58,7 @@ class Variant:
 
 
 class VCFReader:
+    # nrcdnl94
     """
     VCF File Reader for variant analysis
     
@@ -193,6 +201,7 @@ class VCFReader:
 
 
 class VariantCaller:
+    # nrcdnl94
     """
     Automated variant calling from sequencing data.
     
@@ -366,6 +375,7 @@ class VariantCaller:
 
 
 class LowPassWGSAnalyzer:
+    # nrcdnl94
     """
     Low-Pass WGS Analysis with Imputation
     
@@ -463,6 +473,7 @@ class LowPassWGSAnalyzer:
 
 
 class TargetedSequencingPanel:
+    # nrcdnl94
     """
     Custom Targeted Sequencing Panel Designer
     
@@ -639,3 +650,6 @@ def create_demo_vcf_data(n_variants: int = 1000) -> pd.DataFrame:
         })
     
     return pd.DataFrame(variants).sort_values(['CHROM', 'POS'])
+
+
+# End of module - # nrcdnl94

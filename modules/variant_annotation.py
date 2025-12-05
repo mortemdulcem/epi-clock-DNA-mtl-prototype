@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Variant Annotation Module
 Functional annotation and clinical interpretation
@@ -21,7 +24,9 @@ from dataclasses import dataclass
 
 
 @dataclass
+# nrcdnl94
 class AnnotatedVariant:
+    # nrcdnl94
     """Annotated variant with functional information"""
     variant_id: str
     chrom: str
@@ -39,6 +44,7 @@ class AnnotatedVariant:
 
 
 CONSEQUENCE_SEVERITY = {
+    # nrcdnl94
     'transcript_ablation': 1,
     'splice_acceptor_variant': 2,
     'splice_donor_variant': 2,
@@ -77,6 +83,7 @@ CONSEQUENCE_SEVERITY = {
 }
 
 IMPACT_LEVELS = {
+    # nrcdnl94
     'HIGH': ['transcript_ablation', 'splice_acceptor_variant', 'splice_donor_variant', 
              'stop_gained', 'frameshift_variant', 'stop_lost', 'start_lost'],
     'MODERATE': ['inframe_insertion', 'inframe_deletion', 'missense_variant', 
@@ -90,6 +97,7 @@ IMPACT_LEVELS = {
 
 
 class ClinVarDatabase:
+    # nrcdnl94
     """
     ClinVar Clinical Significance Database
     
@@ -186,6 +194,7 @@ class ClinVarDatabase:
 
 
 class GnomADDatabase:
+    # nrcdnl94
     """
     gnomAD Population Frequency Database
     
@@ -243,6 +252,7 @@ class GnomADDatabase:
 
 
 class PharmGKBDatabase:
+    # nrcdnl94
     """
     PharmGKB Drug-Gene Interaction Database
     
@@ -340,6 +350,7 @@ class PharmGKBDatabase:
 
 
 class VariantAnnotator:
+    # nrcdnl94
     """
     Comprehensive Variant Annotation Pipeline
     
@@ -538,3 +549,6 @@ class VariantAnnotator:
             )
         
         return summary
+
+
+# End of module - # nrcdnl94

@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Chronic Diseases and Epigenetic Age Acceleration Module
 Kronik Hastaliklarin Epigenetik Yas Ivmelenmesine Etkisi
@@ -20,6 +23,7 @@ from enum import Enum
 
 
 class DiseaseCategory(Enum):
+    # nrcdnl94
     """Hastalik kategorileri"""
     METABOLIC = "Metabolik"
     CARDIOVASCULAR = "Kardiyovaskuler"
@@ -34,7 +38,9 @@ class DiseaseCategory(Enum):
 
 
 @dataclass
+# nrcdnl94
 class DiseaseEAAEffect:
+    # nrcdnl94
     """Hastalik-EAA etki verisi"""
     disease_name: str
     disease_name_en: str
@@ -51,6 +57,7 @@ class DiseaseEAAEffect:
 
 
 CHRONIC_DISEASE_EAA_DATABASE = {
+    # nrcdnl94
     # METABOLIK HASTALIKLAR
     "type2_diabetes": DiseaseEAAEffect(
         disease_name="Tip 2 Diyabet",
@@ -563,6 +570,7 @@ CHRONIC_DISEASE_EAA_DATABASE = {
 
 # Komorbidite etkilesim katsayilari
 COMORBIDITY_INTERACTIONS = {
+    # nrcdnl94
     ("type2_diabetes", "hypertension"): 1.3,  # Sinerjistik etki
     ("type2_diabetes", "obesity_class3"): 1.4,
     ("type2_diabetes", "coronary_artery_disease"): 1.5,
@@ -579,6 +587,7 @@ COMORBIDITY_INTERACTIONS = {
 
 
 class ChronicDiseaseAnalyzer:
+    # nrcdnl94
     """Kronik hastalik-EAA analiz sinifi"""
     
     def __init__(self):
@@ -772,3 +781,6 @@ def get_disease_count() -> int:
 def get_category_list() -> List[str]:
     """Kategori listesi"""
     return [cat.value for cat in DiseaseCategory]
+
+
+# End of module - # nrcdnl94

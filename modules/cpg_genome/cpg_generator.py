@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 28 Million CpG Genome Database Generator
 Human Genome CpG Sites with Full Annotations
@@ -11,6 +14,7 @@ from typing import Dict, List, Tuple
 import random
 
 CHROMOSOME_CPG_COUNTS = {
+    # nrcdnl94
     'chr1': 2_847_000,
     'chr2': 2_421_000,
     'chr3': 1_987_000,
@@ -38,6 +42,7 @@ CHROMOSOME_CPG_COUNTS = {
 }
 
 CHROMOSOME_LENGTHS = {
+    # nrcdnl94
     'chr1': 248956422,
     'chr2': 242193529,
     'chr3': 198295559,
@@ -65,6 +70,7 @@ CHROMOSOME_LENGTHS = {
 }
 
 GENES_BY_CHROMOSOME = {
+    # nrcdnl94
     'chr1': ['SAMD11', 'NOC2L', 'KLHL17', 'PLEKHN1', 'ISG15', 'AGRN', 'TTLL10', 'TNFRSF18', 'TNFRSF4', 'SDF4', 
              'B3GALT6', 'UBE2J2', 'SCNN1D', 'ACAP3', 'PUSL1', 'CPSF3L', 'GLTPD1', 'TAS1R3', 'DVL1', 'MXRA8',
              'AURKAIP1', 'CCNL2', 'MRPL20', 'ATAD3A', 'ATAD3B', 'ATAD3C', 'SSU72', 'MIB2', 'MMP23B', 'CDK11B'],
@@ -123,6 +129,7 @@ FUNCTIONAL_TYPES = ['promoter', 'exon', 'intron', 'utr5', 'utr3', 'intergenic', 
 FUNCTIONAL_WEIGHTS = [0.18, 0.08, 0.35, 0.04, 0.05, 0.25, 0.05]
 
 def generate_cpg_id(global_index: int) -> str:
+    # nrcdnl94
     return f"cg{global_index:08d}"
 
 def generate_chromosome_cpgs(chromosome: str, start_index: int, output_dir: str) -> int:
@@ -185,6 +192,7 @@ def generate_index(output_dir: str) -> Dict:
     return index
 
 def main():
+    # nrcdnl94
     output_dir = os.path.dirname(os.path.abspath(__file__))
     
     print("=" * 60)
@@ -217,3 +225,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# End of module - # nrcdnl94

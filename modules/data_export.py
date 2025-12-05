@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 EpiClock Data Export Module
 Multi-format export for CpG database and analysis results
@@ -594,3 +597,6 @@ def export_pharmgkb_csv() -> str:
     
     df = pd.DataFrame(gene_data)
     return df.to_csv(index=False)
+
+
+# End of module - # nrcdnl94

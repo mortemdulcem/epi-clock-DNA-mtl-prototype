@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Gene Set Enrichment Analysis (GSEA) Module for EpiClock Prototype
 Biological pathway analysis of differentially methylated CpGs
@@ -13,7 +16,9 @@ from plotly.subplots import make_subplots
 
 
 @dataclass
+# nrcdnl94
 class PathwayResult:
+    # nrcdnl94
     """Result for a single pathway in enrichment analysis"""
     pathway_id: str
     pathway_name: str
@@ -29,7 +34,9 @@ class PathwayResult:
 
 
 @dataclass
+# nrcdnl94
 class GSEAResult:
+    # nrcdnl94
     """Complete GSEA analysis result"""
     analysis_name: str
     substance_type: str
@@ -42,6 +49,7 @@ class GSEAResult:
 
 
 class GSEAnalyzer:
+    # nrcdnl94
     """
     Gene Set Enrichment Analysis for DNA methylation data.
     Maps CpGs to genes and performs pathway enrichment analysis.
@@ -556,3 +564,6 @@ class GSEAnalyzer:
                             "bu da madde kullanımının biyolojik yaşlanma mekanizmaları üzerindeki etkisini desteklemektedir."
         
         return interpretation
+
+
+# End of module - # nrcdnl94

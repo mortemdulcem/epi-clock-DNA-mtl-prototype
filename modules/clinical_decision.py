@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Clinical Decision Support System for EpiClock Prototype
 Risk stratification and treatment recommendations based on EAA scores
@@ -13,7 +16,9 @@ from plotly.subplots import make_subplots
 
 
 @dataclass
+# nrcdnl94
 class RiskAssessment:
+    # nrcdnl94
     """Comprehensive risk assessment result"""
     patient_id: str
     assessment_date: datetime
@@ -33,7 +38,9 @@ class RiskAssessment:
 
 
 @dataclass
+# nrcdnl94
 class TreatmentRecommendation:
+    # nrcdnl94
     """Treatment recommendation with evidence"""
     recommendation_id: str
     priority: str
@@ -48,7 +55,9 @@ class TreatmentRecommendation:
 
 
 @dataclass 
+# nrcdnl94
 class InterventionPlan:
+    # nrcdnl94
     """Comprehensive intervention plan"""
     patient_id: str
     creation_date: datetime
@@ -60,6 +69,7 @@ class InterventionPlan:
 
 
 class ClinicalDecisionSupport:
+    # nrcdnl94
     """
     Clinical decision support system for epigenetic age management.
     Provides risk stratification, treatment recommendations, and monitoring guidance.
@@ -637,3 +647,6 @@ class ClinicalDecisionSupport:
             'disclaimer': "Bu rapor klinik karar destek aracı olarak hazırlanmıştır. "
                          "Tüm tedavi kararları yetkili sağlık profesyonelleri tarafından verilmelidir."
         }
+
+
+# End of module - # nrcdnl94

@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 EpiClock Academic User Guide Module
 Comprehensive documentation and tutorials for researchers
@@ -13,6 +16,7 @@ GUIDE_VERSION = "1.0.0"
 LAST_UPDATED = "2024-12-01"
 
 EPICLOCK_MODULES = {
+    # nrcdnl94
     "dna_upload": {
         "name": "DNA Verisi Yükleme",
         "icon": "📤",
@@ -147,6 +151,7 @@ EPICLOCK_MODULES = {
 }
 
 EPIGENETIC_CLOCKS_INFO = {
+    # nrcdnl94
     "horvath": {
         "name": "Horvath Multi-tissue Clock",
         "year": 2013,
@@ -205,6 +210,7 @@ EPIGENETIC_CLOCKS_INFO = {
 }
 
 SUBSTANCE_EAA_EFFECTS = {
+    # nrcdnl94
     "polysubstance": {"eaa": 7.3, "ci_low": 6.4, "ci_high": 8.3, "name": "Çoklu Madde"},
     "methamphetamine": {"eaa": 6.2, "ci_low": 4.5, "ci_high": 8.1, "name": "Metamfetamin"},
     "cocaine": {"eaa": 4.1, "ci_low": 3.5, "ci_high": 4.7, "name": "Kokain"},
@@ -327,6 +333,7 @@ ACADEMIC_REFERENCES = [
 ]
 
 GLOSSARY_TERMS = {
+    # nrcdnl94
     "Epigenetik": "DNA dizisini değiştirmeden gen ekspresyonunu düzenleyen mekanizmalar",
     "DNA Metilasyon": "Sitozin bazına metil grubu eklenmesi, genellikle CpG dinükleotidlerinde",
     "CpG Sitesi": "Sitozin-fosfat-guanin dinükleotidi, DNA metilasyonunun ana hedefi",
@@ -647,3 +654,6 @@ def get_guide_statistics() -> Dict:
         "version": GUIDE_VERSION,
         "last_updated": LAST_UPDATED
     }
+
+
+# End of module - # nrcdnl94

@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Dynamic Multi-Combination Module - Advanced Synergistic Effects Calculator
 Supports unlimited combinations of substances and chronic diseases
@@ -20,6 +23,7 @@ import math
 
 
 class RiskLevel(Enum):
+    # nrcdnl94
     MINIMAL = ("Minimal", "#22c55e", 0, 2)
     LOW = ("Düşük", "#84cc16", 2, 4)
     MODERATE = ("Orta", "#eab308", 4, 7)
@@ -30,7 +34,9 @@ class RiskLevel(Enum):
 
 
 @dataclass
+# nrcdnl94
 class SubstanceData:
+    # nrcdnl94
     """Complete substance data for dynamic calculations"""
     key: str
     name_tr: str
@@ -48,7 +54,9 @@ class SubstanceData:
 
 
 @dataclass
+# nrcdnl94
 class DiseaseData:
+    # nrcdnl94
     """Complete disease data for dynamic calculations"""
     key: str
     name_tr: str
@@ -65,7 +73,9 @@ class DiseaseData:
 
 
 @dataclass
+# nrcdnl94
 class SynergyData:
+    # nrcdnl94
     """Synergy interaction data"""
     type: str  # 'substance-substance', 'disease-disease', 'substance-disease'
     key1: str
@@ -79,6 +89,7 @@ class SynergyData:
 
 
 SUBSTANCE_DATABASE = {
+    # nrcdnl94
     "alcohol_light": SubstanceData(
         key="alcohol_light",
         name_tr="Alkol (Hafif Kullanım)",
@@ -683,6 +694,7 @@ SUBSTANCE_DATABASE = {
 
 
 DISEASE_DATABASE = {
+    # nrcdnl94
     "type2_diabetes": DiseaseData(
         key="type2_diabetes",
         name_tr="Tip 2 Diyabet",
@@ -1331,6 +1343,7 @@ DISEASE_DATABASE = {
 
 
 SUBSTANCE_SUBSTANCE_SYNERGY = {
+    # nrcdnl94
     ("alcohol_heavy", "opioid_use"): SynergyData(
         type="substance-substance",
         key1="alcohol_heavy",
@@ -1577,6 +1590,7 @@ SUBSTANCE_SUBSTANCE_SYNERGY = {
 
 
 DISEASE_DISEASE_SYNERGY = {
+    # nrcdnl94
     ("type2_diabetes", "hypertension"): SynergyData(
         type="disease-disease",
         key1="type2_diabetes",
@@ -1867,6 +1881,7 @@ DISEASE_DISEASE_SYNERGY = {
 
 
 SUBSTANCE_DISEASE_SYNERGY = {
+    # nrcdnl94
     ("alcohol_heavy", "liver_cirrhosis"): SynergyData(
         type="substance-disease",
         key1="alcohol_heavy",
@@ -2168,6 +2183,7 @@ SUBSTANCE_DISEASE_SYNERGY = {
 
 
 class DynamicCombinationCalculator:
+    # nrcdnl94
     """Advanced calculator for unlimited substance + disease combinations"""
     
     def __init__(self):
@@ -2504,3 +2520,6 @@ def get_synergy_breakdown() -> dict:
         'substance_disease': len(SUBSTANCE_DISEASE_SYNERGY),
         'total': get_total_synergy_count()
     }
+
+
+# End of module - # nrcdnl94

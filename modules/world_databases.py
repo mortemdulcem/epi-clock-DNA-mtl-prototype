@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 World Genomics Database Integration Module
 Integrates major public databases for addiction research
@@ -24,6 +27,7 @@ import json
 
 
 class DatabaseSource(Enum):
+    # nrcdnl94
     """Major genomics database sources"""
     GWAS_CATALOG = ("NHGRI-EBI GWAS Catalog", "https://www.ebi.ac.uk/gwas/", "Free")
     OPEN_GWAS = ("OpenGWAS/IEU", "https://gwas.mrcieu.ac.uk/", "Free API")
@@ -41,7 +45,9 @@ class DatabaseSource(Enum):
 
 
 @dataclass
+# nrcdnl94
 class GWASStudy:
+    # nrcdnl94
     """GWAS study metadata"""
     study_id: str
     trait: str
@@ -59,7 +65,9 @@ class GWASStudy:
 
 
 @dataclass
+# nrcdnl94
 class GWASLocus:
+    # nrcdnl94
     """Significant GWAS locus"""
     rsid: str
     gene: str
@@ -77,7 +85,9 @@ class GWASLocus:
 
 
 @dataclass
+# nrcdnl94
 class EWASAssociation:
+    # nrcdnl94
     """EWAS methylation association"""
     cpg_id: str
     gene: str
@@ -92,6 +102,7 @@ class EWASAssociation:
 
 
 ADDICTION_GWAS_STUDIES = {
+    # nrcdnl94
     'alcohol_dependence': GWASStudy(
         study_id="GCST90012877",
         trait="Alcohol dependence",
@@ -221,6 +232,7 @@ ADDICTION_GWAS_STUDIES = {
 
 
 ADDICTION_GWAS_LOCI = {
+    # nrcdnl94
     'alcohol_dependence': [
         GWASLocus(rsid='rs1229984', gene='ADH1B', chromosome=4, position=100239319,
                   p_value=9.8e-94, beta=-0.29, se=0.02, effect_allele='A', other_allele='G',
@@ -293,6 +305,7 @@ ADDICTION_GWAS_LOCI = {
 
 
 EWAS_ADDICTION_MARKERS = {
+    # nrcdnl94
     'tobacco_smoking': [
         EWASAssociation(cpg_id='cg05575921', gene='AHRR', chromosome=5, position=373378,
                        delta_beta=-0.21, p_value=1.2e-156, direction='hypomethylated',
@@ -368,6 +381,7 @@ EWAS_ADDICTION_MARKERS = {
 
 
 CPIC_GUIDELINES_ADDICTION = {
+    # nrcdnl94
     'opioids_cyp2d6': {
         'guideline_id': 'CPIC-CYP2D6-Opioids',
         'drugs': ['Codeine', 'Tramadol', 'Hydrocodone', 'Oxycodone'],
@@ -449,6 +463,7 @@ CPIC_GUIDELINES_ADDICTION = {
 
 
 PHARMGKB_ADDICTION_GENES = {
+    # nrcdnl94
     'OPRM1': {
         'pharmgkb_id': 'PA31490',
         'symbol': 'OPRM1',
@@ -600,6 +615,7 @@ PHARMGKB_ADDICTION_GENES = {
 
 
 GEO_ADDICTION_DATASETS = {
+    # nrcdnl94
     'GSE154971': {
         'title': 'Genome-wide DNA methylation in methamphetamine addiction',
         'organism': 'Homo sapiens',
@@ -707,3 +723,6 @@ def get_database_summary() -> Dict[str, Any]:
             {'name': 'ClinVar', 'url': 'https://www.ncbi.nlm.nih.gov/clinvar/', 'access': 'Free'}
         ]
     }
+
+
+# End of module - # nrcdnl94

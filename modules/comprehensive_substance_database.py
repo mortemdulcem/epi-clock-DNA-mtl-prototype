@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Comprehensive Substance Abuse and Addiction Database
 World Literature Integration Module
@@ -23,6 +26,7 @@ import json
 
 
 class SubstanceClass(Enum):
+    # nrcdnl94
     """WHO/UNODC Substance Classification"""
     OPIOIDS = "Opioidler"
     STIMULANTS = "Stimulanlar"
@@ -36,6 +40,7 @@ class SubstanceClass(Enum):
 
 
 class AddictionPotential(Enum):
+    # nrcdnl94
     """Addiction liability classification"""
     VERY_HIGH = ("Çok Yüksek", 5, "Hızlı tolerans, şiddetli yoksunluk")
     HIGH = ("Yüksek", 4, "Belirgin bağımlılık yapıcı")
@@ -45,6 +50,7 @@ class AddictionPotential(Enum):
 
 
 class LegalStatus(Enum):
+    # nrcdnl94
     """International legal status"""
     SCHEDULE_I = "Liste I (Tıbbi kullanımı yok, yüksek kötüye kullanım)"
     SCHEDULE_II = "Liste II (Yüksek kötüye kullanım, tıbbi kullanım var)"
@@ -57,7 +63,9 @@ class LegalStatus(Enum):
 
 
 @dataclass
+# nrcdnl94
 class SubstanceProfile:
+    # nrcdnl94
     """Complete substance profile with genetic/epigenetic data"""
     name: str
     turkish_name: str
@@ -84,6 +92,7 @@ class SubstanceProfile:
 
 
 OPIOID_SUBSTANCES = {
+    # nrcdnl94
     'morphine': SubstanceProfile(
         name="Morphine",
         turkish_name="Morfin",
@@ -226,6 +235,7 @@ OPIOID_SUBSTANCES = {
 
 
 STIMULANT_SUBSTANCES = {
+    # nrcdnl94
     'cocaine': SubstanceProfile(
         name="Cocaine",
         turkish_name="Kokain",
@@ -335,6 +345,7 @@ STIMULANT_SUBSTANCES = {
 
 
 DEPRESSANT_SUBSTANCES = {
+    # nrcdnl94
     'alcohol': SubstanceProfile(
         name="Ethanol",
         turkish_name="Alkol",
@@ -425,6 +436,7 @@ DEPRESSANT_SUBSTANCES = {
 
 
 CANNABINOID_SUBSTANCES = {
+    # nrcdnl94
     'cannabis': SubstanceProfile(
         name="Cannabis (THC)",
         turkish_name="Esrar/Marihuana",
@@ -466,6 +478,7 @@ CANNABINOID_SUBSTANCES = {
 
 
 HALLUCINOGEN_SUBSTANCES = {
+    # nrcdnl94
     'lsd': SubstanceProfile(
         name="LSD (Lysergic acid diethylamide)",
         turkish_name="LSD",
@@ -547,6 +560,7 @@ HALLUCINOGEN_SUBSTANCES = {
 
 
 NICOTINE_SUBSTANCES = {
+    # nrcdnl94
     'nicotine': SubstanceProfile(
         name="Nicotine",
         turkish_name="Nikotin",
@@ -570,6 +584,7 @@ NICOTINE_SUBSTANCES = {
 
 
 NEUROTRANSMITTER_GENE_SYSTEMS = {
+    # nrcdnl94
     'dopamine_system': {
         'description': 'Dopamin sentezi, transportu, reseptörleri ve sinyal iletimi',
         'n_genes': 267,
@@ -668,6 +683,7 @@ NEUROTRANSMITTER_GENE_SYSTEMS = {
 
 
 EPIGENETIC_REGULATION_GENES = {
+    # nrcdnl94
     'dna_methylation': {
         'writers': ['DNMT1', 'DNMT3A', 'DNMT3B'],
         'erasers': ['TET1', 'TET2', 'TET3'],
@@ -699,6 +715,7 @@ EPIGENETIC_REGULATION_GENES = {
 
 
 STRESS_HPA_GENES = {
+    # nrcdnl94
     'crh_system': ['CRH', 'CRHR1', 'CRHR2', 'CRHBP', 'UCN', 'UCN2', 'UCN3'],
     'glucocorticoid': ['NR3C1', 'NR3C2', 'FKBP5', 'FKBP4', 'HSP90AA1'],
     'vasopressin_oxytocin': ['AVP', 'AVPR1A', 'AVPR1B', 'OXT', 'OXTR', 'CD38'],
@@ -707,6 +724,7 @@ STRESS_HPA_GENES = {
 
 
 NEUROPLASTICITY_GENES = {
+    # nrcdnl94
     'neurotrophic_factors': {
         'neurotrophins': ['NGF', 'BDNF', 'NTF3', 'NTF4'],
         'receptors': ['NTRK1', 'NTRK2', 'NTRK3', 'NGFR'],
@@ -724,6 +742,7 @@ NEUROPLASTICITY_GENES = {
 
 
 GWAS_CATALOG_ADDICTION = {
+    # nrcdnl94
     'alcohol_dependence': {
         'study_id': 'GCST90012877',
         'pmid': '30643251',
@@ -792,6 +811,7 @@ GWAS_CATALOG_ADDICTION = {
 
 
 EWAS_CATALOG_ADDICTION = {
+    # nrcdnl94
     'tobacco_smoking': {
         'n_publications': 30,
         'n_cpgs': 2568,
@@ -835,6 +855,7 @@ EWAS_CATALOG_ADDICTION = {
 
 
 PHARMACOGENOMICS_ADDICTION = {
+    # nrcdnl94
     'opioid_therapy': {
         'CYP2D6': {
             'drug_examples': ['Codeine', 'Tramadol', 'Hydrocodone', 'Oxycodone'],
@@ -999,3 +1020,6 @@ def get_database_statistics() -> Dict[str, Any]:
             'gnomAD v4'
         ]
     }
+
+
+# End of module - # nrcdnl94

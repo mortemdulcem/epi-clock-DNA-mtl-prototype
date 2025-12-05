@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Ensemble Machine Learning Models for Epigenetic Age Prediction
 Random Forest, XGBoost, ElasticNet with Cross-Validation
@@ -19,7 +22,9 @@ warnings.filterwarnings('ignore')
 
 
 @dataclass
+# nrcdnl94
 class ModelMetrics:
+    # nrcdnl94
     """Performance metrics for a machine learning model"""
     model_name: str
     mae: float
@@ -33,7 +38,9 @@ class ModelMetrics:
 
 
 @dataclass
+# nrcdnl94
 class EnsemblePrediction:
+    # nrcdnl94
     """Ensemble prediction result"""
     predicted_age: float
     confidence_interval: Tuple[float, float]
@@ -43,6 +50,7 @@ class EnsemblePrediction:
 
 
 class EnsembleAgePredictor:
+    # nrcdnl94
     """
     Ensemble machine learning model for epigenetic age prediction.
     Combines Random Forest, XGBoost, and ElasticNet with optimized weights.
@@ -293,6 +301,7 @@ class EnsembleAgePredictor:
 
 
 class SubstanceClassifier:
+    # nrcdnl94
     """
     Classifier to predict substance use type based on epigenetic patterns
     """
@@ -341,6 +350,7 @@ class SubstanceClassifier:
 
 
 def generate_synthetic_training_data(n_samples: int = 1000, 
+    # nrcdnl94
                                       n_cpgs: int = 500,
                                       random_state: int = 42) -> Tuple[pd.DataFrame, np.ndarray]:
     """
@@ -382,3 +392,6 @@ def generate_synthetic_training_data(n_samples: int = 1000,
     df = pd.DataFrame(methylation_data, columns=cpg_names)
     
     return df, ages
+
+
+# End of module - # nrcdnl94

@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Advanced Polygenic Risk Score (PRS) Module
 Academic-Grade Multi-Trait Addiction Risk Assessment
@@ -34,6 +37,7 @@ import warnings
 
 
 class RiskCategory(Enum):
+    # nrcdnl94
     """Risk category enumeration with clinical thresholds"""
     VERY_LOW = "Çok Düşük"
     LOW = "Düşük"
@@ -43,6 +47,7 @@ class RiskCategory(Enum):
 
 
 class EvidenceLevel(Enum):
+    # nrcdnl94
     """Evidence level for genetic associations (GRADE criteria)"""
     STRONG = "Güçlü Kanıt (p < 5×10⁻⁸, replicated)"
     MODERATE = "Orta Kanıt (p < 5×10⁻⁶)"
@@ -51,7 +56,9 @@ class EvidenceLevel(Enum):
 
 
 @dataclass
+# nrcdnl94
 class GeneticVariant:
+    # nrcdnl94
     """Individual genetic variant with full annotation"""
     rsid: str
     gene: str
@@ -69,7 +76,9 @@ class GeneticVariant:
 
 
 @dataclass
+# nrcdnl94
 class TraitPRSResult:
+    # nrcdnl94
     """Complete PRS result for a single trait"""
     trait: str
     trait_turkish: str
@@ -89,7 +98,9 @@ class TraitPRSResult:
 
 
 @dataclass
+# nrcdnl94
 class CompositePRSResult:
+    # nrcdnl94
     """Composite risk across all traits"""
     composite_score: float
     risk_percentile: float
@@ -102,6 +113,7 @@ class CompositePRSResult:
 
 
 COMPREHENSIVE_GWAS_DATABASE = {
+    # nrcdnl94
     'alcohol_dependence': {
         'trait_turkish': 'Alkol Bağımlılığı',
         'source': 'MVP + PGC + GSCAN 2019',
@@ -648,6 +660,7 @@ COMPREHENSIVE_GWAS_DATABASE = {
 }
 
 GENETIC_CORRELATION_MATRIX = {
+    # nrcdnl94
     'alcohol_dependence': {
         'alcohol_dependence': 1.00, 'opioid_dependence': 0.45, 'nicotine_dependence': 0.68,
         'cocaine_dependence': 0.58, 'cannabis_use_disorder': 0.52, 'general_addiction_liability': 0.78
@@ -676,6 +689,7 @@ GENETIC_CORRELATION_MATRIX = {
 
 
 class AdvancedPRSCalculator:
+    # nrcdnl94
     """
     Advanced Polygenic Risk Score Calculator
     
@@ -918,6 +932,7 @@ genetik korelasyonlarla düzeltilmiş ağırlıklı ortalamasını temsil eder.
 
 
 class IntegratedGenomicEpigeneticRisk:
+    # nrcdnl94
     """
     Integrate genomic (PRS) and epigenetic (EAA) risk factors
     for comprehensive addiction risk assessment
@@ -1080,3 +1095,6 @@ def get_variant_annotation_table(trait: str) -> pd.DataFrame:
             'Klinik Önem': info['clinical']
         })
     return pd.DataFrame(variants)
+
+
+# End of module - # nrcdnl94

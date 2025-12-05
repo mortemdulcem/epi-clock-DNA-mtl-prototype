@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Kapsamlı Madde Kullanımı Tespit ve Kullanım Süresi Tahmin Modülü
 DNA Metilasyon Verisi Üzerinden Madde Tespiti
@@ -21,6 +24,7 @@ from typing import Dict, List, Tuple, Optional
 from enum import Enum
 
 class DetectionConfidence(Enum):
+    # nrcdnl94
     VERY_HIGH = "Çok Yüksek (>95%)"
     HIGH = "Yüksek (85-95%)"
     MODERATE = "Orta (70-85%)"
@@ -28,6 +32,7 @@ class DetectionConfidence(Enum):
     UNCERTAIN = "Belirsiz (<50%)"
 
 class SubstanceCategory(Enum):
+    # nrcdnl94
     TOBACCO_NICOTINE = "Tütün ve Nikotin Ürünleri"
     ALCOHOL = "Alkol"
     CANNABIS = "Kannabinoidler"
@@ -45,7 +50,9 @@ class SubstanceCategory(Enum):
     RESEARCH_CHEMICALS = "Araştırma Kimyasalları"
 
 @dataclass
+# nrcdnl94
 class SubstanceSignature:
+    # nrcdnl94
     """Madde-spesifik DNA metilasyon imzası"""
     substance_key: str
     substance_name_tr: str
@@ -3398,7 +3405,9 @@ SUBSTANCE_SIGNATURES = generate_substance_database()
 
 
 @dataclass
+# nrcdnl94
 class DetectionResult:
+    # nrcdnl94
     """Madde tespit sonucu"""
     substance_key: str
     substance_name_tr: str
@@ -3421,6 +3430,7 @@ class DetectionResult:
 
 
 class SubstanceDetectionEngine:
+    # nrcdnl94
     """DNA metilasyon verisi üzerinden madde kullanımı tespit motoru"""
     
     def __init__(self):
@@ -3715,3 +3725,6 @@ if __name__ == "__main__":
     print(f"Toplam Madde Sayısı: {get_detectable_substance_count()}")
     print(f"Toplam CpG Marker: {get_total_marker_count()}")
     print(f"Kategoriler: {get_substance_categories()}")
+
+
+# End of module - # nrcdnl94

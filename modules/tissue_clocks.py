@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Tissue-Specific Epigenetic Clocks Module
 =========================================
@@ -30,6 +33,7 @@ import hashlib
 
 
 class TissueType(Enum):
+    # nrcdnl94
     """Supported tissue types for epigenetic age estimation"""
     BLOOD = "blood"
     BRAIN_PFC = "brain_prefrontal_cortex"
@@ -46,7 +50,9 @@ class TissueType(Enum):
 
 
 @dataclass
+# nrcdnl94
 class TissueClockResult:
+    # nrcdnl94
     """Result of tissue-specific epigenetic age calculation"""
     tissue_type: TissueType
     clock_name: str
@@ -63,7 +69,9 @@ class TissueClockResult:
 
 
 @dataclass 
+# nrcdnl94
 class TissueClockCoefficients:
+    # nrcdnl94
     """Coefficients for a tissue-specific clock"""
     tissue_type: TissueType
     clock_name: str
@@ -80,6 +88,7 @@ class TissueClockCoefficients:
 
 
 class TissueSpecificClockRegistry:
+    # nrcdnl94
     """
     Registry of tissue-specific epigenetic clocks with coefficients
     and cross-tissue normalization capabilities.
@@ -252,6 +261,7 @@ class TissueSpecificClockRegistry:
 
 
 class TissueSpecificClockCalculator:
+    # nrcdnl94
     """
     Advanced tissue-specific epigenetic age calculator with:
     - Multi-tissue support
@@ -544,6 +554,7 @@ class TissueSpecificClockCalculator:
 
 
 class CrossTissueNormalizer:
+    # nrcdnl94
     """
     Cross-tissue normalization for comparing epigenetic ages
     across different tissue types
@@ -602,6 +613,7 @@ class CrossTissueNormalizer:
 
 
 class TissueAgeDiscordanceAnalyzer:
+    # nrcdnl94
     """
     Analyze discordance between tissue-specific epigenetic ages
     to identify tissue-specific aging patterns
@@ -704,3 +716,6 @@ def get_tissue_clock_summary() -> pd.DataFrame:
     df['Yaş Aralığı'] = df['Yaş Aralığı'].apply(lambda x: f"{x[0]}-{x[1]}")
     
     return df
+
+
+# End of module - # nrcdnl94

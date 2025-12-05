@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 EpiClock CpG Database Module
 Comprehensive 450K/EPIC Array CpG Site Database for Substance Abuse Research
@@ -18,6 +21,7 @@ import numpy as np
 
 
 class EvidenceLevel(Enum):
+    # nrcdnl94
     """Evidence strength classification"""
     VERY_STRONG = ("very_strong", "Çok Güçlü", "p < 1e-8, >10 çalışma")
     STRONG = ("strong", "Güçlü", "p < 0.001, 5-10 çalışma")
@@ -27,6 +31,7 @@ class EvidenceLevel(Enum):
 
 
 class MethylationDirection(Enum):
+    # nrcdnl94
     """Methylation change direction"""
     HYPERMETHYLATED = ("hyper", "Hipermetilasyon", "⬆️")
     HYPOMETHYLATED = ("hypo", "Hipometilasyon", "⬇️")
@@ -34,6 +39,7 @@ class MethylationDirection(Enum):
 
 
 class GenomicRegion(Enum):
+    # nrcdnl94
     """Genomic region classification"""
     PROMOTER = ("promoter", "Promotör", "TSS yakını")
     GENE_BODY = ("gene_body", "Gen Gövdesi", "Ekzon/intron")
@@ -46,7 +52,9 @@ class GenomicRegion(Enum):
 
 
 @dataclass
+# nrcdnl94
 class CpGSite:
+    # nrcdnl94
     """Single CpG site with comprehensive annotations"""
     cpg_id: str
     chromosome: int
@@ -81,7 +89,9 @@ class CpGSite:
 
 
 @dataclass
+# nrcdnl94
 class SubstanceCpGPanel:
+    # nrcdnl94
     """CpG panel for a specific substance class"""
     substance_class: str
     turkish_name: str
@@ -103,6 +113,7 @@ class SubstanceCpGPanel:
 
 
 ILLUMINA_PLATFORM_INFO = {
+    # nrcdnl94
     '27k': {
         'name': 'Illumina Infinium HumanMethylation27 BeadChip',
         'total_probes': 27_578,
@@ -146,6 +157,7 @@ ILLUMINA_PLATFORM_INFO = {
 }
 
 HUMAN_GENOME_CPG_DISTRIBUTION = {
+    # nrcdnl94
     'total_cpg_sites_in_genome': 28_000_000,
     'cpg_islands': 30_000,
     'cpg_island_shores': 60_000,
@@ -158,6 +170,7 @@ HUMAN_GENOME_CPG_DISTRIBUTION = {
 }
 
 SUBSTANCE_CPG_COUNTS = {
+    # nrcdnl94
     'alcohol': {
         'total_cpgs': 2847,
         'unique_cpgs': 2634,
@@ -282,6 +295,7 @@ SUBSTANCE_CPG_COUNTS = {
 }
 
 KEY_CPG_MARKERS = {
+    # nrcdnl94
     'alcohol': [
         CpGSite(cpg_id='cg05575921', chromosome=5, position=373378, gene='AHRR',
                 gene_full_name='Aryl Hydrocarbon Receptor Repressor',
@@ -555,6 +569,7 @@ KEY_CPG_MARKERS = {
 }
 
 CPG_GENE_SYSTEMS = {
+    # nrcdnl94
     'dopamine_system': {
         'name': 'Dopamin Sistemi',
         'description': 'Ödül ve motivasyon yolakları',
@@ -781,3 +796,6 @@ def validate_uploaded_cpg_data(df: pd.DataFrame, platform: str = '450k') -> Dict
         results['warnings'].append(f"Düşük kapsam: {results['coverage_percent']:.1f}%")
     
     return results
+
+
+# End of module - # nrcdnl94

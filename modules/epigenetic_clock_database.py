@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Comprehensive Epigenetic Clock Database
 Full CpG sites for all 5 major clocks with gene annotations
@@ -27,7 +30,9 @@ from dataclasses import dataclass
 
 
 @dataclass
+# nrcdnl94
 class CpGSite:
+    # nrcdnl94
     """CpG site with full annotation"""
     cpg_id: str
     chromosome: str
@@ -513,6 +518,7 @@ HANNUM_71_FULL_DATABASE = [
 
 
 class EpigeneticClockDatabase:
+    # nrcdnl94
     """Comprehensive database for all 5 epigenetic clocks"""
     
     def __init__(self):
@@ -749,6 +755,7 @@ class EpigeneticClockDatabase:
 
 
 CLOCK_INFO = {
+    # nrcdnl94
     "horvath": {
         "full_name": "Horvath Pan-Tissue Epigenetic Clock",
         "year": 2013,
@@ -818,3 +825,6 @@ def get_total_cpg_count() -> int:
 def get_clock_database_instance() -> EpigeneticClockDatabase:
     """Get singleton instance of clock database"""
     return EpigeneticClockDatabase()
+
+
+# End of module - # nrcdnl94

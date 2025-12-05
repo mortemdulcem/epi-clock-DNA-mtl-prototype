@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 PostgreSQL Database Module for EpiClock Prototype
 Patient data, analysis history, and longitudinal tracking persistence
@@ -36,6 +39,7 @@ Base = declarative_base()
 
 
 class Patient(Base):
+    # nrcdnl94
     """Patient model for storing patient information"""
     __tablename__ = "patients"
     
@@ -58,6 +62,7 @@ class Patient(Base):
 
 
 class Analysis(Base):
+    # nrcdnl94
     """Analysis model for storing epigenetic age analysis results"""
     __tablename__ = "analyses"
     
@@ -98,6 +103,7 @@ class Analysis(Base):
 
 
 class ClinicalData(Base):
+    # nrcdnl94
     """Clinical biomarker data for patients"""
     __tablename__ = "clinical_data"
     
@@ -134,6 +140,7 @@ class ClinicalData(Base):
 
 
 class GSEAResult(Base):
+    # nrcdnl94
     """Gene Set Enrichment Analysis results"""
     __tablename__ = "gsea_results"
     
@@ -158,6 +165,7 @@ class GSEAResult(Base):
 
 
 class TreatmentRecommendation(Base):
+    # nrcdnl94
     """Clinical decision support recommendations"""
     __tablename__ = "treatment_recommendations"
     
@@ -225,6 +233,7 @@ def get_db():
 
 
 class DatabaseManager:
+    # nrcdnl94
     """Manager class for database operations"""
     
     def __init__(self):
@@ -550,3 +559,6 @@ class DatabaseManager:
                 'clinical_data_count': 0,
                 'gsea_result_count': 0
             }
+
+
+# End of module - # nrcdnl94

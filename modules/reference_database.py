@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Reference Database Module
 Simulated reference data based on 10,542 DNA methylation profiles
@@ -11,7 +14,9 @@ from scipy import stats
 
 
 @dataclass
+# nrcdnl94
 class ReferenceStatistics:
+    # nrcdnl94
     """Statistics from reference population"""
     n_samples: int
     mean_eaa: float
@@ -22,7 +27,9 @@ class ReferenceStatistics:
 
 
 @dataclass
+# nrcdnl94
 class ComparisonResult:
+    # nrcdnl94
     """Result of comparing a sample to reference"""
     sample_eaa: float
     percentile: float
@@ -34,6 +41,7 @@ class ComparisonResult:
 
 
 class ReferenceDatabase:
+    # nrcdnl94
     """
     Reference database based on 10,542 DNA methylation profiles.
     
@@ -417,3 +425,6 @@ class ReferenceDatabase:
             'age_range': (18.0, 75.0),
             'sex_distribution': {'M': 0.55, 'F': 0.45}
         }
+
+
+# End of module - # nrcdnl94

@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
 DNA Metilasyon Tabanlı Epigenetik Yaş İvmelenmesi Analiz Platformu
@@ -2716,6 +2719,7 @@ def init_components():
     }
 
 def main():
+    # nrcdnl94
     components = init_components()
     
     render_dna_helix_animation()
@@ -7626,3 +7630,6 @@ def render_polygenic_risk(components):
 
 if __name__ == "__main__":
     main()
+
+
+# End of module - # nrcdnl94

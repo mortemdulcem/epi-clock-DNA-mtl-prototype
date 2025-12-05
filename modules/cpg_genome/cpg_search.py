@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 CpG Genome Search Module
 Fast search and lookup for 29.4 million CpG sites
@@ -10,7 +13,9 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 
 @dataclass
+# nrcdnl94
 class CpGSite:
+    # nrcdnl94
     cpg_id: str
     chromosome: str
     position: int
@@ -20,6 +25,7 @@ class CpGSite:
     strand: str
 
 class CpGGenomeDatabase:
+    # nrcdnl94
     """29.4 Million CpG Genome Database"""
     
     def __init__(self):
@@ -317,3 +323,6 @@ if __name__ == "__main__":
     samples = db.get_sample_cpgs('chr1', 5)
     for s in samples:
         print(f"  {s.cpg_id}: {s.chromosome}:{s.position} - {s.gene} ({s.functional})")
+
+
+# End of module - # nrcdnl94

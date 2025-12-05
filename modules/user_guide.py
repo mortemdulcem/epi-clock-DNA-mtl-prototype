@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 User Guide and Glossary Module
 Comprehensive help system for non-technical users
@@ -20,6 +23,7 @@ from enum import Enum
 
 
 class EvidenceLevel(Enum):
+    # nrcdnl94
     """Evidence grading based on GRADE criteria"""
     STRONG = ("🟢", "Güçlü", "Çoklu replike edilmiş GWAS (p < 5×10⁻⁸)")
     MODERATE = ("🟡", "Orta", "Tek GWAS veya meta-analiz (p < 5×10⁻⁶)")
@@ -29,7 +33,9 @@ class EvidenceLevel(Enum):
 
 
 @dataclass
+# nrcdnl94
 class GlossaryEntry:
+    # nrcdnl94
     """Single glossary entry with detailed explanation"""
     term: str
     short_definition: str
@@ -40,6 +46,7 @@ class GlossaryEntry:
 
 
 GENOMICS_GLOSSARY = {
+    # nrcdnl94
     'prs': GlossaryEntry(
         term="Poligenik Risk Skoru (PRS)",
         short_definition="Birçok genetik varyantın toplam etkisini gösteren sayısal skor",
@@ -301,6 +308,7 @@ GENOMICS_GLOSSARY = {
 
 
 ACADEMIC_REFERENCES = {
+    # nrcdnl94
     'alcohol_gwas': {
         'citation': 'Walters et al. (2018)',
         'title': 'Transancestral GWAS of alcohol dependence reveals common genetic underpinnings with psychiatric disorders',
@@ -570,3 +578,6 @@ def render_step_by_step_wizard(wizard_type: str):
                     st.rerun()
             else:
                 st.success("✅ Sihirbaz tamamlandı!")
+
+
+# End of module - # nrcdnl94

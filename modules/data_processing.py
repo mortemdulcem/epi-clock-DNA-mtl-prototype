@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 DNA Methylation Data Processing Module
 Quality Control, Normalization, and Feature Extraction
@@ -12,7 +15,9 @@ import io
 
 
 @dataclass
+# nrcdnl94
 class QualityMetrics:
+    # nrcdnl94
     """Quality control metrics for methylation data"""
     total_samples: int
     total_cpgs: int
@@ -27,7 +32,9 @@ class QualityMetrics:
 
 
 @dataclass
+# nrcdnl94
 class ProcessedData:
+    # nrcdnl94
     """Processed methylation data with metadata"""
     methylation_matrix: pd.DataFrame
     sample_metadata: pd.DataFrame
@@ -36,6 +43,7 @@ class ProcessedData:
 
 
 class MethylationDataProcessor:
+    # nrcdnl94
     """
     Comprehensive DNA methylation data processing pipeline.
     Supports Illumina EPIC (850K) and 450K array formats.
@@ -449,3 +457,6 @@ class MethylationDataProcessor:
             return df, metadata
         
         return df, None
+
+
+# End of module - # nrcdnl94

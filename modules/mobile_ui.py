@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Mobile-Responsive UI Components Module
 ======================================
@@ -21,6 +24,7 @@ import json
 
 
 class UserRole(Enum):
+    # nrcdnl94
     """User role presets"""
     CLINICIAN = "clinician"
     RESEARCHER = "researcher"
@@ -30,7 +34,9 @@ class UserRole(Enum):
 
 
 @dataclass
+# nrcdnl94
 class WizardStep:
+    # nrcdnl94
     """Single step in a wizard workflow"""
     id: str
     title: str
@@ -365,6 +371,7 @@ def create_info_box(content: str, box_type: str = "info") -> str:
 
 
 class WizardWorkflow:
+    # nrcdnl94
     """
     Multi-step wizard workflow for guided data entry
     """
@@ -452,6 +459,7 @@ class WizardWorkflow:
 
 
 class RoleBasedUI:
+    # nrcdnl94
     """
     Role-based UI customization
     """
@@ -619,3 +627,6 @@ def init_mobile_ui():
     
     if 'mobile_ui_initialized' not in st.session_state:
         st.session_state['mobile_ui_initialized'] = True
+
+
+# End of module - # nrcdnl94

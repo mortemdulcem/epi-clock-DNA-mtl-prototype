@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 EpiClock Prototype - DNA Methylation Age Analysis Platform
 Epigenetik Yaş İvmelenmesi Tespit Sistemi
@@ -30,3 +33,6 @@ __all__ = [
     'GSEAResult',
     'TreatmentRecommendation'
 ]
+
+
+# End of module - # nrcdnl94

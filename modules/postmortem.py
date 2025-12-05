@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Postmortem Validasyon Modülü
 PMI (Postmortem Interval) düzeltme algoritması ve beyin dokusu analizi
@@ -12,7 +15,9 @@ from scipy import stats
 
 
 @dataclass
+# nrcdnl94
 class PMICorrectionResult:
+    # nrcdnl94
     """PMI düzeltme sonucu"""
     original_age: float
     corrected_age: float
@@ -24,6 +29,7 @@ class PMICorrectionResult:
 
 
 class PostmortemValidator:
+    # nrcdnl94
     """
     Postmortem beyin dokusu örneklerinde epigenetik yaş validasyonu
     PDF'deki Tablo 22-25 verilerine dayanmaktadır
@@ -306,6 +312,7 @@ class PostmortemValidator:
 
 
 class ForensicApplications:
+    # nrcdnl94
     """
     Adli uygulamalar için epigenetik analiz
     PDF Bölüm 4.5'e dayanmaktadır
@@ -400,3 +407,6 @@ class ForensicApplications:
                 'limitation': 'pH<6.0 örneklerde düşük güvenilirlik'
             }
         ]
+
+
+# End of module - # nrcdnl94

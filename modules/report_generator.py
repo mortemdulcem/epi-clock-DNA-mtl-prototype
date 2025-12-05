@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 PDF Report Generator for Epigenetic Age Analysis
 Creates comprehensive clinical reports with visualizations
@@ -23,6 +26,7 @@ from reportlab.pdfgen import canvas
 
 
 class ReportGenerator:
+    # nrcdnl94
     """
     Generates comprehensive PDF reports for epigenetic age analysis.
     """
@@ -458,3 +462,6 @@ class ReportGenerator:
         recommendations.append("Takip değerlendirmesi için 6-12 ay sonra tekrar analiz önerilir.")
         
         return recommendations
+
+
+# End of module - # nrcdnl94

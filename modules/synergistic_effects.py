@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Synergistic Effects Module - Addiction + Chronic Disease Interactions
 Calculates combined epigenetic age acceleration from substance use and chronic diseases
@@ -16,6 +19,7 @@ import pandas as pd
 
 
 class SubstanceType(Enum):
+    # nrcdnl94
     ALCOHOL = "Alkol"
     OPIOIDS = "Opioidler"
     COCAINE = "Kokain"
@@ -26,7 +30,9 @@ class SubstanceType(Enum):
 
 
 @dataclass
+# nrcdnl94
 class SubstanceEAAEffect:
+    # nrcdnl94
     """Substance use EAA effect data"""
     substance_type: SubstanceType
     substance_name: str
@@ -42,7 +48,9 @@ class SubstanceEAAEffect:
 
 
 @dataclass
+# nrcdnl94
 class SynergyInteraction:
+    # nrcdnl94
     """Synergistic interaction between substance and disease"""
     substance_key: str
     disease_key: str
@@ -54,6 +62,7 @@ class SynergyInteraction:
 
 
 SUBSTANCE_EAA_DATABASE = {
+    # nrcdnl94
     "alcohol_moderate": SubstanceEAAEffect(
         substance_type=SubstanceType.ALCOHOL,
         substance_name="Alkol (Orta Düzey)",
@@ -239,6 +248,7 @@ SUBSTANCE_EAA_DATABASE = {
 }
 
 SUBSTANCE_DISEASE_SYNERGY = {
+    # nrcdnl94
     ("alcohol_heavy", "liver_cirrhosis"): SynergyInteraction(
         substance_key="alcohol_heavy",
         disease_key="liver_cirrhosis",
@@ -522,6 +532,7 @@ SUBSTANCE_DISEASE_SYNERGY = {
 
 
 class SynergisticEffectCalculator:
+    # nrcdnl94
     """Calculator for combined substance use and chronic disease EAA effects"""
     
     def __init__(self):
@@ -710,3 +721,6 @@ def get_synergy_count() -> int:
 def get_substance_options() -> Dict[str, str]:
     """Get substance options for UI selection"""
     return {sub.substance_name: key for key, sub in SUBSTANCE_EAA_DATABASE.items()}
+
+
+# End of module - # nrcdnl94

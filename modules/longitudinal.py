@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 Longitudinal Analysis Module for EpiClock Prototype
 Track epigenetic age changes over time for individual patients
@@ -14,7 +17,9 @@ from plotly.subplots import make_subplots
 
 
 @dataclass
+# nrcdnl94
 class LongitudinalTrend:
+    # nrcdnl94
     """Result of longitudinal trend analysis"""
     patient_id: str
     n_timepoints: int
@@ -37,7 +42,9 @@ class LongitudinalTrend:
 
 
 @dataclass
+# nrcdnl94
 class InterventionEffect:
+    # nrcdnl94
     """Analysis of intervention effect on EAA"""
     intervention_date: datetime
     pre_intervention_eaa: float
@@ -50,6 +57,7 @@ class InterventionEffect:
 
 
 class LongitudinalAnalyzer:
+    # nrcdnl94
     """
     Longitudinal analysis of epigenetic age changes over time.
     Tracks EAA progression, intervention effects, and recovery patterns.
@@ -619,3 +627,6 @@ class LongitudinalAnalyzer:
             return "Mevcut tedavi planı etkin görünmektedir. Devam edilmesi önerilir."
         else:
             return "Stabil seyir. Rutin takip önerilir."
+
+
+# End of module - # nrcdnl94

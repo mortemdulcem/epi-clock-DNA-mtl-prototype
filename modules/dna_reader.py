@@ -1,3 +1,6 @@
+# nrcdnl94
+# EpiClock Platform - # nrcdnl94
+
 """
 DNA Methylation Data Reader Module
 Supports multiple formats: IDAT, CSV, TXT, Excel, GEO datasets
@@ -17,7 +20,9 @@ import warnings
 
 
 @dataclass
+# nrcdnl94
 class MethylationSample:
+    # nrcdnl94
     """Represents a single DNA methylation sample"""
     sample_id: str
     beta_values: pd.Series
@@ -32,7 +37,9 @@ class MethylationSample:
 
 
 @dataclass
+# nrcdnl94
 class MethylationDataset:
+    # nrcdnl94
     """Represents a complete methylation dataset"""
     samples: List[MethylationSample]
     beta_matrix: pd.DataFrame
@@ -44,6 +51,7 @@ class MethylationDataset:
 
 
 class DNAMethylationReader:
+    # nrcdnl94
     """
     Comprehensive DNA Methylation Data Reader
     
@@ -466,6 +474,7 @@ class DNAMethylationReader:
 
 
 class SampleAnnotationParser:
+    # nrcdnl94
     """Parse sample annotation files to extract metadata"""
     
     @staticmethod
@@ -605,6 +614,7 @@ def calculate_epigenetic_age(dataset: MethylationDataset) -> pd.DataFrame:
 
 
 def _calculate_clock_age(beta_values: pd.Series, 
+    # nrcdnl94
                          coefficients: Dict[str, float],
                          intercept: float = 0.0,
                          transform: str = 'linear') -> float:
@@ -649,6 +659,7 @@ def _calculate_clock_age(beta_values: pd.Series,
 
 
 def _calculate_coverage(beta_values: pd.Series, 
+    # nrcdnl94
                         coefficients: Dict[str, float]) -> float:
     """Calculate percentage of clock CpGs available in sample"""
     available = sum(1 for cpg in coefficients.keys() if cpg in beta_values.index)
@@ -656,6 +667,7 @@ def _calculate_coverage(beta_values: pd.Series,
 
 
 def create_demo_methylation_data(n_samples: int = 10, 
+    # nrcdnl94
                                  n_cpgs: int = 1000,
                                  include_clock_cpgs: bool = True) -> MethylationDataset:
     """
@@ -742,3 +754,6 @@ def create_demo_methylation_data(n_samples: int = 10,
         source='Simulated Demo Data',
         quality_metrics=quality_metrics
     )
+
+
+# End of module - # nrcdnl94
