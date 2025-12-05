@@ -1,6 +1,10 @@
-# nrcdnl94
-# EpiClock Platform - # nrcdnl94
-
+# ============================================================================
+# EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
+# Copyright (c) 2024 Dr. Nurcan Denli Bayır (nrcdnl94)
+# GitHub: https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype
+# All rights reserved. See LICENSE file for details.
+# Author Signature: nrcdnl94
+# ============================================================================
 """
 Statistical Analysis Module for Epigenetic Age Acceleration
 Includes EAA calculation, mediation analysis, moderation analysis, and DMA

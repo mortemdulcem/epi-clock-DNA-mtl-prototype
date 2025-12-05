@@ -1,6 +1,10 @@
-# nrcdnl94
-# EpiClock Platform - # nrcdnl94
-
+# ============================================================================
+# EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
+# Copyright (c) 2024 Dr. Nurcan Denli Bayır (nrcdnl94)
+# GitHub: https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype
+# All rights reserved. See LICENSE file for details.
+# Author Signature: nrcdnl94
+# ============================================================================
 """
 Longitudinal Analysis Module for EpiClock Prototype
 Track epigenetic age changes over time for individual patients

@@ -8,6 +8,15 @@
 
 ---
 
+## 👤 Author & Copyright
+
+**Dr. Nurcan Denli Bayır (nrcdnl94)**
+
+[![Author](https://img.shields.io/badge/Author-nrcdnl94-ff6b6b?style=for-the-badge)](https://github.com/mortemdulcem)
+[![Copyright](https://img.shields.io/badge/©%202024-Dr.%20Nurcan%20Denli%20Bayır-success?style=for-the-badge)](https://github.com/mortemdulcem)
+
+---
+
 ![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
 ![License](https://img.shields.io/badge/License-Academic-success?style=flat-square)
@@ -612,14 +621,33 @@ epi-clock-DNA-mtl-prototype/
 
 This project is provided for **academic and research purposes only**.
 
+**See [LICENSE](LICENSE) file for full terms.**
+
 ---
 
 <div align="center">
 
-**Copyright 2025 Dr. Nurcan Denli Bayir, M.D., Ph.D., M.Sc., J.D.**
+## 🔒 Copyright & Attribution
+
+**Copyright © 2024-2025 Dr. Nurcan Denli Bayır (nrcdnl94)**
+
+**All Rights Reserved**
+
+---
+
+**Author Signature:** `nrcdnl94`
+
+**GitHub:** [@mortemdulcem](https://github.com/mortemdulcem)
+
+---
 
 **Adli Tip Uzmani | Yazilim Muhendisi | Saglik Hukuku Uzmani**
 
 *Forensic Medicine Specialist | Software Engineer | Health Law Expert*
+
+---
+
+⚠️ **NOTICE:** This software contains embedded author signatures (`nrcdnl94`) throughout the source code. 
+Any unauthorized use, copying, or distribution without proper attribution is prohibited.
 
 </div>
