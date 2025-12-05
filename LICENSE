@@ -1,35 +1,85 @@
-MIT License
+PROPRIETARY SOFTWARE LICENSE - ALL RIGHTS RESERVED
+===================================================
 
-Copyright (c) 2024 Dr. Nurcan Denli Bayır (nrcdnl94)
+Copyright (c) 2024-2025 Dr. Nurcan Denli Bayır (nrcdnl94)
 
-EpiClock Prototype - DNA Methylation Epigenetic Age Analysis Platform
-
-All rights reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-ATTRIBUTION REQUIREMENT:
-Any use of this software must include visible attribution to:
-- Author: Dr. Nurcan Denli Bayır (nrcdnl94)
-- Project: EpiClock Prototype
-- GitHub: https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+EpiClock Prototype v4.0 - DNA Methylation Epigenetic Age Analysis Platform
 
 ================================================================================
-ORIGINAL AUTHOR SIGNATURE: nrcdnl94
+                         ALL RIGHTS RESERVED
+================================================================================
+
+IMPORTANT: READ CAREFULLY BEFORE ACCESSING THIS SOFTWARE
+
+1. OWNERSHIP AND COPYRIGHT
+   This software, including all source code, algorithms, documentation, 
+   databases, and related materials, is the exclusive intellectual property 
+   of Dr. Nurcan Denli Bayır (hereinafter "Author"). This work is protected 
+   by international copyright laws and intellectual property treaties.
+
+2. STRICTLY PROHIBITED ACTIONS
+   Without explicit written permission from the Author, you may NOT:
+   
+   a) COPY or reproduce any part of this software
+   b) MODIFY, adapt, or create derivative works
+   c) DISTRIBUTE, share, or transfer to third parties
+   d) PUBLISH or make publicly available
+   e) SELL, sublicense, lease, or commercialize
+   f) REVERSE ENGINEER, decompile, or disassemble
+   g) REMOVE copyright notices, watermarks, or author signatures
+   h) CLAIM authorship or ownership
+   i) USE for commercial purposes
+   j) TRAIN AI/ML models using this code
+
+3. INTELLECTUAL PROPERTY SCOPE
+   Protected elements include but are not limited to:
+   
+   - Epigenetic clock implementations (17 clocks)
+   - DNA methylation analysis algorithms
+   - Substance detection system (1,815+ substances)
+   - CpG genome database (29.4 million sites)
+   - Chemoinformatics module with PubChem integration
+   - Machine learning ensemble models
+   - Reference database (10,542 profiles)
+   - User interface designs (UNODC-inspired theme)
+   - All visualizations and graphics
+   - Database schemas and structures
+   - Documentation and academic content
+
+4. DIGITAL SIGNATURE AND WATERMARKS
+   All files contain the digital signature "nrcdnl94" as proof of authorship.
+   Hidden watermarks are embedded throughout the codebase for copy detection.
+   Any unauthorized copy can be traced back and legally pursued.
+
+5. PERMITTED USE
+   This software may ONLY be:
+   - Viewed as a demonstration by the Author
+   - Used with explicit written license agreement
+   - Accessed for academic review with Author's permission
+
+6. NO WARRANTY
+   THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY.
+
+7. LEGAL ENFORCEMENT
+   Unauthorized use constitutes copyright infringement and may result in:
+   - Civil damages and injunctive relief
+   - Criminal prosecution under applicable laws
+   - Statutory damages up to $150,000 per work infringed
+   - Payment of attorney fees and legal costs
+
+8. JURISDICTION
+   This license is governed by Turkish and international copyright law.
+
+================================================================================
+AUTHOR INFORMATION
+================================================================================
+
+Author: Dr. Nurcan Denli Bayır
+Digital Signature: nrcdnl94
+Platform: EpiClock Prototype v4.0
+Year: 2024-2025
+
+================================================================================
+                    UNAUTHORIZED USE IS STRICTLY PROHIBITED
+               VIOLATORS WILL BE PROSECUTED TO THE FULLEST EXTENT
 ================================================================================

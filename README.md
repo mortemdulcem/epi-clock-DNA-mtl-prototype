@@ -19,8 +19,9 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white)
-![License](https://img.shields.io/badge/License-Academic-success?style=flat-square)
+![License](https://img.shields.io/badge/License-PROPRIETARY-red?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
+![Protected](https://img.shields.io/badge/Protected-nrcdnl94-ff0000?style=flat-square)
 ![Substances](https://img.shields.io/badge/Detectable%20Substances-1,815+-ff6b6b?style=flat-square)
 ![CpG Regions](https://img.shields.io/badge/CpG%20Regions-29.4M-00d4aa?style=flat-square)
 ![SNPs](https://img.shields.io/badge/GWAS%20SNPs-17M+-9333ea?style=flat-square)
@@ -619,7 +620,9 @@ epi-clock-DNA-mtl-prototype/
 
 ## License
 
-This project is provided for **academic and research purposes only**.
+⚠️ **PROPRIETARY SOFTWARE - ALL RIGHTS RESERVED**
+
+This software is protected by copyright law and international intellectual property treaties.
 
 **See [LICENSE](LICENSE) file for full terms.**
 
@@ -627,11 +630,11 @@ This project is provided for **academic and research purposes only**.
 
 <div align="center">
 
-## 🔒 Copyright & Attribution
+## 🔒 COPYRIGHT & LEGAL NOTICE
 
 **Copyright © 2024-2025 Dr. Nurcan Denli Bayır (nrcdnl94)**
 
-**All Rights Reserved**
+### ⛔ ALL RIGHTS RESERVED ⛔
 
 ---
 
@@ -647,7 +650,33 @@ This project is provided for **academic and research purposes only**.
 
 ---
 
-⚠️ **NOTICE:** This software contains embedded author signatures (`nrcdnl94`) throughout the source code. 
-Any unauthorized use, copying, or distribution without proper attribution is prohibited.
+## ⚠️ STRICT COPYRIGHT WARNING
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         UNAUTHORIZED USE PROHIBITED                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  This software contains embedded author signatures (nrcdnl94) and hidden     ║
+║  watermarks throughout the source code for copy detection and tracking.      ║
+║                                                                              ║
+║  STRICTLY PROHIBITED:                                                        ║
+║  ❌ Copying or reproducing any part of this code                             ║
+║  ❌ Modifying or creating derivative works                                   ║
+║  ❌ Distributing or sharing with third parties                               ║
+║  ❌ Using for commercial purposes                                            ║
+║  ❌ Removing copyright notices or author signatures                          ║
+║  ❌ Claiming authorship or ownership                                         ║
+║                                                                              ║
+║  LEGAL ENFORCEMENT:                                                          ║
+║  Any unauthorized use will be prosecuted to the fullest extent of the law.  ║
+║  Statutory damages up to $150,000 per work infringed may apply.              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+---
+
+**Digital Signature Verification: nrcdnl94**
+
+All 42+ source files contain embedded "nrcdnl94" signatures as proof of authorship.
 
 </div>
