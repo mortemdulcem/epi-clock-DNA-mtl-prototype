@@ -176,6 +176,17 @@ from modules.professional_theme import (
     BIO_ICONS,
     EPICLOCK_VERSION
 )
+from modules.unodc_theme import (
+    apply_unodc_theme,
+    render_main_header,
+    render_hero_slider,
+    render_booklet_grid,
+    render_stats_row,
+    render_section_divider,
+    render_footer,
+    render_module_card,
+    UNODC_COLORS
+)
 from modules.cpg_database import (
     get_total_cpg_statistics,
     get_substance_cpg_panel,
@@ -265,28 +276,36 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Apply UNODC Theme - nrcdnl94
+apply_unodc_theme()
+
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap');
     
-    /* Autumn Theme - Professional Light Background */
+    /* UNODC Theme - UN Blue Professional Background - nrcdnl94 */
     .stApp {
-        background: linear-gradient(135deg, #FFF8DC 0%, #FAF3E0 50%, #F5DEB3 100%) !important;
+        background: linear-gradient(135deg, #F5F7FA 0%, #E8EEF5 100%) !important;
     }
     
     .main .block-container {
         background: transparent !important;
-        padding-top: 2rem;
+        padding-top: 1rem;
     }
     
-    /* Sidebar Autumn Theme */
+    /* Sidebar UNODC Blue Theme - nrcdnl94 */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #5D4037 0%, #4E342E 100%) !important;
-        border-right: 2px solid #8B4513;
+        background: linear-gradient(180deg, #1A3A5C 0%, #0D2137 100%) !important;
+        border-right: 3px solid #009EDB;
     }
     
     [data-testid="stSidebar"] * {
-        color: #FFF8DC !important;
+        color: #FFFFFF !important;
+    }
+    
+    [data-testid="stSidebar"] .stSelectbox label {
+        color: #4DB8E8 !important;
+        font-weight: 500;
     }
     
     /* DNA Helix Animation Container */
@@ -2726,9 +2745,8 @@ def main():
     # nrcdnl94
     components = init_components()
     
-    render_dna_helix_animation()
-    st.markdown('<p class="main-header">EpiClock Prototype</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">DNA Metilasyon Tabanli Epigenetik Yas Ivmelenmesi Analiz Platformu</p>', unsafe_allow_html=True)
+    # UNODC Style Header - nrcdnl94
+    render_main_header()
     
     with st.sidebar:
         st.markdown("### EpiClock")
@@ -3330,23 +3348,32 @@ def render_publication_references():
 
 
 def render_home_page(components):
-    """Render the home page with overview and quick stats"""
+    """Render the home page with UNODC style overview - nrcdnl94"""
     
+    # Hero Slider - UNODC Style - nrcdnl94
+    render_hero_slider()
+    
+    # Stats Row - nrcdnl94
+    render_stats_row()
+    
+    render_section_divider()
+    
+    # Prototype Notice - nrcdnl94
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); 
-                border: 2px solid #ffc107; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
-    <h4 style="color: #856404; margin: 0;">⚠️ PROTOTIP PLATFORMU</h4>
-    <p style="color: #856404; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+    <div style="background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); 
+                border: 2px solid #2196F3; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+    <h4 style="color: #1565C0; margin: 0;">ℹ️ PROTOTIP PLATFORMU</h4>
+    <p style="color: #1565C0; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
     Bu platform, epigenetik yaş analizi metodolojisini ve iş akışını göstermek için 
-    <b>SİMÜLE EDİLMİŞ VERİLER</b> kullanmaktadır. Saat katsayıları ve referans veritabanı, 
-    yayınlanmış araştırma istatistiklerine dayalı olarak simüle edilmiştir. 
-    Gerçek klinik veya araştırma kullanımı için, gerçek katsayılar ve veriler uygun 
-    akademik kanallardan temin edilmelidir.
+    <b>SİMÜLE EDİLMİŞ VERİLER</b> kullanmaktadır. Gerçek klinik veya araştırma kullanımı için, 
+    gerçek katsayılar ve veriler uygun akademik kanallardan temin edilmelidir.
     </p>
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("### 🎯 Platform Özellikleri")
+    render_section_divider()
+    
+    st.markdown("### 📊 Platform Özellikleri")
     
     col1, col2, col3, col4 = st.columns(4)
     

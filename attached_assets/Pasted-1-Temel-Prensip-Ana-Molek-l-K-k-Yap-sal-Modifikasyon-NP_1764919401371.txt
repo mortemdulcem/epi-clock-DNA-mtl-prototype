@@ -1,0 +1,134 @@
+1. Temel Prensip: “Ana Molekül” + Küçük Yapısal Modifikasyon
+NPS üreticileri genellikle şu adımı izler:
+
+Klinik veya illegal piyasada etkisi bilinen bir molekül seçilir
+Örn: Amfetamin, MDMA, Fentanyl, THC, Benzodiazepin, Katinon vb.
+Bu molekülün farmakoforunu (etki için gerekli çekirdek yapı) bozmadan, çevresindeki gruplar değiştirilir.
+Ortaya çıkan yeni yapı:
+Henüz yasada adı geçmeyen “yeni bir madde” olur,
+Çoğu zaman benzer (veya daha güçlü) farmakolojik etki gösterir.
+2. Değiştirilen Başlıca Kimyasal Özellikler
+2.1. Fonksiyonel Grup Değişiklikleri
+Maddede şu fonksiyonel gruplar üzerinde oynanır:
+
+Amin grupları (–NH₂, –NHR, –NR₂):
+
+Primer → sekonder → tersiyer amin dönüşümleri
+Örnek: Amfetamin yan zincirindeki amin grubuna metil/etil eklemek
+Sonuç:
+Lipofilisite değişir (beyne geçiş hızı),
+Reuptake/transportör bağlanması değişebilir,
+Psikoaktif etki ve toksisite değişebilir.
+Hidroksil (–OH), metoksi (–OCH₃), karbonil (C=O) grupları:
+
+Örn: Fenetilamin türevlerinde halka üzerine –OH veya –OCH₃ eklenmesi
+Sonuç:
+Polarite, çözünürlük, metabolizma hızı değişir,
+Hedef reseptöre afinitesi (bağlanma gücü) değişir.
+Halojenler (F, Cl, Br, I):
+
+Aromatik halka üzerine Cl, F, Br eklenmesi (örneğin 4-Cl-amfetamin, 4-Br-amfetamin vb.)
+Sonuç:
+Lipofilisite artar,
+Metabolizma direnci değişir,
+Genellikle etki potensi ve toksisite artabilir.
+2.2. Halkaya (Ring) Substitüsyonlar
+Özellikle:
+
+Fenil halkası (aromatik halka)
+İndol, indazol, naftil, benzodiazepin gibi heterosiklik halkalar
+üzerinde değişiklik yapılır.
+
+Örnekler:
+
+MDMA/Amfetamin benzerleri:
+2-, 3-, 4- pozisyonlarına metil, metoksi, halojen eklemek
+4-MMC (mephedrone), 4-FA, 4-MA gibi türevler
+Sentetik kannabinoidler:
+İndol/indazol çekirdeğine farklı yan zincirler eklemek
+JWH-018 → JWH-073 → AM-2201 → vb.
+Sonuç:
+
+Reseptör seçiciliği değişir (ör. 5-HT vs. DA vs. NE)
+Etki süresi, psikoaktif profil, yan etki profili farklılaşır
+Adli toksikoloji testlerinde “eski versiyondan farklı pik” oluşur, tespit zorlaşır.
+2.3. Yan Zincir (Side Chain) Uzunluğu ve Doygunluk
+Yan zincir uzunluğu ve doygunluk derecesi (tekli/çift bağ):
+
+Karbon zincirini bir–iki karbon uzatmak/kısaltmak
+Çift bağ eklemek (doymamışlık)
+Siklik yapı vermek (piperidin, piperazin, morfolin vb. halkalar)
+Örnek:
+
+Fentanyl türevleri (ör. Acetylfentanyl, Butyrfentanyl, Carfentanil):
+N-asil yan zincirin uzunluğu/şekli değiştirilerek potensi ciddi şekilde artırılabilir.
+Sentetik kannabinoidlerde yan zincir uzaması:
+CB1 reseptörüne afinitenin artmasına yol açabilir.
+Sonuç:
+
+Potens: Çok küçük değişiklikler bile 10–100 kat etki artışına neden olabilir.
+Lipofilisite: Beyne geçiş, dağılım hacmi ve eliminasyon yarı ömrü değişir.
+Metabolit profili: Laboratuvar tespit paneli dışına çıkan yeni metabolitler oluşur.
+2.4. Stereoizomer ve Konformasyon Değişiklikleri
+Birçok psikoaktif madde kiral (enantiomer) yapıya sahiptir.
+R- ve S- enantiomerler farklı farmakolojik profile sahip olabilir (örneğin metadon, amfetamin türevleri).
+NPS üretiminde:
+
+Belirli enantiomer zenginleştirilmiş preparatlar yapılabilir,
+Bu da hem etki şiddetini hem yan etki profilini değiştirir.
+Sonuç:
+
+Aynı “molekül formülü”ne sahip ama farklı biyolojik etki gösteren varyantlar ortaya çıkar.
+Yasal tanım genellikle “molekül adı” üzerinden olduğundan, yeni stereoizomerler gri alana düşebilir.
+3. Hedeflenen Farmakolojik Özellikler Nasıl Değişiyor?
+Kimyasal yapıda yapılan bu küçük değişiklikler aşağıdaki farmakolojik parametreleri değiştirir:
+
+Reseptör afinitesi ve seçiciliği
+
+Örn: Dopamin taşıyıcı (DAT), serotonin taşıyıcı (SERT), noradrenalin taşıyıcı (NET), opioid reseptörleri, CB1/CB2, GABA-A, NMDA vb.
+Bir substitüsyon, maddenin DA ağırlıklı mı, 5-HT ağırlıklı mı etki gösterdiğini değiştirebilir.
+Potens (etki gücü)
+
+Küçük yapısal değişiklikler 10–100 kat güç farkı yaratabilir (örneğin bazı fentanyl analogları).
+Farmakokinetik özellikler
+
+Emilim (A), dağılım (D), metabolizma (M), eliminasyon (E):
+Daha lipofilik → daha hızlı beyin penetrasyonu
+Metabolizma dirençli → daha uzun etki süresi
+Yeni metabolitler → tespit penceresi ve toksisite profili değişir.
+Yan etki ve toksisite profili
+
+Kardiyak toksisite (QT uzaması), nörotoksisite, serotonin sendromu, solunum depresyonu vb. riskler artıp azalabilir.
+4. Çeşitliliğin Artmasının Arka Planındaki Motivasyon
+NPS çeşitliliği şu nedenlerle sürekli artmaktadır:
+
+Yasal düzenlemelerden kaçınma
+
+Mevcut yasa belirli bileşik adlarını yasaklar → tasarımcılar bu iskelet üzerinde hafif modifikasyon yapar → yeni, “adı geçmeyen” türev.
+Tespit testlerinden kaçma
+
+Rutin tarama panelleri belirli metabolitlere/markerlara bakar.
+Yapı hafifçe değişince:
+Metabolit profili değişir,
+Var olan kitler maddeyi veya ana metabolitini tanıyamaz.
+Pazar avantajı
+
+“Daha güçlü”, “daha uzun etkili”, “yeni nesil” gibi kavramlarla pazarlama.
+Bilimsel literatür ve patent bilgisi
+
+Eski farmasötik denemeler, patentlenmiş ama piyasaya çıkmamış moleküller, makalelerde önerilen analoglar NPS üreticileri için adeta hazır “taslak”tır.
+5. Özet: NPS Çeşitliliği Nasıl Artıyor?
+Kısa ve akademik özet:
+
+Çeşitlilik, mevcut psikoaktif iskeletlerin (ör. fenetilamin, triptamin, benzodiazepin, fentanyl, kannabinoid) küçük kimyasal modifikasyonlara uğratılmasıyla artmaktadır.
+Değiştirilen başlıca parametreler:
+Fonksiyonel gruplar (amin, hidroksil, metoksi, halojenler),
+Halkaya bağlanan substitüsyonlar,
+Yan zincir uzunluğu ve doygunluğu,
+Stereoizomer oranları ve konformasyon.
+Bu değişiklikler:
+Reseptör afinitesini, potensini, farmakokinetiğini, metabolit profilini ve toksisiteyi temelden etkiler.
+Sonuçta:
+Yasal sınıflandırma dışına çıkan,
+Mevcut toksikoloji panelleri tarafından tespit edilmesi zor,
+Klinik etkisi öngörülmesi güç çok sayıda yeni psikoaktif madde (NPS) ortaya çıkar.
