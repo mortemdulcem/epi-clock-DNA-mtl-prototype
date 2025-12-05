@@ -120,7 +120,19 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
   - Systematic chemical modifications (halogenation, N-alkylation, ring substitution)
   - 9 NPS classes: Cannabinoids (784), Cathinones (840), Opioids (416), etc.
   - Potency ratios up to 1000x morphine (Etonitazene)
-- 2024-12-05: TOTAL DATABASE: 6,893 unique records (13,133 with predicted metabolites)
+- 2024-12-05: Added Markush Structure Rules for Unknown Compound Detection
+  - 10 structural rules covering all major NPS classes
+  - Nitazenes (Benzimidazole Opioids) - up to 1000x morphine potency
+  - Phenethylamines (2C-x, DOx, NBOMe series)
+  - Tryptamines (DMT analogs)
+  - Designer Benzodiazepines (Triazolo/Thieno variants)
+  - Dissociatives (Arylcyclohexylamines - Ketamine/PCP)
+  - Synthetic Cannabinoids (Indole/Indazole cores)
+  - Synthetic Cathinones (α-PVP, Mephedrone variants)
+  - Fentanyl Analogs (Carfentanil 100x)
+  - 29,277 possible structural variants via Markush rules
+  - Pattern-based identification of "chemically possible" compounds
+- 2024-12-05: TOTAL DATABASE: 6,893 unique records (13,133 with metabolites, 36,170 with Markush variants)
 - 2024-12-03: Added "🔬 Madde Tespiti ve Süre Tahmini" module - DNA'dan madde kullanımı tespiti
   - 18 tespit edilebilir madde türü (sigara, alkol, kokain, eroin, metamfetamin, esrar, vb.)
   - CpG marker tabanlı imza analizi (AHRR, F2RL3 genler için 100+ marker)
