@@ -26,7 +26,7 @@
 ![CpG Regions](https://img.shields.io/badge/CpG%20Regions-29.4M-00d4aa?style=flat-square)
 ![SNPs](https://img.shields.io/badge/GWAS%20SNPs-17M+-9333ea?style=flat-square)
 
-**Last Updated: December 3, 2025**
+**Last Updated: December 6, 2025**
 
 </div>
 
@@ -111,6 +111,44 @@ Platform, **Python 3.11** tabanlı tamamen açık kaynak teknolojiler (Streamlit
 </td>
 </tr>
 </table>
+
+---
+
+## DNA Analysis Engine (v4.0 NEW)
+
+EpiClock v4.0 ile gercek DNA metilasyon verilerinden epigenetik yas hesaplama:
+
+### Ozellikler
+
+| Ozellik | Aciklama |
+|:--------|:---------|
+| **Veri Yukleme** | CSV/Excel formatinda CpG beta degerleri |
+| **CpG Eslestirme** | Her saat icin spesifik CpG site eslestirmesi |
+| **Yas Hesaplama** | 5 farkli epigenetik saat ile paralel hesaplama |
+| **Coklu Export** | CSV, Excel, JSON, PDF rapor formatlari |
+
+### Desteklenen Saatler
+
+| Saat | CpG Sayisi | Algoritma |
+|:-----|:----------:|:----------|
+| **Horvath** | 353 | Multi-tissue, intercept + sum(coef * beta) |
+| **Hannum** | 71 | Blood-based linear model |
+| **PhenoAge** | 513 | Mortality-calibrated phenotypic age |
+| **GrimAge** | 1,030 | 9 protein surrogate composite |
+| **DunedinPACE** | 173 | Pace of aging (0-3 scale) |
+
+### Kullanim Adlari
+
+1. **Veri Yukle**: CpG ID ve beta degerleri iceren dosya yukleyin
+2. **Analiz Baslat**: Kullanmak istediginiz saatleri secin
+3. **Cikti Al**: Sonuclari istediginiz formatta indirin
+
+### UNODC Kurumsal Arayuz
+
+- Tailwind-inspired temiz beyaz kartlar
+- Renk paleti: #0050A0 (UNODC Blue), #003366 (Navy), #00A7D8 (Turquoise)
+- 12 infografik kart ile sistem yetenekleri gosterimi
+- Profesyonel, kurumsal standartlarda tasarim
 
 ---
 
@@ -532,6 +570,9 @@ epi-clock-DNA-mtl-prototype/
 ├── app.py                           # Main Application (3500+ lines)
 ├── README.md                        # This documentation
 ├── modules/                         # Analysis Modules (30+ modules)
+│   ├── dna_analysis_engine.py       # DNA Analysis Engine (v4.0 NEW)
+│   ├── dna_upload_analysis.py       # Upload/Analysis/Export Module (v4.0 NEW)
+│   ├── unodc_theme.py               # UNODC Corporate Theme (v4.0 NEW)
 │   ├── substance_detection.py       # 1,815 Substance Detection Database
 │   ├── dynamic_combinations.py      # Multi-Combination Calculator
 │   ├── synergistic_effects.py       # Synergistic Effects Engine
@@ -609,7 +650,12 @@ epi-clock-DNA-mtl-prototype/
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| **v4.0** | December 3, 2025 | 1,815 substance detection database, 23 categories |
+| **v4.0** | December 6, 2025 | DNA Analysis Engine: Gercek CpG beta degerlerinden epigenetik yas hesaplama |
+| v4.0 | December 6, 2025 | UNODC kurumsal arayuz, Tailwind-inspired temiz kartlar |
+| v4.0 | December 6, 2025 | 3-sekmeli DNA modulu: Veri Yukle, Analiz Baslat, Cikti/Rapor Al |
+| v4.0 | December 6, 2025 | Infografik kartlar: 29.4M CpG, 850K Array, 750M Varyant, 36K Markush |
+| v4.0 | December 6, 2025 | CSV/Excel/JSON/PDF coklu export formati |
+| v4.0 | December 3, 2025 | 1,815 substance detection database, 23 categories |
 | v3.5 | December 2, 2025 | Dynamic multi-combination calculator (44 substances, 56 diseases) |
 | v3.0 | December 1, 2025 | World databases integration (GWAS, EWAS, PharmGKB) |
 | v2.5 | November 30, 2025 | Tissue-specific clocks, blockchain audit trail |
