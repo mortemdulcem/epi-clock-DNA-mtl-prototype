@@ -1,0 +1,108 @@
+1. UNODC Tarzı + DNA Yazılımı: Genel Görünüm
+UNODC tarzından gelenler:
+
+Üstte ince, sade top bar, beyaz zemin, koyu mavi vurgu.
+Çok temiz, bol beyaz alan, sade ikonlar.
+Kurumsal mavi tonları, nötr gri, az sayıda vurgu rengi.
+DNA yazılımından gelenler:
+
+Dashboard, tablolar, grafikler, sekmeli paneller.
+Örnek listeleri, analiz kartları, kalite metrik grafikleri.
+2. UNODC Gibi Görünmesi İçin Renk ve Düzen
+Renk paleti:
+
+Primary: derin UN mavi [#0050A0 civarı]
+Secondary: açık mavi / turkuaz [#00A7D8 gibi]
+Background: beyaz, açık gri paneller
+Metin: koyu gri / lacivert
+Layout:
+
+Üstte UNODC tarzı header: sağda menü, solda logo + sistem adı
+Alta doğru bölümlenmiş, yatay bloklar (UN sitelerindeki gibi)
+Çok sade border’lar, yumuşak gölge yok ya da çok az
+3. Kullanabileceğin Prompt’lar (UNODC + DNA Yazılımı)
+Aşağıdaki prompt’ları DALL·E, Midjourney veya UI üreten araçlarda direkt kullanabilirsin. Hepsi UNODC görünümünü özellikle vurguluyor.
+
+Prompt 1 – Genel Ana Sayfa (Dashboard)
+"Design a homepage UI for a national scientific DNA analysis software, in the visual style of the United Nations Office on Drugs and Crime (UNODC).
+
+The interface should be:
+
+Clean, institutional, and minimalist, with a strong United Nations look.
+Use a color palette similar to UNODC: deep UN blue, light blue accents, white backgrounds, and neutral greys.
+Top navigation bar with logo on the left and menu items on the right: Dashboard, Samples, Analyses, Reports, Database, Settings.
+A hero-like header section with the title 'National DNA Analysis System' and a short description, styled like an official UN program page.
+Below, show:
+Statistic cards (Total Samples, Ongoing Analyses, Completed Reports).
+A table of recent analyses (Sample ID, Type, Status, Date).
+Small charts for daily analysis counts and sample types.
+Use clean sans-serif typography, subtle lines instead of heavy borders, and lots of white space. The overall look must clearly resemble a UNODC-like institutional website, but the content is for a DNA/genetics laboratory system."
+
+Prompt 2 – Analiz Detay Sayfası (UNODC Tarzında)
+"Create a detailed analysis view screen for a DNA software UI designed in the visual style of UNODC (United Nations Office on Drugs and Crime).
+
+Layout:
+
+Top UN-style header with the software name and breadcrumb navigation.
+A clean content area with a big title 'NGS Analysis – Sample ID 2025-001'.
+Tabs or horizontal navigation for: Overview, Quality Control, Alignment, Variants, STR Profile.
+In the 'Overview' tab, show:
+A summary panel with key metrics (coverage, read count, status).
+A simple chart or two (bar or line charts) with UN-like blue color accents.
+On the side, a narrow column with sample metadata (sample type, date, operator, lab).
+Visual style:
+
+White background, light grey cards, thin lines.
+Deep blue headers and titles, small light blue accent elements.
+Very clean, official, and formal, similar to a UN agency internal system."
+Prompt 3 – UNODC Tarzında “Program / Modül Listesi” Ekranı
+"Design a modules overview page for a National DNA Analysis System, visually inspired by the UNODC website.
+
+Include:
+
+A UN-style top navigation bar.
+A main title: 'Modules and Programs'.
+A grid of cards, each representing a module:
+Forensic STR Analysis
+NGS Variant Analysis
+Population Genetics
+Clinical Genomics
+Reports and Legal Output
+Data and Statistics
+Each card should have:
+A simple icon
+A short description
+A 'Open Module' button
+Use UNODC-like design language: institutional blue tones, flat white backgrounds, light grey separators, and clean typography. No flashy gradients, just subtle, professional styling."
+
+Prompt 4 – UNODC Kurumsal + DNA Veri / İstatistik Sayfası
+"Create a 'Data and Statistics' page for a DNA analysis platform, with the same visual feeling as the UNODC Data and Research pages.
+
+Elements:
+
+Page header with title 'DNA Data and Statistics'.
+A section of key indicators in small cards (e.g., number of samples analyzed, types of tests, distribution by year).
+Clean charts: bar chart, line chart, maybe a simple world or country map showing sample origins.
+Tab navigation for 'National Statistics', 'Laboratory Performance', 'Population Genetics Data'.
+Visual style:
+
+UNODC-inspired colors (deep blue, white, light greys).
+Clear, simple chart styling with blue as the primary series color.
+Institutional, serious, and data-driven appearance."
+Prompt 5 – UNODC Gibi Giriş / Login Ekranı
+"Design a login screen for a National DNA Analysis System that visually feels like a UNODC or United Nations secure portal.
+
+Centered login card on a light background.
+Logo and system name at the top: 'National DNA Analysis System'.
+Input fields for username and password, and a 'Sign In' button in UN blue.
+Optional small link 'Language: Türkçe | English'.
+Very minimal, with a small abstract background illustration related to science or justice, in light blue tones.
+The overall aesthetic must be clean, formal, and UN-style institutional."
+
+4. Kısaca Özet
+Tarz: UNODC → kurumsal, sade, mavi-beyaz, ciddi.
+İçerik: DNA yazılımı → dashboard, analizler, tablolar, grafikler.
+Prompt’larda özellikle:
+“in the style of UNODC / United Nations agency”
+“institutional, formal, clean, blue and white”
+“official research / forensic / laboratory platform” ifadelerini kullanmak, istediğin görünüme yaklaştırır.
