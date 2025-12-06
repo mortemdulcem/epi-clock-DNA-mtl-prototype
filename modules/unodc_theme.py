@@ -639,9 +639,9 @@ def render_main_header():
         st.markdown("""
         <div class="unodc-page-header-box">
             <div class="unodc-page-version">EpiClock v4.0</div>
-            <h1 class="unodc-page-title-text">Madde Bagimliliginin Biyolojik Etkilerinin DNA Metilasyonu Temelli Epigenetik Yas Analizi ile Degerlendirilmesine Yonelik Entegre DNA Analiz Platformu</h1>
+            <h1 class="unodc-page-title-text">DNA Metilasyonu Temelli Epigenetik Yas Analiz Platformu</h1>
             <p class="unodc-page-subtitle-text">
-                Madde bagimliligina maruz kalmanin organizma uzerindeki uzun vadeli biyolojik etkilerini, DNA metilasyon oruntulerine dayali epigenetik yas tahmini ve yas ivmesi (age acceleration) metrikleri araciligiyla nicel olarak degerlendirmeyi amaclayan, cok gorevli ogrenme (multi-task learning) temelli bir DNA analiz platformu.
+                Madde bagimliligi maruziyetinin biyolojik etkilerini, epigenetik yas ivmesi (EAA) metrikleri ile degerlendiren multi-task learning temelli klinik analiz sistemi.
             </p>
         </div>
         """, unsafe_allow_html=True)
