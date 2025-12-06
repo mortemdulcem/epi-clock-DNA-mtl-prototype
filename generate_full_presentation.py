@@ -780,6 +780,123 @@ def create_full_presentation():
     ], font_size=12)
     
     # ===========================================
+    # YENI BOLUM: PLATFORM VERITABANI ISTATISTIKLERI
+    # ===========================================
+    add_section_slide(prs, "PLATFORM VERITABANI ISTATISTIKLERI", "2.5")
+    
+    # SLIDE: Genomik Varyant Veritabanlari
+    add_table_slide(prs, "Entegre Genomik Varyant Veritabanlari (~1.33 Milyar)",
+        ["Veritabani", "Varyant Sayisi", "Birey", "Erisim", "Maliyet"],
+        [
+            ["gnomAD v4.0", "750,000,000", "807,162", "Acik", "Ucretsiz"],
+            ["TOPMed", "400,000,000", "150,000", "dbGaP", "Ucretsiz"],
+            ["UK Biobank", "96,000,000", "500,000", "Basvuru", "Akademik"],
+            ["1000 Genomes", "84,700,000", "2,504", "Acik", "Ucretsiz"],
+            ["GWAS Catalog", "500,000+", "-", "Acik", "Ucretsiz"],
+            ["TOPLAM", "~1.33 Milyar", "~1.46M", "-", "-"]
+        ]
+    )
+    
+    # SLIDE: DNA Metilasyon CpG Veritabani
+    add_table_slide(prs, "DNA Metilasyon CpG Veritabani",
+        ["Platform/Kategori", "CpG Sayisi", "Gen Kapsami", "Yil", "Durum"],
+        [
+            ["WGBS (Tum Genom)", "28,000,000", "Tum genom", "2010", "Altin Standart"],
+            ["Illumina EPIC v2", "935,000", "21,645+", "2023", "En Guncel"],
+            ["Illumina EPIC", "866,895", "21,645", "2016", "Mevcut Standart"],
+            ["Illumina 450K", "485,577", "21,231", "2011", "Yaygin"],
+            ["450K-EPIC Ortak", "452,626", "-", "-", "Karsilastirma"],
+            ["Platform Benzersiz", "23,847", "-", "-", "Bagimlilik"]
+        ]
+    )
+    
+    # SLIDE: Madde Tespit Veritabani
+    add_stat_highlight_slide(prs, "Madde Tespit Veritabani: 36,000+ Kayit", [
+        ("Temel Maddeler", "~140"),
+        ("NPS Turevleri", "200+"),
+        ("Polisubstans Kombinasyonlari", "5,900+"),
+        ("Kimyasal Reaksiyonlar", "1,000+"),
+        ("Metabolik Yolaklar", "500+"),
+        ("GENEL TOPLAM", "36,000+")
+    ])
+    
+    # SLIDE: NPS Siniflari
+    add_table_slide(prs, "NPS (Yeni Psikoaktif Maddeler) Veritabani",
+        ["NPS Sinifi", "Turev", "Ornek Maddeler"],
+        [
+            ["Sentetik Kannabinoidler", "40+", "JWH-018, AM-2201, ADB-FUBINACA"],
+            ["Fentanil Analoglari", "30+", "Carfentanil, Acetylfentanyl"],
+            ["Sentetik Katinonlar", "30+", "MDPV, Alpha-PVP, Mephedrone"],
+            ["Feniletilaminer", "25+", "2C-B, 25I-NBOMe, DOB"],
+            ["Triptaminler", "20+", "DMT, 5-MeO-DMT, AMT"],
+            ["Benzodiazepin Analoglari", "20+", "Flualprazolam, Etizolam"],
+            ["Benzofuranlar", "15+", "6-APB, 5-APB, 5-MAPB"],
+            ["Piperazinler", "15+", "BZP, TFMPP, mCPP"],
+            ["Aminoindanlar", "10+", "MDAI, 5,6-MDAI"]
+        ]
+    )
+    
+    # SLIDE: GWAS Calismalari
+    add_table_slide(prs, "Entegre GWAS Calismalari",
+        ["Ozellik", "GWAS ID", "Ornek", "Vaka", "Kontrol", "SNP"],
+        [
+            ["Sigara Baslama", "GCST007458", "1,232,091", "-", "-", "12M"],
+            ["Alkol Tuketimi", "GCST007474", "941,280", "-", "-", "12M"],
+            ["Alkol Bagimliligi", "GCST90012877", "274,424", "52,848", "221,576", "9.69M"],
+            ["Kannabis Bozuklugu", "GCST90016614", "384,032", "14,080", "369,952", "-"],
+            ["Opioid Bozuklugu", "GCST90000032", "82,707", "10,544", "72,163", "7.2M"]
+        ]
+    )
+    
+    # SLIDE: Reseptor Hedef Veritabani
+    add_table_slide(prs, "Reseptor Hedef Veritabani (55+ Hedef)",
+        ["Kategori", "Sayi", "Onemli Ornekler", "Bagimlilik Agirligi"],
+        [
+            ["Opioid", "4", "MOR, DOR, KOR, NOP", "%25-95"],
+            ["Dopaminerjik", "7", "DAT, D1-D5", "%50-92"],
+            ["Serotonerjik", "8", "SERT, 5-HT1A-5-HT3", "%30-60"],
+            ["GABAerjik", "8", "GABA-A subunitleri", "%45-75"],
+            ["Glutamaterjik", "5", "NMDA, AMPA, mGluR", "%40-60"],
+            ["Kolinerjik", "7", "nAChR, mAChR", "%30-85"],
+            ["Kannabinoid", "2", "CB1, CB2", "%25-55"],
+            ["Adrenerjik", "3", "NET, Alpha2A", "%35-65"]
+        ]
+    )
+    
+    # SLIDE: Farmakogenetik Veritabanlari
+    add_stat_highlight_slide(prs, "Farmakogenetik Veritabanlari", [
+        ("PharmGKB Genleri", "150+"),
+        ("Ilac-Gen Iliskileri", "2,000+"),
+        ("Klinik Anotasyonlar", "5,000+"),
+        ("CPIC Rehberleri", "50+"),
+        ("DrugBank Ilaclar", "15,000+"),
+        ("ChEMBL Biyoaktivite", "2.4M+")
+    ])
+    
+    # SLIDE: Epigenetik Saat CpG Detaylari
+    add_table_slide(prs, "Epigenetik Saat CpG Detaylari",
+        ["Saat", "CpG Sayisi", "Yil", "Cikti", "MAE/R2"],
+        [
+            ["Horvath", "353", "2013", "Multi-doku yas", "MAE: 3.6 yil"],
+            ["Hannum", "71", "2013", "Kan yasi", "MAE: 4.9 yil"],
+            ["PhenoAge", "513", "2018", "Fenotipik yas", "MAE: 4.3 yil"],
+            ["GrimAge", "1,030", "2019", "Mortalite riski", "MAE: 4.0 yil"],
+            ["DunedinPACE", "173", "2022", "Yaslanma hizi", "R2: 0.89"],
+            ["TOPLAM", "2,140", "-", "-", "-"]
+        ]
+    )
+    
+    # SLIDE: Genel Ozet Istatistikleri
+    add_stat_highlight_slide(prs, "Platform Genel Istatistik Ozeti", [
+        ("Genomik Varyantlar (Toplam)", "~1.33 Milyar"),
+        ("CpG Siteleri (WGBS)", "28,000,000"),
+        ("Tespit Edilebilir Maddeler", "36,000+"),
+        ("Reseptor Hedefleri", "55+"),
+        ("GWAS Ornekleri (Max)", "1.23 Milyon"),
+        ("Referans DNA Profilleri", "10,542")
+    ])
+    
+    # ===========================================
     # BOLUM 3: ARASTIRMA BULGULARI
     # ===========================================
     add_section_slide(prs, "ARASTIRMA BULGULARI", "3")
