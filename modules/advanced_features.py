@@ -138,105 +138,594 @@ VALIDATED_SUBSTANCES = {
 }
 
 
-# Receptor targets and binding profiles
+# Receptor targets and binding profiles - IUPHAR/BPS + DrugBank + ChEMBL Database
+# Comprehensive list: 55+ addiction-related receptor targets
 RECEPTOR_TARGETS = {
+    # ============================================================================
+    # OPIOID RECEPTORS - Primary addiction targets
+    # ============================================================================
     'MOR': {
         'name': 'Mu Opioid Receptor (MOR)',
         'gene': 'OPRM1',
+        'uniprot': 'P35372',
         'addiction_weight': 0.95,
-        'mechanism': 'Analjezi, ofori, solunum depresyonu',
-        'ligands': ['morphine', 'fentanyl', 'heroin', 'oxycodone', 'methadone']
+        'mechanism': 'Analjezi, ofori, solunum depresyonu, VTA dopamin disinhibisyonu',
+        'ligands': ['morphine', 'fentanyl', 'heroin', 'oxycodone', 'methadone', 'buprenorphine'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
     'DOR': {
         'name': 'Delta Opioid Receptor (DOR)',
         'gene': 'OPRD1',
+        'uniprot': 'P41143',
         'addiction_weight': 0.45,
-        'mechanism': 'Analjezi, anksiyete modulasyonu',
-        'ligands': ['enkephalins', 'deltorphin']
+        'mechanism': 'Analjezi, anksiyete modulasyonu, duygudurum',
+        'ligands': ['enkephalins', 'deltorphin', 'SNC80'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
     'KOR': {
         'name': 'Kappa Opioid Receptor (KOR)',
         'gene': 'OPRK1',
-        'addiction_weight': 0.25,
-        'mechanism': 'Disfori, halusinasyon',
-        'ligands': ['salvinorin_a', 'dynorphin']
+        'uniprot': 'P41145',
+        'addiction_weight': 0.35,
+        'mechanism': 'Disfori, halusinasyon, stres yaniit, anti-odul',
+        'ligands': ['salvinorin_a', 'dynorphin', 'U50488'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
+    'NOP': {
+        'name': 'Nociceptin/ORL1 Receptor',
+        'gene': 'OPRL1',
+        'uniprot': 'P41146',
+        'addiction_weight': 0.30,
+        'mechanism': 'Analjezi, anksiyete, stres yaniit',
+        'ligands': ['nociceptin', 'orphanin_fq'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # DOPAMINERGIC SYSTEM - Reward pathway
+    # ============================================================================
     'DAT': {
-        'name': 'Dopamine Transporter',
+        'name': 'Dopamine Transporter (DAT)',
         'gene': 'SLC6A3',
-        'addiction_weight': 0.90,
-        'mechanism': 'Dopamin geri alim inhibisyonu, ofori',
-        'ligands': ['cocaine', 'methylphenidate', 'amphetamine']
+        'uniprot': 'Q01959',
+        'addiction_weight': 0.92,
+        'mechanism': 'Dopamin geri alim inhibisyonu, ofori, psikomotor stimulasyon',
+        'ligands': ['cocaine', 'methylphenidate', 'amphetamine', 'methamphetamine', 'modafinil'],
+        'source': 'DrugBank/ChEMBL'
     },
     'D1': {
         'name': 'Dopamine D1 Receptor',
         'gene': 'DRD1',
+        'uniprot': 'P21728',
         'addiction_weight': 0.75,
-        'mechanism': 'Odul yolagi aktivasyonu',
-        'ligands': ['dopamine', 'amphetamine', 'cocaine']
+        'mechanism': 'Odul yolagi aktivasyonu, motor fonksiyon',
+        'ligands': ['dopamine', 'amphetamine', 'cocaine', 'SKF38393'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
     'D2': {
         'name': 'Dopamine D2 Receptor',
         'gene': 'DRD2',
-        'addiction_weight': 0.80,
-        'mechanism': 'Odul, motivasyon',
-        'ligands': ['dopamine', 'pramipexole', 'antipsychotics']
+        'uniprot': 'P14416',
+        'addiction_weight': 0.85,
+        'mechanism': 'Odul, motivasyon, motor impulsivite',
+        'ligands': ['dopamine', 'pramipexole', 'quinpirole', 'haloperidol'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
-    'SERT': {
-        'name': 'Serotonin Transporter',
-        'gene': 'SLC6A4',
+    'D3': {
+        'name': 'Dopamine D3 Receptor',
+        'gene': 'DRD3',
+        'uniprot': 'P35462',
+        'addiction_weight': 0.80,
+        'mechanism': 'Ilaç arama davranisi, relaps, nikotin bagimliligi',
+        'ligands': ['pramipexole', 'cariprazine', 'BP897'],
+        'source': 'DrugBank - Addiction target'
+    },
+    'D4': {
+        'name': 'Dopamine D4 Receptor',
+        'gene': 'DRD4',
+        'uniprot': 'P21917',
         'addiction_weight': 0.55,
-        'mechanism': 'Serotonin geri alim inhibisyonu',
-        'ligands': ['mdma', 'ssris', 'cocaine']
+        'mechanism': 'Dikkat, durtuselllik, yenilik arayisi',
+        'ligands': ['clozapine', 'L-745870'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'D5': {
+        'name': 'Dopamine D5 Receptor',
+        'gene': 'DRD5',
+        'uniprot': 'P21918',
+        'addiction_weight': 0.50,
+        'mechanism': 'Odul, motor fonksiyon',
+        'ligands': ['dopamine', 'SKF38393'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # SEROTONERGIC SYSTEM
+    # ============================================================================
+    'SERT': {
+        'name': 'Serotonin Transporter (SERT)',
+        'gene': 'SLC6A4',
+        'uniprot': 'P31645',
+        'addiction_weight': 0.60,
+        'mechanism': 'Serotonin geri alim inhibisyonu, duygudurum',
+        'ligands': ['mdma', 'cocaine', 'fluoxetine', 'sertraline'],
+        'source': 'DrugBank/ChEMBL'
+    },
+    '5HT1A': {
+        'name': '5-HT1A Receptor',
+        'gene': 'HTR1A',
+        'uniprot': 'P08908',
+        'addiction_weight': 0.40,
+        'mechanism': 'Anksiyete modulasyonu, duygudurum',
+        'ligands': ['buspirone', '8-OH-DPAT', 'tandospirone'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    '5HT1B': {
+        'name': '5-HT1B Receptor',
+        'gene': 'HTR1B',
+        'uniprot': 'P28222',
+        'addiction_weight': 0.35,
+        'mechanism': 'Impulsivite, aggresyon modulasyonu',
+        'ligands': ['sumatriptan', 'CP94253'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
     '5HT2A': {
         'name': '5-HT2A Receptor',
         'gene': 'HTR2A',
-        'addiction_weight': 0.35,
-        'mechanism': 'Halusinasyon, algi degisiklikleri',
-        'ligands': ['lsd', 'psilocybin', 'mescaline']
+        'uniprot': 'P28223',
+        'addiction_weight': 0.45,
+        'mechanism': 'Halusinasyon, algi degisiklikleri, psikedelik etkiler',
+        'ligands': ['lsd', 'psilocybin', 'mescaline', 'dmt', 'ketanserin'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
-    'GABA_A': {
-        'name': 'GABA-A Receptor',
+    '5HT2C': {
+        'name': '5-HT2C Receptor',
+        'gene': 'HTR2C',
+        'uniprot': 'P28335',
+        'addiction_weight': 0.50,
+        'mechanism': 'Nikotin motor impulsivitesi, iştah kontrolu',
+        'ligands': ['lorcaserin', 'm-CPP', 'WAY163909'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    '5HT3': {
+        'name': '5-HT3 Receptor',
+        'gene': 'HTR3A',
+        'uniprot': 'P46098',
+        'addiction_weight': 0.30,
+        'mechanism': 'Bulanti, kannabinoid allosterik modulasyonu',
+        'ligands': ['ondansetron', 'granisetron'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # GABAergic SYSTEM - 19 GABA subunits
+    # ============================================================================
+    'GABA_A_alpha1': {
+        'name': 'GABA-A Receptor Alpha-1',
         'gene': 'GABRA1',
+        'uniprot': 'P14867',
+        'addiction_weight': 0.75,
+        'mechanism': 'Sedasyon, amnezi, antikonvulzan',
+        'ligands': ['benzodiazepines', 'zolpidem', 'alcohol', 'barbiturates'],
+        'source': 'DrugBank - GABA hub'
+    },
+    'GABA_A_alpha2': {
+        'name': 'GABA-A Receptor Alpha-2',
+        'gene': 'GABRA2',
+        'uniprot': 'P47869',
+        'addiction_weight': 0.65,
+        'mechanism': 'Anksiyoliz, kas gevsetme',
+        'ligands': ['diazepam', 'TPA023'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'GABA_A_alpha3': {
+        'name': 'GABA-A Receptor Alpha-3',
+        'gene': 'GABRA3',
+        'uniprot': 'P34903',
+        'addiction_weight': 0.55,
+        'mechanism': 'Analjezi, kas gevsetme',
+        'ligands': ['etomidate'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'GABA_A_alpha5': {
+        'name': 'GABA-A Receptor Alpha-5',
+        'gene': 'GABRA5',
+        'uniprot': 'P31644',
+        'addiction_weight': 0.45,
+        'mechanism': 'Hafiza, ogrenme modulasyonu',
+        'ligands': ['L-655708'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'GABA_A_gamma2': {
+        'name': 'GABA-A Receptor Gamma-2',
+        'gene': 'GABRG2',
+        'uniprot': 'P18507',
         'addiction_weight': 0.70,
-        'mechanism': 'Sedasyon, anksiyoliz, kas gevsetme',
-        'ligands': ['benzodiazepines', 'barbiturates', 'alcohol', 'zolpidem']
+        'mechanism': 'Benzodiazepin baglama bolgesi',
+        'ligands': ['flumazenil', 'diazepam'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'GABA_A_delta': {
+        'name': 'GABA-A Receptor Delta',
+        'gene': 'GABRD',
+        'uniprot': 'O14764',
+        'addiction_weight': 0.50,
+        'mechanism': 'Tonik inhibisyon, alkol duyarliligii',
+        'ligands': ['gaboxadol', 'neurosteroids'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
     'GABA_B': {
         'name': 'GABA-B Receptor',
         'gene': 'GABBR1',
-        'addiction_weight': 0.50,
-        'mechanism': 'Kas gevsetme, uyku',
-        'ligands': ['baclofen', 'ghb']
-    },
-    'NMDA': {
-        'name': 'NMDA Receptor',
-        'gene': 'GRIN1',
+        'uniprot': 'Q9UBS5',
         'addiction_weight': 0.55,
-        'mechanism': 'Disosiyasyon, analjezi',
-        'ligands': ['ketamine', 'pcp', 'dxm', 'nitrous_oxide']
+        'mechanism': 'Kas gevsetme, GHB etkisi',
+        'ligands': ['baclofen', 'ghb', 'phenibut'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
+    
+    # ============================================================================
+    # GLUTAMATERGIC SYSTEM
+    # ============================================================================
+    'NMDA_NR1': {
+        'name': 'NMDA Receptor NR1',
+        'gene': 'GRIN1',
+        'uniprot': 'Q05586',
+        'addiction_weight': 0.60,
+        'mechanism': 'Disosiyasyon, analjezi, bagimlilik plastisitesi',
+        'ligands': ['ketamine', 'pcp', 'dxm', 'memantine', 'nitrous_oxide'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'NMDA_NR2B': {
+        'name': 'NMDA Receptor NR2B',
+        'gene': 'GRIN2B',
+        'uniprot': 'Q13224',
+        'addiction_weight': 0.55,
+        'mechanism': 'Ogrenme, hafiza, bagimlilik hafizasi',
+        'ligands': ['ifenprodil', 'Ro25-6981'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'AMPA_GluA1': {
+        'name': 'AMPA Receptor GluA1',
+        'gene': 'GRIA1',
+        'uniprot': 'P42261',
+        'addiction_weight': 0.50,
+        'mechanism': 'Sinaptik plastisite, bagimlilik ogrenme',
+        'ligands': ['AMPA', 'perampanel'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'mGluR5': {
+        'name': 'Metabotropic Glutamate Receptor 5',
+        'gene': 'GRM5',
+        'uniprot': 'P41594',
+        'addiction_weight': 0.55,
+        'mechanism': 'Odul modulasyonu, ilaç arama davranisi',
+        'ligands': ['CDPPB', 'MTEP', 'fenobam'],
+        'source': 'DrugBank - Addiction target'
+    },
+    'mGluR2': {
+        'name': 'Metabotropic Glutamate Receptor 2',
+        'gene': 'GRM2',
+        'uniprot': 'Q14416',
+        'addiction_weight': 0.40,
+        'mechanism': 'Glutamat salimini azaltma, anti-bagimiik',
+        'ligands': ['LY379268', 'psilocybin_metabolite'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # CANNABINOID SYSTEM
+    # ============================================================================
     'CB1': {
         'name': 'Cannabinoid CB1 Receptor',
         'gene': 'CNR1',
-        'addiction_weight': 0.45,
-        'mechanism': 'Ofori, istah, analjezi',
-        'ligands': ['thc', 'synthetic_cannabinoids']
+        'uniprot': 'P21554',
+        'addiction_weight': 0.55,
+        'mechanism': 'Ofori, istah, analjezi, MOR heterodimer',
+        'ligands': ['thc', 'synthetic_cannabinoids', 'anandamide', 'rimonabant'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
-    'nACh': {
-        'name': 'Nicotinic Acetylcholine Receptor',
-        'gene': 'CHRNA4',
-        'addiction_weight': 0.75,
-        'mechanism': 'Uyarilma, odul',
-        'ligands': ['nicotine', 'varenicline']
+    'CB2': {
+        'name': 'Cannabinoid CB2 Receptor',
+        'gene': 'CNR2',
+        'uniprot': 'P34972',
+        'addiction_weight': 0.25,
+        'mechanism': 'Immun modulasyon, noroinflamasyon',
+        'ligands': ['JWH-133', 'AM1241'],
+        'source': 'IUPHAR/BPS GtoPdb'
     },
-    'mACh': {
-        'name': 'Muscarinic Acetylcholine Receptor',
+    
+    # ============================================================================
+    # CHOLINERGIC SYSTEM
+    # ============================================================================
+    'nACh_alpha4beta2': {
+        'name': 'nAChR Alpha4-Beta2',
+        'gene': 'CHRNA4/CHRNB2',
+        'uniprot': 'P43681/P17787',
+        'addiction_weight': 0.85,
+        'mechanism': 'Nikotin bagimliligi, VTA dopamin salimi',
+        'ligands': ['nicotine', 'varenicline', 'cytisine', 'sazetidine'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'nACh_alpha7': {
+        'name': 'nAChR Alpha7',
+        'gene': 'CHRNA7',
+        'uniprot': 'P36544',
+        'addiction_weight': 0.60,
+        'mechanism': 'Kognitif fonksiyon, noroproteksiyon',
+        'ligands': ['GTS-21', 'PNU-282987'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'nACh_alpha3beta4': {
+        'name': 'nAChR Alpha3-Beta4',
+        'gene': 'CHRNA3/CHRNB4',
+        'uniprot': 'P32297/P30926',
+        'addiction_weight': 0.55,
+        'mechanism': 'Otonom fonksiyon, nikotin yoksunlugu',
+        'ligands': ['nicotine', 'AT-1001'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'mACh_M1': {
+        'name': 'Muscarinic M1 Receptor',
         'gene': 'CHRM1',
+        'uniprot': 'P11229',
         'addiction_weight': 0.40,
-        'mechanism': 'Antikolinerjik etkiler, halusinasyon',
-        'ligands': ['scopolamine', 'atropine', 'diphenhydramine']
+        'mechanism': 'Kognitif, antikolinerjik halusinasyon',
+        'ligands': ['scopolamine', 'atropine', 'pilocarpine'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'mACh_M2': {
+        'name': 'Muscarinic M2 Receptor',
+        'gene': 'CHRM2',
+        'uniprot': 'P08172',
+        'addiction_weight': 0.30,
+        'mechanism': 'Kardiyak, presinaptik oto-reseptor',
+        'ligands': ['atropine', 'methacholine'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # ADRENERGIC SYSTEM
+    # ============================================================================
+    'NET': {
+        'name': 'Norepinephrine Transporter (NET)',
+        'gene': 'SLC6A2',
+        'uniprot': 'P23975',
+        'addiction_weight': 0.65,
+        'mechanism': 'NE geri alim, stimulan etkileri',
+        'ligands': ['amphetamine', 'cocaine', 'atomoxetine', 'reboxetine'],
+        'source': 'DrugBank - Stimulant hub'
+    },
+    'Alpha2A': {
+        'name': 'Alpha-2A Adrenergic Receptor',
+        'gene': 'ADRA2A',
+        'uniprot': 'P08913',
+        'addiction_weight': 0.50,
+        'mechanism': 'Yoksunluk semptomlari, MOR interaksiyonu',
+        'ligands': ['clonidine', 'dexmedetomidine', 'lofexidine'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'Beta1': {
+        'name': 'Beta-1 Adrenergic Receptor',
+        'gene': 'ADRB1',
+        'uniprot': 'P08588',
+        'addiction_weight': 0.35,
+        'mechanism': 'Kardiyak, stres yanit',
+        'ligands': ['propranolol', 'metoprolol'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # HISTAMINERGIC SYSTEM
+    # ============================================================================
+    'H1': {
+        'name': 'Histamine H1 Receptor',
+        'gene': 'HRH1',
+        'uniprot': 'P35367',
+        'addiction_weight': 0.35,
+        'mechanism': 'Sedasyon, istismar (DPH, promethazine)',
+        'ligands': ['diphenhydramine', 'promethazine', 'chlorpheniramine'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'H3': {
+        'name': 'Histamine H3 Receptor',
+        'gene': 'HRH3',
+        'uniprot': 'Q9Y5N1',
+        'addiction_weight': 0.40,
+        'mechanism': 'Norotransmitter salimi modulasyonu',
+        'ligands': ['pitolisant', 'thioperamide'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # STRESS/NEUROPEPTIDE SYSTEM - Relapse targets
+    # ============================================================================
+    'CRF1': {
+        'name': 'CRF1 Receptor',
+        'gene': 'CRHR1',
+        'uniprot': 'P34998',
+        'addiction_weight': 0.65,
+        'mechanism': 'Stres kaynakli relaps, yoksunluk',
+        'ligands': ['antalarmin', 'pexacerfont', 'CP-154526'],
+        'source': 'DrugBank - Stress/relapse'
+    },
+    'CRF2': {
+        'name': 'CRF2 Receptor',
+        'gene': 'CRHR2',
+        'uniprot': 'Q13324',
+        'addiction_weight': 0.45,
+        'mechanism': 'Stres adaptasyonu, anksiete',
+        'ligands': ['urocortin', 'astressin-2B'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'OX1': {
+        'name': 'Orexin-1 Receptor',
+        'gene': 'HCRTR1',
+        'uniprot': 'O43613',
+        'addiction_weight': 0.55,
+        'mechanism': 'Odul arama, nikotin bagimliligi, uyarilma',
+        'ligands': ['orexin-A', 'SB-334867', 'suvorexant'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'OX2': {
+        'name': 'Orexin-2 Receptor',
+        'gene': 'HCRTR2',
+        'uniprot': 'O43614',
+        'addiction_weight': 0.50,
+        'mechanism': 'Uyku/uyaniklik, odul',
+        'ligands': ['orexin-B', 'lemborexant'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'NK1': {
+        'name': 'Neurokinin-1 (Substance P) Receptor',
+        'gene': 'TACR1',
+        'uniprot': 'P25103',
+        'addiction_weight': 0.45,
+        'mechanism': 'Stres, anksiyete, MOR heterodimer',
+        'ligands': ['aprepitant', 'substance_P', 'L-733060'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    'NPY_Y1': {
+        'name': 'NPY Y1 Receptor',
+        'gene': 'NPY1R',
+        'uniprot': 'P25929',
+        'addiction_weight': 0.40,
+        'mechanism': 'Anksiyete, stres, alkol tuketimi',
+        'ligands': ['neuropeptide_Y', 'BIBP3226'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # SIGMA RECEPTORS
+    # ============================================================================
+    'Sigma1': {
+        'name': 'Sigma-1 Receptor',
+        'gene': 'SIGMAR1',
+        'uniprot': 'Q99720',
+        'addiction_weight': 0.50,
+        'mechanism': 'Kokain ve metamfetamin etkileri, noroproteksiyon',
+        'ligands': ['cocaine', 'methamphetamine', 'SKF10047', 'PRE-084'],
+        'source': 'DrugBank/ChEMBL'
+    },
+    'Sigma2': {
+        'name': 'Sigma-2 Receptor (TMEM97)',
+        'gene': 'TMEM97',
+        'uniprot': 'Q5BJF2',
+        'addiction_weight': 0.35,
+        'mechanism': 'Hucre proliferasyonu, noroloji',
+        'ligands': ['siramesine', 'PB28'],
+        'source': 'ChEMBL'
+    },
+    
+    # ============================================================================
+    # ENZYMES & SIGNALING
+    # ============================================================================
+    'MAO_A': {
+        'name': 'Monoamine Oxidase A',
+        'gene': 'MAOA',
+        'uniprot': 'P21397',
+        'addiction_weight': 0.45,
+        'mechanism': 'Monoamin metabolizması, nikotin bagimliligi',
+        'ligands': ['moclobemide', 'clorgyline', 'harmala_alkaloids'],
+        'source': 'DrugBank'
+    },
+    'MAO_B': {
+        'name': 'Monoamine Oxidase B',
+        'gene': 'MAOB',
+        'uniprot': 'P27338',
+        'addiction_weight': 0.40,
+        'mechanism': 'Dopamin metabolizması, sigara dumanı inhibitorleri',
+        'ligands': ['selegiline', 'rasagiline', 'deprenyl'],
+        'source': 'DrugBank'
+    },
+    'COMT': {
+        'name': 'Catechol-O-Methyltransferase',
+        'gene': 'COMT',
+        'uniprot': 'P21964',
+        'addiction_weight': 0.40,
+        'mechanism': 'Dopamin metabolizması, prefrontal korteks',
+        'ligands': ['entacapone', 'tolcapone'],
+        'source': 'DrugBank'
+    },
+    'FAAH': {
+        'name': 'Fatty Acid Amide Hydrolase',
+        'gene': 'FAAH',
+        'uniprot': 'O00519',
+        'addiction_weight': 0.40,
+        'mechanism': 'Endokannabinoid metabolizması',
+        'ligands': ['URB597', 'PF-04457845'],
+        'source': 'IUPHAR/BPS GtoPdb'
+    },
+    
+    # ============================================================================
+    # TRANSCRIPTION FACTORS & SIGNALING (Intracellular)
+    # ============================================================================
+    'CREB': {
+        'name': 'cAMP Response Element-Binding Protein',
+        'gene': 'CREB1',
+        'uniprot': 'P16220',
+        'addiction_weight': 0.55,
+        'mechanism': 'Bagimlilik hafizasi, gen ekspresyonu',
+        'ligands': [],
+        'source': 'DrugBank - Signaling'
+    },
+    'DeltaFosB': {
+        'name': 'FosB/DeltaFosB',
+        'gene': 'FOSB',
+        'uniprot': 'P53539',
+        'addiction_weight': 0.60,
+        'mechanism': 'Kronik ilaç maruziyeti, NAc birikimi',
+        'ligands': [],
+        'source': 'DrugBank - Addiction marker'
+    },
+    'mTOR': {
+        'name': 'Mechanistic Target of Rapamycin',
+        'gene': 'MTOR',
+        'uniprot': 'P42345',
+        'addiction_weight': 0.45,
+        'mechanism': 'Bagimlilik plastisitesi, protein sentezi',
+        'ligands': ['rapamycin', 'everolimus'],
+        'source': 'DrugBank - Emerging target'
+    },
+    'PDE4': {
+        'name': 'Phosphodiesterase 4',
+        'gene': 'PDE4B',
+        'uniprot': 'Q07343',
+        'addiction_weight': 0.40,
+        'mechanism': 'cAMP signaling, nikotin bagimliligi',
+        'ligands': ['rolipram', 'roflumilast'],
+        'source': 'DrugBank'
+    },
+    'PDE10A': {
+        'name': 'Phosphodiesterase 10A',
+        'gene': 'PDE10A',
+        'uniprot': 'Q9Y233',
+        'addiction_weight': 0.45,
+        'mechanism': 'Striatal signaling, psikostimulant etkileri',
+        'ligands': ['papaverine', 'MP-10'],
+        'source': 'ChEMBL'
+    },
+    
+    # ============================================================================
+    # GROWTH FACTORS
+    # ============================================================================
+    'BDNF': {
+        'name': 'Brain-Derived Neurotrophic Factor',
+        'gene': 'BDNF',
+        'uniprot': 'P23560',
+        'addiction_weight': 0.50,
+        'mechanism': 'Noroplastisite, bagimlilik ogrenme',
+        'ligands': [],
+        'source': 'DrugBank - Neuroplasticity'
+    },
+    'TrkB': {
+        'name': 'Tropomyosin Receptor Kinase B',
+        'gene': 'NTRK2',
+        'uniprot': 'Q16620',
+        'addiction_weight': 0.45,
+        'mechanism': 'BDNF sinyal yolu, bagimlilik',
+        'ligands': ['7,8-DHF', 'ANA-12'],
+        'source': 'ChEMBL'
     }
 }
 
