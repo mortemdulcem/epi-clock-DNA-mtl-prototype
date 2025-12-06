@@ -1,0 +1,217 @@
+şağıya, UNODC (United Nations Office on Drugs and Crime) tarzında, kurumsal ve ciddi bir web görünümü elde etmek için kullanabileceğin hazır prompt’lar yazdım. Bunları:
+
+Gamma / Tome / Beautiful.ai gibi sunum araçlarında,
+Midjourney / DALL·E gibi görsel üreticilerde,
+Veya “AI site builder”’larda (Framer AI, v0, vb.)
+direkt kullanabilirsin. Hepsi İngilizce yazıldı, çünkü tasarım / görsel araçlar İngilizce prompt’ta daha iyi sonuç veriyor.
+
+1. Genel UNODC Kurumsal Web Tasarım Prompt’u
+Landing page için (ana sayfa):
+
+"Design a professional, clean and institutional website homepage inspired by the style of the United Nations Office on Drugs and Crime (UNODC). The layout should be content-focused, with a strong emphasis on clarity, credibility, and global impact. Use a calm color palette with UN-style blues, white, light grey, and subtle accent colors. Include:
+
+A simple top navigation bar with logo, About, Topics, Publications, Data, and Contact.
+A large hero section with a serious, impactful background image related to justice, law, or international cooperation.
+A short mission statement and a 'Learn More' primary button.
+Sections for ‘Latest News’, ‘Key Publications’, and ‘Global Programs’.
+Clear typography with modern sans-serif fonts, strong hierarchy for headings, and generous white space.
+Subtle, minimal icons and small details that reflect trust, authority, and neutrality. The overall mood should be serious, formal, and humanitarian, similar to an official UN agency website."
+2. Renk, Tipografi ve Stil Odaklı Prompt
+"Create a UNODC-inspired web UI style with:
+
+Color palette: deep UN blue as the primary color, white background, neutral greys for text, and a single accent color (such as teal or light blue).
+Typography: clean sans-serif fonts (similar to Open Sans, Source Sans Pro, or Lato), with clear visual hierarchy for H1, H2, H3, and body text.
+Buttons: rectangular, slightly rounded corners, filled primary button in deep blue with white text, and a secondary outlined button.
+Layout: full-width sections, large margins, plenty of white space, and grid-based content blocks.
+Visual tone: serious, institutional, non-commercial, with a humanitarian focus. This style should clearly feel like a United Nations agency: neutral, trustworthy, and globally oriented."
+3. İçerik Kartları / Haber Bölümü için Prompt
+"Design a 'Latest News and Updates' section in the style of UNODC:
+
+3–6 news cards in a responsive grid.
+Each card includes: small category label (e.g., 'Corruption', 'Organized Crime'), title, short summary, date, and a 'Read More' link.
+Minimal thumbnail image or simple abstract illustration.
+Soft borders or subtle shadows, nothing flashy.
+Use UN blue for labels or small accents. The look should be clean, editorial, and official, similar to a UN news portal."
+4. Programlar / Projeler Sayfası Prompt’u
+"Design a 'Global Programs and Initiatives' page in a UNODC-like style:
+
+Intro section with a short paragraph explaining the organization’s global work.
+A structured grid or list of programs, each with:
+Program title
+Region or thematic area
+2–3 line description
+A button or link for more details
+Use icons or small flags/maps subtly, without making the design too busy.
+Maintain an institutional UN layout: strong alignment, generous spacing, and disciplined use of color.
+Overall mood: transparent, accountable, focused on public good and rule of law."
+5. Veri / İstatistik Görünümü Prompt’u
+"Create a 'Data and Statistics' section for a UNODC-style website:
+
+Use cards or panels to show key indicators (e.g., crime rates, drug seizures, corruption indexes).
+Include simple charts: bar charts, line charts, or maps, with a very clean, flat style.
+Use the primary UN blue and a neutral secondary color for chart elements.
+Typography must be clear and readable, numbers should stand out.
+The design should feel like an official UN data portal: serious, evidence-based, and easy to scan."
+6. Tam Sayfa Yapısı için “Hepsini Bir Arada” Prompt
+"Design a complete institutional website layout inspired by the United Nations Office on Drugs and Crime (UNODC). The site should include:
+
+A top navigation with logo and clear menu items (About, Topics, Programs, Publications, Data, News, Contact).
+A hero banner with a background image illustrating justice, law enforcement, or international cooperation, with a concise headline and a short mission statement.
+Sections:
+'Key Focus Areas' with 4–6 topic cards (Corruption, Organized Crime, Terrorism, Drug Control, Criminal Justice, Human Trafficking).
+'Featured Publications' with report covers and download links.
+'Latest News and Events' with 3–5 articles.
+'Global Presence' with a world map or regional highlights.
+Design language:
+UN-style blue palette, white background, neutral greys.
+Clean sans-serif typography.
+Minimalist icons and simple, flat illustrations.
+Strong grid, lots of white space, accessible contrast. The overall look must be formal, credible, and consistent with UN agency websites."
+7. DALL·E / Midjourney için Görsel Arka Plan Prompt’u
+"Generate a hero background illustration for a UNODC-style website:
+
+A modern, flat or semi-realistic illustration showing themes of justice, law, international cooperation, and crime prevention.
+Include symbolic elements like a courthouse, scales of justice, world map, police, and people collaborating.
+Color palette: shades of blue, white, and soft neutrals, matching a United Nations aesthetic.
+The image should be calm, serious, and institutional, not playful.
+Composition should leave enough empty space for overlaying text and buttons."
+Eğer istersen:
+
+UNODC tarzı için renk kodları (hex),
+Örnek bir bölüm bölümlü ana sayfa taslak metni (header, hero, topics, news, footer),
+Veya Tailwind CSS / HTML iskeleti de hazırlayabilirim.
+UNODC tarzı tasarımı hangi amaçla kullanacaksın?
+
+Kurumsal bir proje mi, okul ödevi mi, yoksa portfolyona koymak için mi? Buna göre daha spesifik prompt’lar da yazabilirim.
+
+ulusal bilimsel ileri seviye bir dna yazılım programı 
+
+Monica
+GPT-5.1
+“Ulusal bilimsel ileri seviye bir DNA yazılım programı” derken iki şey hedeflenebilir:
+
+Türkiye ölçeğinde kullanılan,
+Bilimsel olarak güvenilir ve ileri özelliklere sahip,
+DNA analizi yapan bir yazılım (örneğin adli tıp, genetik tanı, araştırma, biyoenformatik).
+Aşağıda sana hem böyle bir programın nasıl olması gerektiğini hem de dünya standartlarına yakın örnekleri özetleyeyim. İstersen sonraki adımda bunun için detaylı teknik gereksinim dokümanı veya proje taslağı da hazırlayabilirim.
+
+1. Böyle bir DNA yazılımının sahip olması gereken ana modüller
+Ulusal, ileri seviye bilimsel bir program için minimum şu modüller gerekir:
+
+Veri Girişi ve Yönetimi
+
+Sanger, NGS (Illumina, Ion Torrent vb.) çıktılarının alınması (FASTQ, BAM, VCF).
+Örnek, vaka, hasta, olay, laboratuvar kayıt ilişkisi.
+Zincirleme emniyet (chain of custody) kaydı (özellikle adli tıp için).
+Kalite Kontrol (QC) Modülü
+
+Okuma kalitesi (Phred skorları), coverage analizi.
+Kontaminasyon tespiti, düşük kaliteli okuma filtreleme.
+Otomatik QC raporları (PDF/HTML).
+Hizalama ve Varyant Analizi
+
+Referans genomlara hizalama (örneğin GRCh38, mitokondriyal DNA, STR bölgeleri).
+SNP, indel, CNV tespiti.
+Adli genetik için:
+STR, Y-STR, mtDNA profilleme,
+Karşılaştırma (eşleşme, akrabalık, popülasyon frekansı hesapları).
+Veritabanı Entegrasyonu
+
+Uluslararası varyant veritabanları: dbSNP, ClinVar, gnomAD vb.
+Ulusal/kurumsal DNA profil veritabanı (adli tıp, kayıp şahıslar, kriminal veritabanı).
+Versiyon kontrollü referanslar (hangi referans genom kullanıldı kaydı).
+Biyoistatistik ve Raporlama
+
+Adli olasılık hesapları (LR – Likelihood Ratio, olasılık oranları).
+Genotip olasılıkları, popülasyon frekansları.
+Klinik/genetik uygulamada patojenite değerlendirmeleri (ACMG kriterleri gibi).
+Tam otomatik, ama editlenebilir bilimsel ve hukuki geçerli rapor çıktıları:
+TCK / Yargıtay içtihatlarına uyumlu adli rapor formatları,
+Klinik/genetik rapor formatları.
+Güvenlik ve Yetkilendirme
+
+Hasta/vaka gizliliği (KVKK, GDPR benzeri standartlar).
+Kullanıcı rolleri: admin, laboratuvar uzmanı, rapor onaylayıcı, sadece görüntüleyici.
+İmza, e-imza, log kayıtları (kim, ne zaman, neye müdahale etti).
+Arayüz ve Kullanılabilirlik
+
+Web tabanlı, kurumsal intranet üzerinden erişilebilir.
+Türkçe + İngilizce dil desteği.
+UNODC / WHO / ulusal adli tıp kurumları gibi kurumsal sade arayüz: karmaşık ama anlaşılır.
+2. Dünya çapında “ileri seviye DNA yazılımı” kategorisindeki örnekler
+Bunlar ulusal değil, global örnekler; ama yapılması gereken seviye için referans olur:
+
+Geneious, CLC Genomics Workbench
+Moleküler biyoloji ve NGS analizleri için ileri seviyede.
+GATK (Broad Institute)
+Varyant analizinde de-facto standart.
+Galaxy Platform
+Web tabanlı biyoenformatik iş akış platformu.
+STRmix, DNA•VIEW, Lab Retriever (adli DNA için)
+Adli genetikte karışım çözümleme, LR hesapları gibi yüksek seviye istatistik analiz.
+Ulusal bir yazılım, bu araçların:
+
+Bilimsel doğruluğu,
+Standartlara uyumu,
+Kullanıcı deneyimi seviyesine yakın veya ona entegre çalışabilir olmalıdır.
+3. Ulusal Seviyede Ek Özellikler (Türkiye Bağlamı İçin)
+Eğer “ulusal” diyorsak, aşağıdaki özellikler kritik:
+
+Mevzuata Uyum
+
+Türk Ceza Kanunu (TCK) ve ilgili adli tıp yönetmeliklerine uygun rapor formatları.
+Yargıtay kararlarında benimsenmiş DNA ispat standartlarına uygun terminoloji.
+TÜRKAK / ISO 17025 / ISO 15189 akreditasyon süreçlerine uygun kayıt tutma.
+Dil ve Terim Birliği
+
+Rapor dili: teknik ama anlaşılır Türkçe.
+Gerektiğinde çift dilli (TR-EN) çıktı.
+Entegrasyon
+
+Ulusal adli bilgi sistemleri (UYAP vb.) ile entegrasyon potansiyeli.
+Ulusal kimlik/veri sistemleriyle anonimleştirilmiş biçimde ilişkilendirme (gizlilik ön planda).
+4. Teknolojik Stack Örneği (Geliştirme Perspektifi)
+Böyle bir programı geliştirmek için örnek bir teknoloji yığını:
+
+Backend:
+Python (Django / FastAPI) + biyoenformatik araç entegrasyonu (GATK, BWA, samtools, vcftools vb.).
+Frontend:
+React / Next.js
+Kurumsal UI: Tailwind CSS + komponent kütüphanesi (ör. Shadcn UI).
+Veritabanı:
+PostgreSQL (özellikle JSON desteği ve sağlamlığı için).
+Gerekirse özel varyant veritabanı (NoSQL – MongoDB vb.).
+İş Akışı Yönetimi:
+Nextflow / Snakemake / Cromwell gibi workflow engine’ler, laboratuvar analizi pipeline’ları için.
+Dağıtım:
+On-premise (bakanlık veya kurum veri merkezinde),
+Docker/Kubernetes ile ölçeklenebilirlik.
+5. İstersen Bir Adım İleri: Proje Taslağı Çıkartabilirim
+Eğer bu konuyu:
+
+Bir tez,
+Bir ulusal yazılım projesi (TÜBİTAK, bakanlık, üniversite),
+Veya özel bir ürün fikri
+olarak düşünüyorsan, bir sonraki adımda sana:
+
+Projenin:
+
+Amaç,
+Kapsam,
+Hedef kullanıcılar,
+Bilimsel dayanak başlıklarını içeren proje özetini,
+Ana modülleri içeren
+
+mimari taslak (modül listesi + veri akışı),
+
+Ve istersen örnek rapor şablonu (adli DNA, TCK’ya uyumlu)
+
+hazırlayabilirim.
+
+Ne tür bir kullanım hedefliyorsun:
+
+Adli tıp / kriminal laboratuvar,
+Klinik genetik,
+Araştırma/biyoenformatik,
+Yoksa hepsini kapsayan ulusal bir “DNA bilgi sistemi” mi?
+Bunu netleştirirsen, tam hedefe yönelik bir “ulusal bilimsel ileri seviye DNA yazılımı” konsepti çıkaralım.

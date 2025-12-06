@@ -270,8 +270,8 @@ from modules.substance_detection import (
 )
 
 st.set_page_config(
-    page_title="EpiClock Prototype - Epigenetik Yaş Analizi",
-    page_icon="🧬",
+    page_title="EpiClock - DNA Methylation Analysis Platform",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -1670,15 +1670,15 @@ def render_synergistic_effects(components):
     import plotly.graph_objects as go
     import plotly.express as px
     
-    st.markdown("## 🔬 Gelismis Dinamik Kombinasyon Analizi")
+    st.markdown("## Gelismis Dinamik Kombinasyon Analizi")
     st.markdown("""
     **EN İLERİ SEVİYE SİNERJİK ETKİ HESAPLAYICI**
     
     Bu modül, sınırsız sayıda madde ve kronik hastalık kombinasyonunu analiz eder:
-    - ✅ **Madde + Madde** sinerjileri (örn: alkol + opioid, kokain + metamfetamin)
-    - ✅ **Hastalık + Hastalık** sinerjileri (örn: diyabet + hipertansiyon)
-    - ✅ **Madde + Hastalık** çapraz sinerjileri (örn: alkol + siroz)
-    - ✅ **Karmaşıklık bonusu** (çoklu kombinasyonlarda ek EAA)
+    - **Madde + Madde** sinerjileri (örn: alkol + opioid, kokain + metamfetamin)
+    - **Hastalık + Hastalık** sinerjileri (örn: diyabet + hipertansiyon)
+    - **Madde + Hastalık** çapraz sinerjileri (örn: alkol + siroz)
+    - **Karmaşıklık bonusu** (çoklu kombinasyonlarda ek EAA)
     """)
     
     dynamic_calc = get_dynamic_calculator()
@@ -1699,17 +1699,17 @@ def render_synergistic_effects(components):
     st.markdown("---")
     
     tabs = st.tabs([
-        "🧮 Dinamik Kombinasyon Hesaplayıcı",
-        "💊 Madde Veritabanı (44 Tür)",
-        "🏥 Hastalık Veritabanı (56 Tür)",
-        "⚡ Madde-Madde Sinerjileri",
-        "🔗 Hastalık-Hastalık Sinerjileri",
-        "⚠️ Yüksek Riskli Kombinasyonlar",
-        "📚 Bilimsel Kanıtlar"
+        "Dinamik Kombinasyon Hesaplayıcı",
+        "Madde Veritabanı (44 Tür)",
+        "Hastalık Veritabanı (56 Tür)",
+        "Madde-Madde Sinerjileri",
+        "Hastalık-Hastalık Sinerjileri",
+        "Yüksek Riskli Kombinasyonlar",
+        "Bilimsel Kanıtlar"
     ])
     
     with tabs[0]:
-        st.markdown("### 🧮 Dinamik Çoklu Kombinasyon Hesaplayıcı")
+        st.markdown("### Dinamik Çoklu Kombinasyon Hesaplayıcı")
         st.markdown("""
         **Sınırsız kombinasyon desteği!** İstediğiniz kadar madde ve hastalık ekleyin.
         Sistem tüm olası sinerjik etkileşimleri otomatik olarak hesaplar.
@@ -1725,7 +1725,7 @@ def render_synergistic_effects(components):
         col_left, col_right = st.columns(2)
         
         with col_left:
-            st.markdown("### 💊 Madde Seçimi")
+            st.markdown("### Madde Seçimi")
             
             substance_categories = dynamic_calc.get_substance_categories()
             selected_sub_category = st.selectbox(
@@ -1769,14 +1769,14 @@ def render_synergistic_effects(components):
                         with col1:
                             st.write(f"• {sub.name_tr} (+{sub.base_eaa} yıl)")
                         with col2:
-                            if st.button("❌", key=f"remove_sub_{sub_key}"):
+                            if st.button("", key=f"remove_sub_{sub_key}"):
                                 st.session_state.selected_substances.remove(sub_key)
                                 st.rerun()
             else:
                 st.info("Henüz madde seçilmedi. Yukarıdan madde ekleyin.")
         
         with col_right:
-            st.markdown("### 🏥 Hastalık Seçimi")
+            st.markdown("### Hastalık Seçimi")
             
             disease_categories = dynamic_calc.get_disease_categories()
             selected_dis_category = st.selectbox(
@@ -1820,7 +1820,7 @@ def render_synergistic_effects(components):
                         with col1:
                             st.write(f"• {dis.name_tr} (+{dis.base_eaa} yıl)")
                         with col2:
-                            if st.button("❌", key=f"remove_dis_{dis_key}"):
+                            if st.button("", key=f"remove_dis_{dis_key}"):
                                 st.session_state.selected_diseases.remove(dis_key)
                                 st.rerun()
             else:
@@ -1829,7 +1829,7 @@ def render_synergistic_effects(components):
         st.markdown("---")
         
         if st.session_state.selected_substances or st.session_state.selected_diseases:
-            st.markdown("## 📊 Analiz Sonuçları")
+            st.markdown("## Analiz Sonuçları")
             
             result = dynamic_calc.calculate_full_combination(
                 st.session_state.selected_substances,
@@ -1867,7 +1867,7 @@ def render_synergistic_effects(components):
                 st.metric("Tespit Edilen Sinerji", result['num_synergies_found'])
             
             if result['warnings']:
-                st.markdown("### ⚠️ Klinik Uyarılar")
+                st.markdown("### Klinik Uyarılar")
                 for warning in result['warnings']:
                     st.error(warning)
             
@@ -1896,7 +1896,7 @@ def render_synergistic_effects(components):
             st.plotly_chart(fig, use_container_width=True)
             
             if result['synergies']:
-                st.markdown("### ⚡ Tespit Edilen Sinerjik Etkileşimler")
+                st.markdown("### Tespit Edilen Sinerjik Etkileşimler")
                 
                 synergy_df = pd.DataFrame([{
                     'Tür': s['type'],
@@ -1909,7 +1909,7 @@ def render_synergistic_effects(components):
                 st.dataframe(synergy_df, use_container_width=True)
                 
                 for syn in result['synergies']:
-                    with st.expander(f"🔗 {syn['name1']} + {syn['name2']} (x{syn['multiplier']})"):
+                    with st.expander(f"{syn['name1']} + {syn['name2']} (x{syn['multiplier']})"):
                         st.markdown(f"""
                         **Etkileşim Türü:** {syn['type']}
                         
@@ -1925,7 +1925,7 @@ def render_synergistic_effects(components):
             col_x, col_y = st.columns(2)
             with col_x:
                 if result['substances']:
-                    st.markdown("### 💊 Seçili Maddeler Detayı")
+                    st.markdown("### Seçili Maddeler Detayı")
                     for sub in result['substances']:
                         with st.expander(f"{sub['name_tr']} (+{sub['eaa']} yıl)"):
                             st.write(f"**Kategori:** {sub['category']}")
@@ -1933,7 +1933,7 @@ def render_synergistic_effects(components):
             
             with col_y:
                 if result['diseases']:
-                    st.markdown("### 🏥 Seçili Hastalıklar Detayı")
+                    st.markdown("### Seçili Hastalıklar Detayı")
                     for dis in result['diseases']:
                         with st.expander(f"{dis['name_tr']} (+{dis['eaa']} yıl)"):
                             st.write(f"**Kategori:** {dis['category']}")
@@ -1942,7 +1942,7 @@ def render_synergistic_effects(components):
             st.info("📌 Hesaplama için en az bir madde veya hastalık ekleyin. Ekle/Çıkar butonlarını kullanın.")
     
     with tabs[1]:
-        st.markdown("### 💊 Genişletilmiş Madde Veritabanı (44 Tür)")
+        st.markdown("### Genişletilmiş Madde Veritabanı (44 Tür)")
         st.markdown("""
         **Kapsamlı bağımlılık yapıcı madde veritabanı.** Her madde için:
         - Temel EAA etkisi ve güven aralığı
@@ -1998,7 +1998,7 @@ def render_synergistic_effects(components):
         st.plotly_chart(fig, use_container_width=True)
     
     with tabs[2]:
-        st.markdown("### 🏥 Genişletilmiş Hastalık Veritabanı (56 Tür)")
+        st.markdown("### Genişletilmiş Hastalık Veritabanı (56 Tür)")
         st.markdown("""
         **Kapsamlı kronik hastalık veritabanı.** Her hastalık için:
         - Temel EAA etkisi ve güven aralığı
@@ -2053,7 +2053,7 @@ def render_synergistic_effects(components):
         st.plotly_chart(fig, use_container_width=True)
     
     with tabs[3]:
-        st.markdown("### ⚡ Madde-Madde Sinerjik Etkileşimleri")
+        st.markdown("### Madde-Madde Sinerjik Etkileşimleri")
         st.markdown(f"""
         **{len(SUBSTANCE_SUBSTANCE_SYNERGY)} tanımlanmış madde-madde sinerjisi.**
         İki veya daha fazla madde birlikte kullanıldığında ortaya çıkan tehlikeli etkileşimler.
@@ -2079,7 +2079,7 @@ def render_synergistic_effects(components):
         st.markdown("#### 🔴 En Tehlikeli Madde Kombinasyonları")
         high_risk_sub = sorted(sub_sub_data, key=lambda x: x['Çarpan'], reverse=True)[:10]
         for combo in high_risk_sub:
-            with st.expander(f"⚠️ {combo['Madde 1']} + {combo['Madde 2']} (x{combo['Çarpan']})"):
+            with st.expander(f"{combo['Madde 1']} + {combo['Madde 2']} (x{combo['Çarpan']})"):
                 st.error(combo['Uyarı'])
                 st.markdown(f"""
                 **Sinerjik Çarpan:** x{combo['Çarpan']}
@@ -2090,7 +2090,7 @@ def render_synergistic_effects(components):
                 """)
     
     with tabs[4]:
-        st.markdown("### 🔗 Hastalık-Hastalık Sinerjik Etkileşimleri")
+        st.markdown("### Hastalık-Hastalık Sinerjik Etkileşimleri")
         st.markdown(f"""
         **{len(DISEASE_DISEASE_SYNERGY)} tanımlanmış hastalık-hastalık sinerjisi.**
         Komorbid durumların birlikte var olduğunda yarattığı ek riskler.
@@ -2116,7 +2116,7 @@ def render_synergistic_effects(components):
         st.markdown("#### 🔴 En Yüksek Riskli Hastalık Kombinasyonları")
         high_risk_dis = sorted(dis_dis_data, key=lambda x: x['Çarpan'], reverse=True)[:10]
         for combo in high_risk_dis:
-            with st.expander(f"⚠️ {combo['Hastalık 1']} + {combo['Hastalık 2']} (x{combo['Çarpan']})"):
+            with st.expander(f"{combo['Hastalık 1']} + {combo['Hastalık 2']} (x{combo['Çarpan']})"):
                 st.warning(combo['Uyarı'])
                 st.markdown(f"""
                 **Sinerjik Çarpan:** x{combo['Çarpan']}
@@ -2127,7 +2127,7 @@ def render_synergistic_effects(components):
                 """)
     
     with tabs[5]:
-        st.markdown("### ⚠️ Tüm Yüksek Riskli Kombinasyonlar")
+        st.markdown("### Tüm Yüksek Riskli Kombinasyonlar")
         st.markdown("""
         **Çarpan >= 2.0 olan tüm tehlikeli kombinasyonlar.**
         Bu kombinasyonlarda epigenetik yaşlanma dramatik şekilde hızlanır.
@@ -2141,7 +2141,7 @@ def render_synergistic_effects(components):
                 sub2 = DYNAMIC_SUBSTANCE_DB.get(key2)
                 if sub1 and sub2:
                     all_high_risk.append({
-                        'Tür': '💊 Madde-Madde',
+                        'Tür': 'Madde-Madde',
                         'Bileşen 1': sub1.name_tr,
                         'Bileşen 2': sub2.name_tr,
                         'Çarpan': syn.multiplier,
@@ -2155,7 +2155,7 @@ def render_synergistic_effects(components):
                 dis2 = DYNAMIC_DISEASE_DB.get(key2)
                 if dis1 and dis2:
                     all_high_risk.append({
-                        'Tür': '🏥 Hastalık-Hastalık',
+                        'Tür': 'Hastalık-Hastalık',
                         'Bileşen 1': dis1.name_tr,
                         'Bileşen 2': dis2.name_tr,
                         'Çarpan': syn.multiplier,
@@ -2169,7 +2169,7 @@ def render_synergistic_effects(components):
                 dis = DYNAMIC_DISEASE_DB.get(key2)
                 if sub and dis:
                     all_high_risk.append({
-                        'Tür': '🔗 Madde-Hastalık',
+                        'Tür': 'Madde-Hastalık',
                         'Bileşen 1': sub.name_tr,
                         'Bileşen 2': dis.name_tr,
                         'Çarpan': syn.multiplier,
@@ -2196,7 +2196,7 @@ def render_synergistic_effects(components):
                 """)
     
     with tabs[6]:
-        st.markdown("### 📚 Bilimsel Kanıtlar ve Referanslar")
+        st.markdown("### Bilimsel Kanıtlar ve Referanslar")
         
         st.markdown("""
         #### Sinerjik Etkilerin Biyolojik Temeli
@@ -2254,7 +2254,7 @@ def render_synergistic_effects(components):
         ]
         
         for ref in references:
-            with st.expander(f"📖 {ref['title']}"):
+            with st.expander(f"{ref['title']}"):
                 st.markdown(f"""
                 **Yazarlar:** {ref['authors']}
                 
@@ -2275,16 +2275,16 @@ def render_cheminformatics(components):
         METABOLITE_PATHWAYS
     )
     
-    st.markdown("## 🧪 Chemoinformatics - Moleküler Yapı Analizi")
+    st.markdown("## Chemoinformatics - Moleküler Yapı Analizi")
     st.markdown("""
     **MOLEKÜLER ANALİZ VE VARYANT TARAMA MODÜLÜ**
     
     Bu modül, 1815 bağımlılık yapıcı maddenin moleküler yapılarını analiz ederek:
-    - ✅ **SMILES/InChI** moleküler yapıları
-    - ✅ **Moleküler benzerlik** (Tanimoto) analizi
-    - ✅ **Yapısal varyant/analog** tarama
-    - ✅ **Metabolit tahmin** ve yolak analizi
-    - ✅ **PubChem entegrasyonu** (111M+ bileşik)
+    - **SMILES/InChI** moleküler yapıları
+    - **Moleküler benzerlik** (Tanimoto) analizi
+    - **Yapısal varyant/analog** tarama
+    - **Metabolit tahmin** ve yolak analizi
+    - **PubChem entegrasyonu** (111M+ bileşik)
     """)
     
     engine = ChemoinformaticsEngine()
@@ -2303,15 +2303,15 @@ def render_cheminformatics(components):
     st.markdown("---")
     
     tabs = st.tabs([
-        "🔍 Madde Ara ve Analiz Et",
-        "🧬 Moleküler Benzerlik",
-        "💊 Metabolit Yolakları",
-        "📊 SMILES Veritabanı",
+        "Madde Ara ve Analiz Et",
+        "Moleküler Benzerlik",
+        "Metabolit Yolakları",
+        "SMILES Veritabanı",
         "🌐 PubChem Entegrasyonu"
     ])
     
     with tabs[0]:
-        st.markdown("### 🔍 Madde Moleküler Analizi")
+        st.markdown("### Madde Moleküler Analizi")
         
         substance_options = list(KNOWN_SUBSTANCE_SMILES.keys())
         selected_substance = st.selectbox(
@@ -2320,7 +2320,7 @@ def render_cheminformatics(components):
             format_func=lambda x: f"{x.replace('_', ' ').title()} - {KNOWN_SUBSTANCE_SMILES[x][2]}"
         )
         
-        if st.button("🧬 Moleküler Analiz Başlat", type="primary"):
+        if st.button("Moleküler Analiz Başlat", type="primary"):
             with st.spinner("Moleküler veriler çekiliyor..."):
                 smiles, cid, name = KNOWN_SUBSTANCE_SMILES[selected_substance]
                 report = engine.generate_molecular_report(
@@ -2329,7 +2329,7 @@ def render_cheminformatics(components):
                     name
                 )
                 
-                st.success(f"✅ {name} analiz tamamlandı!")
+                st.success(f"{name} analiz tamamlandı!")
                 
                 st.markdown("#### Moleküler Yapı")
                 
@@ -2375,7 +2375,7 @@ def render_cheminformatics(components):
                     st.dataframe(pd.DataFrame(var_data), use_container_width=True)
     
     with tabs[1]:
-        st.markdown("### 🧬 Moleküler Benzerlik Analizi")
+        st.markdown("### Moleküler Benzerlik Analizi")
         st.markdown("İki madde arasındaki yapısal benzerliği Tanimoto skoru ile hesaplayın.")
         
         col1, col2 = st.columns(2)
@@ -2395,7 +2395,7 @@ def render_cheminformatics(components):
                 index=1
             )
         
-        if st.button("📊 Benzerlik Hesapla"):
+        if st.button("Benzerlik Hesapla"):
             smiles1 = KNOWN_SUBSTANCE_SMILES[substance1][0]
             smiles2 = KNOWN_SUBSTANCE_SMILES[substance2][0]
             
@@ -2425,14 +2425,14 @@ def render_cheminformatics(components):
             st.plotly_chart(fig, use_container_width=True)
             
             if similarity > 0.7:
-                st.success(f"🔗 Yüksek yapısal benzerlik - Bu maddeler muhtemelen benzer biyolojik etkilere sahiptir.")
+                st.success(f"Yüksek yapısal benzerlik - Bu maddeler muhtemelen benzer biyolojik etkilere sahiptir.")
             elif similarity > 0.4:
-                st.info(f"📊 Orta düzeyde yapısal benzerlik - Bazı ortak yapısal özellikler mevcut.")
+                st.info(f"Orta düzeyde yapısal benzerlik - Bazı ortak yapısal özellikler mevcut.")
             else:
-                st.warning(f"⚠️ Düşük yapısal benzerlik - Bu maddeler yapısal olarak farklıdır.")
+                st.warning(f"Düşük yapısal benzerlik - Bu maddeler yapısal olarak farklıdır.")
     
     with tabs[2]:
-        st.markdown("### 💊 Metabolit Yolakları")
+        st.markdown("### Metabolit Yolakları")
         st.markdown("Maddelerin vücutta nasıl metabolize edildiğini görün.")
         
         met_substance = st.selectbox(
@@ -2484,7 +2484,7 @@ def render_cheminformatics(components):
             st.plotly_chart(fig, use_container_width=True)
     
     with tabs[3]:
-        st.markdown("### 📊 SMILES Veritabanı")
+        st.markdown("### SMILES Veritabanı")
         st.markdown(f"Toplam **{len(KNOWN_SUBSTANCE_SMILES)}** maddenin moleküler yapısı kayıtlı.")
         
         smiles_data = []
@@ -2500,7 +2500,7 @@ def render_cheminformatics(components):
         
         csv = pd.DataFrame(smiles_data).to_csv(index=False)
         st.download_button(
-            "📥 SMILES Veritabanını İndir (CSV)",
+            "SMILES Veritabanını İndir (CSV)",
             csv,
             "epiclock_smiles_database.csv",
             "text/csv"
@@ -2521,7 +2521,7 @@ def render_cheminformatics(components):
         
         search_term = st.text_input("PubChem'de ara (madde adı veya CID):", "aspirin")
         
-        if st.button("🔍 PubChem'de Ara"):
+        if st.button("PubChem'de Ara"):
             with st.spinner("PubChem sorgulanıyor..."):
                 try:
                     import pubchempy as pcp
@@ -2533,7 +2533,7 @@ def render_cheminformatics(components):
                     
                     if compounds:
                         comp = compounds[0]
-                        st.success(f"✅ Bulunan: {comp.iupac_name or search_term}")
+                        st.success(f"Bulunan: {comp.iupac_name or search_term}")
                         
                         col1, col2 = st.columns(2)
                         with col1:
@@ -2552,7 +2552,7 @@ def render_cheminformatics(components):
                             st.markdown("#### InChI")
                             st.code(comp.inchi, language="text")
                         
-                        st.markdown(f"[🔗 PubChem'de Görüntüle](https://pubchem.ncbi.nlm.nih.gov/compound/{comp.cid})")
+                        st.markdown(f"[PubChem'de Görüntüle](https://pubchem.ncbi.nlm.nih.gov/compound/{comp.cid})")
                     else:
                         st.warning("Sonuç bulunamadı.")
                 except Exception as e:
@@ -2564,14 +2564,14 @@ def render_substance_detection(components):
     import plotly.graph_objects as go
     import plotly.express as px
     
-    st.markdown("## 🔬 DNA'dan Madde Tespiti ve Kullanım Süresi Tahmini")
+    st.markdown("## DNA'dan Madde Tespiti ve Kullanım Süresi Tahmini")
     st.markdown("""
     **İLERİ SEVİYE ANALİZ MODÜLÜ**
     
     Bu modül, DNA metilasyon verilerini analiz ederek:
-    - ✅ **Hangi maddelerin kullanıldığını** tespit eder
-    - ✅ **Ne kadar süre kullanıldığını** tahmin eder (yıl olarak)
-    - ✅ **Güven aralıkları** ile sonuçları raporlar
+    - **Hangi maddelerin kullanıldığını** tespit eder
+    - **Ne kadar süre kullanıldığını** tahmin eder (yıl olarak)
+    - **Güven aralıkları** ile sonuçları raporlar
     
     **Bilimsel Temel:** Her bağımlılık yapıcı madde, DNA üzerinde karakteristik metilasyon 
     imzaları bırakır. Bu imzalar yıllar sonra bile tespit edilebilir.
@@ -2595,10 +2595,10 @@ def render_substance_detection(components):
     
     tabs = st.tabs([
         "📤 DNA Verisi Yükle ve Analiz Et",
-        "🧪 Demo Analiz (Simülasyon)",
-        "📊 Tespit Edilebilir Maddeler",
-        "🧬 CpG Marker Veritabanı",
-        "📚 Bilimsel Referanslar"
+        "Demo Analiz (Simülasyon)",
+        "Tespit Edilebilir Maddeler",
+        "CpG Marker Veritabanı",
+        "Bilimsel Referanslar"
     ])
     
     with tabs[0]:
@@ -2623,18 +2623,18 @@ def render_substance_detection(components):
                 else:
                     df = pd.read_csv(uploaded_file)
                 
-                st.success(f"✅ Dosya yüklendi: {len(df)} satır, {len(df.columns)} sütun")
+                st.success(f"Dosya yüklendi: {len(df)} satır, {len(df.columns)} sütun")
                 
                 st.markdown("#### Veri Önizleme")
                 st.dataframe(df.head(10), use_container_width=True)
                 
-                if st.button("🔬 Madde Tespiti Başlat", key="run_detection"):
+                if st.button("Madde Tespiti Başlat", key="run_detection"):
                     with st.spinner("DNA metilasyon imzaları analiz ediliyor..."):
                         results = detection_engine.analyze_methylation_data(df)
                         summary = detection_engine.get_detection_summary(results)
                     
                     st.markdown("---")
-                    st.markdown("## 📊 Analiz Sonuçları")
+                    st.markdown("## Analiz Sonuçları")
                     
                     col1, col2, col3 = st.columns(3)
                     with col1:
@@ -2648,7 +2648,7 @@ def render_substance_detection(components):
                     detected_results = [r for r in results.values() if r.detected]
                     
                     if detected_results:
-                        st.markdown("### ⚠️ Tespit Edilen Maddeler")
+                        st.markdown("### Tespit Edilen Maddeler")
                         
                         for result in sorted(detected_results, key=lambda x: x.confidence_percent, reverse=True):
                             confidence_color = "#28a745" if result.confidence_percent >= 85 else "#ffc107" if result.confidence_percent >= 70 else "#dc3545"
@@ -2698,13 +2698,13 @@ def render_substance_detection(components):
                         )
                         st.plotly_chart(fig, use_container_width=True)
                     else:
-                        st.success("✅ Hiçbir madde kullanımı tespit edilmedi.")
+                        st.success("Hiçbir madde kullanımı tespit edilmedi.")
                     
             except Exception as e:
                 st.error(f"Dosya işleme hatası: {str(e)}")
     
     with tabs[1]:
-        st.markdown("### 🧪 Demo Analiz - Simüle Edilmiş Veri")
+        st.markdown("### Demo Analiz - Simüle Edilmiş Veri")
         st.markdown("""
         **Gerçek veri olmadan sistemi test edin!**
         
@@ -2739,7 +2739,7 @@ def render_substance_detection(components):
                         key=f"years_{sub_key}"
                     )
         
-        if st.button("🧪 Simülasyon Başlat", key="run_simulation"):
+        if st.button("Simülasyon Başlat", key="run_simulation"):
             with st.spinner("Simüle edilmiş DNA verisi oluşturuluyor ve analiz ediliyor..."):
                 selected_keys = [substance_options[name] for name in selected_for_sim]
                 
@@ -2752,7 +2752,7 @@ def render_substance_detection(components):
                 summary = detection_engine.get_detection_summary(results)
             
             st.markdown("---")
-            st.markdown("## 📊 Simülasyon Sonuçları")
+            st.markdown("## Simülasyon Sonuçları")
             
             st.markdown("### Karşılaştırma: Gerçek vs Tahmin")
             
@@ -2773,7 +2773,7 @@ def render_substance_detection(components):
                         'Tahmin (yıl)': predicted_years,
                         'Hata (yıl)': round(error, 1),
                         'Doğruluk (%)': round(accuracy, 1),
-                        'Tespit': '✅ Evet' if result.detected else '❌ Hayır',
+                        'Tespit': 'Evet' if result.detected else 'Hayır',
                         'Güven': f'%{result.confidence_percent}'
                     })
             
@@ -2808,12 +2808,12 @@ def render_substance_detection(components):
             st.markdown("### Tüm Analiz Sonuçları")
             for key, result in results.items():
                 if result.detected:
-                    with st.expander(f"✅ {result.substance_name_tr} - %{result.confidence_percent} güven"):
+                    with st.expander(f"{result.substance_name_tr} - %{result.confidence_percent} güven"):
                         st.write(f"**Tahmini Süre:** {result.estimated_duration_years} yıl (95% GA: {result.duration_ci_lower}-{result.duration_ci_upper})")
                         st.write(f"**Klinik Yorum:** {result.clinical_interpretation}")
     
     with tabs[2]:
-        st.markdown("### 📊 Tespit Edilebilir Maddeler Listesi")
+        st.markdown("### Tespit Edilebilir Maddeler Listesi")
         st.markdown(f"**Toplam {get_detectable_substance_count()} madde türü** tespit edilebilir.")
         
         substances = detection_engine.get_substance_list()
@@ -2849,7 +2849,7 @@ def render_substance_detection(components):
         st.plotly_chart(fig, use_container_width=True)
     
     with tabs[3]:
-        st.markdown("### 🧬 CpG Marker Veritabanı")
+        st.markdown("### CpG Marker Veritabanı")
         st.markdown("""
         Her madde için kullanılan CpG marker'ları ve etkilenen genler.
         Bu marker'lar bilimsel literatürde validasyon görmüş sitelerdir.
@@ -2898,10 +2898,10 @@ def render_substance_detection(components):
             st.info(sig.biological_mechanism)
             
             st.markdown("#### Bilimsel Referans")
-            st.markdown(f"📖 {sig.reference}")
+            st.markdown(f"{sig.reference}")
     
     with tabs[4]:
-        st.markdown("### 📚 Bilimsel Referanslar ve Metodoloji")
+        st.markdown("### Bilimsel Referanslar ve Metodoloji")
         
         st.markdown("""
         #### Metodoloji
@@ -2957,7 +2957,7 @@ def render_substance_detection(components):
         ]
         
         for ref in key_refs:
-            with st.expander(f"📖 {ref['title']}"):
+            with st.expander(f"{ref['title']}"):
                 st.markdown(f"""
                 **Yazarlar:** {ref['authors']}
                 
@@ -3190,7 +3190,7 @@ def render_dna_upload(components, selected_clocks):
     Desteklenen formatlar: CSV, TXT, Excel, GEO Series Matrix
     """)
     
-    with st.expander("📖 Kullanım Kılavuzu", expanded=False):
+    with st.expander("Kullanım Kılavuzu", expanded=False):
         st.markdown("""
         ### CSV Dosya Formatı
         
@@ -3238,9 +3238,9 @@ def render_dna_upload(components, selected_clocks):
         - Eksik değerler otomatik olarak impute edilir
         """)
         
-        st.info("💡 **İpucu:** Demo veri oluşturarak önce sistemin nasıl çalıştığını test edebilirsiniz.")
+        st.info("**İpucu:** Demo veri oluşturarak önce sistemin nasıl çalıştığını test edebilirsiniz.")
     
-    tab1, tab2, tab3 = st.tabs(["📁 Dosya Yükle", "🧪 Demo Veri", "📊 Analiz"])
+    tab1, tab2, tab3 = st.tabs(["Dosya Yükle", "Demo Veri", "Analiz"])
     
     with tab1:
         st.markdown("### Metilasyon Verisi Yükle")
@@ -3274,13 +3274,13 @@ def render_dna_upload(components, selected_clocks):
             try:
                 reader = DNAMethylationReader()
                 
-                if st.button("🔬 Veriyi İşle ve Analiz Et", type="primary"):
+                if st.button("Veriyi İşle ve Analiz Et", type="primary"):
                     with st.spinner("Veri okunuyor ve işleniyor..."):
                         dataset = reader.read_from_streamlit_upload(uploaded_file)
                         
                         st.session_state['loaded_dataset'] = dataset
                         
-                        st.success(f"✅ Veri başarıyla yüklendi!")
+                        st.success(f"Veri başarıyla yüklendi!")
                         
                         col1, col2, col3, col4 = st.columns(4)
                         with col1:
@@ -3296,7 +3296,7 @@ def render_dna_upload(components, selected_clocks):
                         
                         coverage_data = []
                         for clock, coverage in dataset.quality_metrics['clock_coverage'].items():
-                            status = "✅" if coverage >= 80 else "⚠️" if coverage >= 50 else "❌"
+                            status = "" if coverage >= 80 else "" if coverage >= 50 else ""
                             coverage_data.append({
                                 "Saat": clock.upper(),
                                 "Kapsam": f"{coverage:.1f}%",
@@ -3308,14 +3308,14 @@ def render_dna_upload(components, selected_clocks):
                         if phenotype_file is not None:
                             phenotype_df = pd.read_csv(phenotype_file) if phenotype_file.name.endswith('.csv') else pd.read_excel(phenotype_file)
                             st.session_state['phenotype_data'] = phenotype_df
-                            st.success("✅ Fenotip verisi yüklendi!")
+                            st.success("Fenotip verisi yüklendi!")
                             st.dataframe(phenotype_df.head(), use_container_width=True)
                         
             except Exception as e:
-                st.error(f"❌ Veri okuma hatası: {str(e)}")
+                st.error(f"Veri okuma hatası: {str(e)}")
     
     with tab2:
-        st.markdown("### 🧪 Demo Veri Oluştur")
+        st.markdown("### Demo Veri Oluştur")
         st.markdown("Test amaçlı simüle edilmiş DNA metilasyon verisi oluşturun.")
         
         col1, col2 = st.columns(2)
@@ -3327,7 +3327,7 @@ def render_dna_upload(components, selected_clocks):
         with col2:
             include_clock_cpgs = st.checkbox("Saat CpG'lerini Dahil Et", value=True)
         
-        if st.button("🧬 Demo Veri Oluştur", type="primary"):
+        if st.button("Demo Veri Oluştur", type="primary"):
             with st.spinner("Demo veri oluşturuluyor..."):
                 demo_dataset = create_demo_methylation_data(
                     n_samples=n_samples,
@@ -3336,7 +3336,7 @@ def render_dna_upload(components, selected_clocks):
                 )
                 st.session_state['loaded_dataset'] = demo_dataset
                 
-                st.success("✅ Demo veri oluşturuldu!")
+                st.success("Demo veri oluşturuldu!")
                 
                 col1, col2, col3 = st.columns(3)
                 with col1:
@@ -3350,7 +3350,7 @@ def render_dna_upload(components, selected_clocks):
                 st.dataframe(demo_dataset.sample_info, use_container_width=True)
     
     with tab3:
-        st.markdown("### 📊 Yüklü Veri Analizi")
+        st.markdown("### Yüklü Veri Analizi")
         
         if 'loaded_dataset' in st.session_state:
             dataset = st.session_state['loaded_dataset']
@@ -3370,7 +3370,7 @@ def render_dna_upload(components, selected_clocks):
                 """)
                 
                 st.markdown("---")
-                st.markdown("### 🏥 Kronik Hastalık Etkisi (Opsiyonel)")
+                st.markdown("### Kronik Hastalık Etkisi (Opsiyonel)")
                 st.markdown("""
                 Kronik hastalıklar epigenetik yaşı etkileyebilir. Varsa hastalıkları seçin,
                 toplam EAA hesaplamasına dahil edilecektir.
@@ -3405,7 +3405,7 @@ def render_dna_upload(components, selected_clocks):
                 
                 st.markdown("---")
                 
-                if st.button("🧬 Epigenetik Yaş Hesapla", type="primary"):
+                if st.button("Epigenetik Yaş Hesapla", type="primary"):
                     with st.spinner("Epigenetik yaşlar hesaplanıyor..."):
                         
                         results_df = calculate_epigenetic_age(dataset)
@@ -3451,12 +3451,12 @@ def render_dna_upload(components, selected_clocks):
                         st.session_state['analysis_results'] = display_df
                         st.session_state['chronic_disease_effect'] = chronic_disease_effect
                         
-                        st.success("✅ Gerçek katsayılarla analiz tamamlandı!")
+                        st.success("Gerçek katsayılarla analiz tamamlandı!")
                         
-                        st.markdown("### 📊 Sonuçlar")
+                        st.markdown("### Sonuçlar")
                         st.dataframe(display_df, use_container_width=True)
                         
-                        st.markdown("### 📈 CpG Kapsama Oranları")
+                        st.markdown("### CpG Kapsama Oranları")
                         coverage_cols = [c for c in display_df.columns if '%' in c]
                         if coverage_cols:
                             avg_coverage = display_df[coverage_cols].mean()
@@ -3472,7 +3472,7 @@ def render_dna_upload(components, selected_clocks):
                                 st.metric("DunedinPACE Kapsam", f"{avg_coverage.get('DunedinPACE %', 0):.1f}%")
                         
                         if chronic_disease_effect:
-                            st.markdown("### 🏥 Kronik Hastalık Etkisi Özeti")
+                            st.markdown("### Kronik Hastalık Etkisi Özeti")
                             
                             import plotly.graph_objects as go
                             
@@ -3505,7 +3505,7 @@ def render_dna_upload(components, selected_clocks):
                         
                         csv = display_df.to_csv(index=False)
                         st.download_button(
-                            "📥 Sonuçları İndir (CSV)",
+                            "Sonuçları İndir (CSV)",
                             csv,
                             "epiclock_results.csv",
                             "text/csv"
@@ -3552,20 +3552,20 @@ def render_dna_upload(components, selected_clocks):
 def render_publication_references():
     """Render publication references and licensing information"""
     
-    st.markdown("## 📚 Yayın Referansları ve Lisans Bilgileri")
+    st.markdown("## Yayın Referansları ve Lisans Bilgileri")
     
     st.markdown("""
     Bu platformda kullanılan epigenetik saat katsayıları aşağıdaki hakemli 
     yayınlardan alınmıştır. Her saatin orijinal kaynağı ve lisans durumu aşağıda belirtilmiştir.
     """)
     
-    tab1, tab2, tab3 = st.tabs(["📖 Yayınlar", "📋 Katsayı Özeti", "⚖️ Lisans Bilgileri"])
+    tab1, tab2, tab3 = st.tabs(["Yayınlar", "Katsayı Özeti", "⚖️ Lisans Bilgileri"])
     
     with tab1:
         st.markdown("### Orijinal Yayınlar")
         
         for clock_name, citation in CLOCK_CITATIONS.items():
-            with st.expander(f"🔬 {clock_name.upper()} Clock", expanded=False):
+            with st.expander(f"{clock_name.upper()} Clock", expanded=False):
                 st.markdown(f"""
                 **Yazarlar:** {citation['authors']}
                 
@@ -3657,7 +3657,7 @@ def render_home_page(components):
     
     render_section_divider()
     
-    st.markdown("### 📊 Platform Özellikleri")
+    st.markdown("### Platform Özellikleri")
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -3694,7 +3694,7 @@ def render_home_page(components):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### 📊 Madde Tipine Göre EAA Etkileri")
+        st.markdown("### Madde Tipine Göre EAA Etkileri")
         
         ref_db = components['ref_db']
         effect_summary = ref_db.get_substance_effect_summary()
@@ -3745,7 +3745,7 @@ def render_home_page(components):
         st.plotly_chart(fig, width='stretch')
     
     with col2:
-        st.markdown("### 🎯 Epigenetik Saat Performansları")
+        st.markdown("### Epigenetik Saat Performansları")
         
         clock_perf = ref_db.get_clock_performance_summary()
         
@@ -3783,7 +3783,7 @@ def render_home_page(components):
     
     st.markdown("---")
     
-    st.markdown("### 📖 Metodoloji ve Bilimsel Arka Plan")
+    st.markdown("### Metodoloji ve Bilimsel Arka Plan")
     
     with st.expander("DNA Metilasyonu ve Epigenetik Saatler", expanded=False):
         st.markdown("""
@@ -3872,7 +3872,7 @@ def render_individual_analysis(components, selected_clocks):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("#### 📝 Hasta Bilgileri")
+        st.markdown("#### Hasta Bilgileri")
         
         patient_id = st.text_input("Hasta ID:", value="HASTA_001")
         chronological_age = st.number_input("Kronolojik Yaş:", min_value=18, max_value=100, value=45)
@@ -3900,7 +3900,7 @@ def render_individual_analysis(components, selected_clocks):
         smoking_years = st.slider("Sigara Paket-Yılı:", 0, 60, 5)
     
     with col2:
-        st.markdown("#### 🧪 Klinik Biyobelirteçler (Opsiyonel)")
+        st.markdown("#### Klinik Biyobelirteçler (Opsiyonel)")
         
         use_biomarkers = st.checkbox("Klinik biyobelirteçleri dahil et (PhenoAge için)")
         
@@ -3932,7 +3932,7 @@ def render_individual_analysis(components, selected_clocks):
     
     st.markdown("---")
     
-    if st.button("🔬 Epigenetik Yaş Hesapla", type="primary", width='stretch'):
+    if st.button("Epigenetik Yaş Hesapla", type="primary", width='stretch'):
         
         with st.spinner("Epigenetik saatler hesaplanıyor..."):
             
@@ -3977,9 +3977,9 @@ def render_individual_analysis(components, selected_clocks):
                 'timestamp': datetime.now()
             }
         
-        st.success("✅ Analiz tamamlandı!")
+        st.success("Analiz tamamlandı!")
         
-        st.markdown("### 📊 Epigenetik Saat Sonuçları")
+        st.markdown("### Epigenetik Saat Sonuçları")
         
         result_cols = st.columns(len(clock_results))
         
@@ -4005,7 +4005,7 @@ def render_individual_analysis(components, selected_clocks):
         
         st.markdown("---")
         
-        tab1, tab2, tab3 = st.tabs(["📈 Görselleştirmeler", "📋 Detaylı Sonuçlar", "🎯 Referans Karşılaştırması"])
+        tab1, tab2, tab3 = st.tabs(["Görselleştirmeler", "Detaylı Sonuçlar", "Referans Karşılaştırması"])
         
         with tab1:
             col1, col2 = st.columns(2)
@@ -4090,13 +4090,13 @@ def render_individual_analysis(components, selected_clocks):
                 if comparison.percentile > 75:
                     st.markdown(f"""
                     <div class="warning-box">
-                    <b>⚠️ Dikkat:</b> {comparison.interpretation}
+                    <b>Dikkat:</b> {comparison.interpretation}
                     </div>
                     """, unsafe_allow_html=True)
                 else:
                     st.markdown(f"""
                     <div class="success-box">
-                    <b>✅ Sonuç:</b> {comparison.interpretation}
+                    <b>Sonuç:</b> {comparison.interpretation}
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -4104,7 +4104,7 @@ def render_individual_analysis(components, selected_clocks):
 def render_batch_analysis(components, selected_clocks):
     """Render batch analysis page for multiple samples"""
     
-    st.markdown("### 📁 Toplu Örnek Analizi")
+    st.markdown("### Toplu Örnek Analizi")
     
     st.markdown("""
     <div class="info-box">
@@ -4129,7 +4129,7 @@ def render_batch_analysis(components, selected_clocks):
                 else:
                     data = pd.read_excel(uploaded_file, index_col=0)
                 
-                st.success(f"✅ {data.shape[0]} örnek, {data.shape[1]} CpG yüklendi")
+                st.success(f"{data.shape[0]} örnek, {data.shape[1]} CpG yüklendi")
                 
                 with st.expander("Veri Önizleme"):
                     st.dataframe(data.head(10))
@@ -4170,11 +4170,11 @@ def render_batch_analysis(components, selected_clocks):
                 st.session_state['batch_data'] = methylation_data
                 st.session_state['batch_metadata'] = metadata
                 
-            st.success(f"✅ {n_samples} örnekli demo veri seti oluşturuldu!")
+            st.success(f"{n_samples} örnekli demo veri seti oluşturuldu!")
     
     if 'batch_data' in st.session_state:
         st.markdown("---")
-        st.markdown("### 📊 Toplu Analiz")
+        st.markdown("### Toplu Analiz")
         
         methylation_data = st.session_state['batch_data']
         metadata = st.session_state['batch_metadata']
@@ -4194,7 +4194,7 @@ def render_batch_analysis(components, selected_clocks):
                 group_counts = metadata['substance_type'].value_counts()
                 st.bar_chart(group_counts)
         
-        if st.button("🔬 Toplu Analiz Başlat", type="primary", width='stretch'):
+        if st.button("Toplu Analiz Başlat", type="primary", width='stretch'):
             
             with st.spinner("Toplu analiz gerçekleştiriliyor..."):
                 
@@ -4240,11 +4240,11 @@ def render_batch_analysis(components, selected_clocks):
                 results_df = pd.DataFrame(all_results)
                 st.session_state['batch_results'] = results_df
             
-            st.success("✅ Toplu analiz tamamlandı!")
+            st.success("Toplu analiz tamamlandı!")
             
-            st.markdown("### 📈 Analiz Sonuçları")
+            st.markdown("### Analiz Sonuçları")
             
-            tab1, tab2, tab3 = st.tabs(["📊 Grup Karşılaştırması", "📋 Detaylı Sonuçlar", "📥 Dışa Aktar"])
+            tab1, tab2, tab3 = st.tabs(["Grup Karşılaştırması", "Detaylı Sonuçlar", "Dışa Aktar"])
             
             with tab1:
                 if 'substance_type' in results_df.columns:
@@ -4273,7 +4273,7 @@ def render_batch_analysis(components, selected_clocks):
             with tab3:
                 csv = results_df.to_csv(index=False).encode('utf-8')
                 st.download_button(
-                    label="📥 CSV Olarak İndir",
+                    label="CSV Olarak İndir",
                     data=csv,
                     file_name=f"epiclock_batch_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                     mime="text/csv"
@@ -4286,7 +4286,7 @@ def render_batch_analysis(components, selected_clocks):
                         comparison_df.to_excel(writer, sheet_name='Grup Karşılaştırması', index=False)
                 
                 st.download_button(
-                    label="📥 Excel Olarak İndir",
+                    label="Excel Olarak İndir",
                     data=buffer.getvalue(),
                     file_name=f"epiclock_batch_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -4296,7 +4296,7 @@ def render_batch_analysis(components, selected_clocks):
 def render_reference_database(components):
     """Render reference database exploration page"""
     
-    st.markdown("### 📈 Referans Veritabanı")
+    st.markdown("### Referans Veritabanı")
     
     st.markdown("""
     <div class="info-box">
@@ -4324,9 +4324,9 @@ def render_reference_database(components):
     st.markdown("---")
     
     tab1, tab2, tab3, tab4 = st.tabs([
-        "📊 Grup Dağılımları", 
-        "📈 Yaş Stratifikasyonu", 
-        "🔍 Detaylı İstatistikler",
+        "Grup Dağılımları", 
+        "Yaş Stratifikasyonu", 
+        "Detaylı İstatistikler",
         "🎲 Sentetik Kohort"
     ])
     
@@ -4464,13 +4464,13 @@ def render_reference_database(components):
                 
                 synth_cohort = ref_db.generate_synthetic_cohort(n_synth, distribution)
                 
-                st.success(f"✅ {len(synth_cohort)} örnekli sentetik kohort oluşturuldu!")
+                st.success(f"{len(synth_cohort)} örnekli sentetik kohort oluşturuldu!")
                 
                 st.dataframe(synth_cohort.head(20), width='stretch')
                 
                 csv = synth_cohort.to_csv(index=False).encode('utf-8')
                 st.download_button(
-                    label="📥 Sentetik Kohort İndir (CSV)",
+                    label="Sentetik Kohort İndir (CSV)",
                     data=csv,
                     file_name=f"synthetic_cohort_{n_synth}.csv",
                     mime="text/csv"
@@ -4480,7 +4480,7 @@ def render_reference_database(components):
 def render_differential_methylation(components, significance_level):
     """Render differential methylation analysis page"""
     
-    st.markdown("### 🔬 Diferansiyel Metilasyon Analizi (DMA)")
+    st.markdown("### Diferansiyel Metilasyon Analizi (DMA)")
     
     st.markdown("""
     <div class="info-box">
@@ -4518,7 +4518,7 @@ def render_differential_methylation(components, significance_level):
             step=0.01
         )
     
-    if st.button("🔬 DMA Başlat", type="primary", width='stretch'):
+    if st.button("DMA Başlat", type="primary", width='stretch'):
         
         with st.spinner("Diferansiyel metilasyon analizi gerçekleştiriliyor..."):
             
@@ -4557,7 +4557,7 @@ def render_differential_methylation(components, significance_level):
                 min_delta_beta
             )
         
-        st.success("✅ DMA tamamlandı!")
+        st.success("DMA tamamlandı!")
         
         n_sig = dma_results['is_significant'].sum()
         n_hyper = ((dma_results['is_significant']) & (dma_results['direction'] == 'hypermethylated')).sum()
@@ -4576,7 +4576,7 @@ def render_differential_methylation(components, significance_level):
         
         st.markdown("---")
         
-        tab1, tab2, tab3 = st.tabs(["🌋 Volcano Plot", "📋 Top CpG'ler", "📊 Dağılım"])
+        tab1, tab2, tab3 = st.tabs(["Volcano Plot", "Top CpG'ler", "Dağılım"])
         
         with tab1:
             volcano_fig = visualizer.plot_volcano(
@@ -4617,7 +4617,7 @@ def render_differential_methylation(components, significance_level):
 def render_mediation_analysis(components):
     """Render mediation and moderation analysis page"""
     
-    st.markdown("### 🧪 Mediyasyon ve Moderasyon Analizi")
+    st.markdown("### Mediyasyon ve Moderasyon Analizi")
     
     st.markdown("""
     <div class="info-box">
@@ -4630,7 +4630,7 @@ def render_mediation_analysis(components):
     stats_analyzer = components['stats_analyzer']
     visualizer = components['visualizer']
     
-    tab1, tab2 = st.tabs(["🔗 Mediyasyon Analizi", "⚖️ Moderasyon Analizi"])
+    tab1, tab2 = st.tabs(["Mediyasyon Analizi", "⚖️ Moderasyon Analizi"])
     
     with tab1:
         st.markdown("#### Fizyolojik Mediyatörler")
@@ -4653,7 +4653,7 @@ def render_mediation_analysis(components):
             format_func=lambda x: x[1]
         )
         
-        if st.button("🔗 Mediyasyon Analizi Çalıştır", key="mediation"):
+        if st.button("Mediyasyon Analizi Çalıştır", key="mediation"):
             
             with st.spinner("Mediyasyon analizi gerçekleştiriliyor..."):
                 
@@ -4673,7 +4673,7 @@ def render_mediation_analysis(components):
                     mediator[1]
                 )
             
-            st.success("✅ Mediyasyon analizi tamamlandı!")
+            st.success("Mediyasyon analizi tamamlandı!")
             
             col1, col2, col3 = st.columns(3)
             
@@ -4692,7 +4692,7 @@ def render_mediation_analysis(components):
             if result.is_significant:
                 st.markdown("""
                 <div class="success-box">
-                <b>✅ Sonuç:</b> Mediyasyon etkisi istatistiksel olarak anlamlıdır (p < 0.05). 
+                <b>Sonuç:</b> Mediyasyon etkisi istatistiksel olarak anlamlıdır (p < 0.05). 
                 Bu, madde kullanımının EAA üzerindeki etkisinin kısmen bu fizyolojik yolak 
                 aracılığıyla gerçekleştiğini göstermektedir.
                 </div>
@@ -4700,7 +4700,7 @@ def render_mediation_analysis(components):
             else:
                 st.markdown("""
                 <div class="warning-box">
-                <b>⚠️ Sonuç:</b> Mediyasyon etkisi istatistiksel olarak anlamlı değildir (p ≥ 0.05).
+                <b>Sonuç:</b> Mediyasyon etkisi istatistiksel olarak anlamlı değildir (p ≥ 0.05).
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -4750,7 +4750,7 @@ def render_mediation_analysis(components):
                     moderator[1]
                 )
             
-            st.success("✅ Moderasyon analizi tamamlandı!")
+            st.success("Moderasyon analizi tamamlandı!")
             
             col1, col2, col3 = st.columns(3)
             
@@ -4775,14 +4775,14 @@ def render_mediation_analysis(components):
             if result.is_significant:
                 st.markdown("""
                 <div class="success-box">
-                <b>✅ Sonuç:</b> Moderasyon etkisi anlamlıdır. Bu, madde kullanımının EAA üzerindeki 
+                <b>Sonuç:</b> Moderasyon etkisi anlamlıdır. Bu, madde kullanımının EAA üzerindeki 
                 etkisinin bu psikolojik faktörün düzeyine bağlı olarak değiştiğini göstermektedir.
                 </div>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
                 <div class="warning-box">
-                <b>⚠️ Sonuç:</b> Moderasyon etkisi istatistiksel olarak anlamlı değildir.
+                <b>Sonuç:</b> Moderasyon etkisi istatistiksel olarak anlamlı değildir.
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -4790,7 +4790,7 @@ def render_mediation_analysis(components):
 def render_model_performance(components):
     """Render model performance and validation page"""
     
-    st.markdown("### 📊 Model Performansı ve Validasyon")
+    st.markdown("### Model Performansı ve Validasyon")
     
     ml_predictor = components['ml_predictor']
     visualizer = components['visualizer']
@@ -4884,11 +4884,11 @@ def render_model_performance(components):
 def render_cpg_database(components):
     """Render comprehensive CpG Database page - 29,716 CpG sites"""
     
-    st.markdown("## 🧬 CpG Metilasyon Veritabanı")
+    st.markdown("## CpG Metilasyon Veritabanı")
     
     st.markdown("""
     <div class="info-box">
-    <b>📚 Kapsamlı CpG Veritabanı:</b> Bu modül, bağımlılık araştırmaları için validasyonu yapılmış 
+    <b>Kapsamlı CpG Veritabanı:</b> Bu modül, bağımlılık araştırmaları için validasyonu yapılmış 
     29,716 CpG sitesini içerir. Illumina 450K ve EPIC array platformlarından elde edilen, 
     11 farklı madde sınıfı için optimize edilmiş biyobelirteçler bulunmaktadır.
     </div>
@@ -4914,15 +4914,15 @@ def render_cpg_database(components):
                  help="p < 0.001, replicated")
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 Madde Panelleri",
-        "🔬 CpG Arama",
+        "Madde Panelleri",
+        "CpG Arama",
         "🧠 Gen Sistemleri",
-        "📈 Platform Bilgisi",
+        "Platform Bilgisi",
         "📤 Veri Yükleme"
     ])
     
     with tab1:
-        st.markdown("### 📊 Madde Bazlı CpG Panelleri")
+        st.markdown("### Madde Bazlı CpG Panelleri")
         st.markdown("""
         Her madde sınıfı için validasyonu yapılmış CpG biyobelirteçleri. 
         Kanıt düzeyleri meta-analiz ve replikasyon çalışmalarına dayanmaktadır.
@@ -4944,7 +4944,7 @@ def render_cpg_database(components):
         substance_df = pd.DataFrame(substance_data)
         st.dataframe(substance_df, use_container_width=True, hide_index=True)
         
-        st.markdown("### 🎯 Madde Detayları")
+        st.markdown("### Madde Detayları")
         
         selected_substance = st.selectbox(
             "Madde Seçin:",
@@ -4988,7 +4988,7 @@ def render_cpg_database(components):
                     st.plotly_chart(fig, use_container_width=True)
     
     with tab2:
-        st.markdown("### 🔬 CpG Sitesi Arama")
+        st.markdown("### CpG Sitesi Arama")
         
         col1, col2 = st.columns(2)
         
@@ -4999,7 +4999,7 @@ def render_cpg_database(components):
             if gene_search:
                 results = search_cpg_by_gene(gene_search)
                 if results:
-                    st.success(f"✅ {len(results)} CpG sitesi bulundu!")
+                    st.success(f"{len(results)} CpG sitesi bulundu!")
                     for cpg in results:
                         with st.expander(f"{cpg.cpg_id} - {cpg.gene}"):
                             st.markdown(f"""
@@ -5021,7 +5021,7 @@ def render_cpg_database(components):
             if cpg_search:
                 result = search_cpg_by_id(cpg_search)
                 if result:
-                    st.success(f"✅ CpG sitesi bulundu!")
+                    st.success(f"CpG sitesi bulundu!")
                     st.markdown(f"""
                     ### {result.cpg_id}
                     - **Gen:** {result.gene} ({result.gene_full_name})
@@ -5056,7 +5056,7 @@ def render_cpg_database(components):
                 st.code(genes_text, language=None)
     
     with tab4:
-        st.markdown("### 📈 Illumina Platform Karşılaştırması")
+        st.markdown("### Illumina Platform Karşılaştırması")
         
         platform_data = []
         for platform_id, info in ILLUMINA_PLATFORM_INFO.items():
@@ -5072,7 +5072,7 @@ def render_cpg_database(components):
         platform_df = pd.DataFrame(platform_data)
         st.dataframe(platform_df, use_container_width=True, hide_index=True)
         
-        st.markdown("### 🧬 İnsan Genomu CpG Dağılımı")
+        st.markdown("### İnsan Genomu CpG Dağılımı")
         
         dist_data = {
             'Kategori': ['Toplam CpG (Genom)', 'CpG Adaları', 'CpG Kıyıları', 'CpG Rafları', 
@@ -5092,7 +5092,7 @@ def render_cpg_database(components):
         
         st.markdown("""
         <div class="info-box">
-        <b>📋 Desteklenen Formatlar:</b>
+        <b>Desteklenen Formatlar:</b>
         <ul>
             <li>CSV/TXT - Beta değerleri matrisi</li>
             <li>Illumina GenomeStudio export</li>
@@ -5129,7 +5129,7 @@ def render_cpg_database(components):
                 validation = validate_uploaded_cpg_data(df, platform_select)
                 
                 if validation['is_valid']:
-                    st.success(f"✅ Veri başarıyla yüklendi!")
+                    st.success(f"Veri başarıyla yüklendi!")
                     
                     col1, col2, col3 = st.columns(3)
                     with col1:
@@ -5137,7 +5137,7 @@ def render_cpg_database(components):
                     with col2:
                         st.metric("Kapsam", f"{validation['coverage_percent']:.1f}%")
                     with col3:
-                        st.metric("Beta Aralığı", "✅ Geçerli" if validation['beta_range_valid'] else "⚠️ Kontrol")
+                        st.metric("Beta Aralığı", "Geçerli" if validation['beta_range_valid'] else "Kontrol")
                     
                     if validation['warnings']:
                         for warning in validation['warnings']:
@@ -5157,7 +5157,7 @@ def render_cpg_database(components):
                 st.error(f"Dosya okuma hatası: {str(e)}")
         
         st.markdown("---")
-        st.markdown("#### 📥 Örnek Veri İndir")
+        st.markdown("#### Örnek Veri İndir")
         
         demo_data = {
             'CpG_ID': ['cg05575921', 'cg03636183', 'cg19859270', 'cg01940273', 'cg07339236'],
@@ -5171,7 +5171,7 @@ def render_cpg_database(components):
         demo_df.to_csv(csv_buffer, index=False)
         
         st.download_button(
-            label="📥 Örnek CSV İndir",
+            label="Örnek CSV İndir",
             data=csv_buffer.getvalue(),
             file_name="epiclock_sample_data.csv",
             mime="text/csv"
@@ -5181,11 +5181,11 @@ def render_cpg_database(components):
 def render_data_export_page(components):
     """Render comprehensive data export page with multiple formats"""
     
-    st.markdown("## 📥 Veri Dışa Aktarım Merkezi")
+    st.markdown("## Veri Dışa Aktarım Merkezi")
     
     st.markdown("""
     <div class="info-box">
-    <b>🌍 Açık Veri Paylaşımı:</b> EpiClock'un tüm veritabanlarını farklı formatlarda indirin.
+    <b>Açık Veri Paylaşımı:</b> EpiClock'un tüm veritabanlarını farklı formatlarda indirin.
     CSV, BED (Genome Browser), JSON ve SQL formatları desteklenmektedir.
     Araştırmacılar bu verileri kendi analizlerinde kullanabilir.
     </div>
@@ -5209,10 +5209,10 @@ def render_data_export_page(components):
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📄 CSV Format",
-        "🧬 BED Format",
-        "📋 JSON Format",
+        "BED Format",
+        "JSON Format",
         "🗄️ SQL Database",
-        "📊 GWAS/EWAS"
+        "GWAS/EWAS"
     ])
     
     with tab1:
@@ -5225,10 +5225,10 @@ def render_data_export_page(components):
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("#### 🧬 CpG Veritabanı")
+            st.markdown("#### CpG Veritabanı")
             csv_data = generate_cpg_csv_export()
             st.download_button(
-                label="📥 CpG Veritabanı (CSV)",
+                label="CpG Veritabanı (CSV)",
                 data=csv_data,
                 file_name=f"epiclock_cpg_database_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv",
@@ -5237,10 +5237,10 @@ def render_data_export_page(components):
             st.caption("Tüm madde panellerinden CpG belirteçleri")
         
         with col2:
-            st.markdown("#### 📊 GWAS Catalog")
+            st.markdown("#### GWAS Catalog")
             gwas_csv = export_gwas_catalog_csv()
             st.download_button(
-                label="📥 GWAS Çalışmaları (CSV)",
+                label="GWAS Çalışmaları (CSV)",
                 data=gwas_csv,
                 file_name=f"epiclock_gwas_catalog_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv",
@@ -5251,10 +5251,10 @@ def render_data_export_page(components):
         col3, col4 = st.columns(2)
         
         with col3:
-            st.markdown("#### 🔬 EWAS Belirteçleri")
+            st.markdown("#### EWAS Belirteçleri")
             ewas_csv = export_ewas_markers_csv()
             st.download_button(
-                label="📥 EWAS Belirteçleri (CSV)",
+                label="EWAS Belirteçleri (CSV)",
                 data=ewas_csv,
                 file_name=f"epiclock_ewas_markers_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv",
@@ -5263,10 +5263,10 @@ def render_data_export_page(components):
             st.caption("Epigenom çapı metilasyon belirteçleri")
         
         with col4:
-            st.markdown("#### 💊 PharmGKB Genler")
+            st.markdown("#### PharmGKB Genler")
             pharmgkb_csv = export_pharmgkb_csv()
             st.download_button(
-                label="📥 PharmGKB Genler (CSV)",
+                label="PharmGKB Genler (CSV)",
                 data=pharmgkb_csv,
                 file_name=f"epiclock_pharmgkb_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv",
@@ -5275,7 +5275,7 @@ def render_data_export_page(components):
             st.caption("Farmakogenomik gen verileri")
     
     with tab2:
-        st.markdown("### 🧬 BED Formatında Dışa Aktar")
+        st.markdown("### BED Formatında Dışa Aktar")
         st.markdown("""
         **BED (Browser Extensible Data)** formatı, UCSC Genome Browser ve IGV gibi 
         genom tarayıcılarında görselleştirme için standart formattır.
@@ -5291,7 +5291,7 @@ def render_data_export_page(components):
         
         bed_data = generate_cpg_bed_export()
         st.download_button(
-            label="📥 CpG Veritabanı (BED)",
+            label="CpG Veritabanı (BED)",
             data=bed_data,
             file_name=f"epiclock_cpg_database_{datetime.now().strftime('%Y%m%d')}.bed",
             mime="text/plain",
@@ -5304,7 +5304,7 @@ chr5    373378      373379    cg05575921  1000   +       AHRR   tobacco    Stron
 chr19   17000585    17000586  cg03636183  950    +       F2RL3  tobacco    Strong""", language="text")
     
     with tab3:
-        st.markdown("### 📋 JSON Formatında Dışa Aktar")
+        st.markdown("### JSON Formatında Dışa Aktar")
         st.markdown("""
         **JSON (JavaScript Object Notation)** formatı, web uygulamaları, API'ler ve 
         programatik erişim için idealdir.
@@ -5312,7 +5312,7 @@ chr19   17000585    17000586  cg03636183  950    +       F2RL3  tobacco    Stron
         
         json_data = generate_cpg_json_export()
         st.download_button(
-            label="📥 Tam Veritabanı (JSON)",
+            label="Tam Veritabanı (JSON)",
             data=json_data,
             file_name=f"epiclock_database_{datetime.now().strftime('%Y%m%d')}.json",
             mime="application/json",
@@ -5343,7 +5343,7 @@ chr19   17000585    17000586  cg03636183  950    +       F2RL3  tobacco    Stron
             st.markdown("#### Şema (CREATE TABLE)")
             sql_schema = generate_sql_schema()
             st.download_button(
-                label="📥 SQL Şema İndir",
+                label="SQL Şema İndir",
                 data=sql_schema,
                 file_name=f"epiclock_schema_{datetime.now().strftime('%Y%m%d')}.sql",
                 mime="text/plain",
@@ -5355,7 +5355,7 @@ chr19   17000585    17000586  cg03636183  950    +       F2RL3  tobacco    Stron
             st.markdown("#### Veri (INSERT)")
             sql_inserts = generate_sql_insert_statements()
             st.download_button(
-                label="📥 SQL Veri İndir",
+                label="SQL Veri İndir",
                 data=sql_inserts,
                 file_name=f"epiclock_data_{datetime.now().strftime('%Y%m%d')}.sql",
                 mime="text/plain",
@@ -5382,7 +5382,7 @@ chr19   17000585    17000586  cg03636183  950    +       F2RL3  tobacco    Stron
         """)
     
     with tab5:
-        st.markdown("### 📊 GWAS ve EWAS Verileri")
+        st.markdown("### GWAS ve EWAS Verileri")
         st.markdown("""
         Genom-çapı ve epigenom-çapı ilişkilendirme çalışmalarından elde edilen veriler.
         """)
@@ -5415,11 +5415,11 @@ chr19   17000585    17000586  cg03636183  950    +       F2RL3  tobacco    Stron
 def render_world_databases(components):
     """Render World Databases Integration Page - GWAS, EWAS, PharmGKB, CPIC"""
     
-    st.markdown("## 🌍 Dünya Genomik Veritabanları")
+    st.markdown("## Dünya Genomik Veritabanları")
     
     st.markdown("""
     <div class="info-box">
-    <b>📚 Kapsamlı Veritabanı Entegrasyonu:</b> Bu modül, dünya çapındaki en büyük bağımlılık 
+    <b>Kapsamlı Veritabanı Entegrasyonu:</b> Bu modül, dünya çapındaki en büyük bağımlılık 
     genetik ve epigenetik veritabanlarını entegre eder. GWAS Catalog, EWAS Catalog, PharmGKB, 
     CPIC ve GEO veritabanlarından alınan verilerle kapsamlı analizler yapabilirsiniz.
     </div>
@@ -5438,16 +5438,16 @@ def render_world_databases(components):
         st.metric("EWAS Belirteçleri", sum(len(m) for m in EWAS_ADDICTION_MARKERS.values()), help="Epigenom çapı metilasyon belirteçleri")
     
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-        "🧬 GWAS Veritabanı",
-        "🔬 EWAS Metilasyon",
-        "💊 Farmakogenomik",
+        "GWAS Veritabanı",
+        "EWAS Metilasyon",
+        "Farmakogenomik",
         "📦 Madde Veritabanı",
         "🧠 Gen Sistemleri",
-        "📊 Veri Kaynakları"
+        "Veri Kaynakları"
     ])
     
     with tab1:
-        st.markdown("### 🧬 GWAS Catalog - Bağımlılık Çalışmaları")
+        st.markdown("### GWAS Catalog - Bağımlılık Çalışmaları")
         st.markdown("""
         Genom çapında ilişkilendirme çalışmaları (GWAS), hastalıkla ilişkili genetik varyantları 
         keşfetmek için milyonlarca SNP'yi tarar. Aşağıda bağımlılık için en büyük GWAS çalışmaları yer almaktadır.
@@ -5462,13 +5462,13 @@ def render_world_databases(components):
                 'Atıf': study.citation,
                 'PMID': study.pmid,
                 'Konsorsiyum': study.consortium or '-',
-                'Özet İstatistik': '✅' if study.summary_stats_available else '❌'
+                'Özet İstatistik': '' if study.summary_stats_available else ''
             })
         
         gwas_df = pd.DataFrame(gwas_data)
         st.dataframe(gwas_df, use_container_width=True)
         
-        st.markdown("### 🎯 En Önemli Genetik Lokuslar")
+        st.markdown("### En Önemli Genetik Lokuslar")
         
         selected_trait = st.selectbox(
             "Özellik Seçin:",
@@ -5502,7 +5502,7 @@ def render_world_databases(components):
             st.plotly_chart(fig, use_container_width=True)
     
     with tab2:
-        st.markdown("### 🔬 EWAS Catalog - DNA Metilasyon Belirteçleri")
+        st.markdown("### EWAS Catalog - DNA Metilasyon Belirteçleri")
         st.markdown("""
         Epigenom çapında ilişkilendirme çalışmaları (EWAS), hastalıkla ilişkili CpG metilasyon 
         değişikliklerini tespit eder. Sigara için cg05575921 (AHRR) en güçlü biyobelirteçtir.
@@ -5532,7 +5532,7 @@ def render_world_databases(components):
             marker_df = pd.DataFrame(marker_data)
             st.dataframe(marker_df, use_container_width=True)
             
-            st.markdown("#### 📊 Metilasyon Değişiklikleri (ΔBeta)")
+            st.markdown("#### Metilasyon Değişiklikleri (ΔBeta)")
             
             plot_data = pd.DataFrame({
                 'CpG': [m.cpg_id for m in markers],
@@ -5548,13 +5548,13 @@ def render_world_databases(components):
             st.plotly_chart(fig, use_container_width=True)
     
     with tab3:
-        st.markdown("### 💊 PharmGKB & CPIC Farmakogenomik")
+        st.markdown("### PharmGKB & CPIC Farmakogenomik")
         st.markdown("""
         Farmakogenomik, genetik varyasyonların ilaç yanıtını nasıl etkilediğini inceler. 
         CPIC kılavuzları klinik uygulamalar için kanıta dayalı öneriler sunar.
         """)
         
-        st.markdown("#### 🧬 Bağımlılık Tedavisinde Önemli Farmakogenler")
+        st.markdown("#### Bağımlılık Tedavisinde Önemli Farmakogenler")
         
         pharmgene_data = []
         for gene, info in PHARMGKB_ADDICTION_GENES.items():
@@ -5570,7 +5570,7 @@ def render_world_databases(components):
         pharmgene_df = pd.DataFrame(pharmgene_data)
         st.dataframe(pharmgene_df, use_container_width=True)
         
-        st.markdown("#### 📋 CPIC Klinik Kılavuzları")
+        st.markdown("#### CPIC Klinik Kılavuzları")
         
         for key, guideline in CPIC_GUIDELINES_ADDICTION.items():
             with st.expander(f"🔹 {', '.join(guideline['drugs'])} - {guideline['gene'] if 'gene' in guideline else ', '.join(guideline.get('genes', []))}"):
@@ -5602,7 +5602,7 @@ def render_world_databases(components):
             ['opioids', 'stimulants', 'depressants', 'cannabinoids', 'hallucinogens', 'nicotine'],
             format_func=lambda x: {
                 'opioids': '💉 Opioidler',
-                'stimulants': '⚡ Stimulanlar',
+                'stimulants': 'Stimulanlar',
                 'depressants': '🍷 Depresanlar',
                 'cannabinoids': '🌿 Kannabinoidler',
                 'hallucinogens': '🍄 Halüsinojenler',
@@ -5652,7 +5652,7 @@ def render_world_databases(components):
                 for category, genes in system_data['key_genes'].items():
                     st.markdown(f"- **{category.replace('_', ' ').title()}:** {', '.join(genes)}")
         
-        st.markdown("### 🧬 Epigenetik Düzenleme Genleri")
+        st.markdown("### Epigenetik Düzenleme Genleri")
         
         for category, subcategories in EPIGENETIC_REGULATION_GENES.items():
             with st.expander(f"🔹 {category.replace('_', ' ').title()}"):
@@ -5667,11 +5667,11 @@ def render_world_databases(components):
                     st.write(', '.join(subcategories))
     
     with tab6:
-        st.markdown("### 📊 Veri Kaynakları ve Erişim")
+        st.markdown("### Veri Kaynakları ve Erişim")
         
         summary = get_database_summary()
         
-        st.markdown("#### 📈 Veritabanı İstatistikleri")
+        st.markdown("#### Veritabanı İstatistikleri")
         
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -5681,7 +5681,7 @@ def render_world_databases(components):
         with col3:
             st.metric("Farmakogen", summary['pharmacogenes'])
         
-        st.markdown("#### 🔗 Veri Kaynakları")
+        st.markdown("#### Veri Kaynakları")
         
         source_data = []
         for source in summary['data_sources']:
@@ -5694,7 +5694,7 @@ def render_world_databases(components):
         source_df = pd.DataFrame(source_data)
         st.dataframe(source_df, use_container_width=True)
         
-        st.markdown("#### 📥 GEO Veri Setleri")
+        st.markdown("#### GEO Veri Setleri")
         
         geo_data = []
         for accession, dataset in GEO_ADDICTION_DATASETS.items():
@@ -5724,7 +5724,7 @@ def render_world_databases(components):
 def render_report_generator(components):
     """Render PDF report generation page"""
     
-    st.markdown("### 📋 PDF Rapor Oluşturma")
+    st.markdown("### PDF Rapor Oluşturma")
     
     st.markdown("""
     <div class="info-box">
@@ -5735,13 +5735,13 @@ def render_report_generator(components):
     
     report_gen = components['report_gen']
     
-    tab1, tab2 = st.tabs(["👤 Bireysel Rapor", "📁 Toplu Rapor"])
+    tab1, tab2 = st.tabs(["👤 Bireysel Rapor", "Toplu Rapor"])
     
     with tab1:
         if 'analysis_results' in st.session_state:
             results = st.session_state['analysis_results']
             
-            st.success("✅ Mevcut analiz sonuçları bulundu!")
+            st.success("Mevcut analiz sonuçları bulundu!")
             
             st.markdown(f"""
             **Hasta ID:** {results['patient_info']['patient_id']}  
@@ -5771,22 +5771,22 @@ def render_report_generator(components):
                         comparison
                     )
                     
-                st.success("✅ PDF rapor oluşturuldu!")
+                st.success("PDF rapor oluşturuldu!")
                 
                 st.download_button(
-                    label="📥 PDF Rapor İndir",
+                    label="PDF Rapor İndir",
                     data=pdf_bytes,
                     file_name=f"epiclock_report_{results['patient_info']['patient_id']}_{datetime.now().strftime('%Y%m%d')}.pdf",
                     mime="application/pdf"
                 )
         else:
-            st.warning("⚠️ Henüz analiz yapılmadı. Lütfen önce 'Bireysel Analiz' modülünde bir analiz gerçekleştirin.")
+            st.warning("Henüz analiz yapılmadı. Lütfen önce 'Bireysel Analiz' modülünde bir analiz gerçekleştirin.")
     
     with tab2:
         if 'batch_results' in st.session_state:
             results_df = st.session_state['batch_results']
             
-            st.success(f"✅ {len(results_df)} örnekli toplu analiz sonuçları bulundu!")
+            st.success(f"{len(results_df)} örnekli toplu analiz sonuçları bulundu!")
             
             if st.button("📄 Toplu PDF Rapor Oluştur", key="batch_report"):
                 with st.spinner("Toplu PDF rapor oluşturuluyor..."):
@@ -5811,16 +5811,16 @@ def render_report_generator(components):
                         group_comparisons
                     )
                 
-                st.success("✅ Toplu PDF rapor oluşturuldu!")
+                st.success("Toplu PDF rapor oluşturuldu!")
                 
                 st.download_button(
-                    label="📥 Toplu PDF Rapor İndir",
+                    label="Toplu PDF Rapor İndir",
                     data=pdf_bytes,
                     file_name=f"epiclock_batch_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                     mime="application/pdf"
                 )
         else:
-            st.warning("⚠️ Henüz toplu analiz yapılmadı. Lütfen önce 'Toplu Analiz' modülünde bir analiz gerçekleştirin.")
+            st.warning("Henüz toplu analiz yapılmadı. Lütfen önce 'Toplu Analiz' modülünde bir analiz gerçekleştirin.")
 
 
 def render_longitudinal_analysis(components):
@@ -5838,7 +5838,7 @@ def render_longitudinal_analysis(components):
     
     longitudinal = components['longitudinal']
     
-    tab1, tab2, tab3 = st.tabs(["📊 Trend Analizi", "💊 Müdahale Değerlendirmesi", "🔮 Tahmin"])
+    tab1, tab2, tab3 = st.tabs(["Trend Analizi", "Müdahale Değerlendirmesi", "🔮 Tahmin"])
     
     with tab1:
         st.markdown("#### Simüle Longitudinal Veri (Demo)")
@@ -5962,7 +5962,7 @@ def render_gsea_analysis(components):
     """Render Gene Set Enrichment Analysis page"""
     import plotly.graph_objects as go
     
-    st.markdown("### 🧬 Gene Set Enrichment Analysis (GSEA)")
+    st.markdown("### Gene Set Enrichment Analysis (GSEA)")
     
     st.markdown("""
     <div class="info-box">
@@ -6004,7 +6004,7 @@ def render_gsea_analysis(components):
         
         st.markdown("---")
         
-        tab1, tab2, tab3 = st.tabs(["📊 Bar Plot", "🔵 Dot Plot", "🕸️ Network"])
+        tab1, tab2, tab3 = st.tabs(["Bar Plot", "🔵 Dot Plot", "🕸️ Network"])
         
         with tab1:
             fig = gsea.plot_enrichment_barplot(result, top_n=12)
@@ -6028,7 +6028,7 @@ def render_gsea_analysis(components):
                 'p-değeri': f"{p.p_value:.2e}",
                 'FDR': f"{p.fdr_q_value:.4f}",
                 'Gen Sayısı': p.n_significant_genes,
-                'Anlamlı': '✅' if p.is_significant else '❌'
+                'Anlamlı': '' if p.is_significant else ''
             }
             for p in result.top_pathways[:10]
         ])
@@ -6045,18 +6045,18 @@ def render_clinical_decision_support(components):
     """Render Clinical Decision Support page"""
     import plotly.graph_objects as go
     
-    st.markdown("### 💊 Klinik Karar Destek Sistemi")
+    st.markdown("### Klinik Karar Destek Sistemi")
     
     st.markdown("""
     <div class="warning-box">
-    <b>⚠️ Uyarı:</b> Bu modül klinik karar destek aracı olarak tasarlanmıştır. 
+    <b>Uyarı:</b> Bu modül klinik karar destek aracı olarak tasarlanmıştır. 
     Tüm tedavi kararları yetkili sağlık profesyonelleri tarafından verilmelidir.
     </div>
     """, unsafe_allow_html=True)
     
     clinical_decision = components['clinical_decision']
     
-    tab1, tab2, tab3 = st.tabs(["🎯 Risk Değerlendirmesi", "💊 Tedavi Önerileri", "📋 Müdahale Planı"])
+    tab1, tab2, tab3 = st.tabs(["Risk Değerlendirmesi", "Tedavi Önerileri", "Müdahale Planı"])
     
     with tab1:
         st.markdown("#### Hasta Risk Profili")
@@ -6213,7 +6213,7 @@ def render_multiomics_analysis(components):
     """Render Multi-Omics Integration page"""
     import plotly.graph_objects as go
     
-    st.markdown("### 🔗 Multi-Omik Entegrasyon Analizi")
+    st.markdown("### Multi-Omik Entegrasyon Analizi")
     
     st.markdown("""
     <div class="info-box">
@@ -6224,7 +6224,7 @@ def render_multiomics_analysis(components):
     
     multiomics = components['multiomics']
     
-    tab1, tab2, tab3 = st.tabs(["📊 Demo Analiz", "🔬 Entegrasyon", "📈 Karşılaştırma"])
+    tab1, tab2, tab3 = st.tabs(["Demo Analiz", "Entegrasyon", "Karşılaştırma"])
     
     with tab1:
         st.markdown("#### Simüle Multi-Omik Veri Oluştur")
@@ -6266,7 +6266,7 @@ def render_multiomics_analysis(components):
                     'substance_types': substance_types
                 }
                 
-                st.success(f"✅ {n_samples} örnek için multi-omik veri oluşturuldu!")
+                st.success(f"{n_samples} örnek için multi-omik veri oluşturuldu!")
                 
                 col1, col2, col3 = st.columns(3)
                 with col1:
@@ -6385,11 +6385,11 @@ def render_postmortem_validation(components):
     forensic = components['forensic']
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 PMI Düzeltme",
-        "🧪 pH Kalite Analizi",
+        "PMI Düzeltme",
+        "pH Kalite Analizi",
         "🧠 Beyin Bölgeleri",
         "⚖️ Adli Uygulamalar",
-        "🔬 Demo Analiz"
+        "Demo Analiz"
     ])
     
     with tab1:
@@ -6473,12 +6473,12 @@ def render_postmortem_validation(components):
         st.markdown("##### Uygulama Alanları")
         applications = forensic.get_forensic_applications()
         for app in applications:
-            with st.expander(f"📋 {app['application']}"):
+            with st.expander(f"{app['application']}"):
                 st.markdown(f"**Açıklama:** {app['description']}")
                 st.markdown(f"**Avantaj:** {app['advantage']}")
                 st.markdown(f"**Sınırlılık:** {app['limitation']}")
         
-        st.warning("⚠️ Epigenetik kanıt destekleyici kanıt olarak değerlendirilmeli, tek başına yeterli değildir.")
+        st.warning("Epigenetik kanıt destekleyici kanıt olarak değerlendirilmeli, tek başına yeterli değildir.")
     
     with tab5:
         st.markdown("#### Demo Postmortem Analiz")
@@ -6524,7 +6524,7 @@ def render_moderation_analysis(components):
     tab1, tab2, tab3 = st.tabs([
         "😔 Duygu Düzenleme (DERS)",
         "💪 Öz-Kontrol (SCS-B)",
-        "🔗 Moderated Mediation"
+        "Moderated Mediation"
     ])
     
     with tab1:
@@ -6600,10 +6600,10 @@ def render_reversibility_analysis(components):
     reversibility = components['reversibility']
     
     tab1, tab2, tab3, tab4 = st.tabs([
-        "💊 Müdahale Çalışmaları",
+        "Müdahale Çalışmaları",
         "🚭 Madde Bırakma Etkileri",
-        "📊 Meta-Analiz",
-        "💡 Klinik Öneriler"
+        "Meta-Analiz",
+        "Klinik Öneriler"
     ])
     
     with tab1:
@@ -6666,7 +6666,7 @@ def render_reversibility_analysis(components):
         recommendations = reversibility.get_clinical_recommendations()
         
         for rec in recommendations:
-            with st.expander(f"✅ {rec['recommendation']}"):
+            with st.expander(f"{rec['recommendation']}"):
                 st.markdown(f"**Bileşenler:** {rec['components']}")
                 st.markdown(f"**Beklenen Etki:** {rec['expected_effect']}")
                 st.markdown(f"**Kanıt Düzeyi:** {rec['evidence_level']}")
@@ -6675,7 +6675,7 @@ def render_reversibility_analysis(components):
 def render_clinical_covariates(components):
     """Render Klinik Kovaryatlar page - PDF Tablo 26-32"""
     
-    st.markdown("### 📊 Klinik ve Demografik Kovaryatlar")
+    st.markdown("### Klinik ve Demografik Kovaryatlar")
     
     st.markdown("""
     <div class="info-box">
@@ -6689,9 +6689,9 @@ def render_clinical_covariates(components):
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🎂 Başlangıç Yaşı",
         "👫 Cinsiyet",
-        "🎓 Eğitim & BMI",
+        "Eğitim & BMI",
         "🏃 Egzersiz",
-        "📈 Regresyon Modeli"
+        "Regresyon Modeli"
     ])
     
     with tab1:
@@ -6769,11 +6769,11 @@ def render_tissue_specific_clocks(components):
     normalizer = components['cross_tissue_normalizer']
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 Mevcut Saatler",
-        "🧮 Doku Analizi",
+        "Mevcut Saatler",
+        "Doku Analizi",
         "🔄 Çapraz-Doku Normalizasyonu",
-        "📈 Doku Karşılaştırma",
-        "🔬 Demo Analiz"
+        "Doku Karşılaştırma",
+        "Demo Analiz"
     ])
     
     with tab1:
@@ -6846,7 +6846,7 @@ def render_tissue_specific_clocks(components):
             
             if result.warning_flags:
                 for warning in result.warning_flags:
-                    st.warning(f"⚠️ {warning}")
+                    st.warning(f"{warning}")
             
             ref_info = tissue_calc.get_tissue_reference_percentile(
                 result.age_acceleration, selected_tissue
@@ -6960,7 +6960,7 @@ def render_tissue_specific_clocks(components):
 def render_blockchain_audit(components):
     """Render Blockchain Audit Trail page"""
     
-    st.markdown("### 🔐 Blockchain Denetim İzi")
+    st.markdown("### Blockchain Denetim İzi")
     
     st.markdown("""
     <div class="info-box">
@@ -6973,11 +6973,11 @@ def render_blockchain_audit(components):
     chain_of_custody = components['chain_of_custody']
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 Zincir Durumu",
-        "📝 Kayıt Ekle",
-        "✅ Doğrulama",
+        "Zincir Durumu",
+        "Kayıt Ekle",
+        "Doğrulama",
         "⚖️ Delil Takibi",
-        "🔬 Manipülasyon Testi"
+        "Manipülasyon Testi"
     ])
     
     with tab1:
@@ -7034,7 +7034,7 @@ def render_blockchain_audit(components):
                 summary=summary_text,
                 metadata={'sample_id': sample_id}
             )
-            st.success(f"✅ Kayıt eklendi! Blok Hash: {block.block_hash[:32]}...")
+            st.success(f"Kayıt eklendi! Blok Hash: {block.block_hash[:32]}...")
     
     with tab3:
         st.markdown("#### Zincir Bütünlüğü Doğrulama")
@@ -7044,14 +7044,14 @@ def render_blockchain_audit(components):
             
             if validation.is_valid:
                 st.success(f"""
-                ✅ **ZİNCİR GEÇERLİ**
+                **ZİNCİR GEÇERLİ**
                 - Doğrulanan Blok: {validation.validated_blocks}/{validation.total_blocks}
                 - Doğrulama Zamanı: {validation.validation_timestamp[:19]}
                 - Zincir Hash: {validation.validation_hash[:32]}...
                 """)
             else:
                 st.error(f"""
-                ❌ **MANİPÜLASYON TESPİT EDİLDİ**
+                **MANİPÜLASYON TESPİT EDİLDİ**
                 - İlk Geçersiz Blok: {validation.first_invalid_block}
                 - Hata: {validation.error_message}
                 - Doğrulanan: {validation.validated_blocks}/{validation.total_blocks}
@@ -7059,11 +7059,11 @@ def render_blockchain_audit(components):
         
         st.markdown("##### Daubert Kriterleri Uyumu")
         daubert_df = pd.DataFrame([
-            {'Kriter': 'Test Edilebilirlik', 'Durum': '✅ Geçer', 'Açıklama': 'SHA-256 hash doğrulaması'},
-            {'Kriter': 'Peer Review', 'Durum': '✅ Geçer', 'Açıklama': 'Açık kaynak algoritma'},
-            {'Kriter': 'Hata Oranı', 'Durum': '✅ Geçer', 'Açıklama': '2^-256 çakışma olasılığı'},
-            {'Kriter': 'Standartlar', 'Durum': '✅ Geçer', 'Açıklama': 'NIST SHA-256 standardı'},
-            {'Kriter': 'Kabul', 'Durum': '✅ Geçer', 'Açıklama': 'Yaygın blockchain kullanımı'}
+            {'Kriter': 'Test Edilebilirlik', 'Durum': 'Geçer', 'Açıklama': 'SHA-256 hash doğrulaması'},
+            {'Kriter': 'Peer Review', 'Durum': 'Geçer', 'Açıklama': 'Açık kaynak algoritma'},
+            {'Kriter': 'Hata Oranı', 'Durum': 'Geçer', 'Açıklama': '2^-256 çakışma olasılığı'},
+            {'Kriter': 'Standartlar', 'Durum': 'Geçer', 'Açıklama': 'NIST SHA-256 standardı'},
+            {'Kriter': 'Kabul', 'Durum': 'Geçer', 'Açıklama': 'Yaygın blockchain kullanımı'}
         ])
         st.dataframe(daubert_df, width='stretch')
     
@@ -7091,7 +7091,7 @@ def render_blockchain_audit(components):
                 collection_method=collection_method,
                 description=description
             )
-            st.success(f"✅ Delil kaydedildi! Hash: {block_hash[:32]}...")
+            st.success(f"Delil kaydedildi! Hash: {block_hash[:32]}...")
         
         st.markdown("##### Delil Sorgula")
         query_evidence_id = st.text_input("Sorgulanacak Delil ID", key="query_ev")
@@ -7103,7 +7103,7 @@ def render_blockchain_audit(components):
     with tab5:
         st.markdown("#### Manipülasyon Tespit Demonstrasyonu")
         
-        st.warning("⚠️ Bu demo, sistemin manipülasyonu nasıl tespit ettiğini gösterir. Gerçek veri etkilenmez.")
+        st.warning("Bu demo, sistemin manipülasyonu nasıl tespit ettiğini gösterir. Gerçek veri etkilenmez.")
         
         simulator = TamperDetectionSimulator(audit_ledger)
         
@@ -7112,9 +7112,9 @@ def render_blockchain_audit(components):
             
             for result in results:
                 if result['result']:
-                    st.success(f"✅ Adım {result['step']}: {result['description']} - {result['message']}")
+                    st.success(f"Adım {result['step']}: {result['description']} - {result['message']}")
                 else:
-                    st.error(f"❌ Adım {result['step']}: {result['description']} - {result['message']}")
+                    st.error(f"Adım {result['step']}: {result['description']} - {result['message']}")
         
         st.markdown("##### Nasıl Çalışır?")
         st.markdown("""
@@ -7142,14 +7142,14 @@ def render_database_management(components):
     try:
         is_connected = db_manager.is_connected()
         if is_connected:
-            st.success("✅ Veritabanı bağlantısı aktif")
+            st.success("Veritabanı bağlantısı aktif")
         else:
-            st.warning("⚠️ Veritabanı bağlantısı kurulamadı. Demo modunda çalışıyor.")
+            st.warning("Veritabanı bağlantısı kurulamadı. Demo modunda çalışıyor.")
     except Exception as e:
-        st.warning(f"⚠️ Veritabanı bağlantı kontrolü başarısız. Demo modunda çalışıyor.")
+        st.warning(f"Veritabanı bağlantı kontrolü başarısız. Demo modunda çalışıyor.")
         is_connected = False
     
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 İstatistikler", "👤 Hasta Yönetimi", "📈 Analizler", "🔄 Demo Veri"])
+    tab1, tab2, tab3, tab4 = st.tabs(["İstatistikler", "👤 Hasta Yönetimi", "Analizler", "🔄 Demo Veri"])
     
     with tab1:
         st.markdown("#### Veritabanı İstatistikleri")
@@ -7218,7 +7218,7 @@ def render_database_management(components):
                     })
                     
                     if patient:
-                        st.success(f"✅ Hasta {patient_id} başarıyla kaydedildi!")
+                        st.success(f"Hasta {patient_id} başarıyla kaydedildi!")
                     else:
                         st.error("Hasta kaydedilemedi")
                 except Exception as e:
@@ -7310,20 +7310,20 @@ def render_database_management(components):
                     except Exception:
                         pass
                 
-                st.success(f"✅ {created} demo hasta oluşturuldu!")
+                st.success(f"{created} demo hasta oluşturuldu!")
                 st.rerun()
 
 
 def render_variant_analysis(components):
     """Render variant analysis interface"""
     
-    st.markdown("## 🧬 Varyant Analizi")
+    st.markdown("## Varyant Analizi")
     st.markdown("""
     VCF dosyalarından genetik varyant analizi yapın. 700,000+ varyant taraması 
     için maliyet-etkin çözüm.
     """)
     
-    with st.expander("📖 Maliyet Karşılaştırması", expanded=False):
+    with st.expander("Maliyet Karşılaştırması", expanded=False):
         st.markdown("""
         ### Geleneksel Yaklaşım vs EpiClock Entegrasyonu
         
@@ -7337,7 +7337,7 @@ def render_variant_analysis(components):
         **EpiClock Avantajı:** Tüm analiz pipeline'ı AÇIK KAYNAK!
         """)
     
-    tab1, tab2, tab3, tab4 = st.tabs(["📁 VCF Yükle", "🧪 Demo Veri", "📊 Maliyet Hesapla", "🎯 Panel Tasarımı"])
+    tab1, tab2, tab3, tab4 = st.tabs(["VCF Yükle", "Demo Veri", "Maliyet Hesapla", "Panel Tasarımı"])
     
     with tab1:
         st.markdown("### VCF Dosyası Yükle")
@@ -7349,7 +7349,7 @@ def render_variant_analysis(components):
         )
         
         if uploaded_vcf is not None:
-            if st.button("🔬 Varyantları Analiz Et", type="primary"):
+            if st.button("Varyantları Analiz Et", type="primary"):
                 with st.spinner("VCF dosyası okunuyor..."):
                     try:
                         variants_df, metrics = read_vcf_from_streamlit(uploaded_vcf)
@@ -7357,7 +7357,7 @@ def render_variant_analysis(components):
                         st.session_state['loaded_variants'] = variants_df
                         st.session_state['variant_metrics'] = metrics
                         
-                        st.success(f"✅ {metrics['total_variants']:,} varyant yüklendi!")
+                        st.success(f"{metrics['total_variants']:,} varyant yüklendi!")
                         
                         col1, col2, col3, col4 = st.columns(4)
                         with col1:
@@ -7369,27 +7369,27 @@ def render_variant_analysis(components):
                         with col4:
                             st.metric("PASS", f"{metrics['pass_variants']:,}")
                         
-                        st.markdown("### 📋 İlk 100 Varyant")
+                        st.markdown("### İlk 100 Varyant")
                         st.dataframe(variants_df.head(100), use_container_width=True)
                         
                     except Exception as e:
-                        st.error(f"❌ Hata: {str(e)}")
+                        st.error(f"Hata: {str(e)}")
     
     with tab2:
-        st.markdown("### 🧪 Demo Varyant Verisi Oluştur")
+        st.markdown("### Demo Varyant Verisi Oluştur")
         
         n_variants = st.slider("Varyant Sayısı", 100, 5000, 1000)
         
-        if st.button("🧬 Demo Veri Oluştur", type="primary", key="demo_vcf"):
+        if st.button("Demo Veri Oluştur", type="primary", key="demo_vcf"):
             with st.spinner("Demo varyantlar oluşturuluyor..."):
                 demo_variants = create_demo_vcf_data(n_variants)
                 st.session_state['loaded_variants'] = demo_variants
                 
-                st.success(f"✅ {len(demo_variants):,} demo varyant oluşturuldu!")
+                st.success(f"{len(demo_variants):,} demo varyant oluşturuldu!")
                 st.dataframe(demo_variants.head(50), use_container_width=True)
     
     with tab3:
-        st.markdown("### 📊 Maliyet Hesaplayıcı")
+        st.markdown("### Maliyet Hesaplayıcı")
         
         n_samples = st.number_input("Örnek Sayısı", min_value=1, max_value=1000, value=100)
         
@@ -7416,10 +7416,10 @@ def render_variant_analysis(components):
                      delta=f"-{cost_comparison['savings_percent']:.0f}%")
         
         st.success(f"💰 **Tasarruf:** {cost_comparison['savings']:,} TL (%{cost_comparison['savings_percent']:.0f})")
-        st.info(f"📊 **Impute Edilen Varyant:** ~{cost_comparison['imputed_variants']:,}")
+        st.info(f"**Impute Edilen Varyant:** ~{cost_comparison['imputed_variants']:,}")
     
     with tab4:
-        st.markdown("### 🎯 Bağımlılık Genleri Panel Tasarımı")
+        st.markdown("### Bağımlılık Genleri Panel Tasarımı")
         
         panel_designer = TargetedSequencingPanel()
         
@@ -7461,13 +7461,13 @@ def render_variant_analysis(components):
 def render_pharmacogenomics(components):
     """Render pharmacogenomics analysis interface"""
     
-    st.markdown("## 💊 Farmakogenomik Analizi")
+    st.markdown("## Farmakogenomik Analizi")
     st.markdown("""
     Genetik varyantlara dayalı ilaç yanıtı tahmini. CPIC kılavuzlarına uygun 
     kişiselleştirilmiş ilaç önerileri.
     """)
     
-    tab1, tab2, tab3 = st.tabs(["🧬 Analiz", "💉 İlaç Dozajı", "⚠️ Bağımlılık Riski"])
+    tab1, tab2, tab3 = st.tabs(["Analiz", "💉 İlaç Dozajı", "Bağımlılık Riski"])
     
     with tab1:
         st.markdown("### Farmakogenomik Profil")
@@ -7475,7 +7475,7 @@ def render_pharmacogenomics(components):
         if 'loaded_variants' in st.session_state:
             variants_df = st.session_state['loaded_variants']
             
-            if st.button("🔬 Farmakogenomik Analiz", type="primary"):
+            if st.button("Farmakogenomik Analiz", type="primary"):
                 with st.spinner("Farmakogenomik profil oluşturuluyor..."):
                     annotator = VariantAnnotator()
                     annotated_df = annotator.annotate(variants_df)
@@ -7486,9 +7486,9 @@ def render_pharmacogenomics(components):
                     st.session_state['pgx_results'] = pgx_results
                     st.session_state['annotated_variants'] = annotated_df
                     
-                    st.success("✅ Farmakogenomik analiz tamamlandı!")
+                    st.success("Farmakogenomik analiz tamamlandı!")
                     
-                    st.markdown("### 💊 Opioid Metabolizması")
+                    st.markdown("### Opioid Metabolizması")
                     opioid = pgx_results['opioid']
                     col1, col2 = st.columns(2)
                     with col1:
@@ -7499,7 +7499,7 @@ def render_pharmacogenomics(components):
                     if opioid['recommendations']:
                         st.markdown("#### İlaç Önerileri")
                         for rec in opioid['recommendations']:
-                            with st.expander(f"💊 {rec['drug']}", expanded=True):
+                            with st.expander(f"{rec['drug']}", expanded=True):
                                 st.markdown(f"""
                                 - **Gen:** {rec['gene']}
                                 - **Fenotip:** {rec['phenotype']}
@@ -7538,13 +7538,13 @@ def render_pharmacogenomics(components):
              "Poor Metabolizer (PM)", "Ultrarapid Metabolizer (UM)"]
         )
         
-        if st.button("📊 Doz Hesapla"):
+        if st.button("Doz Hesapla"):
             dose_info = calculator.calculate_adjusted_dose(drug, phenotype)
             
             if 'error' in dose_info:
                 st.error(dose_info['error'])
             elif 'recommendation' in dose_info and 'AVOID' in dose_info['recommendation']:
-                st.error(f"⚠️ **{dose_info['recommendation']}**")
+                st.error(f"**{dose_info['recommendation']}**")
                 st.warning(dose_info['reason'])
             else:
                 col1, col2, col3 = st.columns(3)
@@ -7558,12 +7558,12 @@ def render_pharmacogenomics(components):
                 st.info(f"**Kullanım:** {dose_info['frequency']}")
     
     with tab3:
-        st.markdown("### ⚠️ Genetik Bağımlılık Riski")
+        st.markdown("### Genetik Bağımlılık Riski")
         
         if 'loaded_variants' in st.session_state:
             variants_df = st.session_state['loaded_variants']
             
-            if st.button("🧬 Risk Hesapla", type="primary"):
+            if st.button("Risk Hesapla", type="primary"):
                 risk_calc = AddictionRiskCalculator()
                 risk_result = risk_calc.calculate_risk(variants_df)
                 
@@ -7586,21 +7586,21 @@ def render_pharmacogenomics(components):
 def render_polygenic_risk(components):
     """Render advanced polygenic risk score analysis interface with user guide"""
     
-    st.markdown("## 📊 Gelişmiş Poligenik Risk Skoru (PRS) Analizi")
+    st.markdown("## Gelişmiş Poligenik Risk Skoru (PRS) Analizi")
     
-    with st.expander("📖 **BAŞLAMADAN ÖNCE OKUYUN** - Kolay Kullanım Rehberi", expanded=False):
+    with st.expander("**BAŞLAMADAN ÖNCE OKUYUN** - Kolay Kullanım Rehberi", expanded=False):
         st.markdown("""
-        ### 🎯 Bu Sayfa Ne İşe Yarar?
+        ### Bu Sayfa Ne İşe Yarar?
         
         **Basit Açıklama:** DNA'nızdaki binlerce küçük farklılığa bakarak, belirli hastalıklara 
         veya özelliklere genetik olarak ne kadar yatkın olduğunuzu hesaplıyoruz.
         
         ---
         
-        ### 📋 Adım Adım Nasıl Kullanılır?
+        ### Adım Adım Nasıl Kullanılır?
         
         **1️⃣ ADIM: Varyant Verisi Yükleyin**
-        - Sol menüden "🧬 Varyant Analizi" sayfasına gidin
+        - Sol menüden "Varyant Analizi" sayfasına gidin
         - VCF dosyanızı yükleyin VEYA "Demo Veri Oluştur" butonuna tıklayın
         - Bu adım tamamlanmadan PRS hesaplanamaz
         
@@ -7618,7 +7618,7 @@ def render_polygenic_risk(components):
         
         ---
         
-        ### 🔬 Bilimsel Arka Plan (Merak Edenler İçin)
+        ### Bilimsel Arka Plan (Merak Edenler İçin)
         
         **PRS Nedir?**
         - Poligenik Risk Skoru, birçok genin küçük etkilerinin toplamıdır
@@ -7635,41 +7635,41 @@ def render_polygenic_risk(components):
         
         ---
         
-        ### ⚠️ Önemli Uyarılar
+        ### Önemli Uyarılar
         
-        ❌ **Genetik risk = Kader DEĞİLDİR!**
+        **Genetik risk = Kader DEĞİLDİR!**
         - Yüksek risk = Kesin hasta olacaksınız demek değil
         - Düşük risk = Asla hasta olmayacaksınız demek değil
         
-        ✅ **Çevresel faktörler çok önemli:**
+        **Çevresel faktörler çok önemli:**
         - Yaşam tarzı, stres, sosyal destek
         - Erken müdahale riski azaltabilir
         
-        🏥 **Klinik kararlar için:**
+        **Klinik kararlar için:**
         - Bu sonuçlar yalnızca bilgilendirme amaçlıdır
         - Tıbbi kararlar için mutlaka uzman görüşü alın
         """)
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 PRS Hesaplama",
-        "🎯 Detaylı Varyant Analizi", 
-        "🔗 Entegre Risk",
-        "📚 Veri Kaynakları",
-        "🧬 Gen Sistemleri"
+        "PRS Hesaplama",
+        "Detaylı Varyant Analizi", 
+        "Entegre Risk",
+        "Veri Kaynakları",
+        "Gen Sistemleri"
     ])
     
     with tab1:
-        st.markdown("### 📊 Çoklu-Özellik PRS Hesaplama")
+        st.markdown("### Çoklu-Özellik PRS Hesaplama")
         
         col_status, col_action = st.columns([2, 1])
         
         with col_status:
             if 'loaded_variants' in st.session_state:
                 n_variants = len(st.session_state['loaded_variants'])
-                st.success(f"✅ Veri Hazır: {n_variants:,} varyant yüklü")
+                st.success(f"Veri Hazır: {n_variants:,} varyant yüklü")
             else:
-                st.warning("⚠️ Varyant verisi yüklenmemiş")
-                st.info("👉 Sol menüden '🧬 Varyant Analizi' sayfasına gidip veri yükleyin veya demo veri oluşturun")
+                st.warning("Varyant verisi yüklenmemiş")
+                st.info("👉 Sol menüden 'Varyant Analizi' sayfasına gidip veri yükleyin veya demo veri oluşturun")
         
         with col_action:
             if 'loaded_variants' not in st.session_state:
@@ -7690,11 +7690,11 @@ def render_polygenic_risk(components):
             
             trait_options = {
                 'alcohol_dependence': '🍺 Alkol Bağımlılığı',
-                'opioid_dependence': '💊 Opioid Bağımlılığı',
+                'opioid_dependence': 'Opioid Bağımlılığı',
                 'nicotine_dependence': '🚬 Nikotin Bağımlılığı',
                 'cocaine_dependence': '❄️ Kokain Bağımlılığı',
                 'cannabis_use_disorder': '🌿 Esrar Kullanım Bozukluğu',
-                'general_addiction_liability': '⚠️ Genel Bağımlılık Eğilimi'
+                'general_addiction_liability': 'Genel Bağımlılık Eğilimi'
             }
             
             selected_traits = st.multiselect(
@@ -7705,7 +7705,7 @@ def render_polygenic_risk(components):
             )
             
             if selected_traits:
-                if st.button("📊 Poligenik Risk Skorlarını Hesapla", type="primary", use_container_width=True):
+                if st.button("Poligenik Risk Skorlarını Hesapla", type="primary", use_container_width=True):
                     with st.spinner("Gelişmiş PRS analizi çalışıyor..."):
                         results = {}
                         for trait in selected_traits:
@@ -7716,10 +7716,10 @@ def render_polygenic_risk(components):
                         st.session_state['advanced_prs_results'] = results
                         st.session_state['composite_prs'] = composite
                         
-                        st.success("✅ PRS analizi tamamlandı!")
+                        st.success("PRS analizi tamamlandı!")
                         
                         st.markdown("---")
-                        st.markdown("### 📈 Sonuçlar")
+                        st.markdown("### Sonuçlar")
                         
                         st.markdown("#### Birleşik Risk Değerlendirmesi")
                         col1, col2, col3 = st.columns(3)
@@ -7760,7 +7760,7 @@ def render_polygenic_risk(components):
                                         st.markdown(f"- {rec}")
     
     with tab2:
-        st.markdown("### 🎯 Risk Varyantları Detay Görünümü")
+        st.markdown("### Risk Varyantları Detay Görünümü")
         
         if 'advanced_prs_results' in st.session_state:
             results = st.session_state['advanced_prs_results']
@@ -7798,16 +7798,16 @@ def render_polygenic_risk(components):
             st.info("⬆️ Önce 'PRS Hesaplama' sekmesinden analiz yapın.")
     
     with tab3:
-        st.markdown("### 🔗 Entegre Genetik-Epigenetik Risk Modeli")
+        st.markdown("### Entegre Genetik-Epigenetik Risk Modeli")
         
         st.markdown("""
         Bu modül, genetik (PRS) ve epigenetik (yaş ivmelenmesi) verileri birleştirerek 
         kapsamlı bir risk değerlendirmesi sunar.
         
         **Risk Bileşenleri:**
-        - 🧬 Genetik (PRS): %40 ağırlık
+        - Genetik (PRS): %40 ağırlık
         - ⏰ Epigenetik (EAA): %30 ağırlık
-        - 🏥 Klinik/Çevresel: %30 ağırlık
+        - Klinik/Çevresel: %30 ağırlık
         """)
         
         has_variants = 'loaded_variants' in st.session_state
@@ -7816,14 +7816,14 @@ def render_polygenic_risk(components):
         col1, col2 = st.columns(2)
         with col1:
             if has_variants:
-                st.success("✅ Varyant verisi hazır")
+                st.success("Varyant verisi hazır")
             else:
-                st.error("❌ Varyant verisi yok")
+                st.error("Varyant verisi yok")
         with col2:
             if has_eaa:
-                st.success("✅ Epigenetik yaş verisi hazır")
+                st.success("Epigenetik yaş verisi hazır")
             else:
-                st.warning("⚠️ Epigenetik yaş verisi yok (opsiyonel)")
+                st.warning("Epigenetik yaş verisi yok (opsiyonel)")
         
         if has_variants:
             st.markdown("---")
@@ -7837,7 +7837,7 @@ def render_polygenic_risk(components):
                 age_onset = st.number_input("Başlangıç yaşı", 10, 60, 25)
                 polysubstance = st.checkbox("Çoklu madde kullanımı")
             
-            if st.button("🔬 Entegre Risk Hesapla", type="primary", use_container_width=True):
+            if st.button("Entegre Risk Hesapla", type="primary", use_container_width=True):
                 with st.spinner("Çok-omik risk modeli çalıştırılıyor..."):
                     from modules.advanced_prs import IntegratedGenomicEpigeneticRisk
                     
@@ -7856,7 +7856,7 @@ def render_polygenic_risk(components):
                         variants_df, eaa_data, clinical_data
                     )
                     
-                    st.success("✅ Entegre risk analizi tamamlandı!")
+                    st.success("Entegre risk analizi tamamlandı!")
                     
                     st.markdown("### Entegre Risk Değerlendirmesi")
                     
@@ -7885,7 +7885,7 @@ def render_polygenic_risk(components):
                         st.markdown(f"- {rec}")
     
     with tab4:
-        st.markdown("### 📚 GWAS Veri Kaynakları")
+        st.markdown("### GWAS Veri Kaynakları")
         
         from modules.advanced_prs import get_gwas_sources_summary
         
@@ -7910,7 +7910,7 @@ def render_polygenic_risk(components):
         """)
     
     with tab5:
-        st.markdown("### 🧬 Bağımlılık-İlişkili Gen Sistemleri")
+        st.markdown("### Bağımlılık-İlişkili Gen Sistemleri")
         
         from modules.variant_data_sources import VariantDataSourceManager
         
@@ -7919,7 +7919,7 @@ def render_polygenic_risk(components):
         st.dataframe(genes_df, use_container_width=True)
         
         total_genes = len(manager.get_all_addiction_genes())
-        st.success(f"📊 Toplam {total_genes} bağımlılık-ilişkili gen analiz edilmektedir")
+        st.success(f"Toplam {total_genes} bağımlılık-ilişkili gen analiz edilmektedir")
         
         st.markdown("---")
         st.markdown("### 💰 Maliyet Tasarruf Hesaplayıcı")
@@ -7938,7 +7938,7 @@ def render_polygenic_risk(components):
                      delta=f"-{cost_result['savings_percent']:.0f}%")
         
         st.success(f"💰 **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
-        st.info(f"📊 **İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
+        st.info(f"**İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
     
     render_update_badge()
 
