@@ -630,9 +630,9 @@ def render_main_header():
     with col1:
         st.markdown("""
         <div class="unodc-page-header-box">
-            <h1 class="unodc-page-title-text">EpiClock v4.0 - DNA Metilasyon Analiz Platformu</h1>
+            <h1 class="unodc-page-title-text">EpiClock v4.0 - Bagimlilikla Mucadele DNA Analiz Platformu</h1>
             <p class="unodc-page-subtitle-text">
-                Epigenetik yas hesaplama, madde tespiti, adli analiz ve klinik karar destek sistemi
+                Madde bagimliliginin biyolojik etkilerini DNA metilasyonu ile tespit eden epigenetik yas analiz sistemi
             </p>
         </div>
         """, unsafe_allow_html=True)
