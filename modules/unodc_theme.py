@@ -569,33 +569,38 @@ def render_main_header():
         gap: 8px;
     }
     .unodc-btn-primary {
-        background: #0050A0;
-        color: white;
-        border: 1px solid #0050A0;
-        padding: 6px 14px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 500;
+        background: #0050A0 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #0050A0 !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
         cursor: pointer;
         transition: all 0.2s;
+        display: inline-block;
+        text-align: center;
+        letter-spacing: 0.02em;
     }
     .unodc-btn-primary:hover {
-        background: #003D7A;
+        background: #003D7A !important;
     }
     .unodc-btn-secondary {
-        background: white;
-        color: #475569;
-        border: 1px solid #CBD5E1;
-        padding: 6px 14px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 500;
+        background: #FFFFFF !important;
+        color: #334155 !important;
+        border: 1px solid #CBD5E1 !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
         cursor: pointer;
         transition: all 0.2s;
+        display: inline-block;
+        text-align: center;
     }
     .unodc-btn-secondary:hover {
-        border-color: #0050A0;
-        color: #0050A0;
+        border-color: #0050A0 !important;
+        color: #0050A0 !important;
     }
     </style>
     <div class="unodc-page-header">
