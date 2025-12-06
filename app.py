@@ -197,6 +197,7 @@ from modules.unodc_theme import (
     render_str_tab,
     UNODC_COLORS
 )
+from modules.dna_upload_analysis import render_dna_upload_analysis_page
 from modules.cpg_database import (
     get_total_cpg_statistics,
     get_substance_cpg_panel,
@@ -3127,6 +3128,15 @@ def main():
     if st.session_state['current_page'] == 'analysis_detail':
         render_analysis_detail_page()
         return
+    
+    if st.session_state['current_page'] == 'dna_upload':
+        render_dna_upload_analysis_page()
+        return
+    
+    if st.session_state.get('show_upload_modal', False):
+        st.session_state['current_page'] = 'dna_upload'
+        st.session_state['show_upload_modal'] = False
+        st.rerun()
     
     if "Ana Sayfa" in analysis_mode:
         render_home_page(components)

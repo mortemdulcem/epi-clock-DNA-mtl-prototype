@@ -1,0 +1,265 @@
+Aşağıda, az önceki DNA veri yükleme + analiz + çıktı alma sayfasıyla bire bir uyumlu,
+
+Flask backend iskeleti veriyorum:
+
+/api/upload-dna → dosya yükleme & dataset kaydetme
+/api/run-epiclock → modeli çalıştırma (senin epi-clock koduna bağlanacak)
+/api/export-epiclock → çıktı / rapor üretme veya link döndürme
+Ben “iskele” yaptım; sen sadece TODO yerlerine kendi proje fonksiyonlarını bağlayacaksın.
+
+1. Flask Proje İskeleti
+Önerilen basit yapı:
+
+Kopyala
+epi_clock_app/
+├─ app.py                    # Flask ana dosya
+├─ epi_core/
+│  ├─ __init__.py
+│  ├─ model.py               # model yükleme & tahmin fonksiyonları (senin kodun)
+│  ├─ preprocessing.py       # dosya okuma, preprocess (isteğe bağlı)
+│  └─ reporting.py           # rapor üretme (pdf/csv vs.)
+├─ uploads/                  # DNA veri dosyaları buraya
+├─ runs/                     # analiz run bilgileri
+└─ reports/                  # üretilen rapor / çıktı dosyaları
+Aşağıdaki app.py bu yapıyı varsayacak şekilde yazıldı ama
+
+istersen tek dosyada da tutabilirsin.
+
+2. app.py – DNA Upload / Run / Export Endpoint İskeleti
+Kopyala
+```python
+import os
+import uuid
+from datetime import datetime
+from flask import Flask, request, jsonify, send_from_directory
+
+# İsteğe göre kendi modüllerini buradan import edersin
+# from epi_core.model import load_model, predict_on_dataset
+# from epi_core.preprocessing import load_and_preprocess
+# from epi_core.reporting import generate_report
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+RUNS_DIR = os.path.join(BASE_DIR, "runs")
+REPORTS_DIR = os.path.join(BASE_DIR, "reports")
+
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(RUNS_DIR, exist_ok=True)
+os.makedirs(REPORTS_DIR, exist_ok=True)
+
+app = Flask(__name__)
+
+# TODO: Modeli burada yükleyebilirsin (örnek)
+# model = load_model("checkpoints/mtl_model.pth")
+
+# Basit in-memory "veri seti" ve "run" kayıtları (gerçekte DB kullanmak daha sağlıklı)
+DATASETS = {}
+RUNS = {}
+
+
+@app.route("/api/upload-dna", methods=["POST"])
+def upload_dna():
+    """
+    DNA veri dosyasını karşıya yükler.
+    Frontend: dna-upload-form (FormData, multipart/form-data)
+    Beklenen alanlar:
+      - dataset_name (text)
+      - data_type (select)
+      - dna_file (file)
+    """
+    dataset_name = request.form.get("dataset_name") or f"dataset_{uuid.uuid4().hex[:8]}"
+    data_type = request.form.get("data_type") or "beta_matrix"
+    file = request.files.get("dna_file")
+
+    if not file:
+        return jsonify({"error": "dna_file zorunludur"}), 400
+
+    # Dosya ismini güvenli hale getir (basit örnek)
+    original_filename = file.filename
+    ext = os.path.splitext(original_filename)[1]
+    dataset_id = f"{dataset_name}_{uuid.uuid4().hex[:6]}"
+    saved_filename = f"{dataset_id}{ext}"
+    saved_path = os.path.join(UPLOAD_DIR, saved_filename)
+
+    file.save(saved_path)
+
+    # Burada istersen hemen preprocessing çalıştırabilirsin:
+    # processed_path = load_and_preprocess(saved_path, data_type=data_type)
+
+    # Basit kayıt
+    DATASETS[dataset_id] = {
+        "id": dataset_id,
+        "name": dataset_name,
+        "data_type": data_type,
+        "original_filename": original_filename,
+        "saved_path": saved_path,
+        # "processed_path": processed_path,
+        "uploaded_at": datetime.now().isoformat()
+    }
+
+    return jsonify({
+        "message": "Yükleme başarılı",
+        "dataset_id": dataset_id,
+        "data_type": data_type
+    }), 200
+
+
+@app.route("/api/run-epiclock", methods=["POST"])
+def run_epiclock():
+    """
+    Yüklenmiş veri seti üzerinde epigenetik yaş analizini başlatır.
+    Frontend: run-analysis-form (JSON)
+    Beklenen JSON:
+      {
+        "dataset_id": "...",
+        "model_version": "mtl_v1",
+        "run_mode": "single" | "batch",
+        "max_epochs": "100" (opsiyonel, str gelir),
+        "seed": "42" (opsiyonel)
+      }
+    """
+    data = request.get_json(force=True)  # hata durumunda 400 döner
+
+    dataset_id = data.get("dataset_id")
+    model_version = data.get("model_version", "mtl_v1")
+    run_mode = data.get("run_mode", "single")
+    max_epochs = data.get("max_epochs")
+    seed = data.get("seed")
+
+    if not dataset_id:
+        return jsonify({"error": "dataset_id zorunludur"}), 400
+
+    if dataset_id not in DATASETS:
+        return jsonify({"error": f"dataset_id bulunamadı: {dataset_id}"}), 404
+
+    # Burada model parametrelerini kullanarak gerçek çalıştırmayı yaparsın.
+    # Örneğin:
+    # ds_info = DATASETS[dataset_id]
+    # result = predict_on_dataset(model, ds_info["processed_path"] veya ["saved_path"], run_mode, ...)
+    # Ben burada DEMO sonuç oluşturuyorum:
+
+    run_id = f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:4]}"
+    run_record = {
+        "id": run_id,
+        "dataset_id": dataset_id,
+        "model_version": model_version,
+        "run_mode": run_mode,
+        "max_epochs": max_epochs,
+        "seed": seed,
+        "started_at": datetime.now().isoformat(),
+        "status": "completed",  # gerçek sistemde "running" → "completed"
+        "result": {
+            "sample_count": 100,  # örnek
+            "global_mae": 3.2,
+            "global_rmse": 4.5,
+            # Buraya epi-clock sonuç özetlerini koyarsın
+        }
+    }
+
+    # Run bilgisini kaydet
+    RUNS[run_id] = run_record
+
+    # İstersen burada anında bir özet JSON/CSV de üretebilirsin.
+    run_meta_path = os.path.join(RUNS_DIR, f"{run_id}.json")
+    import json
+    with open(run_meta_path, "w", encoding="utf-8") as f:
+        json.dump(run_record, f, ensure_ascii=False, indent=2)
+
+    return jsonify({
+        "message": "Analiz başlatıldı / tamamlandı (DEMO)",
+        "run_id": run_id,
+        "status": run_record["status"],
+        "summary": run_record["result"]
+    }), 200
+
+
+@app.route("/api/export-epiclock", methods=["POST"])
+def export_epiclock():
+    """
+    Analiz çıktısını üretir veya var olan dosyanın linkini döner.
+    Frontend: export-form (JSON)
+    Beklenen JSON:
+      {
+        "run_id": "...",
+        "export_type": "summary_json" | "full_csv" | "report_pdf" | "report_html"
+      }
+    """
+    data = request.get_json(force=True)
+    run_id = data.get("run_id")
+    export_type = data.get("export_type", "summary_json")
+
+    if not run_id:
+        return jsonify({"error": "run_id zorunludur"}), 400
+
+    if run_id not in RUNS:
+        return jsonify({"error": f"run_id bulunamadı: {run_id}"}), 404
+
+    run_info = RUNS[run_id]
+
+    # Çıktı tipi bazlı örnek davranışlar:
+    if export_type == "summary_json":
+        # Basit: run meta'yı JSON olarak döndür
+        return jsonify(run_info), 200
+
+    elif export_type == "full_csv":
+        # TODO: Burada gerçek tam sonuç CSV'sini üreteceksin.
+        # Örnek bir dosya yolu:
+        csv_filename = f"{run_id}_results.csv"
+        csv_path = os.path.join(REPORTS_DIR, csv_filename)
+
+        # Eğer dosya yoksa demo bir CSV oluştur:
+        if not os.path.exists(csv_path):
+          with open(csv_path, "w", encoding="utf-8") as f:
+              f.write("sample_id,chron_age,epi_age,age_acceleration\n")
+              f.write("SAMPLE-001,45,50.3,5.3\n")
+
+        download_url = f"/reports/{csv_filename}"
+        return jsonify({
+            "message": "CSV hazır",
+            "download_url": download_url
+        }), 200
+
+    elif export_type in ("report_pdf", "report_html"):
+        # TODO: Gerçek rapor üretimi (PDF/HTML) için kendi fonksiyonunu kullan.
+        # report_path = generate_report(run_info, format="pdf" veya "html")
+
+        ext = ".pdf" if export_type == "report_pdf" else ".html"
+        report_filename = f"{run_id}_report{ext}"
+        report_path = os.path.join(REPORTS_DIR, report_filename)
+
+        # DEMO: basit bir placeholder dosya oluştur
+        if not os.path.exists(report_path):
+            with open(report_path, "w", encoding="utf-8") as f:
+                f.write(f"Demo report for {run_id} ({export_type})")
+
+        download_url = f"/reports/{report_filename}"
+        return jsonify({
+            "message": "Rapor hazır",
+            "download_url": download_url
+        }), 200
+
+    else:
+        return jsonify({"error": f"desteklenmeyen export_type: {export_type}"}), 400
+
+
+# Rapor / çıktı dosyalarını servis etmek için basit statik route
+@app.route("/reports/<path:filename>")
+def download_report(filename):
+    return send_from_directory(REPORTS_DIR, filename, as_attachment=True)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+Bu kod:
+
+Frontend’te sana verdiğim dna-data-upload-run-export.html ile doğrudan uyumlu:
+/api/upload-dna → FormData ile dosya yükler.
+/api/run-epiclock → JSON ile analiz başlatır (şu an demo olarak “completed”).
+/api/export-epiclock → JSON veya indirilebilir dosya URL’si döndürür.
+Senin yapman gereken:
+
+epi_core/model.py içinde kendi load_model, predict_on_dataset fonksiyonlarını yazmak,
+epi_core/preprocessing.py ile dosya okuma & feature matrix hazırlama,
+epi_core/reporting.py ile PDF/HTML rapor üretimini (istersen) bağlamak,
+Yukarıdaki TODO yerlerinde bunları çağırmak.
