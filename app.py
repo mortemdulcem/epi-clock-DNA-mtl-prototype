@@ -299,6 +299,15 @@ from modules.dna_manufacturing_detection import (
     ManufacturingMethodResult,
     DNAManufacturingAnalysis
 )
+from modules.abuse_method_detection import (
+    AbuseMethodDetectionIntelligence,
+    get_abuse_detection_engine,
+    PRESCRIPTION_DRUG_ABUSE,
+    ABUSE_METHOD_TYPES,
+    STREET_DRUG_PREPARATIONS,
+    AbuseMethodDetectionResult,
+    ComprehensiveAbuseAnalysis
+)
 
 st.set_page_config(
     page_title="EpiClock - DNA Methylation Analysis Platform",
@@ -3077,6 +3086,7 @@ def main():
              "Madde Tespiti ve Sure Tahmini",
              "Yasadisi Uretim Tespiti",
              "DNA Uretim Zekasi",
+             "Istismar Yontemi Zekasi",
              "Chemoinformatics",
              "Veri Disa Aktar",
              "CpG Veritabani",
@@ -3169,6 +3179,8 @@ def main():
         render_illicit_manufacturing(components)
     elif "DNA Uretim Zekasi" in analysis_mode:
         render_dna_manufacturing_intelligence(components)
+    elif "Istismar Yontemi Zekasi" in analysis_mode:
+        render_abuse_method_detection(components)
     elif "Chemoinformatics" in analysis_mode:
         render_cheminformatics(components)
     elif "Veri Disa Aktar" in analysis_mode:
@@ -3947,6 +3959,474 @@ def _display_manufacturing_results(result: DNAManufacturingAnalysis):
             st.markdown("**Yuksek Guvenilirlikli Bulgular:**")
             for finding in forensic['high_confidence_findings']:
                 st.markdown(f"- {finding['finding']} ({finding['confidence']})")
+        
+        st.markdown("**Onerilen Dogrulama Testleri:**")
+        for test in forensic['recommended_confirmatory_tests']:
+            st.markdown(f"- {test}")
+
+
+def render_abuse_method_detection(components):
+    """Kapsamli Madde Istismar Yontemi Tespit Zekasi - nrcdnl94"""
+    import plotly.graph_objects as go
+    
+    st.markdown("## Istismar Yontemi Tespit Zekasi")
+    st.markdown("""
+    **DNA TABANLI MADDE ISTISMAR YONTEMI ANALIZI**
+    
+    Bu modul, DNA metilasyon desenlerinden madde istismar yontemlerini tespit eder:
+    - **Recete ilaci istismari** (Buscopan pirolizi, opioid burun cekme, vb.)
+    - **Istismar yontemi tipleri** (piroliz, insufflasyon, enjeksiyon)
+    - **Sokak ilaci hazirlama** (crack, krokodil, speedball, vb.)
+    
+    **Akademik Kaynaklar:**
+    - Jalali et al. (2014) Substance Use & Misuse - Buscopan Pirolizi
+    - Strano-Rossi et al. (2021) Int J Legal Medicine - Scopolamine Olumu
+    """)
+    
+    engine = get_abuse_detection_engine()
+    stats = engine.get_database_statistics()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Recete Ilaci", stats['prescription_drugs'])
+    with col2:
+        st.metric("Istismar Yontemi", stats['abuse_methods'])
+    with col3:
+        st.metric("Sokak Hazirlama", stats['street_preparations'])
+    with col4:
+        st.metric("CpG Marker", stats['total_cpg_markers'])
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "DNA Analizi",
+        "Recete Ilaci Istismari",
+        "Istismar Yontemleri",
+        "Sokak Ilaci Hazirlama",
+        "Buscopan Pirolizi",
+        "Demo Analiz"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### DNA Verisi Yukle ve Analiz Et")
+        st.markdown("""
+        CpG beta degerlerini iceren DNA metilasyon verinizi yukleyin.
+        Sistem, madde istismar yontemini otomatik olarak tespit edecektir.
+        """)
+        
+        uploaded_file = st.file_uploader(
+            "DNA Metilasyon Verisi (CSV):",
+            type=['csv'],
+            help="CpG site'lari satir, ornekler sutun olacak sekilde",
+            key="abuse_method_upload"
+        )
+        
+        sample_id = st.text_input("Ornek ID:", value="ABUSE_001", key="abuse_sample_id")
+        
+        if uploaded_file:
+            try:
+                cpg_data = pd.read_csv(uploaded_file)
+                st.success(f"Veri yuklendi: {cpg_data.shape[0]} satir, {cpg_data.shape[1]} sutun")
+                
+                if st.button("Istismar Yontemi Analizi Baslat", type="primary", key="abuse_analyze"):
+                    with st.spinner("DNA dizilimi analiz ediliyor..."):
+                        result = engine.analyze_for_abuse_methods(cpg_data, sample_id)
+                        st.session_state['abuse_method_result'] = result
+                    
+                    _display_abuse_method_results(result)
+            except Exception as e:
+                st.error(f"Veri okuma hatasi: {str(e)}")
+        
+        if 'abuse_method_result' in st.session_state:
+            st.markdown("---")
+            st.markdown("### Son Analiz Sonuclari")
+            _display_abuse_method_results(st.session_state['abuse_method_result'])
+    
+    with tabs[1]:
+        st.markdown("### Recete Ilaci Istismar Veritabani")
+        st.markdown("""
+        Yasal ilaclarin yasadisi yontemlerle istismar edildigi durumlar.
+        """)
+        
+        drug_data = []
+        for drug_id, drug_info in PRESCRIPTION_DRUG_ABUSE.items():
+            abuse_method = drug_info.get('abuse_method', 'Bilinmiyor')
+            if isinstance(drug_info.get('abuse_methods'), list):
+                abuse_method = ", ".join(drug_info['abuse_methods'])
+            
+            drug_data.append({
+                "Ilac Adi": drug_info['drug_name'],
+                "Ticari Isimler": ", ".join(drug_info.get('trade_names', [])),
+                "Istismar Yontemi": abuse_method,
+                "CpG Marker": len(drug_info.get('cpg_markers', [])),
+                "Olum Dokumante": "EVET" if drug_info.get('fatality_documented') else "Hayir"
+            })
+        
+        df_drugs = pd.DataFrame(drug_data)
+        st.dataframe(df_drugs, use_container_width=True, height=400)
+        
+        st.markdown("### Ilac Detay Gorunumu")
+        selected_drug = st.selectbox(
+            "Ilac Sec:",
+            list(PRESCRIPTION_DRUG_ABUSE.keys()),
+            format_func=lambda x: PRESCRIPTION_DRUG_ABUSE[x]['drug_name'],
+            key="drug_select"
+        )
+        
+        if selected_drug:
+            drug = PRESCRIPTION_DRUG_ABUSE[selected_drug]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                **Ilac Adi:** {drug['drug_name']}
+                
+                **Ticari Isimler:** {', '.join(drug.get('trade_names', []))}
+                
+                **Aktif Madde:** {drug.get('active_ingredient', 'N/A')}
+                
+                **CAS Numarasi:** {drug.get('cas_number', 'N/A')}
+                """)
+                
+                if drug.get('mechanism'):
+                    st.markdown(f"**Mekanizma:** {drug['mechanism']}")
+            
+            with col2:
+                if drug.get('effects'):
+                    st.markdown("**Etkiler:**")
+                    for effect, prob in drug['effects'].items():
+                        if isinstance(prob, (int, float)):
+                            st.markdown(f"- {effect}: %{prob*100:.0f}")
+                        elif isinstance(prob, dict):
+                            for sub_effect, sub_prob in prob.items():
+                                st.markdown(f"- {sub_effect}: %{sub_prob*100:.0f}")
+                
+                if drug.get('references'):
+                    st.markdown("**Referanslar:**")
+                    for ref in drug['references']:
+                        st.markdown(f"- {ref}")
+    
+    with tabs[2]:
+        st.markdown("### Istismar Yontemi Tipleri")
+        st.markdown("""
+        Farkli madde istismar yontemleri ve DNA uzerindeki etkileri.
+        """)
+        
+        method_data = []
+        for method_id, method_info in ABUSE_METHOD_TYPES.items():
+            method_data.append({
+                "Yontem": method_info['name'],
+                "Absorpsiyon Hizi": method_info.get('absorption_rate', 'N/A'),
+                "Biyoyararlilik": method_info.get('bioavailability', 'N/A'),
+                "Doz Asimi Riski": method_info.get('overdose_risk', 'N/A'),
+                "CpG Marker": len(method_info.get('cpg_signature', []))
+            })
+        
+        df_methods = pd.DataFrame(method_data)
+        st.dataframe(df_methods, use_container_width=True, height=300)
+        
+        selected_method = st.selectbox(
+            "Yontem Sec:",
+            list(ABUSE_METHOD_TYPES.keys()),
+            format_func=lambda x: ABUSE_METHOD_TYPES[x]['name'],
+            key="abuse_method_select"
+        )
+        
+        if selected_method:
+            method = ABUSE_METHOD_TYPES[selected_method]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                **Yontem:** {method['name']}
+                
+                **Aciklama:** {method['description']}
+                
+                **Kimyasal Proses:** {method.get('chemical_process', 'N/A')}
+                
+                **Absorpsiyon Hizi:** {method.get('absorption_rate', 'N/A')}
+                
+                **Biyoyararlilik:** {method.get('bioavailability', 'N/A')}
+                
+                **Doz Asimi Riski:** {method.get('overdose_risk', 'N/A')}
+                """)
+            
+            with col2:
+                st.markdown("**Ornekler:**")
+                for ex in method.get('examples', []):
+                    st.markdown(f"- {ex}")
+                
+                if method.get('cpg_signature'):
+                    st.markdown("**CpG Imzasi:**")
+                    for marker in method['cpg_signature']:
+                        effect_color = "#dc3545" if marker['effect'] == 'hypermethylation' else "#28a745"
+                        st.markdown(f"""
+                        <div style="background: {effect_color}11; padding: 5px; margin: 2px 0; border-radius: 3px;">
+                            <b>{marker['id']}</b> ({marker['gene']}) - 
+                            <span style="color: {effect_color};">{marker['effect']}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+    
+    with tabs[3]:
+        st.markdown("### Sokak Ilaci Hazirlama Yontemleri")
+        st.markdown("""
+        Yasadisi sokak ilaci hazirlama yontemleri ve DNA etkileri.
+        """)
+        
+        prep_data = []
+        for prep_id, prep_info in STREET_DRUG_PREPARATIONS.items():
+            base_drugs = prep_info.get('base_drugs', [prep_info.get('base_drug', '')])
+            if isinstance(base_drugs, str):
+                base_drugs = [base_drugs]
+            
+            prep_data.append({
+                "Isim": prep_info['name'],
+                "Temel Maddeler": ", ".join(base_drugs),
+                "Yontem": prep_info.get('method', 'N/A'),
+                "Tehlike": prep_info.get('danger', 'N/A'),
+                "CpG Marker": len(prep_info.get('cpg_markers', []))
+            })
+        
+        df_preps = pd.DataFrame(prep_data)
+        st.dataframe(df_preps, use_container_width=True, height=300)
+        
+        selected_prep = st.selectbox(
+            "Hazirlama Yontemi Sec:",
+            list(STREET_DRUG_PREPARATIONS.keys()),
+            format_func=lambda x: STREET_DRUG_PREPARATIONS[x]['name'],
+            key="prep_select"
+        )
+        
+        if selected_prep:
+            prep = STREET_DRUG_PREPARATIONS[selected_prep]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                **Isim:** {prep['name']}
+                
+                **Hazirlama:** {prep.get('preparation', 'N/A')}
+                
+                **Yontem:** {prep.get('method', 'N/A')}
+                
+                **TEHLIKE:** {prep.get('danger', 'N/A')}
+                """)
+                
+                if prep.get('tissue_damage'):
+                    st.error(f"DOKU HASARI: {prep['tissue_damage']}")
+            
+            with col2:
+                if prep.get('cpg_markers'):
+                    st.markdown("**CpG Markerlari:**")
+                    for marker in prep['cpg_markers']:
+                        effect_color = "#dc3545" if marker['effect'] == 'hypermethylation' else "#28a745"
+                        st.markdown(f"""
+                        <div style="background: {effect_color}11; padding: 5px; margin: 2px 0; border-radius: 3px;">
+                            <b>{marker['id']}</b> ({marker['gene']}) - 
+                            <span style="color: {effect_color};">{marker['effect']}</span> 
+                            (agirlik: {marker['weight']:.2f})
+                        </div>
+                        """, unsafe_allow_html=True)
+    
+    with tabs[4]:
+        st.markdown("### Buscopan Pirolizi - Detayli Analiz")
+        st.markdown("""
+        **AKADEMIK VAKA CALISMASI: BUSCOPAN (HYOSCINE BUTYLBROMIDE) ISTISMARI**
+        
+        Buscopan tabletleri ezilip yakildiginda, hyoscine butylbromide 160C'de %47 oraninda 
+        **scopolamine**'e donusur. Scopolamine lipofil bir bilesik olup kan-beyin bariyerini gecer.
+        """)
+        
+        buscopan = PRESCRIPTION_DRUG_ABUSE.get('buscopan_pyrolysis', {})
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Piroliz Urun", "Scopolamine")
+            st.metric("Donusum Orani", "%47 (160C)")
+        with col2:
+            st.metric("Etki Suresi", "6 saat")
+            st.metric("Toksik Doz", "14 ng/mL")
+        with col3:
+            st.metric("Olum Vakalari", "Dokumante")
+            st.metric("Risk Grubu", "Mahkumlar, MMT")
+        
+        st.markdown("### Klinik Etkiler")
+        if buscopan.get('effects'):
+            effects_data = []
+            for effect, value in buscopan['effects'].items():
+                if isinstance(value, dict):
+                    for sub, val in value.items():
+                        effects_data.append({"Etki": f"{effect} - {sub}", "Orani": f"%{val*100:.0f}"})
+                else:
+                    effects_data.append({"Etki": effect, "Orani": f"%{value*100:.0f}"})
+            
+            df_effects = pd.DataFrame(effects_data)
+            st.dataframe(df_effects, use_container_width=True)
+        
+        st.markdown("### CpG Markerlari (Antikolinerjik)")
+        if buscopan.get('cpg_markers'):
+            marker_data = []
+            for marker in buscopan['cpg_markers']:
+                marker_data.append({
+                    "CpG ID": marker['id'],
+                    "Gen": marker['gene'],
+                    "Etki": marker['effect'],
+                    "Agirlik": marker['weight']
+                })
+            df_markers = pd.DataFrame(marker_data)
+            st.dataframe(df_markers, use_container_width=True)
+        
+        st.markdown("### Akademik Referanslar")
+        for ref in buscopan.get('references', []):
+            st.markdown(f"- {ref}")
+        
+        st.markdown("### Risk Populasyonlari")
+        for pop in buscopan.get('risk_population', []):
+            st.markdown(f"- {pop}")
+        
+        st.markdown("### Yaygin Bolgeler")
+        for region in buscopan.get('prevalence_regions', []):
+            st.markdown(f"- {region}")
+    
+    with tabs[5]:
+        st.markdown("### Demo Analiz")
+        st.markdown("""
+        Gercek veri olmadan sistemin nasil calistigini gormek icin demo analiz yapin.
+        """)
+        
+        demo_sample_id = st.text_input("Demo Ornek ID:", value="ABUSE_DEMO_001", key="abuse_demo_id")
+        
+        demo_scenario = st.selectbox(
+            "Senaryo Sec:",
+            [
+                "Temiz (Istismar Yok)",
+                "Buscopan Pirolizi",
+                "Opioid Burun Cekme",
+                "Intravenoz Enjeksiyon",
+                "Krokodil Kullanimi",
+                "Speedball Kullanimi",
+                "Purple Drank/Lean"
+            ],
+            key="abuse_scenario"
+        )
+        
+        if st.button("Demo Analiz Calistir", type="primary", key="abuse_demo_btn"):
+            with st.spinner("Demo analiz yapiliyor..."):
+                demo_data = engine.generate_demo_data(demo_sample_id, demo_scenario)
+                result = engine.analyze_for_abuse_methods(demo_data, demo_sample_id)
+                st.session_state['abuse_demo_result'] = result
+            
+            _display_abuse_method_results(result)
+
+
+def _display_abuse_method_results(result: ComprehensiveAbuseAnalysis):
+    """Istismar yontemi analiz sonuclarini goster"""
+    
+    st.markdown("---")
+    st.markdown("### Analiz Ozeti")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        score_color = "#dc3545" if result.overall_abuse_score >= 0.7 else "#ffc107" if result.overall_abuse_score >= 0.5 else "#28a745"
+        st.markdown(f"""
+        <div style="background: {score_color}22; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2em; font-weight: bold; color: {score_color};">
+                {result.overall_abuse_score*100:.1f}%
+            </div>
+            <div style="color: var(--un-gray-600);">Genel Skor</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.metric("Recete Ilaci", len(result.prescription_drug_abuse))
+    with col3:
+        st.metric("Istismar Yontemi", len(result.abuse_methods_detected))
+    with col4:
+        st.metric("Sokak Hazirlama", len(result.street_preparations))
+    
+    st.markdown(f"**Birincil Istismar Tipi:** {result.primary_abuse_type}")
+    st.markdown(f"**Hash Zinciri:** `{result.hash_chain}`")
+    
+    if result.prescription_drug_abuse:
+        st.markdown("### Tespit Edilen Recete Ilaci Istismari")
+        for abuse in result.prescription_drug_abuse:
+            level_color = "#dc3545" if abuse.forensic_significance == "GUCLU - Mahkemede kabul edilebilir" else "#ffc107"
+            
+            with st.expander(f"{abuse.method_name} ({abuse.detection_score*100:.1f}%)"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"""
+                    **Tespit Skoru:** {abuse.detection_score*100:.1f}%
+                    
+                    **Guven:** {abuse.confidence*100:.1f}%
+                    
+                    **Adli Onemi:** {abuse.forensic_significance}
+                    
+                    **Tahmini Sure:** {abuse.estimated_duration}
+                    """)
+                
+                with col2:
+                    if abuse.health_risks:
+                        st.markdown("**Saglik Riskleri:**")
+                        for risk in abuse.health_risks:
+                            if "OLUM" in risk.upper():
+                                st.error(risk)
+                            else:
+                                st.warning(risk)
+    
+    if result.abuse_methods_detected:
+        st.markdown("### Tespit Edilen Istismar Yontemleri")
+        for method in result.abuse_methods_detected:
+            with st.expander(f"{method.method_name} ({method.detection_score*100:.1f}%)"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"""
+                    **Tespit Skoru:** {method.detection_score*100:.1f}%
+                    
+                    **Adli Onemi:** {method.forensic_significance}
+                    
+                    **Tahmini Sure:** {method.estimated_duration}
+                    """)
+                
+                with col2:
+                    st.markdown("**Iliskili Maddeler:**")
+                    for drug in method.detected_drugs[:5]:
+                        st.markdown(f"- {drug}")
+    
+    if result.street_preparations:
+        st.markdown("### Tespit Edilen Sokak Ilaci Hazirlama")
+        for prep in result.street_preparations:
+            with st.expander(f"{prep.method_name} ({prep.detection_score*100:.1f}%)"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"""
+                    **Tespit Skoru:** {prep.detection_score*100:.1f}%
+                    
+                    **Adli Onemi:** {prep.forensic_significance}
+                    """)
+                
+                with col2:
+                    if prep.health_risks:
+                        st.markdown("**Tehlikeler:**")
+                        for risk in prep.health_risks:
+                            st.error(risk)
+    
+    st.markdown("### Klinik Oneriler")
+    for rec in result.clinical_recommendations:
+        st.info(rec)
+    
+    st.markdown("### Adli Ozet")
+    forensic = result.forensic_summary
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Toplam Tespit", forensic['total_detections'])
+        st.markdown(f"**Delil Gucu:** {forensic['evidence_strength']}")
+    
+    with col2:
+        if forensic['high_confidence_findings']:
+            st.markdown("**Yuksek Guvenilirlikli Bulgular:**")
+            for finding in forensic['high_confidence_findings']:
+                st.markdown(f"- {finding}")
         
         st.markdown("**Onerilen Dogrulama Testleri:**")
         for test in forensic['recommended_confirmatory_tests']:

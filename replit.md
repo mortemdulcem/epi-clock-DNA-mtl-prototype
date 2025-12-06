@@ -101,6 +101,15 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-06: NEW MODULE - Istismar Yontemi Tespit Zekasi (Abuse Method Detection Intelligence)
+  - Akademik arastirmalardan derlenen recete ilaci istismar veritabani
+  - 10 recete ilaci istismar turu (Buscopan, Oxycodone, Fentanyl, Benzodiazepinler, vb.)
+  - 6 istismar yontemi tipi (piroliz, burun cekme, enjeksiyon, sublingual, rektal, transdermal)
+  - 8 sokak ilaci hazirlama yontemi (crack, krokodil, speedball, purple drank, vb.)
+  - Buscopan pirolizi detayli analizi (Jalali et al. 2014, Strano-Rossi et al. 2021)
+  - 50+ CpG marker ile istismar yontemi tespiti
+  - Adli delil guc degerlendirmesi ve klinik oneriler
+  - Demo senaryo modlari (Buscopan, Enjeksiyon, Krokodil, vb.)
 - 2024-12-06: NEW MODULE - DNA Uretim Kimyasali Tespit Zekasi (DNA Manufacturing Intelligence)
   - DNA diziliminden yasadisi uretim kimyasallarini taniyan yapay zeka sistemi
   - 10 kimyasal maruziyet turu (efedrin, fosfor, lityum, asetik anhidrit, vb.)
