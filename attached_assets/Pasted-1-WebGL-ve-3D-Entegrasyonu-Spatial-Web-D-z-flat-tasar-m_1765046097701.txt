@@ -1,0 +1,43 @@
+1. WebGL ve 3D Entegrasyonu (Spatial Web)
+Düz (flat) tasarımlar yerini derinliğe bırakıyor.
+
+Nasıl Görünür? Siteye girdiğinde karşına statik bir fotoğraf değil, mouse hareketlerine duyarlı, dönebilen, ışık ve gölge oyunları yapan 3 boyutlu objeler veya ortamlar çıkar.
+Teknoloji: Three.js, React Three Fiber, Spline.
+Hissiyat: Bir web sitesinden ziyade, yüksek kaliteli bir oyunun menüsünde dolaşıyormuşsun hissi verir.
+2. Scrollytelling (Scroll ile Hikaye Anlatımı)
+Kullanıcı sayfayı aşağı kaydırdığında sadece metinler yukarı çıkmaz; bütün sahne değişir.
+
+Nasıl Görünür? Sen scroll yaptıkça bir ürünün parçaları birleşir, bir karakter yürür veya arka plan rengi ve atmosfer tamamen değişir. Scroll çubuğu, bir videonun "oynat" tuşu gibi davranır.
+Teknoloji: GSAP (GreenSock), Framer Motion.
+Hissiyat: Kullanıcıyı pasif bir okuyucudan, aktif bir izleyiciye dönüştürür.
+3. Mikro-Etkileşimler ve "Manyetik" Butonlar
+İleri seviye tasarımlarda hiçbir şey "ölü" değildir.
+
+Nasıl Görünür? Mouse'u bir butonun üzerine getirdiğinde buton hafifçe mouse'a doğru çekilir (manyetik etki). Tıkladığında su dalgası gibi bir efekt yayılır. İmleç (cursor) standart ok işareti değil, üzerine geldiği nesneye göre şekil değiştiren özel bir tasarımdır.
+Hissiyat: Site, kullanıcının varlığının farkındaymış gibi tepki verir.
+4. Bento Grid ve Glassmorphism (Apple Estetiği)
+Karmaşık bilgileri sunmanın en modern yolu.
+
+Nasıl Görünür? İçerikler, Japon yemek kutuları (Bento) gibi farklı boyutlardaki kutucuklara bölünmüştür. Bu kutucuklar genellikle buzlu cam (frosted glass) efektine sahiptir, arkasından geçen renkleri bulanık bir şekilde gösterir.
+Estetik: Temiz, hiyerarşik, fütüristik ve son derece düzenli.
+5. Kinetik Tipografi (Hareketli Yazılar)
+Yazı artık sadece okunmak için değil, tasarımın ana görseli olmak içindir.
+
+Nasıl Görünür? Devasa puntolarla yazılmış başlıklar, sen scroll yaptıkça şekil değiştirir, kayar veya harfler birbirine dönüşür.
+Hissiyat: Cesur, gürültülü ve dikkat çekici.
+Örnek Bir Senaryo: "Geleceğin Web Sitesi"
+Gözünde canlandırman için:
+
+Siteye girersin, yükleme ekranı yoktur (veya çok şık bir geçiş vardır).
+Arka planda karanlık, uzay boşluğunu andıran bir atmosfer ve ortada yüzen, camdan yapılmış 3D bir küre vardır.
+Mouse'u hareket ettirdiğinde küre o yöne döner ve üzerindeki ışık yansımaları (Ray Tracing) gerçek zamanlı değişir.
+Aşağı kaydırdığında küre patlayarak parçalara ayrılır ve bu parçalar ekranın kenarlarına giderek menü öğelerini oluşturur.
+Yazılar standart bir fontla değil, sanki kod yazılıyormuş gibi daktilo efektiyle belirir.
+Sayfalar arası geçişte ekran kararmaz; bir sayfadaki resim "morph"lanarak (şekil değiştirerek) diğer sayfadaki başlığa dönüşür (Seamless Page Transitions).
+Bu Seviyeye Çıkmak İçin Kullanılan Teknolojiler
+Eğer böyle bir şey yaptırmak veya yapmak istiyorsan, anahtar kelimelerin şunlardır:
+
+Framework: Next.js (Hız ve SEO için)
+Animasyon: GSAP (Endüstri standardı), Framer Motion
+3D: Three.js, R3F (React Three Fiber), WebGL
+Tasarım: Figma (Prototip için), Spline (3D modelleme için)

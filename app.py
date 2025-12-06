@@ -281,78 +281,455 @@ apply_unodc_theme()
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
     
-    /* UNODC Theme - UN Blue Professional Background - nrcdnl94 */
+    /* ============================================
+       UNODC/UN PROFESSIONAL THEME v2.0 - nrcdnl94
+       Glassmorphism + Bento Grid + Micro-interactions
+       Based on UN Web Guidelines & WCAG 2.0 AA
+    ============================================ */
+    
+    :root {
+        --un-blue: #009EDB;
+        --un-blue-dark: #005B94;
+        --un-blue-deep: #1A3A5C;
+        --un-blue-light: #4DB8E8;
+        --un-blue-pale: #E6F2FA;
+        --un-gray-100: #F8FAFC;
+        --un-gray-200: #F1F5F9;
+        --un-gray-300: #E2E8F0;
+        --un-gray-400: #CBD5E1;
+        --un-gray-500: #94A3B8;
+        --un-gray-600: #64748B;
+        --un-gray-700: #475569;
+        --un-gray-800: #1E293B;
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.3);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* === MAIN APP BACKGROUND - Gradient Mesh === */
     .stApp {
-        background: linear-gradient(135deg, #F5F7FA 0%, #E8EEF5 100%) !important;
+        background: 
+            radial-gradient(ellipse at 0% 0%, rgba(0, 158, 219, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 100% 0%, rgba(0, 91, 148, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 100% 100%, rgba(77, 184, 232, 0.05) 0%, transparent 50%),
+            linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%) !important;
+        min-height: 100vh;
     }
     
     .main .block-container {
         background: transparent !important;
+        padding: 1.5rem 2rem;
+        max-width: 1400px;
+    }
+    
+    /* === SIDEBAR - Glassmorphism Effect === */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 100%) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(0, 158, 219, 0.2);
+        box-shadow: 4px 0 24px rgba(0, 91, 148, 0.08);
+    }
+    
+    [data-testid="stSidebar"] > div:first-child {
+        background: transparent !important;
         padding-top: 1rem;
     }
     
-    /* Sidebar UNODC Blue Theme - nrcdnl94 */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1A3A5C 0%, #0D2137 100%) !important;
-        border-right: 3px solid #009EDB;
-    }
-    
     [data-testid="stSidebar"] * {
-        color: #FFFFFF !important;
+        color: var(--un-gray-700) !important;
+        font-family: 'Source Sans 3', 'Inter', sans-serif !important;
     }
     
-    [data-testid="stSidebar"] .stSelectbox label {
-        color: #4DB8E8 !important;
-        font-weight: 500;
-    }
-    
-    /* Sidebar Radio Buttons - Readable on dark background - nrcdnl94 */
-    [data-testid="stSidebar"] .stRadio > div > label {
-        color: #FFFFFF !important;
-        background: rgba(0, 158, 219, 0.15) !important;
-        border: 1px solid #009EDB !important;
+    /* Sidebar Logo/Brand Area */
+    [data-testid="stSidebar"] .stMarkdown h1,
+    [data-testid="stSidebar"] .stMarkdown h2 {
+        color: var(--un-blue-dark) !important;
+        font-weight: 700;
+        font-size: 1.1rem;
+        letter-spacing: 0.02em;
+        padding: 0.75rem 1rem;
+        margin: 0 0 0.5rem 0;
+        background: linear-gradient(135deg, var(--un-blue-pale) 0%, rgba(255,255,255,0.8) 100%);
         border-radius: 8px;
-        padding: 0.6rem 1rem;
-        margin: 0.3rem 0;
-        transition: all 0.3s ease;
-        font-weight: 500;
+        border-left: 4px solid var(--un-blue);
     }
     
+    [data-testid="stSidebar"] .stMarkdown h3 {
+        color: var(--un-gray-500) !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        padding: 1rem 0.5rem 0.5rem 0.5rem;
+        margin: 0;
+        border-bottom: 1px solid var(--un-gray-300);
+    }
+    
+    /* === NAVIGATION - Radio Buttons with Micro-interactions === */
+    [data-testid="stSidebar"] .stRadio > div {
+        gap: 2px !important;
+    }
+    
+    [data-testid="stSidebar"] .stRadio > div > label {
+        color: var(--un-gray-600) !important;
+        background: transparent !important;
+        border: none !important;
+        border-left: 3px solid transparent !important;
+        border-radius: 0 8px 8px 0;
+        padding: 0.6rem 0.75rem 0.6rem 1rem;
+        margin: 1px 0.5rem 1px 0;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 400;
+        font-size: 0.88rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Hover - Magnetic Effect Simulation */
     [data-testid="stSidebar"] .stRadio > div > label:hover {
-        background: rgba(0, 158, 219, 0.35) !important;
-        border-color: #4DB8E8 !important;
+        background: linear-gradient(90deg, var(--un-blue-pale) 0%, rgba(255,255,255,0.5) 100%) !important;
+        border-left: 3px solid var(--un-blue-light) !important;
+        color: var(--un-blue-dark) !important;
+        transform: translateX(4px);
+        box-shadow: -4px 0 12px rgba(0, 158, 219, 0.15);
     }
     
-    [data-testid="stSidebar"] .stRadio > div > label > div {
-        color: #FFFFFF !important;
+    /* Active State */
+    [data-testid="stSidebar"] .stRadio > div > label[data-checked="true"],
+    [data-testid="stSidebar"] .stRadio > div > label[aria-checked="true"] {
+        background: linear-gradient(90deg, var(--un-blue-pale) 0%, rgba(230,242,250,0.7) 100%) !important;
+        border-left: 3px solid var(--un-blue) !important;
+        color: var(--un-blue-dark) !important;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0, 158, 219, 0.12);
     }
     
-    [data-testid="stSidebar"] .stRadio > div > label span {
-        color: #FFFFFF !important;
-    }
-    
+    [data-testid="stSidebar"] .stRadio > div > label > div,
+    [data-testid="stSidebar"] .stRadio > div > label span,
     [data-testid="stSidebar"] .stRadio > div > label p {
-        color: #FFFFFF !important;
+        color: inherit !important;
     }
     
-    /* Sidebar selectbox text */
+    /* Sidebar Selectbox */
+    [data-testid="stSidebar"] .stSelectbox label {
+        color: var(--un-gray-500) !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+    }
+    
     [data-testid="stSidebar"] .stSelectbox > div > div {
-        background: rgba(0, 158, 219, 0.15) !important;
-        border: 1px solid #009EDB !important;
-        color: #FFFFFF !important;
+        background: var(--un-gray-100) !important;
+        border: 1px solid var(--un-gray-300) !important;
+        color: var(--un-gray-700) !important;
+        border-radius: 6px;
+        transition: all 0.2s ease;
     }
     
-    [data-testid="stSidebar"] .stSelectbox > div > div > div {
-        color: #FFFFFF !important;
+    [data-testid="stSidebar"] .stSelectbox > div > div:hover {
+        border-color: var(--un-blue) !important;
+        box-shadow: 0 0 0 3px rgba(0, 158, 219, 0.1);
     }
     
-    /* DNA Helix Animation Container */
+    /* === BENTO GRID CARDS - Glassmorphism === */
+    .bento-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-lg);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .bento-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+        border-color: rgba(0, 158, 219, 0.3);
+    }
+    
+    /* === METRIC CARDS - UN Professional === */
+    .metric-card {
+        background: linear-gradient(135deg, #FFFFFF 0%, var(--un-gray-100) 100%);
+        border: 1px solid var(--un-gray-300);
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px;
+        color: var(--un-gray-800);
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .metric-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--un-blue) 0%, var(--un-blue-light) 100%);
+    }
+    
+    .metric-card:hover {
+        border-color: var(--un-blue);
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 158, 219, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--un-blue-dark);
+        line-height: 1.2;
+    }
+    
+    .metric-label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--un-gray-500);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    /* === SECTION HEADERS - UN Style === */
+    .section-header {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--un-blue-dark) !important;
+        border-left: 4px solid var(--un-blue);
+        padding-left: 1rem;
+        margin: 2rem 0 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .section-header::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--un-gray-300), transparent);
+        margin-left: 1rem;
+    }
+    
+    /* === DATA TABLES - Professional UN Style === */
+    .dataframe {
+        border: none !important;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .dataframe thead tr {
+        background: linear-gradient(135deg, var(--un-blue-dark) 0%, var(--un-blue) 100%) !important;
+    }
+    
+    .dataframe thead th {
+        color: #FFFFFF !important;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1rem 0.75rem !important;
+        border: none !important;
+        text-align: left;
+    }
+    
+    .dataframe tbody tr {
+        background: #FFFFFF;
+        transition: all 0.2s ease;
+    }
+    
+    .dataframe tbody tr:nth-child(even) {
+        background: var(--un-gray-100);
+    }
+    
+    .dataframe tbody tr:hover {
+        background: var(--un-blue-pale) !important;
+    }
+    
+    .dataframe tbody td {
+        padding: 0.75rem !important;
+        border-bottom: 1px solid var(--un-gray-200) !important;
+        border-right: none !important;
+        color: var(--un-gray-700);
+        font-size: 0.9rem;
+    }
+    
+    /* === BUTTONS - Micro-interactions === */
+    .stButton > button {
+        background: linear-gradient(135deg, var(--un-blue) 0%, var(--un-blue-dark) 100%) !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 0.02em;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 14px rgba(0, 91, 148, 0.25);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stButton > button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.5s, height 0.5s;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 91, 148, 0.35);
+    }
+    
+    .stButton > button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .stButton > button:active {
+        transform: translateY(0);
+    }
+    
+    /* === INFO BOXES - Glassmorphism === */
+    .info-box {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 158, 219, 0.2);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin: 1rem 0;
+        position: relative;
+    }
+    
+    .info-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--un-blue), var(--un-blue-light));
+        border-radius: 12px 12px 0 0;
+    }
+    
+    /* === EXPANDERS - Clean Style === */
+    .streamlit-expanderHeader {
+        background: var(--un-gray-100) !important;
+        border: 1px solid var(--un-gray-300) !important;
+        border-radius: 8px !important;
+        font-weight: 600;
+        color: var(--un-gray-700) !important;
+        transition: all 0.2s ease;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background: var(--un-blue-pale) !important;
+        border-color: var(--un-blue) !important;
+    }
+    
+    /* === TABS - Modern Style === */
+    .stTabs [data-baseweb="tab-list"] {
+        background: var(--un-gray-100);
+        border-radius: 10px;
+        padding: 4px;
+        gap: 4px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: transparent;
+        border-radius: 6px;
+        color: var(--un-gray-600);
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--un-blue-dark);
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: #FFFFFF !important;
+        color: var(--un-blue-dark) !important;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    /* === ANIMATIONS === */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    /* === HERO HEADER === */
+    .hero-header {
+        font-family: 'Inter', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--un-blue-dark) 0%, var(--un-blue) 50%, var(--un-blue-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+    
+    .hero-subtitle {
+        font-family: 'Source Sans 3', sans-serif;
+        font-size: 1.1rem;
+        color: var(--un-gray-600) !important;
+        text-align: center;
+        margin-bottom: 2rem;
+        font-weight: 400;
+    }
+    
+    /* === DNA ANIMATION - UN Blue === */
     .dna-container {
         position: relative;
         width: 100%;
-        height: 200px;
+        height: 180px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -360,240 +737,123 @@ st.markdown("""
         overflow: hidden;
     }
     
-    .dna-helix {
-        position: relative;
-        width: 300px;
-        height: 180px;
-    }
-    
-    .dna-strand {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .nucleotide {
-        position: absolute;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: #CD853F;
-        box-shadow: 0 0 15px #CD853F, 0 0 30px #D2691E80;
-        animation: pulse 2s ease-in-out infinite;
-    }
-    
-    .nucleotide-pair {
-        position: absolute;
-        height: 3px;
-        background: linear-gradient(90deg, #8B4513, #CD853F, #8B4513);
-        box-shadow: 0 0 8px #CD853F80;
-        transform-origin: left center;
-    }
-    
-    @keyframes dnaRotate {
-        0% { transform: rotateY(0deg); }
-        100% { transform: rotateY(360deg); }
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.8; transform: scale(1.1); }
-    }
-    
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-8px); }
-    }
-    
     .dna-helix-svg {
         animation: float 4s ease-in-out infinite;
+        filter: drop-shadow(0 4px 12px rgba(0, 158, 219, 0.3));
     }
     
-    /* Main Header */
-    .main-header {
-        font-family: 'Inter', sans-serif;
-        font-size: 3rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #5D4037 0%, #8B4513 50%, #5D4037 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-align: center;
-        margin-bottom: 0.5rem;
-        letter-spacing: 2px;
+    /* === SCROLLBAR - Minimal === */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
     }
     
-    .sub-header {
-        font-family: 'Inter', sans-serif;
-        font-size: 1.2rem;
-        color: #5D4037 !important;
-        text-align: center;
-        margin-bottom: 2rem;
-        letter-spacing: 1px;
+    ::-webkit-scrollbar-track {
+        background: var(--un-gray-200);
+        border-radius: 3px;
     }
     
-    /* Metric Cards - Autumn Theme */
-    .metric-card {
-        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
-        border: 2px solid #CD853F;
-        padding: 1.5rem;
-        border-radius: 15px;
-        color: #5D4037;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.15);
-        transition: all 0.3s ease;
+    ::-webkit-scrollbar-thumb {
+        background: var(--un-gray-400);
+        border-radius: 3px;
     }
     
-    .metric-card:hover {
-        border-color: #8B4513;
-        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.25);
-        transform: translateY(-2px);
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--un-blue);
     }
     
-    /* Section Headers */
-    .section-header {
-        font-family: 'Inter', sans-serif;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #5D4037 !important;
-        border-bottom: 2px solid #CD853F;
-        padding-bottom: 0.5rem;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
+    /* === ALERTS - Modern === */
+    .stAlert {
+        border-radius: 10px;
+        border: none;
     }
     
-    /* Info Boxes - Autumn Theme */
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Info Boxes - UN Professional Theme */
     .info-box {
-        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
-        border-left: 4px solid #CD853F;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-left: 4px solid var(--un-blue);
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #3E2723;
-        box-shadow: 0 2px 10px rgba(139, 69, 19, 0.1);
+        color: var(--un-gray-700);
+        box-shadow: var(--shadow-md);
     }
     
     .warning-box {
-        background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%);
-        border-left: 4px solid #D2691E;
+        background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+        border-left: 4px solid #F59E0B;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #8B4513;
+        color: #92400E;
     }
     
     .success-box {
-        background: linear-gradient(135deg, #F5DEB3 0%, #DEB887 100%);
-        border-left: 4px solid #8B4513;
+        background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+        border-left: 4px solid #10B981;
         padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: 1rem 0;
-        color: #5D4037;
+        color: #065F46;
     }
     
-    /* Tabs - Autumn Theme */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: transparent;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
-        border: 1px solid #CD853F80;
-        border-radius: 10px 10px 0 0;
-        padding: 12px 24px;
-        color: #5D4037 !important;
-        transition: all 0.3s ease;
-    }
-    
-    .stTabs [data-baseweb="tab"]:hover {
-        background: linear-gradient(135deg, #FFF8DC 0%, #F5DEB3 100%);
-        border-color: #CD853F;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%) !important;
-        border-color: #8B4513 !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 2px 10px rgba(139, 69, 19, 0.3);
-    }
-    
-    /* Buttons - Autumn Colors */
-    .stButton > button {
-        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%);
-        border: 1px solid #8B4513;
-        color: #FFFFFF;
-        border-radius: 8px;
-        padding: 0.5rem 1.5rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
-    }
-    
-    .stButton > button:hover {
-        background: linear-gradient(135deg, #8B4513 0%, #5D4037 100%);
-        box-shadow: 0 4px 15px rgba(139, 69, 19, 0.35);
-        transform: translateY(-1px);
-    }
-    
-    .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #5D4037 0%, #8B4513 100%);
-        color: #FFFFFF;
-        font-weight: 700;
-    }
-    
-    /* Text Colors - Dark Brown for Readability */
+    /* Text Colors - UN Professional */
     .stMarkdown, .stText, p, span, label {
-        color: #3E2723 !important;
+        color: var(--un-gray-700) !important;
     }
     
     h1, h2, h3, h4, h5, h6 {
-        color: #5D4037 !important;
+        color: var(--un-blue-dark) !important;
     }
     
-    /* DataFrames */
+    /* DataFrames - UN Style */
     .stDataFrame {
         background: #FFFFFF;
-        border: 1px solid #CD853F80;
+        border: 1px solid var(--un-gray-300);
         border-radius: 10px;
     }
     
-    /* Selectbox, Input */
+    /* Selectbox, Input - UN Style */
     .stSelectbox > div > div,
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
     .stTextArea > div > div > textarea {
         background: #FFFFFF !important;
-        border: 1px solid #CD853F !important;
-        color: #3E2723 !important;
+        border: 1px solid var(--un-gray-300) !important;
+        color: var(--un-gray-700) !important;
         border-radius: 8px;
     }
     
-    /* Metrics */
+    .stSelectbox > div > div:focus,
+    .stTextInput > div > div > input:focus,
+    .stNumberInput > div > div > input:focus {
+        border-color: var(--un-blue) !important;
+        box-shadow: 0 0 0 2px rgba(0, 158, 219, 0.1) !important;
+    }
+    
+    /* Metrics - UN Style */
     [data-testid="stMetricValue"] {
-        color: #5D4037 !important;
-        font-family: 'Roboto Mono', monospace;
+        color: var(--un-blue-dark) !important;
+        font-family: 'Inter', sans-serif;
     }
     
     [data-testid="stMetricDelta"] {
-        color: #8B4513 !important;
+        color: var(--un-blue) !important;
     }
     
-    /* Expander */
-    .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DC 100%);
-        border: 1px solid #CD853F80;
-        border-radius: 10px;
-        color: #5D4037 !important;
-    }
-    
-    /* Academic Footer */
+    /* Academic Footer - UN Style */
     .academic-footer {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(180deg, transparent 0%, #5D4037 20%, #5D4037 100%);
+        background: linear-gradient(180deg, transparent 0%, var(--un-blue-dark) 20%, var(--un-blue-dark) 100%);
         padding: 1.5rem 0 1rem 0;
         text-align: center;
         z-index: 1000;
@@ -602,13 +862,13 @@ st.markdown("""
     .academic-credentials {
         font-family: 'Inter', sans-serif;
         font-size: 0.85rem;
-        color: #FFF8DC;
+        color: #FFFFFF;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin: 0;
         padding: 0.5rem;
-        border-top: 1px solid #CD853F;
-        background: linear-gradient(90deg, transparent 0%, #8B451320 50%, transparent 100%);
+        border-top: 1px solid var(--un-blue);
+        background: linear-gradient(90deg, transparent 0%, rgba(0, 158, 219, 0.2) 50%, transparent 100%);
     }
     
     .credential-line {
@@ -617,114 +877,98 @@ st.markdown("""
     }
     
     .credential-title {
-        color: #FFE4B5;
+        color: var(--un-blue-light);
         font-weight: 600;
     }
     
     .credential-degree {
-        color: #F5DEB3;
+        color: var(--un-blue-pale);
         font-weight: 500;
     }
     
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: #FFF8DC;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: #CD853F;
-        border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: #8B4513;
-    }
-    
-    /* Radio buttons */
-    .stRadio > div {
+    /* Radio buttons - UN Style (main content area) */
+    .main .stRadio > div {
         background: transparent;
     }
     
-    .stRadio > div > label {
-        color: #3E2723 !important;
+    .main .stRadio > div > label {
+        color: var(--un-gray-700) !important;
         background: #FFFFFF;
-        border: 1px solid #CD853F80;
+        border: 1px solid var(--un-gray-300);
         border-radius: 8px;
         padding: 0.5rem 1rem;
         margin: 0.25rem 0;
         transition: all 0.3s ease;
     }
     
-    .stRadio > div > label:hover {
-        border-color: #CD853F;
-        background: #FFF8DC;
+    .main .stRadio > div > label:hover {
+        border-color: var(--un-blue);
+        background: var(--un-blue-pale);
     }
     
-    /* Slider */
+    /* Slider - UN Style */
     .stSlider > div > div > div {
-        background: #CD853F !important;
+        background: var(--un-blue) !important;
     }
     
-    /* Multiselect */
+    /* Multiselect - UN Style */
     .stMultiSelect > div > div {
         background: #FFFFFF !important;
-        border-color: #CD853F !important;
+        border-color: var(--un-gray-300) !important;
     }
     
-    /* Progress bar */
+    .stMultiSelect > div > div:hover {
+        border-color: var(--un-blue) !important;
+    }
+    
+    /* Progress bar - UN Style */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #CD853F 0%, #8B4513 100%);
+        background: linear-gradient(90deg, var(--un-blue) 0%, var(--un-blue-dark) 100%);
     }
     
-    /* Code blocks */
+    /* Code blocks - UN Style */
     .stCodeBlock {
-        background: #FFF8DC !important;
-        border: 1px solid #CD853F80;
+        background: var(--un-gray-100) !important;
+        border: 1px solid var(--un-gray-300);
+        border-radius: 8px;
     }
     
     code {
-        color: #5D4037 !important;
-        background: #FFF8DC !important;
-    }
-    
-    /* Alerts */
-    .stAlert {
-        background: #FFFFFF;
-        border: 1px solid #CD853F;
-        border-radius: 10px;
+        color: var(--un-blue-dark) !important;
+        background: var(--un-gray-100) !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 def render_dna_helix_animation():
-    """Render animated DNA helix with autumn color theme"""
+    """Render animated DNA helix with UN Blue professional theme - nrcdnl94"""
     st.markdown('''
     <div class="dna-container">
         <svg class="dna-helix-svg" viewBox="0 0 200 150" width="350" height="200">
             <defs>
                 <filter id="glow">
-                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
                     <feMerge>
                         <feMergeNode in="coloredBlur"/>
                         <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                 </filter>
-                <linearGradient id="autumnGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:#CD853F;stop-opacity:0.9" />
-                    <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+                <linearGradient id="unBlueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#005B94;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#009EDB;stop-opacity:0.95" />
+                    <stop offset="100%" style="stop-color:#005B94;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="unBlueGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#4DB8E8;stop-opacity:0.9" />
+                    <stop offset="50%" style="stop-color:#009EDB;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#4DB8E8;stop-opacity:0.9" />
                 </linearGradient>
             </defs>
             
             <!-- DNA Strand 1 -->
             <g filter="url(#glow)">
                 <path d="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20" 
-                      stroke="url(#autumnGradient)" stroke-width="3" fill="none">
+                      stroke="url(#unBlueGradient)" stroke-width="3" fill="none">
                     <animate attributeName="d" 
                              values="M 30 20 Q 50 40 70 20 Q 90 0 110 20 Q 130 40 150 20 Q 170 0 190 20;
                                      M 30 25 Q 50 5 70 25 Q 90 45 110 25 Q 130 5 150 25 Q 170 45 190 25;
@@ -736,7 +980,7 @@ def render_dna_helix_animation():
             <!-- DNA Strand 2 -->
             <g filter="url(#glow)">
                 <path d="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50" 
-                      stroke="url(#autumnGradient)" stroke-width="3" fill="none">
+                      stroke="url(#unBlueGradient2)" stroke-width="3" fill="none">
                     <animate attributeName="d" 
                              values="M 30 50 Q 50 30 70 50 Q 90 70 110 50 Q 130 30 150 50 Q 170 70 190 50;
                                      M 30 45 Q 50 65 70 45 Q 90 25 110 45 Q 130 65 150 45 Q 170 25 190 45;
@@ -746,7 +990,7 @@ def render_dna_helix_animation():
             </g>
             
             <!-- Connecting Base Pairs with Animation -->
-            <g filter="url(#glow)" stroke="#CD853F" stroke-width="2" opacity="0.7">
+            <g filter="url(#glow)" stroke="#4DB8E8" stroke-width="2" opacity="0.6">
                 <line x1="40" y1="35" x2="40" y2="35">
                     <animate attributeName="y1" values="25;30;25" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="y2" values="45;40;45" dur="3s" repeatCount="indefinite"/>
@@ -781,37 +1025,37 @@ def render_dna_helix_animation():
                 </line>
             </g>
             
-            <!-- Nucleotide Dots -->
+            <!-- Nucleotide Dots - UN Blue -->
             <g filter="url(#glow)">
-                <circle cx="40" cy="25" r="4" fill="#D2691E">
+                <circle cx="40" cy="25" r="4" fill="#009EDB">
                     <animate attributeName="cy" values="25;30;25" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="40" cy="45" r="4" fill="#8B4513">
+                <circle cx="40" cy="45" r="4" fill="#005B94">
                     <animate attributeName="cy" values="45;40;45" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="80" cy="15" r="4" fill="#D2691E">
+                <circle cx="80" cy="15" r="4" fill="#009EDB">
                     <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="80" cy="55" r="4" fill="#8B4513">
+                <circle cx="80" cy="55" r="4" fill="#005B94">
                     <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="120" cy="35" r="4" fill="#D2691E">
+                <circle cx="120" cy="35" r="4" fill="#4DB8E8">
                     <animate attributeName="cy" values="35;25;35" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="120" cy="35" r="4" fill="#8B4513">
+                <circle cx="120" cy="35" r="4" fill="#005B94">
                     <animate attributeName="cy" values="35;45;35" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="160" cy="15" r="4" fill="#D2691E">
+                <circle cx="160" cy="15" r="4" fill="#009EDB">
                     <animate attributeName="cy" values="15;25;15" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="160" cy="55" r="4" fill="#8B4513">
+                <circle cx="160" cy="55" r="4" fill="#005B94">
                     <animate attributeName="cy" values="55;45;55" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
                 </circle>
