@@ -1,0 +1,162 @@
+İki sayfayı bağlamanın en sade yolu:
+
+login.html → başarılı girişten sonra → index.html (dashboard) sayfasına yönlendirme
+İleride backend kullanacaksan, aynı mantığı bir template yapısına dönüştürebilirsin.
+Aşağıda 3 seviyede anlatıyorum:
+
+Sadece HTML/JS ile frontend redirect
+Basit bir dizin / dosya yapısı
+İleride backend kullanırsan (Django / Flask / Node) nasıl template yapısına çevirirsin (özet)
+1. Frontend (Saf HTML + JS) ile Login → Dashboard Yönlendirmesi
+1.1. Dizin Yapısı (Öneri)
+Kopyala
+proje-kok/
+├─ index.html        ← Dashboard (UNODC tarzı ana sayfa)
+├─ login.html        ← Login sayfası
+└─ assets/
+   └─ css / js / img ...
+Yani:
+
+login.html = kullanıcı ilk buraya gelir.
+Giriş başarılı olduğunda window.location.href = "index.html" ile yönlendirilir.
+1.2. login.html İçinde Form’a JS Eklemek
+Daha önce verdiğim login.html iskeletinde, form kısmını id verip, altta küçük bir <script> ile yönlendirme yapacağız.
+
+a) Form’a id ekle
+Login iskeletinde:
+
+Kopyala
+<form class="space-y-4">
+yerine:
+
+Kopyala
+<form id="loginForm" class="space-y-4">
+kullan.
+
+b) Sayfanın en altına script ekle
+</body> etiketinden hemen önce şu script’i ekle:
+
+Kopyala
+<script>
+  // Basit örnek: frontend düzeyinde yönlendirme
+  // Gerçek sistemde burada backend doğrulaması yapılmalıdır.
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Formun sayfayı yeniden yüklemesini engelle
+
+    // Burada istersen basit bir "dummy" kontrol yapabilirsin:
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    // ÖRNEK: Sadece boş geçilmesin, hepsine izin ver
+    if (username && password) {
+      // Giriş "başarılı" varsayıp dashboard'a yönlendir
+      window.location.href = 'index.html';
+    } else {
+      alert('Lütfen kullanıcı adı ve şifre giriniz.');
+    }
+  });
+</script>
+Bu haliyle:
+
+login.html açılır.
+Kullanıcı formu doldurup “Sisteme Giriş Yap”’a basınca
+JS index.html sayfasına yönlendirir (dashboard).
+Not: Bu sadece görsel / demo içindir. Gerçek sistemde:
+
+Şifre kontrolleri backend’de yapılmalı,
+Redirect backend sonucu olarak yapılmalıdır.
+2. Dashboard → Çıkış (Logout) Yapıp Login’e Dönmek
+index.html (dashboard) iskeletinde, üst sağ köşede (kullanıcı kısmında) bir “Çıkış” linki ekleyebilirsin.
+
+Örneğin, dashboard header’ında:
+
+Kopyala
+<!-- Sağ: Dil & Kullanıcı -->
+<div class="flex items-center gap-4 text-xs">
+  <button class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-unblue hover:text-unblue">
+    TR / EN
+  </button>
+  <div class="flex items-center gap-2">
+    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-xs">
+      UY
+    </div>
+    <div class="hidden sm:flex flex-col">
+      <span class="text-xs font-semibold">Uzman Kullanıcı</span>
+      <span class="text-[11px] text-slate-500">Adli Genetik Birimi</span>
+    </div>
+  </div>
+</div>
+bölümünü, çıkış butonuyla şöyle genişletebilirsin:
+
+Kopyala
+<div class="flex items-center gap-4 text-xs">
+  <button class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-unblue hover:text-unblue">
+    TR / EN
+  </button>
+  <div class="flex items-center gap-2">
+    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-xs">
+      UY
+    </div>
+    <div class="hidden sm:flex flex-col">
+      <span class="text-xs font-semibold">Uzman Kullanıcı</span>
+      <span class="text-[11px] text-slate-500">Adli Genetik Birimi</span>
+    </div>
+  </div>
+  <button
+    onclick="window.location.href='login.html';"
+    class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-red-500 hover:text-red-600 transition"
+  >
+    Çıkış
+  </button>
+</div>
+Böylece:
+
+Dashboard’dan “Çıkış” → login.html
+Login’den başarılı giriş → index.html
+döngüsü kurulmuş olur.
+
+3. Backend / Template Yapısına Geçmek İstersen (Özet Mantık)
+İleride bu yapıyı Django / Flask / Node.js (Express) gibi bir backend ile gerçek sisteme dönüştürmek istersen, mantık şu:
+
+base.html (ortak layout – UNODC tarzı header + footer)
+login.html (base’i extend eden login sayfası)
+dashboard.html (base’i extend eden dashboard)
+3.1. Örnek Django Şablon Mantığı (sadece fikir veriyorum)
+Kopyala
+{# base.html #}
+<html>
+  <head> ... Tailwind vs ... </head>
+  <body>
+    {% include "partials/header.html" %}
+    <main class="...">
+      {% block content %}{% endblock %}
+    </main>
+    {% include "partials/footer.html" %}
+  </body>
+</html>
+Kopyala
+{# login.html #}
+{% extends "base.html" %}
+
+{% block content %}
+  <!-- Az önce verdiğim login kartı burada -->
+{% endblock %}
+Kopyala
+{# dashboard.html #}
+{% extends "base.html" %}
+
+{% block content %}
+  <!-- Az önce verdiğim dashboard iskeleti burada -->
+{% endblock %}
+Rota kısmında:
+
+/login → login.html
+Giriş POST isteği başarılıysa → /dashboard (ya da /) redirect
+Yani şu anki statik HTML yapısını, küçük değişikliklerle template’lere bölebilirsin.
+
+Özet:
+
+Şu an için en basit bağlama yolu:
+login.html form submit → JS ile index.html’e yönlendir.
+index.html header’da Çıkış butonu → login.html’e geri yönlendir.
+Sonraki seviyede, aynı tasarımı base + login + dashboard şeklinde template sistemine taşıyabilirsin.

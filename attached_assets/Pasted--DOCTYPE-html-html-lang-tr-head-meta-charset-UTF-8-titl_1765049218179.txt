@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ulusal DNA Analiz Sistemi – Giriş</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind CDN (geliştirme için) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            unblue: '#0050A0',      // UNODC tarzı koyu mavi
+            unblueLight: '#00A7D8', // Açık mavi / turkuaz
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col">
+
+  <!-- ========================================================= -->
+  <!-- 1. ÜST KURUMSAL ŞERİT (UNODC STİLİ HEADER)               -->
+  <!-- ========================================================= -->
+  <header class="w-full border-b border-slate-200 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14">
+        <!-- Sol: Logo + Sistem Adı -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-unblue flex items-center justify-center text-white font-bold text-xs">
+            DNA
+          </div>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold tracking-wide text-unblue uppercase">
+              Ulusal DNA Analiz Sistemi
+            </span>
+            <span class="text-[11px] text-slate-500">
+              National Scientific DNA Analysis Platform
+            </span>
+          </div>
+        </div>
+
+        <!-- Sağ: Dil seçimi -->
+        <div class="flex items-center gap-2 text-xs">
+          <button class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-unblue hover:text-unblue transition">
+            Türkçe
+          </button>
+          <button class="border border-slate-200 rounded px-2 py-1 text-slate-400 hover:border-unblue hover:text-unblue transition">
+            English
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================= -->
+  <!-- 2. ANA GÖVDE – LOGIN KARTI                               -->
+  <!-- ========================================================= -->
+  <main class="flex-1 flex items-center justify-center">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+
+        <!-- 2.1 Sol: Kurumsal / Bilimsel Tanıtım Bloğu -->
+        <section class="space-y-4">
+          <h1 class="text-2xl sm:text-3xl font-semibold text-unblue">
+            Ulusal DNA Analiz Sistemi
+          </h1>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Bu platform, adli tıp, klinik genetik ve popülasyon genetiği alanlarında
+            ulusal düzeyde DNA analizi, raporlama ve veri yönetimi için geliştirilmiş
+            bilimsel bir yazılım altyapısıdır. Yetkisiz erişim yasaktır.
+          </p>
+          <div class="text-[11px] text-slate-500 space-y-1">
+            <p>
+              • Adli genetik, klinik genomik ve araştırma modülleri
+            </p>
+            <p>
+              • Ulusal standartlara ve veri gizliliği mevzuatına uygun güvenli erişim
+            </p>
+            <p>
+              • Kurumsal kullanım için tasarlanmış UNODC benzeri arayüz
+            </p>
+          </div>
+
+          <!-- Hafif bilim/adalet temalı görsel yer tutucu -->
+          <div class="mt-4 h-32 sm:h-40 border border-dashed border-slate-300 rounded-lg flex items-center justify-center text-[11px] text-slate-400">
+            Buraya hafif opaklıkta bilim / DNA / adalet temalı bir illüstrasyon eklenebilir.
+          </div>
+        </section>
+
+        <!-- 2.2 Sağ: Giriş Kartı -->
+        <section class="flex justify-center">
+          <div class="w-full max-w-sm bg-white border border-slate-200 rounded-lg shadow-sm px-6 py-6">
+            <!-- Kart Başlık -->
+            <div class="mb-4">
+              <h2 class="text-lg font-semibold text-slate-800">
+                Sistem Girişi
+              </h2>
+              <p class="text-[11px] text-slate-500 mt-1">
+                Lütfen kurumsal kullanıcı bilgilerinizle giriş yapınız.
+              </p>
+            </div>
+
+            <!-- Giriş Formu -->
+            <form class="space-y-4">
+              <!-- Kullanıcı Adı -->
+              <div>
+                <label for="username" class="block text-xs font-medium text-slate-700 mb-1">
+                  Kullanıcı Adı
+                </label>
+                <input
+                  id="username"
+                  type="text"
+                  class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                  placeholder="ornek.kullanici"
+                />
+              </div>
+
+              <!-- Şifre -->
+              <div>
+                <label for="password" class="block text-xs font-medium text-slate-700 mb-1">
+                  Şifre
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <!-- Ek seçenekler (Beni hatırla / Şifremi unuttum) -->
+              <div class="flex items-center justify-between text-[11px] text-slate-600">
+                <label class="inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    class="rounded border-slate-300 text-unblue focus:ring-unblue"
+                  />
+                  <span>Beni hatırla</span>
+                </label>
+                <a href="#" class="text-unblue hover:underline">
+                  Şifremi unuttum
+                </a>
+              </div>
+
+              <!-- Giriş Butonu -->
+              <div class="pt-1">
+                <button
+                  type="submit"
+                  class="w-full inline-flex items-center justify-center rounded bg-unblue px-4 py-2 text-sm font-medium text-white hover:bg-unblueLight focus:outline-none focus:ring-2 focus:ring-unblue focus:ring-offset-1 transition"
+                >
+                  Sisteme Giriş Yap
+                </button>
+              </div>
+            </form>
+
+            <!-- Alt Bilgi -->
+            <div class="mt-4 text-[11px] text-slate-500 border-t border-slate-200 pt-3">
+              <p>
+                Bu sistem yalnızca yetkili kullanıcılar içindir. Tüm erişimler kayıt
+                altına alınmaktadır.
+              </p>
+              <p class="mt-1">
+                Güvenlikle ilgili bir sorun tespit ederseniz sistem yöneticinizle iletişime geçin.
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- 3. ALT BİLGİ / FOOTER                                    -->
+  <!-- ========================================================= -->
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-[11px] text-slate-500">
+        <span>
+          © 2025 Ulusal DNA Analiz Sistemi – Bilimsel ve Adli Genetik Altyapısı
+        </span>
+        <span>
+          Arayüz stili: UNODC benzeri kurumsal giriş ekranı.
+        </span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

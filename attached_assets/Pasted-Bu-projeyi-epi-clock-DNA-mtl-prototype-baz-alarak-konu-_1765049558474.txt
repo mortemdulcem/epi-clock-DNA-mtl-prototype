@@ -1,0 +1,186 @@
+Bu projeyi (epi-clock-DNA-mtl-prototype) baz alarak konuşmam çok mantıklı; arayüz tarafını da artık “soyut DNA yazılımı” değil, senin epigenetik saat / DNA-ML prototipin için düşüneceğim.
+
+GitHub içeriğini şu an doğrudan okuyamasam da, isim ve bağlamdan büyük ihtimalle şu yapıya sahipsin:
+
+Python tabanlı bir ML / çok görevli öğrenme (mtl) projesi,
+Girdi: DNA veya DNA metilasyonuna ait veri (özellik matrisi, CpG değerleri vs.),
+Çıktı: Epigenetik yaş tahmini, muhtemelen birden fazla bağlı görev (ör. yaş, risk skoru, vs.).
+Bu nedenle sana iki somut öneri hattı açacağım:
+
+Arayüz tasarımını projene “konsept olarak” nasıl uydurursun?
+Teknik entegrasyon açısından en pratik mimari ne olur? (özellikle Flask/FastAPI + senin repo)
+1. Arayüzü Epi-Clock Projene Konsept Olarak Uydurmak
+Şu ana kadar oluşturduğumuz sayfalar:
+
+login.html – UNODC tarzı giriş
+index.html – Dashboard (genel DNA sistemi)
+analysis-detail.html – Analiz detay + sekmeler (QC, Alignment, Varyantlar, STR)
+Senin proje özelinde:
+
+1.1. Modülleri Epigenetik Saat – MTL Bağlamına Çevirme
+Sol sidebar’daki modüller şunlara dönüşebilir:
+
+Dashboard → Epi-Clock Dashboard
+Örnek Yönetimi → Sample Management
+NGS Analizi → Epigenetic Clock / MTL Models
+STR / Adli Modül → (projende yoksa kaldırılabilir)
+Klinik Genetik → (analiz tipine göre “Clinical Metrics” olabilir)
+Popülasyon Genetiği → Cohort Analysis / Batch Runs
+Üst menüde “Analizler” sekmesi, senin projede:
+
+Model Runs
+Experiments
+Batches
+gibi isimler alabilir. Bu, backend kısmını değiştirmeden, sadece UI metinlerini değiştirmenle olacak iş.
+
+1.2. Analiz Detay Sayfasını Epigenetik Saat’e Özel Yeniden İsimlendirmek
+Mevcut analysis-detail.html’de:
+
+“NGS Analizi – Örnek ID: 2025-NGS-00456”
+
+→ “Epigenetik Saat Analizi – Örnek ID: SAMPLE-001”
+
+Sekmeler:
+
+Genel Bakış → Overview
+QC → Input Data / QC
+Alignment → Model / Training Info
+Varyantlar → Predictions / Outputs
+STR → (istersen kapat, veya “Explainability / Feature Importance” yap)
+İstersen bir sonraki adımda, bu sayfayı tamamen epi-clock’a göre yeniden yazarım (Overview / Data / Model / Results / Explainability şeklinde).
+
+2. Teknik Entegrasyon: Repo + UNODC UI Nasıl Konuşur?
+Epi-clock projesi için en pratik akış şu olur:
+
+Backend katmanı: Projendeki model kodunun üzerine küçük bir Flask veya FastAPI katmanı koyuyorsun.
+Frontend: Şu an birlikte yazdığımız HTML + Tailwind sayfaları, bu API’ye fetch() ile istekte bulunuyor.
+2.1. Minimum Flask İskeleti (Senin Repo İçin Uyarlanabilir)
+Aşağıdaki iskeleti, repo köküne app.py gibi koyabilirsin. Tek yapman gereken, repo içindeki model/prediction fonksiyonlarını doğru import etmek.
+
+Kopyala
+```python
+# app.py
+from flask import Flask, request, jsonify
+# from your_module import load_model, predict_for_sample  # Bunu kendi repo yapına göre değiştir
+
+app = Flask(__name__)
+
+# Örneğin, projende böyle bir şey varsa:
+# model = load_model("checkpoints/mtl_model.pth")
+
+@app.route("/api/epiclock/predict", methods=["POST"])
+def epiclock_predict():
+    """
+    Beklenen JSON:
+    {
+      "sample_id": "SAMPLE-001",
+      "features": [... veya backend'in beklediği format ...]
+    }
+    """
+    data = request.get_json()
+    sample_id = data.get("sample_id")
+    features = data.get("features")
+
+    # TODO: Buraya gerçek model çağrını koy
+    # pred = predict_for_sample(model, features)
+
+    # Şimdilik DEMO cevap:
+    result = {
+        "sample_id": sample_id,
+        "chronological_age": 45,
+        "predicted_epigenetic_age": 50.3,
+        "age_acceleration": 5.3,
+        "mae": 3.1,
+        "rmse": 4.7,
+        "tasks": {
+            "age_task": {"value": 50.3, "loss": 2.1},
+            "risk_task": {"value": 0.78, "loss": 0.15}
+        },
+        "feature_importance_top": [
+            {"feature": "cg00000029", "importance": 0.12},
+            {"feature": "cg00000108", "importance": 0.09},
+            {"feature": "cg00000165", "importance": 0.07}
+        ]
+    }
+
+    return jsonify(result)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+Senin yapman gereken tek kritik iş:
+
+Projendeki “model yükleme” ve “tek sample tahmini” kodunu (şu an CLI/Jupyter ise)
+→ predict_for_sample benzeri bir fonksiyonun içine toplamak.
+2.2. Frontend’te Bu API’yi Çağırma (Analiz Detay Sayfasına Gömmek)
+analysis-detail.html içinde (epigenetik versiyonunda) şuna benzer bir buton yerleştirebilirsin:
+
+Kopyala
+<button
+  id="run-epiclock-btn"
+  class="px-3 py-1.5 text-xs rounded border border-unblue text-unblue hover:bg-unblue hover:text-white transition"
+>
+  Epigenetik Saat Analizini Çalıştır
+</button>
+
+<div id="epiclock-result" class="mt-3 text-xs text-slate-600">
+  Henüz analiz çalıştırılmadı.
+</div>
+Ve sayfa sonunda:
+
+Kopyala
+<script>
+  const runBtn = document.getElementById("run-epiclock-btn");
+  const resultArea = document.getElementById("epiclock-result");
+
+  runBtn.addEventListener("click", async () => {
+    // Bu ID’yi sayfanın gerçek verisinden alabilirsin
+    const sampleId = "SAMPLE-001";
+
+    try {
+      const res = await fetch("/api/epiclock/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sample_id: sampleId,
+          // features: ...  (gerçek sistemine göre doldur)
+        })
+      });
+
+      const data = await res.json();
+
+      resultArea.innerHTML = `
+        <div class="space-y-1">
+          <p><span class="font-semibold">Örnek ID:</span> ${data.sample_id}</p>
+          <p><span class="font-semibold">Kronolojik yaş:</span> ${data.chronological_age}</p>
+          <p><span class="font-semibold">Epigenetik yaş (tahmin):</span> ${data.predicted_epigenetic_age.toFixed(1)}</p>
+          <p><span class="font-semibold">Yaş ivmesi (age acceleration):</span> ${data.age_acceleration.toFixed(1)}</p>
+          <p><span class="font-semibold">MAE:</span> ${data.mae.toFixed(2)} · <span class="font-semibold">RMSE:</span> ${data.rmse.toFixed(2)}</p>
+        </div>
+      `;
+    } catch (err) {
+      console.error(err);
+      resultArea.innerHTML = `
+        <p class="text-red-600 text-xs">Analiz çalıştırılırken bir hata oluştu.</p>
+      `;
+    }
+  });
+</script>
+Bu şekilde:
+
+Projendeki ML modeli değişmeden çalışır,
+Sadece bir API sarmalayıcı koymuş olursun,
+UNODC tarzı HTML/Tailwind arayüz, bunu front-end’ten kullanır.
+3. Bundan Sonra Sana Ne Sağlayabilirim?
+Sen “projeme göre söyle” dediğin için, iki spesifik şey önerebilirim:
+
+Epi-clock’a özel Analiz Detay Sayfası
+
+Sekmeler: Overview, Input Data/QC, Model & Tasks (MTL), Predictions, Explainability (Feature Importance / SHAP).
+Şu anki NGS/variant/STR dilini tamamen “epi-clock” terminolojisine çevireceğim.
+Repo yapına göre bire bir Flask iskeleti
+
+Bunun için tek ihtiyacım; çok kısa bir özet:
+Model hangi dosyada,
+Tahmin fonksiyonunu şu an nasıl çağırıyorsun (örneğin python predict.py --input file.csv gibi mi?)

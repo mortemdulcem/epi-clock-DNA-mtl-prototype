@@ -1,0 +1,516 @@
+Aşağıdakiler konsept olarak aynı:
+
+HTML tarafı: Epi-Clock analiz arayüzü (UNODC tarzı)
+Backend tarafı: Senin epi-clock-DNA-mtl-prototype modelini saran bir web katmanı
+1. Template Yapısı (Django veya Flask Jinja2 ile uyumlu)
+1.1. Önerilen dosya/dizin yapısı
+Kopyala
+proje_kok/
+├─ app.py                        # Flask kullanıyorsan
+├─ manage.py / config vs         # Django kullanıyorsan
+├─ templates/
+│  ├─ base.html                  # Ortak layout
+│  ├─ partials/
+│  │  ├─ header.html             # Üst navbar
+│  │  ├─ sidebar.html            # Sol modül menüsü
+│  │  └─ footer.html             # Alt bilgi
+│  ├─ epiclock/
+│  │  ├─ dashboard.html          # Epi-Clock dashboard
+│  │  └─ analysis_detail.html    # Epi-Clock analiz detay (az önce yazdığımız sayfa)
+└─ static/
+   ├─ css/
+   └─ js/
+Aşağıda, Flask & Django ile uyumlu Jinja2 şablon örnekleri veriyorum.
+
+(Twig benzeri başka template engine’lere de kolayca taşınır.)
+
+1.2. templates/base.html
+Tailwind, UNODC tarzı layout burada; sayfa içeriği {% block content %} ile değişiyor.
+
+Kopyala
+{% raw %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Ulusal DNA Analiz Sistemi – Epi-Clock{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind CDN (geliştirme için) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            unblue: '#0050A0',
+            unblueLight: '#00A7D8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  {% include "partials/header.html" %}
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="grid grid-cols-12 gap-6">
+
+      {% include "partials/sidebar.html" %}
+
+      <main class="col-span-12 md:col-span-9 lg:col-span-10 space-y-6">
+        {% block content %}{% endblock %}
+      </main>
+
+    </div>
+  </div>
+
+  {% include "partials/footer.html" %}
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+{% endraw %}
+1.3. templates/partials/header.html
+Epi-Clock’a göre uyarlanmış UNODC tarzı header:
+
+Kopyala
+{% raw %}
+<header class="w-full border-b border-slate-200 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-unblue flex items-center justify-center text-white font-bold text-xs">
+          DNA
+        </div>
+        <div class="flex flex-col">
+          <span class="text-sm font-semibold tracking-wide text-unblue uppercase">
+            Ulusal DNA Analiz Sistemi
+          </span>
+          <span class="text-xs text-slate-500">
+            Epi-Clock DNA / MTL Prototipi
+          </span>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="{{ url_for('dashboard') }}" class="text-slate-600 hover:text-unblue">
+          Dashboard
+        </a>
+        <a href="#" class="text-slate-600 hover:text-unblue">
+          Örnekler
+        </a>
+        <a href="{{ url_for('epiclock_list') }}" class="text-unblue border-b-2 border-unblue pb-1">
+          Epi-Clock Analizleri
+        </a>
+        <a href="#" class="text-slate-600 hover:text-unblue">
+          Modeller
+        </a>
+        <a href="#" class="text-slate-600 hover:text-unblue">
+          Raporlar
+        </a>
+        <a href="#" class="text-slate-600 hover:text-unblue">
+          İstatistik
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-4 text-xs">
+        <button class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-unblue hover:text-unblue">
+          TR / EN
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-xs">
+            UY
+          </div>
+          <div class="hidden sm:flex flex-col">
+            <span class="text-xs font-semibold">Uzman Kullanıcı</span>
+            <span class="text-[11px] text-slate-500">Epi-Clock Birimi</span>
+          </div>
+        </div>
+        <button
+          onclick="window.location.href='{{ url_for('login') }}';"
+          class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-red-500 hover:text-red-600 transition"
+        >
+          Çıkış
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+{% endraw %}
+Django’da da url 'dashboard' vs ile aynı mantık; sadece url_for yerine {% url 'dashboard' %} yazarsın.
+
+1.4. templates/partials/sidebar.html
+Epi-Clock odaklı modül menüsü:
+
+Kopyala
+{% raw %}
+<aside class="col-span-12 md:col-span-3 lg:col-span-2">
+  <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+    <div class="px-4 py-3 border-b border-slate-200">
+      <h2 class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+        Modüller
+      </h2>
+    </div>
+    <nav class="py-2 text-sm">
+      <a href="{{ url_for('dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+        Dashboard
+      </a>
+      <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+        Örnek Yönetimi
+      </a>
+      <a href="{{ url_for('epiclock_list') }}" class="flex items-center gap-2 px-4 py-2 text-unblue bg-slate-50 border-l-4 border-unblue">
+        <span class="w-2 h-2 rounded-full bg-unblue"></span>
+        Epi-Clock / MTL Analizi
+      </a>
+      <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+        Model Yönetimi
+      </a>
+      <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+        Kohort Analizleri
+      </a>
+    </nav>
+  </div>
+</aside>
+{% endraw %}
+1.5. templates/partials/footer.html
+Kopyala
+{% raw %}
+<footer class="text-[11px] text-slate-500 pt-4 pb-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-slate-200 pt-3">
+      <span>
+        © 2025 Ulusal DNA Analiz Sistemi – Epi-Clock DNA / MTL Prototipi
+      </span>
+      <span>
+        UNODC benzeri kurumsal arayüz.
+      </span>
+    </div>
+  </div>
+</footer>
+{% endraw %}
+1.6. templates/epiclock/analysis_detail.html
+Bir önceki mesajda verdiğim Epi-Clock Analiz Detay sayfasını, base.html’i extend edecek şekilde kısaltıyorum. Ana mantık:
+
+Tailwind ve genel layout base.html’den gelir.
+Sadece içerik bölümü {% block content %} içinde.
+Örnekte sample ve result context değişkenleri backend’ten gelir diye varsayıyorum.
+
+Kopyala
+{% raw %}
+{% extends "base.html" %}
+
+{% block title %}Epi-Clock Analiz Detay – {{ sample.id }}{% endblock %}
+
+{% block content %}
+  <!-- Breadcrumb + başlık -->
+  <section class="bg-white border border-slate-200 rounded-lg shadow-sm px-5 py-4 space-y-3">
+    <div class="text-[11px] text-slate-500">
+      <a href="{{ url_for('dashboard') }}" class="hover:text-unblue hover:underline">Dashboard</a>
+      <span class="mx-1">/</span>
+      <a href="{{ url_for('epiclock_list') }}" class="hover:text-unblue hover:underline">Epi-Clock Analizleri</a>
+      <span class="mx-1">/</span>
+      <span class="text-slate-700 font-medium">Analiz – {{ sample.id }}</span>
+    </div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div>
+        <h1 class="text-lg font-semibold text-unblue">
+          Epi-Clock Analizi – Örnek ID: {{ sample.id }}
+        </h1>
+        <p class="text-xs text-slate-600 mt-1">
+          Epigenetik yaş tahmini · Multi-task learning prototipi · DNA metilasyon verisi.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 text-[11px]">
+          Durum: {{ result.status or "Tahmin Tamamlandı" }}
+        </span>
+        <button
+          id="run-epiclock-btn"
+          class="px-3 py-1.5 text-xs rounded border border-unblue text-unblue hover:bg-unblue hover:text-white transition"
+        >
+          Analizi Yeniden Çalıştır
+        </button>
+        <button class="px-3 py-1.5 text-xs rounded border border-slate-300 text-slate-700 hover:border-unblue hover:text-unblue transition">
+          Rapor Taslağı
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Örnek Özeti + Model Özeti -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="bg-white border border-slate-200 rounded-lg shadow-sm px-5 py-4 lg:col-span-2">
+      <h2 class="text-sm font-semibold text-slate-700 mb-3">
+        Örnek Özeti
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-700">
+        <div class="space-y-1">
+          <p><span class="font-semibold">Örnek ID:</span> {{ sample.id }}</p>
+          <p><span class="font-semibold">Birey:</span> {{ sample.person or "Anonim" }}</p>
+          <p><span class="font-semibold">Kronolojik yaş:</span> {{ sample.chronological_age }} yıl</p>
+          <p><span class="font-semibold">Cinsiyet:</span> {{ sample.sex or "Bilinmiyor" }}</p>
+        </div>
+        <div class="space-y-1">
+          <p><span class="font-semibold">Doku / Matris:</span> {{ sample.tissue or "Bilinmiyor" }}</p>
+          <p><span class="font-semibold">Veri Kaynağı:</span> Epi-Clock DNA / MTL</p>
+          <p><span class="font-semibold">Veri Tipi:</span> DNA metilasyon (β-values)</p>
+          <p><span class="font-semibold">Kohort:</span> {{ sample.cohort or "Prototip" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-lg shadow-sm px-5 py-4">
+      <h2 class="text-sm font-semibold text-slate-700 mb-3">
+        Model Sonuç Özeti
+      </h2>
+      <div id="epiclock-result" class="space-y-2 text-xs text-slate-700">
+        <p><span class="font-semibold">Epigenetik yaş (tahmin):</span> {{ result.predicted_epigenetic_age }} yıl</p>
+        <p><span class="font-semibold">Yaş ivmesi:</span> {{ result.age_acceleration }} yıl</p>
+        <p>
+          <span class="font-semibold">MAE:</span> {{ result.mae }} ·
+          <span class="font-semibold">RMSE:</span> {{ result.rmse }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sekmeler: Overview / Data / Model / Predictions / Explainability -->
+  <!-- Buraya bir önceki uzun HTML’deki tab içeriklerini kısaltarak aynı yapıda koyabilirsin. -->
+  <!-- Örnek olarak sadece başlık ve bir placeholder bırakıyorum; istersen hepsini aynen taşıyabiliriz. -->
+
+  <section class="bg-white border border-slate-200 rounded-lg shadow-sm">
+    <div class="border-b border-slate-200 px-5">
+      <nav class="flex flex-wrap gap-4 text-xs font-medium text-slate-600">
+        <button class="py-3 tab-link border-b-2 border-unblue text-unblue" data-tab="overview">
+          Genel Bakış
+        </button>
+        <button class="py-3 tab-link hover:text-unblue" data-tab="data">
+          Veri & QC
+        </button>
+        <button class="py-3 tab-link hover:text-unblue" data-tab="model">
+          Model & Görevler (MTL)
+        </button>
+        <button class="py-3 tab-link hover:text-unblue" data-tab="predictions">
+          Tahmin Sonuçları
+        </button>
+        <button class="py-3 tab-link hover:text-unblue" data-tab="explainability">
+          Açıklanabilirlik
+        </button>
+      </nav>
+    </div>
+
+    <div id="tab-overview" class="tab-content active px-5 py-4">
+      <!-- Overview içeriğini buraya koy -->
+      <p class="text-[11px] text-slate-600">
+        Genel bakış sekmesi – kronolojik yaş, epigenetik yaş, yaş ivmesi ve kohort içindeki konum vb.
+      </p>
+    </div>
+    <div id="tab-data" class="tab-content px-5 py-4">
+      <!-- Veri & QC içeriği -->
+      <p class="text-[11px] text-slate-600">Veri & QC sekmesi – CpG sayısı, eksik veri, beta dağılımları vb.</p>
+    </div>
+    <div id="tab-model" class="tab-content px-5 py-4">
+      <!-- Model & Görevler içeriği -->
+      <p class="text-[11px] text-slate-600">MTL model yapısı ve görev bazlı loss / performans.</p>
+    </div>
+    <div id="tab-predictions" class="tab-content px-5 py-4">
+      <!-- Tahmin Sonuçları içeriği -->
+      <p class="text-[11px] text-slate-600">Detaylı tahmin sonuçları ve kohort içi pozisyon.</p>
+    </div>
+    <div id="tab-explainability" class="tab-content px-5 py-4">
+      <!-- Açıklanabilirlik içeriği -->
+      <p class="text-[11px] text-slate-600">Önemli CpG’ler, feature importance, SHAP vb.</p>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Sekme geçişi
+  const tabLinks = document.querySelectorAll('.tab-link');
+  const tabContents = {
+    overview: document.getElementById('tab-overview'),
+    data: document.getElementById('tab-data'),
+    model: document.getElementById('tab-model'),
+    predictions: document.getElementById('tab-predictions'),
+    explainability: document.getElementById('tab-explainability'),
+  };
+
+  tabLinks.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
+      tabLinks.forEach(b => {
+        b.classList.remove('border-unblue', 'text-unblue', 'border-b-2');
+        b.classList.add('text-slate-600');
+      });
+      btn.classList.remove('text-slate-600');
+      btn.classList.add('border-b-2', 'border-unblue', 'text-unblue');
+      Object.keys(tabContents).forEach(key => {
+        tabContents[key].classList.remove('active');
+      });
+      tabContents[target].classList.add('active');
+    });
+  });
+
+  // Epi-Clock API entegrasyonu (Flask endpoint örneği)
+  const runBtn = document.getElementById('run-epiclock-btn');
+  const epiclockResultDiv = document.getElementById('epiclock-result');
+
+  if (runBtn) {
+    runBtn.addEventListener('click', async () => {
+      const sampleId = "{{ sample.id }}";
+      try {
+        const res = await fetch('{{ url_for("epiclock_predict_api") }}', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sample_id: sampleId })
+        });
+        if (!res.ok) throw new Error('API hatası');
+        const data = await res.json();
+        epiclockResultDiv.innerHTML = `
+          <p class="text-xs text-slate-700"><span class="font-semibold">Örnek ID:</span> ${data.sample_id}</p>
+          <p class="text-xs text-slate-700"><span class="font-semibold">Epigenetik yaş (tahmin):</span> ${data.predicted_epigenetic_age.toFixed(1)} yıl</p>
+          <p class="text-xs text-slate-700"><span class="font-semibold">Yaş ivmesi:</span> ${data.age_acceleration.toFixed(1)} yıl</p>
+          <p class="text-xs text-slate-700">
+            <span class="font-semibold">MAE:</span> ${data.mae.toFixed(2)} ·
+            <span class="font-semibold">RMSE:</span> ${data.rmse.toFixed(2)}
+          </p>
+        `;
+      } catch (err) {
+        console.error(err);
+        epiclockResultDiv.innerHTML = `
+          <p class="text-xs text-red-600">Epi-Clock analizi çalıştırılırken bir hata oluştu veya API henüz bağlı değil.</p>
+        `;
+      }
+    });
+  }
+</script>
+{% endblock %}
+{% endraw %}
+2. API Katmanı: Flask ve (istersen) FastAPI İskeleti
+2.1. Flask örneği (app.py)
+Bu, repo’daki modelini sarmalayacak basit bir iskelet.
+
+Burada predict_for_sample fonksiyonunu sen kendi projenden import edeceksin.
+
+Kopyala
+```python
+from flask import Flask, render_template, request, jsonify
+
+app = Flask(__name__)
+
+# TODO: Burada kendi model yükleme kodunu çağır:
+# from my_model_module import load_model, predict_for_sample
+# model = load_model("path/to/checkpoint")
+
+# Demo sample / result; normalde DB veya dosyadan gelir
+SAMPLE_DB = {
+    "SAMPLE-001": {
+        "id": "SAMPLE-001",
+        "person": "Anonim-01",
+        "chronological_age": 45,
+        "sex": "Bilinmiyor",
+        "tissue": "Kan",
+        "cohort": "Prototip"
+    }
+}
+
+DEMO_RESULT = {
+    "sample_id": "SAMPLE-001",
+    "predicted_epigenetic_age": 50.3,
+    "age_acceleration": 5.3,
+    "mae": 3.1,
+    "rmse": 4.7,
+    "status": "Tahmin Tamamlandı"
+}
+
+@app.route("/login")
+def login():
+    return "<p>Login sayfası burada olacak (ayrı template kullanabilirsin).</p>"
+
+@app.route("/")
+def dashboard():
+    # Basit bir placeholder; istersen dashboard için ayrı template yaparsın
+    return "<p>Epi-Clock Dashboard (TODO: dashboard template)</p>"
+
+@app.route("/epiclock")
+def epiclock_list():
+    # Burada tüm örnekleri listeleyebilirsin
+    return "<p>Epi-Clock Analiz Listesi (TODO: list template)</p>"
+
+@app.route("/epiclock/<sample_id>")
+def epiclock_detail(sample_id):
+    sample = SAMPLE_DB.get(sample_id)
+    if not sample:
+        return "Sample not found", 404
+
+    result = DEMO_RESULT  # Gerçek durumda DB veya modelden alınacak
+    return render_template(
+        "epiclock/analysis_detail.html",
+        sample=sample,
+        result=result
+    )
+
+@app.route("/api/epiclock/predict", methods=["POST"])
+def epiclock_predict_api():
+    data = request.get_json()
+    sample_id = data.get("sample_id")
+    # TODO: sample'a göre veri oku ve model tahmini yap
+    # pred = predict_for_sample(model, sample_data)
+
+    # Şimdilik DEMO sonucunu dönelim:
+    return jsonify(DEMO_RESULT)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+Bu halde:
+
+/epiclock/SAMPLE-001 → biraz önceki analysis_detail.html şablonunu kullanır.
+fetch('{{ url_for("epiclock_predict_api") }}', ...) çağrısı → /api/epiclock/predict’e gider.
+Sen sadece predict_for_sample fonksiyonunu projendeki koda bağlayacaksın.
+2.2. FastAPI istersen (kısa iskelet)
+Aynı mantık, ama FastAPI ile:
+
+Kopyala
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+# TODO: model = load_model(...)
+
+class PredictRequest(BaseModel):
+    sample_id: str
+
+@app.post("/api/epiclock/predict")
+async def epiclock_predict(req: PredictRequest):
+    # TODO: sample verisini oku + model tahmini yap
+    return JSONResponse({
+        "sample_id": req.sample_id,
+        "predicted_epigenetic_age": 50.3,
+        "age_acceleration": 5.3,
+        "mae": 3.1,
+        "rmse": 4.7,
+        "status": "Tahmin Tamamlandı"
+    })
+```
+Bu yapıda HTML render’ı için ya:
+
+Jinja2 template entegrasyonu eklersin,
+veya
+Frontend’i tamamen ayrı (örneğin bu HTML dosyalarını bir static frontend olarak) host edip API’ye FastAPI üzerinden istek atarsın.

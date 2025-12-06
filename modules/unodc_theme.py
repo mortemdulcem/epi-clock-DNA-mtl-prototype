@@ -696,156 +696,546 @@ def render_statistic_cards():
     """, unsafe_allow_html=True)
 
 def render_recent_analyses_table():
-    """Render recent analyses table - Tailwind-inspired - nrcdnl94"""
+    """Render recent analyses table with working navigation - Tailwind-inspired - nrcdnl94"""
+    import pandas as pd
+    
     st.markdown("""
     <style>
-    .analyses-section {
+    .analyses-section-header {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-    }
-    .analyses-header {
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        padding: 12px 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 20px;
-        border-bottom: 1px solid #E2E8F0;
     }
-    .analyses-title {
+    .analyses-title-text {
         font-size: 0.875rem;
         font-weight: 600;
         color: #334155;
         margin: 0;
     }
-    .analyses-view-all {
-        font-size: 0.75rem;
-        color: #0050A0;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .analyses-view-all:hover {
-        text-decoration: underline;
-    }
-    .analyses-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.75rem;
-    }
-    .analyses-table thead {
-        background: #F8FAFC;
-        border-bottom: 1px solid #E2E8F0;
-    }
-    .analyses-table th {
-        padding: 8px 20px;
-        text-align: left;
-        font-weight: 600;
-        color: #64748B;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-    }
-    .analyses-table th:last-child {
-        text-align: right;
-    }
-    .analyses-table td {
-        padding: 10px 20px;
-        color: #334155;
-        border-bottom: 1px solid #F1F5F9;
-    }
-    .analyses-table td:last-child {
-        text-align: right;
-    }
-    .analyses-table tr:last-child td {
-        border-bottom: none;
-    }
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 2px 8px;
-        border-radius: 9999px;
-        font-size: 0.65rem;
-        font-weight: 500;
-    }
-    .status-completed {
-        background: #F0FDF4;
-        color: #166534;
-        border: 1px solid #BBF7D0;
-    }
-    .status-inprogress {
-        background: #FEFCE8;
-        color: #A16207;
-        border: 1px solid #FEF08A;
-    }
-    .status-qc {
-        background: #FEF2F2;
-        color: #DC2626;
-        border: 1px solid #FECACA;
-    }
-    .detail-link {
-        color: #0050A0;
-        font-size: 0.7rem;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .detail-link:hover {
-        text-decoration: underline;
-    }
     </style>
-    <div class="analyses-section">
-        <div class="analyses-header">
-            <h2 class="analyses-title">Son Analizler</h2>
-            <span class="analyses-view-all">Tumunu Gor</span>
-        </div>
-        <table class="analyses-table">
-            <thead>
-                <tr>
-                    <th>Ornek ID</th>
-                    <th>Tur</th>
-                    <th>Modul</th>
-                    <th>Durum</th>
-                    <th>Tarih</th>
-                    <th>Islem</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>2025-STR-00123</td>
-                    <td>Kan</td>
-                    <td>STR / Adli</td>
-                    <td><span class="status-badge status-completed">Tamamlandi</span></td>
-                    <td>06.12.2025</td>
-                    <td><span class="detail-link">Detay</span></td>
-                </tr>
-                <tr>
-                    <td>2025-NGS-00456</td>
-                    <td>Tam Kan</td>
-                    <td>NGS</td>
-                    <td><span class="status-badge status-inprogress">Devam Ediyor</span></td>
-                    <td>05.12.2025</td>
-                    <td><span class="detail-link">Detay</span></td>
-                </tr>
-                <tr>
-                    <td>2025-CLN-00078</td>
-                    <td>DNA Ekstrakt</td>
-                    <td>Klinik Genetik</td>
-                    <td><span class="status-badge status-qc">QC Gerekli</span></td>
-                    <td>04.12.2025</td>
-                    <td><span class="detail-link">Detay</span></td>
-                </tr>
-                <tr>
-                    <td>2025-EPI-00891</td>
-                    <td>Salya</td>
-                    <td>Epigenetik Yas</td>
-                    <td><span class="status-badge status-completed">Tamamlandi</span></td>
-                    <td>03.12.2025</td>
-                    <td><span class="detail-link">Detay</span></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="analyses-section-header">
+        <span class="analyses-title-text">Son Analizler</span>
     </div>
     """, unsafe_allow_html=True)
+    
+    analyses_data = [
+        {"id": "2025-STR-00123", "type": "Kan", "module": "STR / Adli", "status": "Tamamlandi", "date": "06.12.2025"},
+        {"id": "2025-NGS-00456", "type": "Tam Kan", "module": "NGS", "status": "Devam Ediyor", "date": "05.12.2025"},
+        {"id": "2025-CLN-00078", "type": "DNA Ekstrakt", "module": "Klinik Genetik", "status": "QC Gerekli", "date": "04.12.2025"},
+        {"id": "2025-EPI-00891", "type": "Salya", "module": "Epigenetik Yas", "status": "Tamamlandi", "date": "03.12.2025"},
+    ]
+    
+    cols = st.columns([2, 1, 2, 2, 1.5, 1])
+    with cols[0]:
+        st.markdown("**Ornek ID**")
+    with cols[1]:
+        st.markdown("**Tur**")
+    with cols[2]:
+        st.markdown("**Modul**")
+    with cols[3]:
+        st.markdown("**Durum**")
+    with cols[4]:
+        st.markdown("**Tarih**")
+    with cols[5]:
+        st.markdown("**Islem**")
+    
+    st.markdown("<hr style='margin: 0; border-color: #E2E8F0;'>", unsafe_allow_html=True)
+    
+    for i, analysis in enumerate(analyses_data):
+        cols = st.columns([2, 1, 2, 2, 1.5, 1])
+        
+        with cols[0]:
+            st.markdown(f"<span style='font-size: 0.8rem; color: #334155;'>{analysis['id']}</span>", unsafe_allow_html=True)
+        with cols[1]:
+            st.markdown(f"<span style='font-size: 0.8rem; color: #334155;'>{analysis['type']}</span>", unsafe_allow_html=True)
+        with cols[2]:
+            st.markdown(f"<span style='font-size: 0.8rem; color: #334155;'>{analysis['module']}</span>", unsafe_allow_html=True)
+        with cols[3]:
+            if analysis['status'] == 'Tamamlandi':
+                st.markdown("<span style='background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem;'>Tamamlandi</span>", unsafe_allow_html=True)
+            elif analysis['status'] == 'Devam Ediyor':
+                st.markdown("<span style='background: #FEFCE8; color: #A16207; border: 1px solid #FEF08A; padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem;'>Devam Ediyor</span>", unsafe_allow_html=True)
+            else:
+                st.markdown("<span style='background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem;'>QC Gerekli</span>", unsafe_allow_html=True)
+        with cols[4]:
+            st.markdown(f"<span style='font-size: 0.8rem; color: #334155;'>{analysis['date']}</span>", unsafe_allow_html=True)
+        with cols[5]:
+            if st.button("Detay", key=f"detail_{i}", type="secondary"):
+                st.session_state['current_page'] = 'analysis_detail'
+                st.session_state['selected_analysis'] = analysis
+                st.rerun()
+
+
+def render_analysis_detail_page():
+    """Render analysis detail page with tabs - UNODC Tailwind style - nrcdnl94"""
+    
+    if 'selected_analysis' not in st.session_state:
+        st.session_state['selected_analysis'] = {
+            "id": "2025-NGS-00456", 
+            "type": "Tam Kan", 
+            "module": "NGS", 
+            "status": "Devam Ediyor", 
+            "date": "05.12.2025"
+        }
+    
+    analysis = st.session_state['selected_analysis']
+    
+    st.markdown("""
+    <style>
+    .breadcrumb-nav {
+        font-size: 0.7rem;
+        color: #64748B;
+        margin-bottom: 12px;
+    }
+    .breadcrumb-nav a {
+        color: #0050A0;
+        text-decoration: none;
+    }
+    .breadcrumb-nav a:hover {
+        text-decoration: underline;
+    }
+    .detail-header-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+    }
+    .detail-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #0050A0;
+        margin: 0;
+    }
+    .detail-subtitle {
+        font-size: 0.75rem;
+        color: #64748B;
+        margin-top: 4px;
+    }
+    .summary-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 16px;
+    }
+    .summary-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 12px;
+    }
+    .summary-item {
+        font-size: 0.75rem;
+        color: #475569;
+        margin-bottom: 4px;
+    }
+    .summary-label {
+        font-weight: 600;
+    }
+    .metric-value {
+        color: #0050A0;
+        font-weight: 600;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    col_back, col_title = st.columns([1, 11])
+    with col_back:
+        if st.button("Geri", type="secondary"):
+            st.session_state['current_page'] = 'dashboard'
+            st.rerun()
+    
+    st.markdown(f"""
+    <div class="breadcrumb-nav">
+        <span style="cursor:pointer; color:#0050A0;">Dashboard</span> / 
+        <span style="cursor:pointer; color:#0050A0;">Analizler</span> / 
+        <span style="color:#334155; font-weight:500;">{analysis['module']} - {analysis['id']}</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.markdown(f"""
+        <div class="detail-header-card">
+            <h1 class="detail-title">{analysis['module']} Analizi - Ornek ID: {analysis['id']}</h1>
+            <p class="detail-subtitle">Ornek turu: {analysis['type']} | Platform: Illumina | Laboratuvar: Adli Genetik Birimi</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        if analysis['status'] == 'Tamamlandi':
+            st.success("Durum: Tamamlandi")
+        elif analysis['status'] == 'Devam Ediyor':
+            st.warning("Durum: Devam Ediyor")
+        else:
+            st.error("Durum: QC Gerekli")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        st.markdown("""
+        <div class="summary-card">
+            <div class="summary-title">Ornek Ozeti</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        subcol1, subcol2 = st.columns(2)
+        with subcol1:
+            st.markdown(f"""
+            <div class="summary-item"><span class="summary-label">Ornek ID:</span> {analysis['id']}</div>
+            <div class="summary-item"><span class="summary-label">Ornek Turu:</span> {analysis['type']}</div>
+            <div class="summary-item"><span class="summary-label">Alinma Tarihi:</span> {analysis['date']}</div>
+            <div class="summary-item"><span class="summary-label">Laboratuvar Kodu:</span> AG-IST-01</div>
+            """, unsafe_allow_html=True)
+        with subcol2:
+            st.markdown(f"""
+            <div class="summary-item"><span class="summary-label">Analiz Turu:</span> {analysis['module']}</div>
+            <div class="summary-item"><span class="summary-label">Platform:</span> Illumina NovaSeq</div>
+            <div class="summary-item"><span class="summary-label">Sorumlu Uzman:</span> Uzm. Biyolog A.B.</div>
+            <div class="summary-item"><span class="summary-label">Oncelik:</span> Yuksek</div>
+            """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="summary-card">
+            <div class="summary-title">NGS Ozet Metrikleri</div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div class="summary-item">Toplam Okuma Sayisi: <span class="metric-value">85.2 M</span></div>
+        <div class="summary-item">Ortalama Coverage: <span class="metric-value">102x</span></div>
+        <div class="summary-item">Q30 Uzerindeki Okumalar: <span class="metric-value">93.5%</span></div>
+        <div class="summary-item">Hizalanma Orani: <span class="metric-value">99.1%</span></div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "Genel Bakis",
+        "Quality Control (QC)",
+        "Alignment",
+        "Varyantlar",
+        "STR Profil"
+    ])
+    
+    with tab1:
+        render_overview_tab(analysis)
+    
+    with tab2:
+        render_qc_tab(analysis)
+    
+    with tab3:
+        render_alignment_tab(analysis)
+    
+    with tab4:
+        render_variants_tab(analysis)
+    
+    with tab5:
+        render_str_tab(analysis)
+
+
+def render_overview_tab(analysis):
+    """Render overview tab content - nrcdnl94"""
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="summary-card">
+            <div class="summary-title">QC Durumu (Ozet)</div>
+            <p style="font-size: 0.7rem; color: #64748B;">QC metrikleri genel olarak kabul edilebilir sinirlar icindedir.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="summary-item">Ortalama Base Kalitesi (Q-score): <span class="metric-value">Q35</span></div>
+        <div class="summary-item">GC Icerigi: <span class="metric-value">49%</span></div>
+        <div class="summary-item">Duplikasyon Orani: <span class="metric-value">8.2%</span></div>
+        <div class="summary-item">Adaptor Kontaminasyonu: <span class="metric-value">0.3%</span></div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="summary-card">
+            <div class="summary-title">Analiz Durumu</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="summary-item">Pre-processing: <span style="color: #166534;">Tamamlandi</span></div>
+        <div class="summary-item">Alignment: <span style="color: #166534;">Tamamlandi</span></div>
+        <div class="summary-item">Variant Calling: <span style="color: #A16207;">Devam Ediyor</span></div>
+        <div class="summary-item">Raporlama: <span style="color: #64748B;">Beklemede</span></div>
+        """, unsafe_allow_html=True)
+
+
+def render_qc_tab(analysis):
+    """Render QC tab content - nrcdnl94"""
+    import plotly.graph_objects as go
+    import numpy as np
+    
+    st.markdown("#### Quality Control Detaylari")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="summary-card">
+            <div class="summary-title">FastQC Metrikleri</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        metrics_data = {
+            "Metrik": ["Toplam Okuma", "Ortalama Okuma Uzunlugu", "Q20 Orani", "Q30 Orani", "GC Icerigi", "N Orani"],
+            "Deger": ["85.2 M", "150 bp", "97.8%", "93.5%", "49%", "0.02%"],
+            "Durum": ["Pass", "Pass", "Pass", "Pass", "Pass", "Pass"]
+        }
+        
+        import pandas as pd
+        df = pd.DataFrame(metrics_data)
+        st.dataframe(df, use_container_width=True, hide_index=True)
+    
+    with col2:
+        positions = list(range(1, 151))
+        quality_scores = [35 - (0.05 * i) + np.random.uniform(-1, 1) for i in range(150)]
+        
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=positions,
+            y=quality_scores,
+            mode='lines',
+            line=dict(color='#0050A0', width=2),
+            name='Q-Score'
+        ))
+        fig.add_hline(y=30, line_dash="dash", line_color="#166534", annotation_text="Q30 Esik")
+        fig.add_hline(y=20, line_dash="dash", line_color="#DC2626", annotation_text="Q20 Esik")
+        
+        fig.update_layout(
+            title="Pozisyona Gore Base Kalitesi",
+            xaxis_title="Pozisyon (bp)",
+            yaxis_title="Q-Score",
+            template="plotly_white",
+            height=300,
+            font=dict(family="Inter, sans-serif")
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    st.markdown("#### Duplikasyon Analizi")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        labels = ['Tekil Okumalar', 'Duplike Okumalar']
+        values = [91.8, 8.2]
+        
+        fig = go.Figure(data=[go.Pie(
+            labels=labels,
+            values=values,
+            hole=0.5,
+            marker_colors=['#0050A0', '#00A7D8']
+        )])
+        fig.update_layout(
+            title="Duplikasyon Orani",
+            template="plotly_white",
+            height=250,
+            font=dict(family="Inter, sans-serif")
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="summary-card">
+            <div class="summary-title">Kontaminasyon Kontrolu</div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div class="summary-item">Adaptor Kontaminasyonu: <span class="metric-value">0.3%</span> <span style="color:#166534;">(Pass)</span></div>
+        <div class="summary-item">Yabanci DNA: <span class="metric-value">0.1%</span> <span style="color:#166534;">(Pass)</span></div>
+        <div class="summary-item">rRNA Kontaminasyonu: <span class="metric-value">0.05%</span> <span style="color:#166534;">(Pass)</span></div>
+        """, unsafe_allow_html=True)
+
+
+def render_alignment_tab(analysis):
+    """Render alignment tab content - nrcdnl94"""
+    import plotly.graph_objects as go
+    import numpy as np
+    
+    st.markdown("#### Alignment Istatistikleri")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Hizalanma Orani", "99.1%")
+    with col2:
+        st.metric("Ortalama Coverage", "102x")
+    with col3:
+        st.metric("On-Target Orani", "85.3%")
+    with col4:
+        st.metric("Insert Size (ort.)", "350 bp")
+    
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        chromosomes = [f"chr{i}" for i in range(1, 23)] + ["chrX", "chrY"]
+        coverage = [100 + np.random.uniform(-15, 15) for _ in range(24)]
+        
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=chromosomes,
+            y=coverage,
+            marker_color='#0050A0'
+        ))
+        fig.update_layout(
+            title="Kromozom Bazli Coverage Dagilimi",
+            xaxis_title="Kromozom",
+            yaxis_title="Coverage (x)",
+            template="plotly_white",
+            height=350,
+            font=dict(family="Inter, sans-serif")
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        insert_sizes = np.random.normal(350, 50, 1000)
+        
+        fig = go.Figure()
+        fig.add_trace(go.Histogram(
+            x=insert_sizes,
+            nbinsx=50,
+            marker_color='#00A7D8'
+        ))
+        fig.update_layout(
+            title="Insert Size Dagilimi",
+            xaxis_title="Insert Size (bp)",
+            yaxis_title="Frekans",
+            template="plotly_white",
+            height=350,
+            font=dict(family="Inter, sans-serif")
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+
+def render_variants_tab(analysis):
+    """Render variants tab content - nrcdnl94"""
+    import pandas as pd
+    
+    st.markdown("#### Varyant Cagirma Sonuclari")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Toplam Varyant", "45,892")
+    with col2:
+        st.metric("SNV", "42,156")
+    with col3:
+        st.metric("Indel", "3,736")
+    with col4:
+        st.metric("Ti/Tv Orani", "2.1")
+    
+    st.markdown("---")
+    st.markdown("#### Onemli Varyantlar")
+    
+    variants_data = {
+        "Gen": ["BRCA1", "TP53", "EGFR", "KRAS", "BRAF"],
+        "Pozisyon": ["chr17:43,044,295", "chr17:7,577,538", "chr7:55,174,772", "chr12:25,227,342", "chr7:140,453,136"],
+        "Ref": ["A", "G", "T", "G", "A"],
+        "Alt": ["G", "A", "G", "A", "T"],
+        "Zygosity": ["Heterozigot", "Heterozigot", "Homozigot", "Heterozigot", "Heterozigot"],
+        "Klinik Onemi": ["Patojenik", "VUS", "Benign", "Patojenik", "VUS"],
+        "VAF": ["48%", "52%", "100%", "45%", "51%"]
+    }
+    
+    df = pd.DataFrame(variants_data)
+    st.dataframe(df, use_container_width=True, hide_index=True)
+    
+    st.markdown("---")
+    st.markdown("#### Fonksiyonel Etki Dagilimi")
+    
+    import plotly.graph_objects as go
+    
+    labels = ['Missense', 'Synonymous', 'Frameshift', 'Nonsense', 'Splice Site', 'Diger']
+    values = [45, 30, 8, 5, 7, 5]
+    
+    fig = go.Figure(data=[go.Pie(
+        labels=labels,
+        values=values,
+        hole=0.4,
+        marker_colors=['#0050A0', '#00A7D8', '#003366', '#E8F4FC', '#64748B', '#94A3B8']
+    )])
+    fig.update_layout(
+        title="Varyant Tiplerine Gore Dagılım",
+        template="plotly_white",
+        height=350,
+        font=dict(family="Inter, sans-serif")
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def render_str_tab(analysis):
+    """Render STR profile tab content - nrcdnl94"""
+    import pandas as pd
+    import plotly.graph_objects as go
+    
+    st.markdown("#### STR Profil Analizi")
+    
+    str_data = {
+        "Marker": ["D3S1358", "vWA", "D16S539", "CSF1PO", "TPOX", "D8S1179", "D21S11", "D18S51", "D2S441", "D19S433"],
+        "Allel 1": [15, 17, 11, 12, 8, 13, 30, 15, 11, 14],
+        "Allel 2": [16, 18, 12, 13, 11, 14, 31.2, 17, 14, 15],
+        "RFU 1": [8500, 9200, 7800, 8100, 6500, 8900, 9500, 7200, 8800, 9100],
+        "RFU 2": [8200, 8900, 7500, 7900, 6200, 8600, 9200, 6900, 8500, 8800]
+    }
+    
+    df = pd.DataFrame(str_data)
+    st.dataframe(df, use_container_width=True, hide_index=True)
+    
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        markers = str_data["Marker"]
+        allel1 = str_data["Allel 1"]
+        allel2 = str_data["Allel 2"]
+        
+        fig = go.Figure()
+        fig.add_trace(go.Bar(name='Allel 1', x=markers, y=allel1, marker_color='#0050A0'))
+        fig.add_trace(go.Bar(name='Allel 2', x=markers, y=allel2, marker_color='#00A7D8'))
+        
+        fig.update_layout(
+            title="STR Marker Allel Dagilimi",
+            xaxis_title="Marker",
+            yaxis_title="Allel Degeri",
+            barmode='group',
+            template="plotly_white",
+            height=350,
+            font=dict(family="Inter, sans-serif")
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="summary-card">
+            <div class="summary-title">Profil Ozeti</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="summary-item">Toplam Marker: <span class="metric-value">24</span></div>
+        <div class="summary-item">Basarili Cagri: <span class="metric-value">24/24 (100%)</span></div>
+        <div class="summary-item">Ortalama RFU: <span class="metric-value">8,250</span></div>
+        <div class="summary-item">Stutter Orani: <span class="metric-value">< 15%</span></div>
+        <div class="summary-item">Profil Kalitesi: <span style="color:#166534; font-weight:600;">Yuksek</span></div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        st.markdown("""
+        <div class="summary-item"><span class="summary-label">Amelogenin:</span> X, Y</div>
+        <div class="summary-item"><span class="summary-label">Cinsiyet:</span> Erkek</div>
+        <div class="summary-item"><span class="summary-label">Match Probabilitesi:</span> 1 / 10^18</div>
+        """, unsafe_allow_html=True)
 
 def render_hero_slider():
     """Render hero slider section (legacy) - nrcdnl94"""

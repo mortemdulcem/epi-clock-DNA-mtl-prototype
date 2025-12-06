@@ -1,0 +1,757 @@
+Aşağıda, aynı Analiz Detay sayfası içinde, üç sekmeyi de
+
+(QC, Alignment, Varyantlar) ayrı içerik blokları olarak verdim.
+
+Mantık: Şimdilik hepsi alt alta duruyor; gerçek uygulamada JS ile sekmeler arasında görünür/gizli yaparsın.
+Tasarım: UNODC tarzı, sade, kurumsal, DNA/NGS odaklı.
+İstersen önce sadece bu üç sekmeyi okuyup, sonra istersen sana basit JS ile tab-switching örneği de verebilirim.
+
+Aşağıdaki kodu, bir bütün analysis-detail.html dosyası olarak kullanabilirsin.
+
+Kopyala
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Analiz Detay – Ulusal DNA Analiz Sistemi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind CDN (geliştirme için) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            unblue: '#0050A0',
+            unblueLight: '#00A7D8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Basit sekme görünür/gizli kontrolü için yardımcı sınıf */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- ========================================================= -->
+  <!-- 1. HEADER                                                 -->
+  <!-- ========================================================= -->
+  <header class="w-full border-b border-slate-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-unblue flex items-center justify-center text-white font-bold text-xs">
+            DNA
+          </div>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold tracking-wide text-unblue uppercase">
+              Ulusal DNA Analiz Sistemi
+            </span>
+            <span class="text-xs text-slate-500">
+              National Scientific DNA Analysis Platform
+            </span>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+          <a href="index.html" class="text-slate-600 hover:text-unblue">
+            Dashboard
+          </a>
+          <a href="#" class="text-slate-600 hover:text-unblue">
+            Örnekler
+          </a>
+          <a href="#" class="text-unblue border-b-2 border-unblue pb-1">
+            Analizler
+          </a>
+          <a href="#" class="text-slate-600 hover:text-unblue">
+            Modüller
+          </a>
+          <a href="#" class="text-slate-600 hover:text-unblue">
+            Raporlar
+          </a>
+          <a href="#" class="text-slate-600 hover:text-unblue">
+            İstatistik
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-4 text-xs">
+          <button class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-unblue hover:text-unblue">
+            TR / EN
+          </button>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-xs">
+              UY
+            </div>
+            <div class="hidden sm:flex flex-col">
+              <span class="text-xs font-semibold">Uzman Kullanıcı</span>
+              <span class="text-[11px] text-slate-500">Adli Genetik Birimi</span>
+            </div>
+          </div>
+          <button
+            onclick="window.location.href='login.html';"
+            class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-red-500 hover:text-red-600 transition"
+          >
+            Çıkış
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================= -->
+  <!-- 2. ANA YAPI                                               -->
+  <!-- ========================================================= -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="grid grid-cols-12 gap-6">
+
+      <!-- SIDEBAR -->
+      <aside class="col-span-12 md:col-span-3 lg:col-span-2">
+        <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+          <div class="px-4 py-3 border-b border-slate-200">
+            <h2 class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+              Modüller
+            </h2>
+          </div>
+          <nav class="py-2 text-sm">
+            <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              Dashboard
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              Örnek Yönetimi
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-unblue bg-slate-50 border-l-4 border-unblue">
+              <span class="w-2 h-2 rounded-full bg-unblue"></span>
+              NGS Analizi
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              STR / Adli Modül
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              Klinik Genetik
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              Popülasyon Genetiği
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="col-span-12 md:col-span-9 lg:col-span-10 space-y-6">
+
+        <!-- BAŞLIK / BREADCRUMB -->
+        <section class="bg-white border border-slate-200 rounded-lg shadow-sm px-5 py-4 space-y-3">
+          <div class="text-[11px] text-slate-500">
+            <a href="index.html" class="hover:text-unblue hover:underline">Dashboard</a>
+            <span class="mx-1">/</span>
+            <a href="#" class="hover:text-unblue hover:underline">Analizler</a>
+            <span class="mx-1">/</span>
+            <span class="text-slate-700 font-medium">NGS Analizi – 2025-NGS-00456</span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h1 class="text-lg font-semibold text-unblue">
+                NGS Analizi – Örnek ID: 2025-NGS-00456
+              </h1>
+              <p class="text-xs text-slate-600 mt-1">
+                Örnek türü: Tam Kan · Platform: Illumina · Laboratuvar: Adli Genetik Birimi
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 text-[11px]">
+                Durum: Devam Ediyor
+              </span>
+              <button class="px-3 py-1.5 text-xs rounded border border-unblue text-unblue hover:bg-unblue hover:text-white transition">
+                Analizi Güncelle
+              </button>
+              <button class="px-3 py-1.5 text-xs rounded border border-slate-300 text-slate-700 hover:border-unblue hover:text-unblue transition">
+                Rapor Taslağı
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ÖZET PANEL İLK BLOK (AYNI KALSIN) -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="bg-white border border-slate-200 rounded-lg shadow-sm px-5 py-4 lg:col-span-2">
+            <h2 class="text-sm font-semibold text-slate-700 mb-3">
+              Örnek Özeti
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-700">
+              <div class="space-y-1">
+                <p><span class="font-semibold">Örnek ID:</span> 2025-NGS-00456</p>
+                <p><span class="font-semibold">Örnek Türü:</span> Tam Kan</p>
+                <p><span class="font-semibold">Alınma Tarihi:</span> 04.12.2025</p>
+                <p><span class="font-semibold">Laboratuvar Kodu:</span> AG-IST-01</p>
+              </div>
+              <div class="space-y-1">
+                <p><span class="font-semibold">Analiz Türü:</span> Tam Ekzom NGS</p>
+                <p><span class="font-semibold">Platform:</span> Illumina</p>
+                <p><span class="font-semibold">Sorumlu Uzman:</span> Uzm. Biyolog A.B.</p>
+                <p><span class="font-semibold">Öncelik:</span> Yüksek</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg shadow-sm px-5 py-4">
+            <h2 class="text-sm font-semibold text-slate-700 mb-3">
+              NGS Özet Metrikleri
+            </h2>
+            <dl class="space-y-2 text-xs text-slate-700">
+              <div class="flex items-center justify-between">
+                <dt>Toplam Okuma Sayısı</dt>
+                <dd class="font-semibold text-unblue">85.2 M</dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt>Ortalama Coverage</dt>
+                <dd class="font-semibold text-unblue">102×</dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt>Q30 Üzerindeki Okumalar</dt>
+                <dd class="font-semibold text-unblue">93.5%</dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt>Hizalanma Oranı</dt>
+                <dd class="font-semibold text-unblue">99.1%</dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- 5. SEKME MENÜSÜ                                       -->
+        <!-- ===================================================== -->
+        <section class="bg-white border border-slate-200 rounded-lg shadow-sm">
+          <!-- Sekmeler -->
+          <div class="border-b border-slate-200 px-5">
+            <nav class="flex flex-wrap gap-4 text-xs font-medium text-slate-600">
+              <button class="py-3 tab-link border-b-2 border-unblue text-unblue" data-tab="overview">
+                Genel Bakış
+              </button>
+              <button class="py-3 tab-link hover:text-unblue" data-tab="qc">
+                Quality Control (QC)
+              </button>
+              <button class="py-3 tab-link hover:text-unblue" data-tab="alignment">
+                Alignment
+              </button>
+              <button class="py-3 tab-link hover:text-unblue" data-tab="variants">
+                Varyantlar
+              </button>
+              <button class="py-3 tab-link hover:text-unblue" data-tab="str">
+                STR Profil
+              </button>
+            </nav>
+          </div>
+
+          <!-- =================================================== -->
+          <!-- 5.1 GENEL BAKIŞ SEKMESİ                             -->
+          <!-- =================================================== -->
+          <div id="tab-overview" class="tab-content active px-5 py-4 space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                <h3 class="text-xs font-semibold text-slate-700 mb-2">
+                  QC Durumu (Özet)
+                </h3>
+                <p class="text-[11px] text-slate-600 mb-3">
+                  QC metrikleri genel olarak kabul edilebilir sınırlar içindedir. Detaylar için QC sekmesine geçiniz.
+                </p>
+                <dl class="space-y-1 text-[11px] text-slate-700">
+                  <div class="flex items-center justify-between">
+                    <dt>Ortalama Base Kalitesi (Q-score)</dt>
+                    <dd class="font-semibold text-unblue">Q35</dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt>GC İçeriği</dt>
+                    <dd class="font-semibold text-unblue">49%</dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt>Adapter Kontaminasyonu</dt>
+                    <dd class="font-semibold text-green-700">Düşük</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                <h3 class="text-xs font-semibold text-slate-700 mb-2">
+                  Alignment Durumu (Özet)
+                </h3>
+                <p class="text-[11px] text-slate-600 mb-3">
+                  Okumaların büyük çoğunluğu referans genoma yüksek doğrulukla hizalanmıştır.
+                </p>
+                <dl class="space-y-1 text-[11px] text-slate-700">
+                  <div class="flex items-center justify-between">
+                    <dt>Referans Genom</dt>
+                    <dd class="font-semibold text-unblue">GRCh38</dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt>Hizalanan Okumalar</dt>
+                    <dd class="font-semibold text-unblue">99.1%</dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt>Çift-Uç (paired-end) Oranı</dt>
+                    <dd class="font-semibold text-unblue">97.8%</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xs font-semibold text-slate-700">
+                  Varyant Özeti
+                </h3>
+                <button class="text-[11px] text-unblue hover:underline">
+                  Tüm Varyantları Gör (Varyantlar Sekmesi)
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-[11px]">
+                  <thead class="bg-slate-100 border-b border-slate-200 text-slate-600">
+                    <tr class="text-left">
+                      <th class="px-3 py-1 font-semibold">Tip</th>
+                      <th class="px-3 py-1 font-semibold">Toplam</th>
+                      <th class="px-3 py-1 font-semibold">Klinik Önemi</th>
+                      <th class="px-3 py-1 font-semibold">Not</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200">
+                    <tr>
+                      <td class="px-3 py-1">SNP</td>
+                      <td class="px-3 py-1">32.480</td>
+                      <td class="px-3 py-1">1 patojenik, 5 olası patojenik</td>
+                      <td class="px-3 py-1 text-slate-600">Detaylı yorumlama gerekli</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">Indel</td>
+                      <td class="px-3 py-1">4.125</td>
+                      <td class="px-3 py-1">0 patojenik, 3 VUS</td>
+                      <td class="px-3 py-1 text-slate-600">Klinik korelasyon önerilir</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">CNV</td>
+                      <td class="px-3 py-1">3</td>
+                      <td class="px-3 py-1">1 olası patojenik</td>
+                      <td class="px-3 py-1 text-slate-600">Doğrulama testi önerilir</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="border border-dashed border-slate-300 rounded-lg h-40 flex items-center justify-center text-[11px] text-slate-400">
+                Coverage dağılımı grafiği için yer tutucu (line / area chart).
+              </div>
+              <div class="border border-dashed border-slate-300 rounded-lg h-40 flex items-center justify-center text-[11px] text-slate-400">
+                Kromozom bazlı varyant yoğunluğu grafiği için yer tutucu (bar / dot plot).
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================== -->
+          <!-- 5.2 QC SEKMESİ                                       -->
+          <!-- =================================================== -->
+          <div id="tab-qc" class="tab-content px-5 py-4 space-y-6">
+            <h2 class="text-sm font-semibold text-slate-700">
+              Quality Control (QC) – Ayrıntılı Görünüm
+            </h2>
+
+            <!-- QC Özet Kartları -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  Ortalama Q-score
+                </div>
+                <div class="mt-1 text-lg font-semibold text-unblue">
+                  Q35
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  Q30 Üzeri Okuma
+                </div>
+                <div class="mt-1 text-lg font-semibold text-unblue">
+                  93.5%
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  Ortalama Okuma Uzunluğu
+                </div>
+                <div class="mt-1 text-lg font-semibold text-unblue">
+                  151 bp
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  GC İçeriği
+                </div>
+                <div class="mt-1 text-lg font-semibold text-unblue">
+                  49%
+                </div>
+              </div>
+            </div>
+
+            <!-- Base Quality grafiği yer tutucu -->
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 space-y-2">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xs font-semibold text-slate-700">
+                  Pozisyona Göre Base Kalitesi (Yer tutucu)
+                </h3>
+                <span class="text-[11px] text-slate-500">
+                  (Per-base sequence quality)
+                </span>
+              </div>
+              <div class="h-40 border border-dashed border-slate-300 flex items-center justify-center text-[11px] text-slate-400">
+                Buraya base quality line chart gelecek.
+              </div>
+            </div>
+
+            <!-- GC Content / Duplication yer tutucular -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 space-y-2">
+                <h3 class="text-xs font-semibold text-slate-700">
+                  GC İçeriği Dağılımı (Yer tutucu)
+                </h3>
+                <div class="h-32 border border-dashed border-slate-300 flex items-center justify-center text-[11px] text-slate-400">
+                  Buraya GC content histogram gelecek.
+                </div>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 space-y-2">
+                <h3 class="text-xs font-semibold text-slate-700">
+                  Duplikasyon Seviyesi (Yer tutucu)
+                </h3>
+                <div class="h-32 border border-dashed border-slate-300 flex items-center justify-center text-[11px] text-slate-400">
+                  Buraya duplication level bar chart gelecek.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================== -->
+          <!-- 5.3 ALIGNMENT SEKMESİ                                -->
+          <!-- =================================================== -->
+          <div id="tab-alignment" class="tab-content px-5 py-4 space-y-6">
+            <h2 class="text-sm font-semibold text-slate-700">
+              Alignment – Ayrıntılı Görünüm
+            </h2>
+
+            <!-- Alignment Özet Kartları -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  Referans Genom
+                </div>
+                <div class="mt-1 text-sm font-semibold text-unblue">
+                  GRCh38
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  Hizalanan Okumalar
+                </div>
+                <div class="mt-1 text-lg font-semibold text-unblue">
+                  99.1%
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  Eşsiz Hizalanan
+                </div>
+                <div class="mt-1 text-lg font-semibold text-unblue">
+                  96.8%
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase">
+                  Ortalama MapQ
+                </div>
+                <div class="mt-1 text-lg font-semibold text-unblue">
+                  58
+                </div>
+              </div>
+            </div>
+
+            <!-- Coverage ve Insert Size yer tutucular -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 space-y-2">
+                <h3 class="text-xs font-semibold text-slate-700">
+                  Genom Boyunca Coverage (Yer tutucu)
+                </h3>
+                <div class="h-32 border border-dashed border-slate-300 flex items-center justify-center text-[11px] text-slate-400">
+                  Coverage dağılımı grafiği (line/area) gelecek.
+                </div>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 space-y-2">
+                <h3 class="text-xs font-semibold text-slate-700">
+                  Insert Size Dağılımı (Yer tutucu)
+                </h3>
+                <div class="h-32 border border-dashed border-slate-300 flex items-center justify-center text-[11px] text-slate-400">
+                  Insert size histogram gelecek.
+                </div>
+              </div>
+            </div>
+
+            <!-- Kromozom Bazlı Okuma Dağılım Tablosu (Örnek) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+              <h3 class="text-xs font-semibold text-slate-700 mb-2">
+                Kromozom Bazlı Okuma Dağılımı
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-[11px]">
+                  <thead class="bg-slate-100 border-b border-slate-200 text-slate-600">
+                    <tr class="text-left">
+                      <th class="px-3 py-1 font-semibold">Kromozom</th>
+                      <th class="px-3 py-1 font-semibold">Okuma Sayısı</th>
+                      <th class="px-3 py-1 font-semibold">Ortalama Coverage</th>
+                      <th class="px-3 py-1 font-semibold">Not</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200">
+                    <tr>
+                      <td class="px-3 py-1">Chr1</td>
+                      <td class="px-3 py-1">8.4 M</td>
+                      <td class="px-3 py-1">105×</td>
+                      <td class="px-3 py-1 text-slate-600">Normal</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">Chr2</td>
+                      <td class="px-3 py-1">7.9 M</td>
+                      <td class="px-3 py-1">101×</td>
+                      <td class="px-3 py-1 text-slate-600">Normal</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">ChrX</td>
+                      <td class="px-3 py-1">3.1 M</td>
+                      <td class="px-3 py-1">88×</td>
+                      <td class="px-3 py-1 text-slate-600">Hafif değişken</td>
+                    </tr>
+                    <!-- ... Diğer kromozomlar ... -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================== -->
+          <!-- 5.4 VARYANTLAR SEKMESİ                               -->
+          <!-- =================================================== -->
+          <div id="tab-variants" class="tab-content px-5 py-4 space-y-6">
+            <h2 class="text-sm font-semibold text-slate-700">
+              Varyantlar – Ayrıntılı Liste
+            </h2>
+
+            <!-- Filtre / Özet satırı -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-[11px]">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-slate-600">Filtreler:</span>
+                <button class="px-2 py-1 rounded border border-slate-300 text-slate-700 hover:border-unblue hover:text-unblue">
+                  Tümü
+                </button>
+                <button class="px-2 py-1 rounded border border-slate-300 text-slate-700 hover:border-unblue hover:text-unblue">
+                  Patojenik
+                </button>
+                <button class="px-2 py-1 rounded border border-slate-300 text-slate-700 hover:border-unblue hover:text-unblue">
+                  Olası patojenik
+                </button>
+                <button class="px-2 py-1 rounded border border-slate-300 text-slate-700 hover:border-unblue hover:text-unblue">
+                  VUS
+                </button>
+              </div>
+              <div class="text-slate-500">
+                Toplam: <span class="font-semibold text-unblue">36.608</span> varyant listeleniyor (örnek).
+              </div>
+            </div>
+
+            <!-- Varyant Tablosu -->
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-[11px]">
+                  <thead class="bg-slate-100 border-b border-slate-200 text-slate-600">
+                    <tr class="text-left">
+                      <th class="px-3 py-1 font-semibold">Gen</th>
+                      <th class="px-3 py-1 font-semibold">Konum</th>
+                      <th class="px-3 py-1 font-semibold">Ref/Alt</th>
+                      <th class="px-3 py-1 font-semibold">Zigosite</th>
+                      <th class="px-3 py-1 font-semibold">Tip</th>
+                      <th class="px-3 py-1 font-semibold">Klinik Sınıf</th>
+                      <th class="px-3 py-1 font-semibold">Veritabanları</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200">
+                    <tr>
+                      <td class="px-3 py-1">BRCA1</td>
+                      <td class="px-3 py-1">chr17:43045612</td>
+                      <td class="px-3 py-1">C &gt; T</td>
+                      <td class="px-3 py-1">Heterozigot</td>
+                      <td class="px-3 py-1">SNP (missense)</td>
+                      <td class="px-3 py-1 text-red-600 font-semibold">Patojenik</td>
+                      <td class="px-3 py-1 text-slate-600">
+                        ClinVar: Pathogenic · gnomAD: 0.0001
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">CFTR</td>
+                      <td class="px-3 py-1">chr7:117559593</td>
+                      <td class="px-3 py-1">G &gt; A</td>
+                      <td class="px-3 py-1">Heterozigot</td>
+                      <td class="px-3 py-1">SNP (missense)</td>
+                      <td class="px-3 py-1 text-orange-500 font-semibold">Olası patojenik</td>
+                      <td class="px-3 py-1 text-slate-600">
+                        ClinVar: Likely pathogenic · gnomAD: 0.0012
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">GENX</td>
+                      <td class="px-3 py-1">chr1:123456789</td>
+                      <td class="px-3 py-1">del 5bp</td>
+                      <td class="px-3 py-1">Homozigot</td>
+                      <td class="px-3 py-1">Indel (frameshift)</td>
+                      <td class="px-3 py-1 text-yellow-600 font-semibold">VUS</td>
+                      <td class="px-3 py-1 text-slate-600">
+                        ClinVar: VUS · gnomAD: 0.0000
+                      </td>
+                    </tr>
+                    <!-- ... daha fazla satır ... -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Klinik Notlar / Yorumsal Alan -->
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+              <h3 class="text-xs font-semibold text-slate-700 mb-2">
+                Klinik / Adli Yorum Notları (Serbest Metin Alanı Örneği)
+              </h3>
+              <p class="text-[11px] text-slate-600">
+                Burada seçili varyantlara ilişkin klinik veya adli yorumlar, ACMG sınıflandırmasına dayalı
+                değerlendirmeler ve rapora yansıtılacak sonuç cümleleri hazırlanabilir. Bu alan gerçek
+                uygulamada editlenebilir bir metin kutusu veya rich-text editor olarak tasarlanabilir.
+              </p>
+            </div>
+          </div>
+
+          <!-- =================================================== -->
+          <!-- 5.5 STR SEKMESİ (KISA İSKELET)                       -->
+          <!-- =================================================== -->
+          <div id="tab-str" class="tab-content px-5 py-4 space-y-6">
+            <h2 class="text-sm font-semibold text-slate-700">
+              STR Profil – Özet (İsteğe göre genişletilebilir)
+            </h2>
+            <p class="text-[11px] text-slate-600">
+              Bu örnekte hem NGS hem STR analizi yapılmış varsayılmıştır. Buraya STR lokusları, alel
+              çağrıları ve olası adli değerlendirme notları eklenebilir.
+            </p>
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-[11px]">
+                  <thead class="bg-slate-100 border-b border-slate-200 text-slate-600">
+                    <tr class="text-left">
+                      <th class="px-3 py-1 font-semibold">Lokus</th>
+                      <th class="px-3 py-1 font-semibold">Alel 1</th>
+                      <th class="px-3 py-1 font-semibold">Alel 2</th>
+                      <th class="px-3 py-1 font-semibold">Peak Yüksekliği Notu</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200">
+                    <tr>
+                      <td class="px-3 py-1">D8S1179</td>
+                      <td class="px-3 py-1">12</td>
+                      <td class="px-3 py-1">14</td>
+                      <td class="px-3 py-1 text-slate-600">Dengeli</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">D21S11</td>
+                      <td class="px-3 py-1">29</td>
+                      <td class="px-3 py-1">30</td>
+                      <td class="px-3 py-1 text-slate-600">Dengeli</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1">FGA</td>
+                      <td class="px-3 py-1">23</td>
+                      <td class="px-3 py-1">25</td>
+                      <td class="px-3 py-1 text-slate-600">Hafif peak farkı</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+              <h3 class="text-xs font-semibold text-slate-700 mb-1">
+                Adli Değerlendirme Notu (Yer tutucu metin alanı)
+              </h3>
+              <p class="text-[11px] text-slate-600">
+                STR profilinin karşılaştırıldığı referans örnekler, popülasyon frekansları ve hesaplanan
+                adli istatistikler (örneğin LR, RMP vb.) burada özetlenebilir.
+              </p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-[11px] text-slate-500 pt-4 pb-2">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-slate-200 pt-3">
+            <span>
+              © 2025 Ulusal DNA Analiz Sistemi – Bilimsel ve Adli Genetik Altyapısı
+            </span>
+            <span>
+              Sayfa: NGS Analiz Detayı · UNODC benzeri kurumsal arayüz.
+            </span>
+          </div>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- BASİT SEKME GEÇİŞİ JS                                     -->
+  <!-- ========================================================= -->
+  <script>
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = {
+      overview: document.getElementById('tab-overview'),
+      qc: document.getElementById('tab-qc'),
+      alignment: document.getElementById('tab-alignment'),
+      variants: document.getElementById('tab-variants'),
+      str: document.getElementById('tab-str')
+    };
+
+    tabLinks.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+
+        // Link görünümleri
+        tabLinks.forEach(b => {
+          b.classList.remove('border-unblue', 'text-unblue');
+          b.classList.add('text-slate-600');
+          b.style.borderBottomWidth = '0px';
+        });
+        btn.classList.remove('text-slate-600');
+        btn.classList.add('border-b-2', 'border-unblue', 'text-unblue');
+
+        // İçerik görünürlükleri
+        Object.keys(tabContents).forEach(key => {
+          tabContents[key].classList.remove('active');
+        });
+        tabContents[target].classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

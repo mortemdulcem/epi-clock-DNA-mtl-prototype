@@ -189,6 +189,12 @@ from modules.unodc_theme import (
     render_section_divider,
     render_footer,
     render_module_card,
+    render_analysis_detail_page,
+    render_overview_tab,
+    render_qc_tab,
+    render_alignment_tab,
+    render_variants_tab,
+    render_str_tab,
     UNODC_COLORS
 )
 from modules.cpg_database import (
@@ -3114,6 +3120,13 @@ def main():
         **Referans Veritabani:**
         10,542 DNA metilasyon profili
         """)
+    
+    if 'current_page' not in st.session_state:
+        st.session_state['current_page'] = 'dashboard'
+    
+    if st.session_state['current_page'] == 'analysis_detail':
+        render_analysis_detail_page()
+        return
     
     if "Ana Sayfa" in analysis_mode:
         render_home_page(components)
