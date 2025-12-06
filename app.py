@@ -316,6 +316,14 @@ from modules.pharmacological_abuse_intelligence import (
     SubstanceAnalysisReport,
     ComprehensiveAnalysisResult
 )
+from modules.molecular_gnn import (
+    MolecularGNNPredictor,
+    MoleculeFeaturizer,
+    get_gnn_predictor,
+    GNNPrediction,
+    REFERENCE_SUBSTANCES,
+    validate_model
+)
 
 st.set_page_config(
     page_title="EpiClock - DNA Methylation Analysis Platform",
@@ -3096,6 +3104,7 @@ def main():
              "DNA Uretim Zekasi",
              "Istismar Yontemi Zekasi",
              "Farmakolojik Analiz Zekasi",
+             "Molekul GNN Analizi",
              "Chemoinformatics",
              "Veri Disa Aktar",
              "CpG Veritabani",
@@ -3192,6 +3201,8 @@ def main():
         render_abuse_method_detection(components)
     elif "Farmakolojik Analiz Zekasi" in analysis_mode:
         render_pharmacological_intelligence(components)
+    elif "Molekul GNN Analizi" in analysis_mode:
+        render_molecular_gnn(components)
     elif "Chemoinformatics" in analysis_mode:
         render_cheminformatics(components)
     elif "Veri Disa Aktar" in analysis_mode:
@@ -4772,6 +4783,345 @@ def _display_transformation_details(trans):
             st.markdown("**Akademik Referanslar:**")
             for ref in trans['references']:
                 st.markdown(f"- {ref}")
+
+
+def render_molecular_gnn(components):
+    """Graph Neural Network Molekul Analizi - PyTorch tabanlı"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## Graph Neural Network Molekul Analizi")
+    st.markdown("""
+    **MPNN + Attention Tabanli Derin Ogrenme Modeli**
+    
+    Bu modul, molekul graflarindan ogrenen yapay zeka ile:
+    - **Bagimlilik potansiyeli** tahmini (%95 guven araligi)
+    - **Toksisite siniflandirmasi** (Dusuk/Orta/Yuksek/Siddetli)
+    - **Metabolizma yukunlulugu** ve CYP inhibisyonu
+    - **BBB gecirgenlik** ve hERG riski
+    - **Atom onemi** yorumlanabilirlik analizi
+    """)
+    
+    predictor = get_gnn_predictor()
+    model_info = predictor.get_model_info()
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.metric("Model Tipi", "MPNN+GAT")
+    with col2:
+        st.metric("Katman Sayisi", model_info['num_layers'])
+    with col3:
+        st.metric("Gizli Boyut", model_info['hidden_dim'])
+    with col4:
+        st.metric("Parametre", f"{model_info['num_parameters']:,}")
+    with col5:
+        st.metric("Tahmin Baslik", len(model_info['prediction_heads']))
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "SMILES Analizi",
+        "Referans Maddeler",
+        "Toplu Analiz",
+        "Model Dogrulama",
+        "Mimari Detay"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### SMILES Yapisından Ozellik Tahmini")
+        
+        smiles_input = st.text_input(
+            "SMILES Girin:",
+            value="CC(=O)Oc1ccccc1C(=O)O",
+            help="Molekulun SMILES gosterimi",
+            key="gnn_smiles"
+        )
+        
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            if st.button("Tahmin Yap", type="primary", key="gnn_predict"):
+                with st.spinner("GNN tahmini yapiliyor..."):
+                    prediction = predictor.predict(smiles_input)
+                    if prediction:
+                        st.session_state['gnn_prediction'] = prediction
+                    else:
+                        st.error("Gecersiz SMILES yapisi")
+        
+        with col2:
+            example_select = st.selectbox(
+                "Ornek Maddeler:",
+                ["Ozel SMILES"] + list(REFERENCE_SUBSTANCES.keys()),
+                key="gnn_example"
+            )
+            if example_select != "Ozel SMILES":
+                st.info(f"SMILES: {REFERENCE_SUBSTANCES[example_select]['smiles']}")
+        
+        if 'gnn_prediction' in st.session_state:
+            pred = st.session_state['gnn_prediction']
+            _display_gnn_prediction(pred)
+    
+    with tabs[1]:
+        st.markdown("### Referans Maddeler Analizi")
+        st.markdown("Bilinen maddeler uzerinde model performansini inceleyin.")
+        
+        ref_data = []
+        for name, data in REFERENCE_SUBSTANCES.items():
+            ref_data.append({
+                "Madde": name.title(),
+                "SMILES": data['smiles'][:40] + "..." if len(data['smiles']) > 40 else data['smiles'],
+                "Beklenen Bagimlilik": f"%{data['expected_addiction']*100:.0f}",
+                "Beklenen Toksisite": data['expected_toxicity']
+            })
+        
+        df_ref = pd.DataFrame(ref_data)
+        st.dataframe(df_ref, use_container_width=True, height=350)
+        
+        selected_ref = st.selectbox(
+            "Analiz Edilecek Madde:",
+            list(REFERENCE_SUBSTANCES.keys()),
+            format_func=lambda x: x.title(),
+            key="gnn_ref_select"
+        )
+        
+        if st.button("Secili Maddeyi Analiz Et", type="primary", key="gnn_ref_analyze"):
+            with st.spinner(f"{selected_ref.title()} analiz ediliyor..."):
+                smiles = REFERENCE_SUBSTANCES[selected_ref]['smiles']
+                prediction = predictor.predict(smiles)
+                if prediction:
+                    st.session_state['gnn_ref_prediction'] = {
+                        'prediction': prediction,
+                        'expected': REFERENCE_SUBSTANCES[selected_ref]
+                    }
+        
+        if 'gnn_ref_prediction' in st.session_state:
+            ref_result = st.session_state['gnn_ref_prediction']
+            pred = ref_result['prediction']
+            expected = ref_result['expected']
+            
+            st.markdown("---")
+            st.markdown("### Karsilastirma Sonucu")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**Tahmin Edilen:**")
+                st.metric("Bagimlilik", f"%{pred.addiction_potential*100:.1f}")
+                st.metric("Toksisite", pred.toxicity_class)
+            
+            with col2:
+                st.markdown("**Beklenen:**")
+                st.metric("Bagimlilik", f"%{expected['expected_addiction']*100:.0f}")
+                st.metric("Toksisite", expected['expected_toxicity'])
+            
+            _display_gnn_prediction(pred)
+    
+    with tabs[2]:
+        st.markdown("### Toplu SMILES Analizi")
+        st.markdown("Birden fazla molekulu ayni anda analiz edin.")
+        
+        batch_input = st.text_area(
+            "SMILES Listesi (satir basina bir tane):",
+            value="CC(=O)Oc1ccccc1C(=O)O\nCn1cnc2c1c(=O)n(c(=O)n2C)C\nCC(Cc1ccccc1)NC",
+            height=150,
+            key="gnn_batch"
+        )
+        
+        if st.button("Toplu Analiz Baslat", type="primary", key="gnn_batch_analyze"):
+            smiles_list = [s.strip() for s in batch_input.split('\n') if s.strip()]
+            
+            with st.spinner(f"{len(smiles_list)} molekul analiz ediliyor..."):
+                predictions = predictor.predict_batch(smiles_list)
+                st.session_state['gnn_batch_results'] = predictions
+            
+            st.success(f"{len(predictions)}/{len(smiles_list)} molekul basariyla analiz edildi")
+        
+        if 'gnn_batch_results' in st.session_state:
+            results = st.session_state['gnn_batch_results']
+            
+            batch_data = []
+            for pred in results:
+                batch_data.append({
+                    "SMILES": pred.smiles[:30] + "..." if len(pred.smiles) > 30 else pred.smiles,
+                    "Bagimlilik (%)": f"{pred.addiction_potential*100:.1f}%",
+                    "Toksisite": pred.toxicity_class,
+                    "BBB": f"{pred.bbb_permeability*100:.0f}%",
+                    "hERG": f"{pred.herg_risk*100:.0f}%",
+                    "Belirsizlik": f"{pred.uncertainty:.2f}"
+                })
+            
+            df_batch = pd.DataFrame(batch_data)
+            st.dataframe(df_batch, use_container_width=True, height=300)
+            
+            st.markdown("### Bagimlilik Potansiyeli Dagilimi")
+            addiction_values = [p.addiction_potential for p in results]
+            
+            fig = go.Figure(data=[go.Histogram(x=addiction_values, nbinsx=20)])
+            fig.update_layout(
+                xaxis_title="Bagimlilik Potansiyeli",
+                yaxis_title="Frekans",
+                showlegend=False
+            )
+            st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[3]:
+        st.markdown("### Model Dogrulama")
+        st.markdown("Referans maddeler uzerinde model performansi.")
+        
+        if st.button("Dogrulama Calistir", type="primary", key="gnn_validate"):
+            with st.spinner("Model dogrulamasi yapiliyor..."):
+                validation = validate_model()
+                st.session_state['gnn_validation'] = validation
+        
+        if 'gnn_validation' in st.session_state:
+            validation = st.session_state['gnn_validation']
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric(
+                    "Ortalama Bagimlilik Hatasi",
+                    f"{validation['mean_addiction_error']*100:.1f}%"
+                )
+            with col2:
+                st.metric(
+                    "Toksisite Dogrulugu",
+                    f"{validation['toxicity_accuracy']*100:.0f}%"
+                )
+            
+            val_data = []
+            for r in validation['results']:
+                val_data.append({
+                    "Madde": r['substance'].title(),
+                    "Tahmin": f"%{r['predicted_addiction']*100:.1f}",
+                    "Beklenen": f"%{r['expected_addiction']*100:.0f}",
+                    "Hata": f"%{r['addiction_error']*100:.1f}",
+                    "Toksisite Tahmin": r['predicted_toxicity'],
+                    "Toksisite Beklenen": r['expected_toxicity'],
+                    "Eslesme": "Evet" if r['toxicity_match'] else "Hayir"
+                })
+            
+            df_val = pd.DataFrame(val_data)
+            st.dataframe(df_val, use_container_width=True, height=350)
+    
+    with tabs[4]:
+        st.markdown("### Model Mimarisi")
+        
+        st.markdown("""
+        **Message Passing Neural Network (MPNN) + Graph Attention**
+        
+        Model, molekulleri graf yapisi olarak temsil eder:
+        - **Dugumler**: Atomlar (C, N, O, S, Cl, vb.)
+        - **Kenarlar**: Kimyasal baglar (tekli, cift, uclu, aromatik)
+        - **Ozellikler**: Atom ve bag ozellikleri
+        """)
+        
+        st.markdown("#### Atom Ozellikleri")
+        atom_features = [
+            "Atom numarasi (1-118, one-hot)",
+            "Bag derecesi (0-6)",
+            "Formal yuk (-3 ile +3)",
+            "Hibridizasyon (SP, SP2, SP3, SP3D, SP3D2)",
+            "Aromatiklik (True/False)",
+            "Hidrojen sayisi (0-4)",
+            "Halka icinde mi (True/False)"
+        ]
+        for feat in atom_features:
+            st.markdown(f"- {feat}")
+        
+        st.markdown("#### Bag Ozellikleri")
+        bond_features = [
+            "Bag tipi (tekli, cift, uclu, aromatik)",
+            "Konjugasyon (True/False)",
+            "Halka icinde mi (True/False)",
+            "Stereo (None, Any, Z, E)"
+        ]
+        for feat in bond_features:
+            st.markdown(f"- {feat}")
+        
+        st.markdown("#### Tahmin Basiklari")
+        for head in model_info['prediction_heads']:
+            st.markdown(f"- {head}")
+        
+        st.markdown(f"""
+        #### Model Istatistikleri
+        - **Toplam Parametre:** {model_info['num_parameters']:,}
+        - **Gizli Boyut:** {model_info['hidden_dim']}
+        - **MPNN Katmani:** {model_info['num_layers']}
+        - **Atom Ozellik Boyutu:** {model_info['atom_feature_dim']}
+        - **Bag Ozellik Boyutu:** {model_info['bond_feature_dim']}
+        """)
+
+
+def _display_gnn_prediction(pred: GNNPrediction):
+    """GNN tahmin sonuclarini goster"""
+    import plotly.graph_objects as go
+    
+    st.markdown("---")
+    st.markdown("### Tahmin Sonuclari")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        addiction_color = "#dc3545" if pred.addiction_potential >= 0.7 else "#ffc107" if pred.addiction_potential >= 0.5 else "#28a745"
+        st.markdown(f"""
+        <div style="background: {addiction_color}22; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2em; font-weight: bold; color: {addiction_color};">
+                %{pred.addiction_potential*100:.1f}
+            </div>
+            <div>Bagimlilik Potansiyeli</div>
+            <div style="font-size: 0.8em; color: var(--un-gray-500);">
+                CI: {pred.addiction_ci[0]*100:.0f}-{pred.addiction_ci[1]*100:.0f}%
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        tox_colors = {"Dusuk": "#28a745", "Orta": "#ffc107", "Yuksek": "#dc3545", "Siddetli": "#7b1fa2"}
+        tox_color = tox_colors.get(pred.toxicity_class, "#6c757d")
+        st.markdown(f"""
+        <div style="background: {tox_color}22; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.5em; font-weight: bold; color: {tox_color};">
+                {pred.toxicity_class}
+            </div>
+            <div>Toksisite Sinifi</div>
+            <div style="font-size: 0.8em; color: var(--un-gray-500);">
+                Skor: {pred.toxicity_score*100:.0f}%
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.metric("BBB Gecirgenlik", f"%{pred.bbb_permeability*100:.0f}")
+        st.metric("hERG Riski", f"%{pred.herg_risk*100:.0f}")
+    
+    with col4:
+        st.metric("Metabolizma Yuku", f"%{pred.metabolism_liability*100:.0f}")
+        st.metric("Belirsizlik", f"{pred.uncertainty:.2f}")
+    
+    st.markdown("### CYP Inhibisyonu")
+    
+    cyp_data = list(pred.cyp_inhibition.items())
+    cyp_names = [c[0] for c in cyp_data]
+    cyp_values = [c[1]*100 for c in cyp_data]
+    
+    fig = go.Figure(data=[
+        go.Bar(
+            x=cyp_names,
+            y=cyp_values,
+            marker_color=['#0050A0' if v < 50 else '#dc3545' for v in cyp_values]
+        )
+    ])
+    fig.update_layout(
+        yaxis_title="Inhibisyon (%)",
+        xaxis_title="CYP Enzimi",
+        showlegend=False,
+        height=300
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    if pred.metabolic_sites:
+        st.markdown(f"**Metabolik Siteler (Yuksek Onem):** Atom indeksleri {pred.metabolic_sites}")
+    
+    st.markdown(f"**Hash:** `{pred.hash_chain}`")
+    st.markdown(f"**Zaman Damgasi:** {pred.timestamp}")
 
 
 def _display_comprehensive_report(report):

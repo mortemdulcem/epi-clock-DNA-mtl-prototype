@@ -101,6 +101,14 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-06: NEW MODULE - Molekul Graph Neural Network (GNN) Analizi
+  - PyTorch tabanli MPNN + Attention mimarisi
+  - RDKit ile SMILES -> Molekul Graf donusumu
+  - Atom ozellikleri: atom numarasi, derece, yuk, hibridizasyon, aromatiklik
+  - Bag ozellikleri: tip, konjugasyon, halka, stereo
+  - Multi-task tahmin: bagimlilik, toksisite, metabolizma, BBB, hERG, CYP
+  - 8 referans madde dogrulama (morfin, kokain, fentanil, vb.)
+  - Atom onemi yorumlanabilirlik analizi
 - 2024-12-06: NEW MODULE - Farmakolojik Istismar Analiz Zekasi (Pharmacological Abuse Intelligence)
   - 36,000+ madde kapsamli veritabani (temel maddeler, NPS turevleri, sanal bilesikler)
   - 15 kimyasal donusum yolu (Buscopan->Scopolamine, Kodein->Morfin, Pseudoefedrin->Meth, vb.)
