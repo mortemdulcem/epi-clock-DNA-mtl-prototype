@@ -71,6 +71,71 @@ def apply_unodc_theme():
         letter-spacing: 0.05em;
     }
     
+    /* Global Streamlit Button Styling - UNODC Corporate */
+    .stButton > button {
+        background: #0050A0 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #0050A0 !important;
+        padding: 8px 20px !important;
+        border-radius: 6px !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        font-family: 'Inter', sans-serif !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 4px rgba(0, 80, 160, 0.2) !important;
+    }
+    .stButton > button:hover {
+        background: #003D7A !important;
+        border-color: #003D7A !important;
+        box-shadow: 0 4px 8px rgba(0, 80, 160, 0.3) !important;
+    }
+    .stButton > button:active {
+        background: #002952 !important;
+    }
+    
+    /* Secondary Button Style */
+    .stButton > button[kind="secondary"] {
+        background: #FFFFFF !important;
+        color: #0050A0 !important;
+        border: 1px solid #0050A0 !important;
+    }
+    .stButton > button[kind="secondary"]:hover {
+        background: #E8F4FC !important;
+        color: #003366 !important;
+    }
+    
+    /* File Uploader Styling */
+    [data-testid="stFileUploader"] {
+        border: 2px dashed #0050A0 !important;
+        border-radius: 8px !important;
+        padding: 20px !important;
+        background: #F8FAFC !important;
+    }
+    [data-testid="stFileUploader"] label {
+        color: #0050A0 !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Tab Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: #FFFFFF;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #64748B !important;
+        font-weight: 500 !important;
+        font-size: 0.85rem !important;
+        padding: 12px 16px !important;
+        border-radius: 6px 6px 0 0 !important;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #0050A0 !important;
+        background: #FFFFFF !important;
+        border-bottom: 2px solid #0050A0 !important;
+    }
+    
     /* Main Header Banner */
     .main-header {
         background: linear-gradient(135deg, #1A3A5C 0%, #0072BC 50%, #009EDB 100%);
@@ -535,10 +600,10 @@ def render_top_navigation():
     """, unsafe_allow_html=True)
 
 def render_main_header():
-    """Render UNODC-style main header - clean Tailwind-inspired design - nrcdnl94"""
+    """Render UNODC-style main header with functional buttons - nrcdnl94"""
     st.markdown("""
     <style>
-    .unodc-page-header {
+    .unodc-page-header-box {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
         border-radius: 8px;
@@ -546,78 +611,43 @@ def render_main_header():
         margin-bottom: 20px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    .unodc-page-header-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-    .unodc-page-title {
+    .unodc-page-title-text {
         font-size: 1.1rem;
         font-weight: 600;
         color: #0050A0;
         margin: 0;
     }
-    .unodc-page-subtitle {
+    .unodc-page-subtitle-text {
         font-size: 0.75rem;
         color: #64748B;
         margin: 4px 0 0 0;
     }
-    .unodc-header-actions {
-        display: flex;
-        gap: 8px;
-    }
-    .unodc-btn-primary {
-        background: #0050A0 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #0050A0 !important;
-        padding: 8px 16px !important;
-        border-radius: 6px !important;
-        font-size: 0.8rem !important;
-        font-weight: 600 !important;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-block;
-        text-align: center;
-        letter-spacing: 0.02em;
-    }
-    .unodc-btn-primary:hover {
-        background: #003D7A !important;
-    }
-    .unodc-btn-secondary {
-        background: #FFFFFF !important;
-        color: #334155 !important;
-        border: 1px solid #CBD5E1 !important;
-        padding: 8px 16px !important;
-        border-radius: 6px !important;
-        font-size: 0.8rem !important;
-        font-weight: 600 !important;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-block;
-        text-align: center;
-    }
-    .unodc-btn-secondary:hover {
-        border-color: #0050A0 !important;
-        color: #0050A0 !important;
-    }
     </style>
-    <div class="unodc-page-header">
-        <div class="unodc-page-header-content">
-            <div>
-                <h1 class="unodc-page-title">Dashboard - Ulusal DNA Analiz Sistemi</h1>
-                <p class="unodc-page-subtitle">
-                    Adli tip, klinik genetik ve populasyon genetigi icin ulusal duzeyde DNA analiz ve raporlama altyapisi.
-                </p>
-            </div>
-            <div class="unodc-header-actions">
-                <span class="unodc-btn-primary">Yeni Analiz Baslat</span>
-                <span class="unodc-btn-secondary">Gelismis Arama</span>
-            </div>
-        </div>
-    </div>
     """, unsafe_allow_html=True)
+    
+    col1, col2 = st.columns([3, 2])
+    
+    with col1:
+        st.markdown("""
+        <div class="unodc-page-header-box">
+            <h1 class="unodc-page-title-text">Dashboard - Ulusal DNA Analiz Sistemi</h1>
+            <p class="unodc-page-subtitle-text">
+                Adli tip, klinik genetik ve populasyon genetigi icin ulusal duzeyde DNA analiz ve raporlama altyapisi.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        btn_col1, btn_col2, btn_col3 = st.columns(3)
+        with btn_col1:
+            if st.button("Veri Yukle", key="header_upload_btn"):
+                st.session_state['show_upload_modal'] = True
+        with btn_col2:
+            if st.button("Yeni Analiz", key="header_new_analysis_btn"):
+                st.session_state['show_new_analysis'] = True
+        with btn_col3:
+            if st.button("Arama", key="header_search_btn"):
+                st.session_state['show_search'] = True
 
 def render_statistic_cards():
     """Render UNODC-style statistic cards - Tailwind-inspired - nrcdnl94"""

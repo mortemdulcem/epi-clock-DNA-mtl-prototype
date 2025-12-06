@@ -1,0 +1,514 @@
+UNODC tarzı, sade bir HTML + Tailwind iskeleti var.
+
+Bu sayfa:
+
+Sol tarafta Epi-Clock modülleri (aynı tarz sidebar),
+Sağda sekmeli yapı:
+Veri Yükle (Upload)
+Analiz Başlat (Run)
+Çıktı / Rapor İndir (Download / Export)
+Backend tarafında:
+
+/api/upload-dna, /api/run-epiclock, /api/download-report gibi endpoint’lere bağlanmanı kolaylaştıracak şekilde tasarlandı.
+Örn. dosya: dna-data-upload-run-export.html
+
+Kopyala
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>DNA Veri Yükleme & Analiz & Çıktı – Epi-Clock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            unblue: '#0050A0',
+            unblueLight: '#00A7D8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- HEADER -->
+  <header class="w-full border-b border-slate-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-unblue flex items-center justify-center text-white font-bold text-xs">
+            DNA
+          </div>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold tracking-wide text-unblue uppercase">
+              Ulusal DNA Analiz Sistemi
+            </span>
+            <span class="text-xs text-slate-500">
+              Epi-Clock DNA / MTL Prototipi
+            </span>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+          <a href="index.html" class="text-slate-600 hover:text-unblue">
+            Dashboard
+          </a>
+          <a href="#" class="text-unblue border-b-2 border-unblue pb-1">
+            DNA Veri & Analiz
+          </a>
+          <a href="epiclock-analysis-detail.html" class="text-slate-600 hover:text-unblue">
+            Epi-Clock Analizleri
+          </a>
+          <a href="#" class="text-slate-600 hover:text-unblue">
+            Raporlar
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-4 text-xs">
+          <button class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-unblue hover:text-unblue">
+            TR / EN
+          </button>
+          <button
+            onclick="window.location.href='login.html';"
+            class="border border-slate-300 rounded px-2 py-1 text-slate-600 hover:border-red-500 hover:text-red-600 transition"
+          >
+            Çıkış
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ANA YAPI -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="grid grid-cols-12 gap-6">
+
+      <!-- SIDEBAR -->
+      <aside class="col-span-12 md:col-span-3 lg:col-span-2">
+        <div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+          <div class="px-4 py-3 border-b border-slate-200">
+            <h2 class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+              Modüller
+            </h2>
+          </div>
+          <nav class="py-2 text-sm">
+            <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              Dashboard
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-unblue bg-slate-50 border-l-4 border-unblue">
+              <span class="w-2 h-2 rounded-full bg-unblue"></span>
+              DNA Veri & Analiz
+            </a>
+            <a href="epiclock-analysis-detail.html" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              Epi-Clock Analizleri
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50">
+              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+              Model Yönetimi
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="col-span-12 md:col-span-9 lg:col-span-10 space-y-6">
+
+        <!-- BAŞLIK -->
+        <section class="bg-white border border-slate-200 rounded-lg shadow-sm px-5 py-4 space-y-3">
+          <div class="text-[11px] text-slate-500">
+            <a href="index.html" class="hover:text-unblue hover:underline">Dashboard</a>
+            <span class="mx-1">/</span>
+            <span class="text-slate-700 font-medium">DNA Veri Yükleme & Epi-Clock Analizi</span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h1 class="text-lg font-semibold text-unblue">
+                DNA Veri Yükleme · Epi-Clock Analizi · Çıktı Alma
+              </h1>
+              <p class="text-xs text-slate-600 mt-1">
+                DNA metilasyon / genomik verilerini yükleyin, epigenetik yaş analizini başlatın ve rapor çıktısını indirin.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEKME MENÜSÜ -->
+        <section class="bg-white border border-slate-200 rounded-lg shadow-sm">
+          <div class="border-b border-slate-200 px-5">
+            <nav class="flex flex-wrap gap-4 text-xs font-medium text-slate-600">
+              <button class="py-3 tab-link border-b-2 border-unblue text-unblue" data-tab="upload">
+                1) Veri Yükle
+              </button>
+              <button class="py-3 tab-link hover:text-unblue" data-tab="run">
+                2) Analiz Başlat
+              </button>
+              <button class="py-3 tab-link hover:text-unblue" data-tab="export">
+                3) Çıktı / Rapor Al
+              </button>
+            </nav>
+          </div>
+
+          <!-- 1) VERİ YÜKLE SEKMESİ -->
+          <div id="tab-upload" class="tab-content active px-5 py-4 space-y-6">
+            <h2 class="text-sm font-semibold text-slate-700">
+              DNA Veri Yükleme
+            </h2>
+            <p class="text-[11px] text-slate-600">
+              Buradan DNA metilasyon matrisi (.csv, .tsv, .parquet vb.) veya proje formatındaki girdi dosyalarınızı yükleyebilirsiniz.
+            </p>
+
+            <!-- Dosya yükleme formu -->
+            <form id="dna-upload-form" class="space-y-4" enctype="multipart/form-data">
+              <!-- Veri seti adı -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Veri Seti Adı
+                  </label>
+                  <input
+                    type="text"
+                    name="dataset_name"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                    placeholder="Örn: epi_clock_cohort_01"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Veri Tipi
+                  </label>
+                  <select
+                    name="data_type"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                  >
+                    <option value="beta_matrix">DNA metilasyon β-matrix</option>
+                    <option value="raw_intensity">Ham intensite verisi</option>
+                    <option value="genotype">Genotip verisi</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Dosya -->
+              <div>
+                <label class="block text-xs font-medium text-slate-700 mb-1">
+                  Dosya Seç (.csv, .tsv, .parquet vb.)
+                </label>
+                <input
+                  type="file"
+                  name="dna_file"
+                  id="dna-file-input"
+                  class="block w-full text-xs text-slate-700 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-unblue file:text-white hover:file:bg-unblueLight"
+                />
+                <p class="mt-1 text-[11px] text-slate-500">
+                  Not: Büyük veri setleri için yükleme süresi uzayabilir. Gerekirse arka plan işlem (background job) tasarlayabilirsiniz.
+                </p>
+              </div>
+
+              <!-- Gönder butonu -->
+              <div>
+                <button
+                  type="submit"
+                  class="inline-flex items-center px-4 py-2 text-xs font-medium text-white bg-unblue border border-transparent rounded hover:bg-unblueLight focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-unblue"
+                >
+                  Veriyi Yükle
+                </button>
+              </div>
+            </form>
+
+            <!-- Sunucu cevabı -->
+            <div id="upload-status" class="mt-2 text-[11px] text-slate-600">
+              Henüz bir dosya yüklenmedi.
+            </div>
+          </div>
+
+          <!-- 2) ANALİZ BAŞLAT SEKMESİ -->
+          <div id="tab-run" class="tab-content px-5 py-4 space-y-6">
+            <h2 class="text-sm font-semibold text-slate-700">
+              Epi-Clock Analizini Başlat
+            </h2>
+            <p class="text-[11px] text-slate-600">
+              Yüklediğiniz veri seti üzerinde epigenetik yaş / MTL analizini başlatabilirsiniz. Bu iskelet,
+              backend'de tanımlanacak /api/run-epiclock veya benzeri bir endpoint'e bağlanmak üzere tasarlanmıştır.
+            </p>
+
+            <!-- Analiz parametre formu -->
+            <form id="run-analysis-form" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Veri Seti ID / Adı
+                  </label>
+                  <input
+                    type="text"
+                    name="dataset_id"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                    placeholder="Örn: epi_clock_cohort_01"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Model Versiyonu
+                  </label>
+                  <select
+                    name="model_version"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                  >
+                    <option value="mtl_v1">MTL v1 (deneme)</option>
+                    <option value="mtl_v2">MTL v2</option>
+                    <option value="baseline">Baseline epigenetik saat</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Çalışma Modu
+                  </label>
+                  <select
+                    name="run_mode"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                  >
+                    <option value="single">Tek örnek</option>
+                    <option value="batch">Toplu (tüm kohort)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Opsiyonel parametreler -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Maksimum epoch / iterasyon (opsiyonel)
+                  </label>
+                  <input
+                    type="number"
+                    name="max_epochs"
+                    min="1"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                    placeholder="Örn: 100"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Seed (opsiyonel)
+                  </label>
+                  <input
+                    type="number"
+                    name="seed"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                    placeholder="Örn: 42"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  class="inline-flex items-center px-4 py-2 text-xs font-medium text-white bg-unblue border border-transparent rounded hover:bg-unblueLight focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-unblue"
+                >
+                  Analizi Başlat
+                </button>
+              </div>
+            </form>
+
+            <!-- Analiz durumu -->
+            <div id="run-status" class="mt-2 text-[11px] text-slate-600">
+              Henüz bir analiz başlatılmadı.
+            </div>
+          </div>
+
+          <!-- 3) ÇIKTI / RAPOR SEKMESİ -->
+          <div id="tab-export" class="tab-content px-5 py-4 space-y-6">
+            <h2 class="text-sm font-semibold text-slate-700">
+              Çıktı / Rapor Alma
+            </h2>
+            <p class="text-[11px] text-slate-600">
+              Tamamlanan analizlere ait sonuçları (JSON/CSV) ve raporları (PDF/HTML) buradan indirebilirsiniz.
+            </p>
+
+            <!-- Çıktı seçimi -->
+            <form id="export-form" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Analiz ID / Çalışma ID
+                  </label>
+                  <input
+                    type="text"
+                    name="run_id"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                    placeholder="Örn: run_2025_12_06_001"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">
+                    Çıktı Tipi
+                  </label>
+                  <select
+                    name="export_type"
+                    class="block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-unblue focus:border-unblue"
+                  >
+                    <option value="summary_json">Özet JSON</option>
+                    <option value="full_csv">Tam sonuç (CSV)</option>
+                    <option value="report_pdf">Rapor (PDF)</option>
+                    <option value="report_html">Rapor (HTML)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <button
+                  type="submit"
+                  class="inline-flex items-center px-4 py-2 text-xs font-medium text-white bg-unblue border border-transparent rounded hover:bg-unblueLight focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-unblue"
+                >
+                  Çıktıyı Oluştur / İndir
+                </button>
+                <span id="export-status" class="text-[11px] text-slate-600">
+                  Henüz bir çıktı talep edilmedi.
+                </span>
+              </div>
+            </form>
+
+            <!-- Yer tutucu: son indirilen rapor özeti -->
+            <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-[11px] text-slate-600">
+              <p><span class="font-semibold">Son İndirilen Rapor:</span> —</p>
+              <p><span class="font-semibold">Tarih / Saat:</span> —</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-[11px] text-slate-500 pt-4 pb-2">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-slate-200 pt-3">
+            <span>
+              © 2025 Ulusal DNA Analiz Sistemi – Epi-Clock DNA / MTL Prototipi
+            </span>
+            <span>
+              Modül: DNA Veri Yükleme · Analiz · Çıktı Alma.
+            </span>
+          </div>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- JS: SEKME GEÇİŞİ + BASİT AJAX İSKELETLERİ -->
+  <script>
+    // Sekme geçişleri
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = {
+      upload: document.getElementById('tab-upload'),
+      run: document.getElementById('tab-run'),
+      export: document.getElementById('tab-export')
+    };
+
+    tabLinks.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+        tabLinks.forEach(b => {
+          b.classList.remove('border-unblue', 'text-unblue', 'border-b-2');
+          b.classList.add('text-slate-600');
+        });
+        btn.classList.remove('text-slate-600');
+        btn.classList.add('border-b-2', 'border-unblue', 'text-unblue');
+        Object.keys(tabContents).forEach(key => {
+          tabContents[key].classList.remove('active');
+        });
+        tabContents[target].classList.add('active');
+      });
+    });
+
+    // 1) DNA Dosya Yükleme (iskele: backend endpoint'ini sen belirleyeceksin)
+    const uploadForm = document.getElementById('dna-upload-form');
+    const uploadStatus = document.getElementById('upload-status');
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(uploadForm);
+      uploadStatus.textContent = 'Dosya yükleniyor...';
+
+      try {
+        const res = await fetch('/api/upload-dna', {
+          method: 'POST',
+          body: formData
+        });
+        if (!res.ok) throw new Error('Upload error');
+        const data = await res.json();
+        uploadStatus.textContent = `Yükleme tamamlandı. Veri seti ID: ${data.dataset_id || 'N/A'}`;
+      } catch (err) {
+        console.error(err);
+        uploadStatus.textContent = 'Yükleme sırasında bir hata oluştu veya API henüz bağlı değil.';
+        uploadStatus.classList.add('text-red-600');
+      }
+    });
+
+    // 2) Analiz Başlatma
+    const runForm = document.getElementById('run-analysis-form');
+    const runStatus = document.getElementById('run-status');
+
+    runForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      runStatus.textContent = 'Analiz başlatılıyor...';
+      const formData = new FormData(runForm);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/api/run-epiclock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Run error');
+        const data = await res.json();
+        runStatus.textContent = `Analiz başlatıldı. Çalışma ID: ${data.run_id || 'N/A'} · Durum: ${data.status || 'başlatıldı'}`;
+      } catch (err) {
+        console.error(err);
+        runStatus.textContent = 'Analiz başlatılırken bir hata oluştu veya API henüz bağlı değil.';
+        runStatus.classList.add('text-red-600');
+      }
+    });
+
+    // 3) Çıktı / Rapor Alma
+    const exportForm = document.getElementById('export-form');
+    const exportStatus = document.getElementById('export-status');
+
+    exportForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      exportStatus.textContent = 'Çıktı hazırlanıyor...';
+      const formData = new FormData(exportForm);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/api/export-epiclock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Export error');
+
+        // Eğer çıktı dosya indirme linki ise:
+        const data = await res.json();
+        if (data.download_url) {
+          exportStatus.innerHTML = `Çıktı hazır: <a href="${data.download_url}" class="text-unblue underline" target="_blank">İndir</a>`;
+        } else {
+          exportStatus.textContent = 'Çıktı alındı (API demo cevabı).';
+        }
+      } catch (err) {
+        console.error(err);
+        exportStatus.textContent = 'Çıktı alınırken bir hata oluştu veya API henüz bağlı değil.';
+        exportStatus.classList.add('text-red-600');
+      }
+    });
+  </script>
+</body>
+</html>
