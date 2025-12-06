@@ -535,87 +535,51 @@ def render_main_header():
     """Render UNODC-style main header with hero section - nrcdnl94"""
     st.markdown("""
     <style>
-    .hero-header {
-        background: linear-gradient(135deg, #0050A0 0%, #003366 60%, #1A3A5C 100%);
+    .hero-header-compact {
+        background: linear-gradient(135deg, #0050A0 0%, #003366 100%);
         color: white;
-        padding: 48px 40px;
-        margin: -1rem -1rem 2rem -1rem;
+        padding: 24px 32px;
+        border-radius: 8px;
+        margin-bottom: 24px;
         text-align: center;
-        position: relative;
-        overflow: hidden;
     }
-    .hero-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        opacity: 0.5;
-    }
-    .hero-content {
-        position: relative;
-        z-index: 1;
-    }
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(255,255,255,0.1);
-        padding: 8px 20px;
-        border-radius: 30px;
-        margin-bottom: 20px;
-        font-size: 0.85rem;
+    .hero-badge-compact {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        padding: 6px 16px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        font-size: 0.75rem;
         font-weight: 500;
         letter-spacing: 0.05em;
     }
-    .hero-title {
-        font-size: 2.2rem;
+    .hero-title-compact {
+        font-size: 1.6rem;
         font-weight: 700;
-        margin: 0 0 12px 0;
+        margin: 0 0 8px 0;
         line-height: 1.3;
     }
-    .hero-subtitle {
-        font-size: 1.1rem;
+    .hero-subtitle-compact {
+        font-size: 0.95rem;
         opacity: 0.9;
-        margin: 0 0 20px 0;
+        margin: 0;
         font-weight: 400;
     }
-    .hero-cta {
-        display: inline-block;
-        background: #00A7D8;
-        color: white;
-        padding: 12px 32px;
-        border-radius: 6px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        margin-top: 10px;
-    }
-    .hero-cta:hover {
-        background: #008BB3;
-        transform: translateY(-2px);
-    }
-    .hero-author {
-        font-size: 0.8rem;
+    .hero-author-compact {
+        font-size: 0.7rem;
         opacity: 0.6;
-        margin-top: 24px;
+        margin-top: 12px;
     }
     </style>
-    <div class="hero-header">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span>NATIONAL DNA ANALYSIS SYSTEM</span>
-            </div>
-            <h1 class="hero-title">EpiClock - DNA Methylation Analysis Platform</h1>
-            <p class="hero-subtitle">
-                Epigenetic Age Acceleration Detection | Forensic DNA Analysis | Molecular Toxicology
-            </p>
-            <p class="hero-author">
-                Dr. Nurcan Denli Bayir (nrcdnl94) | Copyright 2024
-            </p>
-        </div>
+    <div class="hero-header-compact">
+        <div class="hero-badge-compact">NATIONAL DNA ANALYSIS SYSTEM</div>
+        <h1 class="hero-title-compact">EpiClock - DNA Methylation Analysis Platform</h1>
+        <p class="hero-subtitle-compact">
+            Epigenetic Age Acceleration Detection | Forensic DNA Analysis | Molecular Toxicology
+        </p>
+        <p class="hero-author-compact">
+            Dr. Nurcan Denli Bayir (nrcdnl94) | Copyright 2024
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
