@@ -3707,9 +3707,9 @@ def render_home_page(components):
             orientation='h',
             marker=dict(
                 color=effect_summary['effect_vs_control'],
-                colorscale='Reds',
+                colorscale=[[0, '#E8F4FC'], [0.5, '#0050A0'], [1, '#003366']],
                 showscale=True,
-                colorbar=dict(title="EAA (yıl)")
+                colorbar=dict(title="EAA (yil)")
             ),
             error_x=dict(
                 type='data',
@@ -3717,16 +3717,17 @@ def render_home_page(components):
                 array=effect_summary['ci_upper'] - effect_summary['effect_vs_control'],
                 arrayminus=effect_summary['effect_vs_control'] - effect_summary['ci_lower']
             ),
-            hovertemplate="<b>%{y}</b><br>EAA: %{x:.1f} yıl<br>n=%{customdata}<extra></extra>",
+            hovertemplate="<b>%{y}</b><br>EAA: %{x:.1f} yil<br>n=%{customdata}<extra></extra>",
             customdata=effect_summary['n_samples']
         ))
         
         fig.update_layout(
-            title="GrimAge Epigenetik Yaş İvmelenmesi (Kontrole Göre)",
-            xaxis_title="Epigenetik Yaş İvmelenmesi (yıl)",
+            title="GrimAge Epigenetik Yas Ivmelenmesi (Kontrole Gore)",
+            xaxis_title="Epigenetik Yas Ivmelenmesi (yil)",
             yaxis_title="",
             template="plotly_white",
-            height=400
+            height=400,
+            font=dict(family="Inter, sans-serif")
         )
         
         st.plotly_chart(fig, width='stretch')
@@ -3739,31 +3740,32 @@ def render_home_page(components):
         fig = go.Figure()
         
         fig.add_trace(go.Bar(
-            name='MAE (yıl)',
+            name='MAE (yil)',
             x=clock_perf['clock'],
             y=clock_perf['mae'],
-            marker_color='steelblue',
+            marker_color='#0050A0',
             yaxis='y'
         ))
         
         fig.add_trace(go.Scatter(
-            name='R²',
+            name='R2',
             x=clock_perf['clock'],
             y=clock_perf['r_squared'],
             mode='lines+markers',
-            marker=dict(size=12, color='coral'),
-            line=dict(width=3),
+            marker=dict(size=12, color='#00A7D8'),
+            line=dict(width=3, color='#00A7D8'),
             yaxis='y2'
         ))
         
         fig.update_layout(
-            title="Epigenetik Saat Doğruluk Karşılaştırması",
+            title="Epigenetik Saat Dogruluk Karsilastirmasi",
             xaxis_title="Epigenetik Saat",
-            yaxis=dict(title="MAE (yıl)", side='left'),
-            yaxis2=dict(title="R²", side='right', overlaying='y', range=[0.85, 1.0]),
+            yaxis=dict(title="MAE (yil)", side='left'),
+            yaxis2=dict(title="R2", side='right', overlaying='y', range=[0.85, 1.0]),
             template="plotly_white",
             legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99),
-            height=400
+            height=400,
+            font=dict(family="Inter, sans-serif")
         )
         
         st.plotly_chart(fig, width='stretch')
