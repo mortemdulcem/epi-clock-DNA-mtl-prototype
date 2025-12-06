@@ -291,6 +291,14 @@ from modules.illicit_manufacturing import (
     DETECTION_METHODS,
     SYNTHESIS_ROUTES
 )
+from modules.dna_manufacturing_detection import (
+    DNAManufacturingIntelligence,
+    CHEMICAL_EXPOSURE_MARKERS,
+    MANUFACTURING_METHOD_SIGNATURES,
+    ChemicalExposureResult,
+    ManufacturingMethodResult,
+    DNAManufacturingAnalysis
+)
 
 st.set_page_config(
     page_title="EpiClock - DNA Methylation Analysis Platform",
@@ -3068,6 +3076,7 @@ def main():
              "Sinerjik Etkilesimler",
              "Madde Tespiti ve Sure Tahmini",
              "Yasadisi Uretim Tespiti",
+             "DNA Uretim Zekasi",
              "Chemoinformatics",
              "Veri Disa Aktar",
              "CpG Veritabani",
@@ -3158,6 +3167,8 @@ def main():
         render_substance_detection(components)
     elif "Yasadisi Uretim Tespiti" in analysis_mode:
         render_illicit_manufacturing(components)
+    elif "DNA Uretim Zekasi" in analysis_mode:
+        render_dna_manufacturing_intelligence(components)
     elif "Chemoinformatics" in analysis_mode:
         render_cheminformatics(components)
     elif "Veri Disa Aktar" in analysis_mode:
@@ -3551,6 +3562,395 @@ def render_illicit_manufacturing(components):
                     st.markdown(f"- {rec}")
             else:
                 st.warning("Lutfen en az bir safsizlik girin.")
+
+
+def render_dna_manufacturing_intelligence(components):
+    """DNA Diziliminden Uretim Kimyasali Tespit Zekasi - nrcdnl94"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## DNA Uretim Kimyasali Tespit Zekasi")
+    st.markdown("""
+    **YAPAY ZEKA TABANLI DNA MARUZIYET ANALIZI**
+    
+    Bu modul, DNA metilasyon desenlerinden yasadisi uretim kimyasallarini tespit eder:
+    - **Prekursor kimyasal maruziyeti** (efedrin, fosfor, asetik anhidrit)
+    - **Uretim yontemi imzalari** (Birch, Red P, P2P)
+    - **Maruziyet suresi tahmini** (gun/ay/yil)
+    - **Adli delil guc degerlendirmesi**
+    """)
+    
+    intelligence = DNAManufacturingIntelligence()
+    stats = intelligence.get_summary_statistics()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Maruziyet Turu", stats['total_exposure_types'])
+    with col2:
+        st.metric("Uretim Yontemi", stats['total_manufacturing_methods'])
+    with col3:
+        st.metric("CpG Marker", stats['total_cpg_markers'])
+    with col4:
+        st.metric("Hedef Gen", stats['unique_genes'])
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "DNA Analizi",
+        "Maruziyet Markerlari",
+        "Yontem Imzalari",
+        "Hedef Genler",
+        "Demo Analiz"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### DNA Verisi Yukle ve Analiz Et")
+        st.markdown("""
+        CpG beta degerlerini iceren DNA metilasyon verinizi yukleyin.
+        Sistem, uretim kimyasali maruziyetini otomatik olarak tespit edecektir.
+        """)
+        
+        uploaded_file = st.file_uploader(
+            "DNA Metilasyon Verisi (CSV):",
+            type=['csv'],
+            help="CpG site'lari satir, ornekler sutun olacak sekilde"
+        )
+        
+        sample_id = st.text_input("Ornek ID:", value="SAMPLE_001")
+        chron_age = st.number_input("Kronolojik Yas (opsiyonel):", min_value=0, max_value=120, value=0)
+        
+        if uploaded_file:
+            try:
+                cpg_data = pd.read_csv(uploaded_file)
+                st.success(f"Veri yuklendi: {cpg_data.shape[0]} satir, {cpg_data.shape[1]} sutun")
+                
+                if st.button("DNA Uretim Maruziyeti Analizi Baslat", type="primary"):
+                    with st.spinner("DNA dizilimi analiz ediliyor..."):
+                        result = intelligence.analyze_dna_for_manufacturing(
+                            cpg_data, 
+                            sample_id,
+                            chron_age if chron_age > 0 else None
+                        )
+                        st.session_state['dna_manufacturing_result'] = result
+                    
+                    _display_manufacturing_results(result)
+            except Exception as e:
+                st.error(f"Veri okuma hatasi: {str(e)}")
+        
+        if 'dna_manufacturing_result' in st.session_state:
+            st.markdown("---")
+            st.markdown("### Son Analiz Sonuclari")
+            _display_manufacturing_results(st.session_state['dna_manufacturing_result'])
+    
+    with tabs[1]:
+        st.markdown("### Kimyasal Maruziyet CpG Markerlari")
+        st.markdown("""
+        Her kimyasal maruziyet tipi icin tanimlanan CpG metilasyon markerlari.
+        Bu markerlar, DNA'da kimyasal temasi tespit etmek icin kullanilir.
+        """)
+        
+        exposure_data = []
+        for exp_id, exp_info in CHEMICAL_EXPOSURE_MARKERS.items():
+            exposure_data.append({
+                "Maruziyet Turu": exp_info['name'],
+                "Kategori": exp_info['category'],
+                "CpG Sayisi": len(exp_info['cpg_markers']),
+                "Tespit Esigi": f"{exp_info['detection_threshold']*100:.0f}%",
+                "Yari Omur (gun)": exp_info['half_life_days'],
+                "Kronik Marker": "Evet" if exp_info['chronic_marker'] else "Hayir",
+                "Iliskili Maddeler": ", ".join(exp_info['related_drugs'])
+            })
+        
+        df_exposures = pd.DataFrame(exposure_data)
+        st.dataframe(df_exposures, use_container_width=True, height=400)
+        
+        st.markdown("### Maruziyet Detay Gorunumu")
+        selected_exp = st.selectbox(
+            "Maruziyet Turu Sec:",
+            list(CHEMICAL_EXPOSURE_MARKERS.keys()),
+            format_func=lambda x: CHEMICAL_EXPOSURE_MARKERS[x]['name']
+        )
+        
+        if selected_exp:
+            exp = CHEMICAL_EXPOSURE_MARKERS[selected_exp]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                **Maruziyet Adi:** {exp['name']}
+                
+                **Kategori:** {exp['category']}
+                
+                **Tespit Esigi:** {exp['detection_threshold']*100:.0f}%
+                
+                **Yari Omur:** {exp['half_life_days']} gun
+                
+                **Kronik Marker:** {"Evet" if exp['chronic_marker'] else "Hayir"}
+                """)
+            
+            with col2:
+                st.markdown(f"**Iliskili Maddeler:** {', '.join(exp['related_drugs'])}")
+                st.markdown("**CpG Markerlari:**")
+                for marker in exp['cpg_markers']:
+                    effect_color = "#dc3545" if marker['effect'] == 'hypermethylation' else "#28a745"
+                    st.markdown(f"""
+                    <div style="background: {effect_color}11; padding: 5px; margin: 2px 0; border-radius: 3px;">
+                        <b>{marker['id']}</b> ({marker['gene']}) - 
+                        <span style="color: {effect_color};">{marker['effect']}</span> 
+                        (agirlik: {marker['weight']:.2f})
+                    </div>
+                    """, unsafe_allow_html=True)
+    
+    with tabs[2]:
+        st.markdown("### Uretim Yontemi DNA Imzalari")
+        st.markdown("""
+        Her yasadisi uretim yontemi, belirli kimyasal maruziyetlerin kombinasyonu ile tanimlanan
+        karakteristik bir DNA imzasi birakir.
+        """)
+        
+        method_data = []
+        for method_id, method_info in MANUFACTURING_METHOD_SIGNATURES.items():
+            method_data.append({
+                "Yontem": method_info['name'],
+                "Maruziyet Kombinasyonu": len(method_info['exposure_combination']),
+                "Guven Esigi": f"{method_info['confidence_threshold']*100:.0f}%",
+                "Karakteristik Genler": ", ".join(method_info['characteristic_genes']),
+                "Risk Gostergeleri": len(method_info['risk_indicators'])
+            })
+        
+        df_methods = pd.DataFrame(method_data)
+        st.dataframe(df_methods, use_container_width=True, height=300)
+        
+        st.markdown("### Yontem Detay Gorunumu")
+        selected_method = st.selectbox(
+            "Uretim Yontemi Sec:",
+            list(MANUFACTURING_METHOD_SIGNATURES.keys()),
+            format_func=lambda x: MANUFACTURING_METHOD_SIGNATURES[x]['name'],
+            key="method_select"
+        )
+        
+        if selected_method:
+            method = MANUFACTURING_METHOD_SIGNATURES[selected_method]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                **Yontem:** {method['name']}
+                
+                **Guven Esigi:** {method['confidence_threshold']*100:.0f}%
+                
+                **Karakteristik Genler:** {', '.join(method['characteristic_genes'])}
+                """)
+                
+                st.markdown("**Maruziyet Kombinasyonu:**")
+                for i, (exp_id, weight) in enumerate(zip(method['exposure_combination'], method['weight_pattern'])):
+                    exp_name = CHEMICAL_EXPOSURE_MARKERS.get(exp_id, {}).get('name', exp_id)
+                    st.markdown(f"- {exp_name} (agirlik: {weight:.2f})")
+            
+            with col2:
+                st.markdown("**Risk Gostergeleri:**")
+                for risk in method['risk_indicators']:
+                    st.markdown(f"""
+                    <div style="background: #dc354511; padding: 5px; margin: 2px 0; border-radius: 3px; border-left: 3px solid #dc3545;">
+                        {risk}
+                    </div>
+                    """, unsafe_allow_html=True)
+    
+    with tabs[3]:
+        st.markdown("### Hedef Gen Listesi")
+        st.markdown("""
+        DNA metilasyon analizinde kullanilan genler ve rolleri.
+        """)
+        
+        gene_info = {
+            "CYP2D6": "Ilac metabolizmasi, sitokrom P450 enzimi",
+            "CYP3A4": "Ilac metabolizmasi, en yaygin P450",
+            "CYP2E1": "Etanol ve solvent metabolizmasi",
+            "ADRB2": "Beta-2 adrenerjik reseptor",
+            "MAO-A": "Monoamin oksidaz A, norepinefrin yikimi",
+            "GPX1": "Glutatyon peroksidaz, antioksidan",
+            "SOD2": "Superoksit dismutaz, mitokondriyal",
+            "CAT": "Katalaz, hidrojen peroksit ayrisimi",
+            "GSTP1": "Glutatyon S-transferaz, detoksifikasyon",
+            "GSK3B": "Glikojen sentaz kinaz 3 beta, lityum hedefi",
+            "BDNF": "Beyin turevli norotrofik faktor",
+            "OPRM1": "Mu-opioid reseptor 1",
+            "SLC6A4": "Serotonin tasiyicisi (SERT)",
+            "HTR2A": "Serotonin 5-HT2A reseptoru",
+            "DRD2": "Dopamin D2 reseptoru",
+            "ALDH2": "Aldehit dehidrojenaz 2",
+            "ADH1B": "Alkol dehidrojenaz 1B",
+            "GABRA1": "GABA-A reseptor alfa-1",
+            "BCHE": "Butirilkolinesteraz, kokain metabolizmasi"
+        }
+        
+        gene_data = [{"Gen": k, "Fonksiyon": v} for k, v in gene_info.items()]
+        df_genes = pd.DataFrame(gene_data)
+        st.dataframe(df_genes, use_container_width=True, height=500)
+    
+    with tabs[4]:
+        st.markdown("### Demo Analiz")
+        st.markdown("""
+        Gercek veri olmadan sistemin nasil calistigini gormek icin demo analiz yapin.
+        """)
+        
+        demo_sample_id = st.text_input("Demo Ornek ID:", value="DEMO_001", key="demo_id")
+        
+        demo_scenario = st.selectbox(
+            "Senaryo Sec:",
+            [
+                "Temiz (Maruziyet Yok)",
+                "Metamfetamin Uretimi (Birch)",
+                "Metamfetamin Uretimi (Red P)",
+                "Eroin Uretimi",
+                "Fentanil Uretimi",
+                "MDMA Uretimi",
+                "Karisik Maruziyet"
+            ]
+        )
+        
+        if st.button("Demo Analiz Calistir", type="primary", key="demo_btn"):
+            with st.spinner("Demo analiz yapiliyor..."):
+                demo_data = intelligence._generate_demo_cpg_data(demo_sample_id)
+                
+                if "Birch" in demo_scenario:
+                    for marker in CHEMICAL_EXPOSURE_MARKERS['lithium_exposure']['cpg_markers']:
+                        demo_data[marker['id']] = [0.85 if marker['effect'] == 'hypermethylation' else 0.15]
+                    for marker in CHEMICAL_EXPOSURE_MARKERS['ephedrine_exposure']['cpg_markers']:
+                        demo_data[marker['id']] = [0.80 if marker['effect'] == 'hypermethylation' else 0.20]
+                elif "Red P" in demo_scenario:
+                    for marker in CHEMICAL_EXPOSURE_MARKERS['red_phosphorus_exposure']['cpg_markers']:
+                        demo_data[marker['id']] = [0.90 if marker['effect'] == 'hypermethylation' else 0.10]
+                    for marker in CHEMICAL_EXPOSURE_MARKERS['ephedrine_exposure']['cpg_markers']:
+                        demo_data[marker['id']] = [0.85 if marker['effect'] == 'hypermethylation' else 0.15]
+                elif "Eroin" in demo_scenario:
+                    for marker in CHEMICAL_EXPOSURE_MARKERS['acetic_anhydride_exposure']['cpg_markers']:
+                        demo_data[marker['id']] = [0.88 if marker['effect'] == 'hypermethylation' else 0.12]
+                elif "Fentanil" in demo_scenario:
+                    for marker in CHEMICAL_EXPOSURE_MARKERS['fentanyl_precursor_exposure']['cpg_markers']:
+                        demo_data[marker['id']] = [0.92 if marker['effect'] == 'hypermethylation' else 0.08]
+                elif "MDMA" in demo_scenario:
+                    for marker in CHEMICAL_EXPOSURE_MARKERS['mdma_precursor_exposure']['cpg_markers']:
+                        demo_data[marker['id']] = [0.82 if marker['effect'] == 'hypermethylation' else 0.18]
+                elif "Karisik" in demo_scenario:
+                    for exp_id in ['solvent_exposure', 'ephedrine_exposure', 'red_phosphorus_exposure']:
+                        for marker in CHEMICAL_EXPOSURE_MARKERS[exp_id]['cpg_markers']:
+                            demo_data[marker['id']] = [0.75 if marker['effect'] == 'hypermethylation' else 0.25]
+                
+                result = intelligence.analyze_dna_for_manufacturing(
+                    pd.DataFrame(demo_data),
+                    demo_sample_id
+                )
+                
+                st.session_state['demo_manufacturing_result'] = result
+            
+            _display_manufacturing_results(result)
+
+
+def _display_manufacturing_results(result: DNAManufacturingAnalysis):
+    """Uretim analiz sonuclarini goster"""
+    import plotly.graph_objects as go
+    
+    st.markdown("---")
+    st.markdown("### Analiz Ozeti")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        score_color = "#dc3545" if result.overall_manufacturing_score >= 0.7 else "#ffc107" if result.overall_manufacturing_score >= 0.5 else "#28a745"
+        st.markdown(f"""
+        <div style="background: {score_color}22; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2em; font-weight: bold; color: {score_color};">
+                {result.overall_manufacturing_score*100:.1f}%
+            </div>
+            <div style="color: var(--un-gray-600);">Genel Skor</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.metric("Tespit Edilen Kimyasal", len(result.chemical_exposures))
+    with col3:
+        st.metric("Tespit Edilen Yontem", len(result.manufacturing_methods))
+    with col4:
+        st.metric("Kalite Skoru", f"{result.quality_score*100:.1f}%")
+    
+    st.markdown(f"**Birincil Maruziyet:** {result.primary_exposure_type}")
+    st.markdown(f"**Hash Zinciri:** `{result.hash_chain}`")
+    
+    if result.warnings:
+        for warning in result.warnings:
+            st.warning(warning)
+    
+    if result.chemical_exposures:
+        st.markdown("### Tespit Edilen Kimyasal Maruziyetler")
+        
+        for exp in result.chemical_exposures:
+            level_color = "#dc3545" if exp.exposure_level == "YUKSEK" else "#ffc107" if exp.exposure_level == "ORTA" else "#28a745"
+            
+            with st.expander(f"{exp.chemical_name} - {exp.exposure_level} ({exp.detection_score*100:.1f}%)"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"""
+                    **Kategori:** {exp.category}
+                    
+                    **Tespit Skoru:** {exp.detection_score*100:.1f}%
+                    
+                    **Guven:** {exp.confidence*100:.1f}%
+                    
+                    **Maruziyet Seviyesi:** {exp.exposure_level}
+                    
+                    **Tahmini Sure:** {exp.estimated_duration_days} gun
+                    """)
+                
+                with col2:
+                    st.markdown(f"**Iliskili Maddeler:** {', '.join(exp.related_drugs)}")
+                    st.markdown(f"**Risk Degerlendirmesi:** {exp.risk_assessment}")
+                    
+                    st.markdown("**Tespit Edilen Markerlar:**")
+                    for marker in exp.detected_markers[:5]:
+                        st.markdown(f"- {marker['marker_id']} ({marker['gene']}): {marker['beta_value']:.3f}")
+    
+    if result.manufacturing_methods:
+        st.markdown("### Tespit Edilen Uretim Yontemleri")
+        
+        for method in result.manufacturing_methods:
+            strength_color = "#dc3545" if method.evidence_strength == "GUCLU" else "#ffc107" if "ORTA" in method.evidence_strength else "#28a745"
+            
+            with st.expander(f"{method.method_name} - {method.evidence_strength} ({method.detection_score*100:.1f}%)"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"""
+                    **Tespit Skoru:** {method.detection_score*100:.1f}%
+                    
+                    **Guven:** {method.confidence*100:.1f}%
+                    
+                    **Delil Gucu:** {method.evidence_strength}
+                    
+                    **Karakteristik Genler:** {', '.join(method.characteristic_genes)}
+                    """)
+                
+                with col2:
+                    st.markdown(f"**Adli Onemi:** {method.forensic_significance}")
+                    st.markdown("**Risk Gostergeleri:**")
+                    for risk in method.risk_indicators:
+                        st.markdown(f"- {risk}")
+    
+    st.markdown("### Adli Ozet")
+    forensic = result.forensic_summary
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Toplam Tespit", forensic['total_chemicals_detected'])
+        st.metric("Yontem Tespiti", forensic['manufacturing_methods_identified'])
+        st.markdown(f"**Yasal Onemi:** {forensic['legal_significance']}")
+    
+    with col2:
+        if forensic['high_confidence_findings']:
+            st.markdown("**Yuksek Guvenilirlikli Bulgular:**")
+            for finding in forensic['high_confidence_findings']:
+                st.markdown(f"- {finding['finding']} ({finding['confidence']})")
+        
+        st.markdown("**Onerilen Dogrulama Testleri:**")
+        for test in forensic['recommended_confirmatory_tests']:
+            st.markdown(f"- {test}")
 
 
 def render_dna_upload(components, selected_clocks):

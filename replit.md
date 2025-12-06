@@ -101,6 +101,15 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-06: NEW MODULE - DNA Uretim Kimyasali Tespit Zekasi (DNA Manufacturing Intelligence)
+  - DNA diziliminden yasadisi uretim kimyasallarini taniyan yapay zeka sistemi
+  - 10 kimyasal maruziyet turu (efedrin, fosfor, lityum, asetik anhidrit, vb.)
+  - 7 uretim yontemi imzasi (Birch, Red P, P2P, eroin, fentanil, MDMA, kokain)
+  - 40+ CpG marker ve 19 hedef gen (CYP2D6, OPRM1, GSTP1, vb.)
+  - Maruziyet suresi tahmini (gun/ay/yil)
+  - Adli delil guc degerlendirmesi (GUCLU/ORTA/ZAYIF)
+  - Demo senaryo modlari (Birch, Red P, Eroin, Fentanil, MDMA, Karisik)
+  - SHA-256 hash zinciri dogrulama
 - 2024-12-05: MAJOR UPDATE - Pharmacophore Virtual Library with In Silico Analysis
   - 1,920 virtual compounds with SMILES representations
   - 16 pharmacophore cores (phenethylamine, tryptamine, fentanyl, benzodiazepine, etc.)
