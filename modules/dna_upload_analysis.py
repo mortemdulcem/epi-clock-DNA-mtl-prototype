@@ -83,15 +83,9 @@ def render_dna_upload_analysis_page():
     </style>
     """, unsafe_allow_html=True)
     
-    col_back, col_title = st.columns([1, 11])
-    with col_back:
-        if st.button("Geri", key="dna_back_btn"):
-            st.session_state['current_page'] = 'dashboard'
-            st.rerun()
-    
     st.markdown("""
     <div style="font-size: 0.7rem; color: #64748B; margin-bottom: 8px;">
-        Dashboard / <span style="color: #334155; font-weight: 500;">DNA Veri Yukleme & Epi-Clock Analizi</span>
+        Epi-Clock / <span style="color: #334155; font-weight: 500;">DNA Veri Yukleme & Analiz</span>
     </div>
     """, unsafe_allow_html=True)
     

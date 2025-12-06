@@ -3049,7 +3049,7 @@ def main():
         
         analysis_mode = st.radio(
             "Analiz Turu Secin:",
-            ["Ana Sayfa",
+            ["DNA Veri Analizi",
              "Kullanim Kilavuzu",
              "Epigenetik Saat Veritabanlari",
              "Kronik Hastalik Etkileri",
@@ -3057,7 +3057,6 @@ def main():
              "Madde Tespiti ve Sure Tahmini",
              "Chemoinformatics",
              "Veri Disa Aktar",
-             "DNA Verisi Yukle",
              "CpG Veritabani",
              "Varyant Analizi",
              "Farmakogenomik",
@@ -3123,22 +3122,16 @@ def main():
         """)
     
     if 'current_page' not in st.session_state:
-        st.session_state['current_page'] = 'dashboard'
+        st.session_state['current_page'] = 'main'
     
     if st.session_state['current_page'] == 'analysis_detail':
         render_analysis_detail_page()
         return
     
-    if st.session_state['current_page'] == 'dna_upload':
-        render_dna_upload_analysis_page()
-        return
-    
     if st.session_state.get('show_upload_modal', False):
-        st.session_state['current_page'] = 'dna_upload'
         st.session_state['show_upload_modal'] = False
-        st.rerun()
     
-    if "Ana Sayfa" in analysis_mode:
+    if "Ana Sayfa" in analysis_mode or "DNA Veri Analizi" in analysis_mode:
         render_home_page(components)
     elif "Kullanim Kilavuzu" in analysis_mode:
         render_academic_guide()
@@ -3659,15 +3652,10 @@ def render_publication_references():
 
 
 def render_home_page(components):
-    """Render the home page with UNODC/Tailwind style overview - nrcdnl94"""
+    """Render the home page with DNA Upload & Analysis interface - nrcdnl94"""
     
-    # Statistic Cards - UNODC Tailwind Style - nrcdnl94
-    render_statistic_cards()
-    
-    # Recent Analyses Table - nrcdnl94
-    render_recent_analyses_table()
-    
-    st.markdown("### Platform Features")
+    render_dna_upload_analysis_page()
+    return
     
     col1, col2, col3, col4 = st.columns(4)
     
