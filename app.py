@@ -178,7 +178,10 @@ from modules.professional_theme import (
 )
 from modules.unodc_theme import (
     apply_unodc_theme,
+    render_top_navigation,
     render_main_header,
+    render_statistic_cards,
+    render_module_cards,
     render_hero_slider,
     render_booklet_grid,
     render_stats_row,
@@ -290,11 +293,11 @@ st.markdown("""
     ============================================ */
     
     :root {
-        --un-blue: #009EDB;
-        --un-blue-dark: #005B94;
+        --un-blue: #0050A0;
+        --un-blue-dark: #003366;
         --un-blue-deep: #1A3A5C;
-        --un-blue-light: #4DB8E8;
-        --un-blue-pale: #E6F2FA;
+        --un-blue-light: #00A7D8;
+        --un-blue-pale: #E8F4FC;
         --un-gray-100: #F8FAFC;
         --un-gray-200: #F1F5F9;
         --un-gray-300: #E2E8F0;
@@ -3634,11 +3637,11 @@ def render_publication_references():
 def render_home_page(components):
     """Render the home page with UNODC style overview - nrcdnl94"""
     
-    # Hero Slider - UNODC Style - nrcdnl94
-    render_hero_slider()
+    # Statistic Cards - UNODC Style - nrcdnl94
+    render_statistic_cards()
     
-    # Stats Row - nrcdnl94
-    render_stats_row()
+    # Module Cards Grid - UNODC Style - nrcdnl94
+    render_module_cards()
     
     render_section_divider()
     

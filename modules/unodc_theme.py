@@ -13,17 +13,19 @@ Professional UN-style design with blue color scheme
 
 import streamlit as st
 
-# nrcdnl94 - UNODC Color Palette
+# nrcdnl94 - UNODC Color Palette (Updated to match prompt specifications)
 UNODC_COLORS = {
-    'primary_blue': '#009EDB',      # UN Blue
-    'dark_blue': '#1A3A5C',         # Dark Navy
-    'light_blue': '#4DB8E8',        # Light Blue
+    'primary_blue': '#0050A0',      # Deep UN Blue (Primary)
+    'dark_blue': '#003366',         # Dark Navy
+    'light_blue': '#00A7D8',        # Light Blue / Turkuaz
     'accent_blue': '#0072BC',       # Accent Blue
-    'gold': '#FFD100',              # UN Gold
+    'gold': '#FFD100',              # UN Gold (minimal use)
     'white': '#FFFFFF',
     'light_gray': '#F5F7FA',
+    'neutral_gray': '#E8EEF5',      # Panel background
     'dark_gray': '#333333',
     'text_gray': '#666666',
+    'text_dark': '#1A1A2E',         # Dark text for readability
     'success': '#28A745',
     'warning': '#FFC107',
     'danger': '#DC3545',
@@ -431,19 +433,260 @@ def apply_unodc_theme():
     </style>
     """, unsafe_allow_html=True)
 
-def render_main_header():
-    """Render UNODC-style main header - nrcdnl94"""
+def render_top_navigation():
+    """Render UNODC-style top navigation bar - nrcdnl94"""
     st.markdown("""
-    <div class="main-header">
-        <div class="un-badge">
-            <span style="font-size: 2.5rem;">🧬</span>
-            <span style="font-size: 1.5rem; font-weight: 700;">EpiClock</span>
+    <style>
+    .top-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        background: #FFFFFF;
+        border-bottom: 1px solid #E8EEF5;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    .top-nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 24px;
+        font-weight: 700;
+        color: #0050A0;
+        font-size: 1.1rem;
+    }
+    .top-nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        height: 100%;
+    }
+    .top-nav-menu a {
+        color: #333333;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 20px 18px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+        border-bottom: 3px solid transparent;
+    }
+    .top-nav-menu a:hover {
+        background: #F5F7FA;
+        color: #0050A0;
+        border-bottom: 3px solid #00A7D8;
+    }
+    .top-nav-menu a.active {
+        color: #0050A0;
+        border-bottom: 3px solid #0050A0;
+        font-weight: 600;
+    }
+    .top-nav-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding-right: 24px;
+    }
+    .lang-switch {
+        font-size: 0.8rem;
+        color: #666666;
+    }
+    .lang-switch a {
+        color: #0050A0;
+        text-decoration: none;
+    }
+    .top-spacer {
+        height: 60px;
+    }
+    </style>
+    <div class="top-nav">
+        <div class="top-nav-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="#0050A0" stroke-width="2" fill="none"/>
+                <path d="M10 16 Q16 8 22 16 Q16 24 10 16" stroke="#00A7D8" stroke-width="1.5" fill="none"/>
+                <path d="M10 16 Q16 24 22 16 Q16 8 10 16" stroke="#0050A0" stroke-width="1.5" fill="none"/>
+            </svg>
+            <span>National DNA Analysis System</span>
         </div>
-        <h1>DNA Methylation Epigenetic Age Analysis Platform</h1>
-        <p>Computational Forensics | Molecular Toxicology | Epigenetic Chronology</p>
-        <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 15px;">
-            Author: Dr. Nurcan Denli Bayır (nrcdnl94) | Copyright © 2024
-        </p>
+        <div class="top-nav-menu">
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">Samples</a>
+            <a href="#">Analyses</a>
+            <a href="#">Reports</a>
+            <a href="#">Database</a>
+            <a href="#">Settings</a>
+        </div>
+        <div class="top-nav-right">
+            <span class="lang-switch"><a href="#">TR</a> | <a href="#">EN</a></span>
+        </div>
+    </div>
+    <div class="top-spacer"></div>
+    """, unsafe_allow_html=True)
+
+def render_main_header():
+    """Render UNODC-style main header with hero section - nrcdnl94"""
+    st.markdown("""
+    <style>
+    .hero-header {
+        background: linear-gradient(135deg, #0050A0 0%, #003366 60%, #1A3A5C 100%);
+        color: white;
+        padding: 48px 40px;
+        margin: -1rem -1rem 2rem -1rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+    }
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.1);
+        padding: 8px 20px;
+        border-radius: 30px;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+    }
+    .hero-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+        line-height: 1.3;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0 0 20px 0;
+        font-weight: 400;
+    }
+    .hero-cta {
+        display: inline-block;
+        background: #00A7D8;
+        color: white;
+        padding: 12px 32px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        margin-top: 10px;
+    }
+    .hero-cta:hover {
+        background: #008BB3;
+        transform: translateY(-2px);
+    }
+    .hero-author {
+        font-size: 0.8rem;
+        opacity: 0.6;
+        margin-top: 24px;
+    }
+    </style>
+    <div class="hero-header">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>NATIONAL DNA ANALYSIS SYSTEM</span>
+            </div>
+            <h1 class="hero-title">EpiClock - DNA Methylation Analysis Platform</h1>
+            <p class="hero-subtitle">
+                Epigenetic Age Acceleration Detection | Forensic DNA Analysis | Molecular Toxicology
+            </p>
+            <p class="hero-author">
+                Dr. Nurcan Denli Bayir (nrcdnl94) | Copyright 2024
+            </p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+def render_statistic_cards():
+    """Render UNODC-style statistic cards - nrcdnl94"""
+    st.markdown("""
+    <style>
+    .stat-cards-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin: 24px 0;
+    }
+    .stat-card-item {
+        background: white;
+        border-radius: 8px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border-left: 4px solid #0050A0;
+        transition: all 0.2s ease;
+    }
+    .stat-card-item:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0050A0;
+        line-height: 1.2;
+        margin-bottom: 4px;
+    }
+    .stat-label {
+        font-size: 0.85rem;
+        color: #666666;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    .stat-sublabel {
+        font-size: 0.75rem;
+        color: #999999;
+        margin-top: 4px;
+    }
+    @media (max-width: 768px) {
+        .stat-cards-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    </style>
+    <div class="stat-cards-row">
+        <div class="stat-card-item">
+            <div class="stat-number">29.4M</div>
+            <div class="stat-label">Total CpG Sites</div>
+            <div class="stat-sublabel">Human genome coverage</div>
+        </div>
+        <div class="stat-card-item">
+            <div class="stat-number">1,815</div>
+            <div class="stat-label">Detectable Substances</div>
+            <div class="stat-sublabel">From international databases</div>
+        </div>
+        <div class="stat-card-item">
+            <div class="stat-number">10,542</div>
+            <div class="stat-label">Reference Profiles</div>
+            <div class="stat-sublabel">15 independent datasets</div>
+        </div>
+        <div class="stat-card-item">
+            <div class="stat-number">17</div>
+            <div class="stat-label">Epigenetic Clocks</div>
+            <div class="stat-sublabel">5 main + 12 tissue-specific</div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -451,24 +694,20 @@ def render_hero_slider():
     """Render hero slider section - nrcdnl94"""
     slides = [
         {
-            "icon": "🔬",
-            "title": "29.4 Milyon CpG Sitesi",
-            "desc": "Tam insan genomu kapsama (hg38/GRCh38)"
+            "title": "29.4 Million CpG Sites",
+            "desc": "Full human genome coverage (hg38/GRCh38)"
         },
         {
-            "icon": "⏰",
-            "title": "17 Epigenetik Saat",
-            "desc": "5 ana + 12 doku-spesifik saat"
+            "title": "17 Epigenetic Clocks",
+            "desc": "5 main + 12 tissue-specific clocks"
         },
         {
-            "icon": "💊",
-            "title": "1,815 Tespit Edilebilir Madde",
-            "desc": "Uluslararası veritabanlarından"
+            "title": "1,815 Detectable Substances",
+            "desc": "From international databases"
         },
         {
-            "icon": "📊",
-            "title": "10,542 Referans Profil",
-            "desc": "15 bağımsız veri setinden"
+            "title": "10,542 Reference Profiles",
+            "desc": "From 15 independent datasets"
         }
     ]
     
@@ -477,23 +716,189 @@ def render_hero_slider():
         with cols[i]:
             st.markdown(f"""
             <div class="hero-slider" style="padding: 25px;">
-                <span style="font-size: 3rem;">{slide['icon']}</span>
-                <h3 style="font-size: 1.3rem; margin: 10px 0;">{slide['title']}</h3>
-                <p style="font-size: 0.9rem; opacity: 0.9;">{slide['desc']}</p>
+                <h3 style="font-size: 1.3rem; margin: 10px 0; color: white;">{slide['title']}</h3>
+                <p style="font-size: 0.9rem; opacity: 0.9; color: white;">{slide['desc']}</p>
             </div>
             """, unsafe_allow_html=True)
 
+def render_module_cards():
+    """Render UNODC-style module cards grid - nrcdnl94"""
+    st.markdown("""
+    <style>
+    .modules-section-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #003366;
+        margin: 32px 0 16px 0;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #E8EEF5;
+    }
+    .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 20px 0;
+    }
+    .module-card-item {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        border: 1px solid #E8EEF5;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .module-card-item:hover {
+        border-color: #0050A0;
+        box-shadow: 0 4px 12px rgba(0,80,160,0.12);
+        transform: translateY(-2px);
+    }
+    .module-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #E8F4FC 0%, #D0E8F5 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+    .module-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: #0050A0;
+    }
+    .module-card-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #003366;
+        margin-bottom: 4px;
+    }
+    .module-card-desc {
+        font-size: 0.8rem;
+        color: #666666;
+        line-height: 1.4;
+    }
+    .module-open-btn {
+        display: inline-block;
+        margin-top: 12px;
+        font-size: 0.75rem;
+        color: #0050A0;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    @media (max-width: 768px) {
+        .modules-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    </style>
+    <h2 class="modules-section-title">Modules and Programs</h2>
+    <div class="modules-grid">
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <div class="module-card-title">Forensic STR Analysis</div>
+            <div class="module-card-desc">Short tandem repeat profiling for forensic identification</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+            </div>
+            <div class="module-card-title">NGS Variant Analysis</div>
+            <div class="module-card-desc">Next-generation sequencing variant calling and annotation</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+            </div>
+            <div class="module-card-title">Population Genetics</div>
+            <div class="module-card-desc">Ancestry and population structure analysis</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+            </div>
+            <div class="module-card-title">Clinical Genomics</div>
+            <div class="module-card-desc">Pharmacogenomics and clinical variant interpretation</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+            </div>
+            <div class="module-card-title">Reports and Legal Output</div>
+            <div class="module-card-desc">Court-ready forensic reports with chain of custody</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+            </div>
+            <div class="module-card-title">Data and Statistics</div>
+            <div class="module-card-desc">Laboratory performance metrics and analytics</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="3" y1="9" x2="21" y2="9"/>
+                    <line x1="9" y1="21" x2="9" y2="9"/>
+                </svg>
+            </div>
+            <div class="module-card-title">Sample Management</div>
+            <div class="module-card-desc">Chain of custody and sample tracking</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+        <div class="module-card-item">
+            <div class="module-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+            </div>
+            <div class="module-card-title">Data Protection</div>
+            <div class="module-card-desc">GDPR/KVKK compliant anonymization</div>
+            <span class="module-open-btn">Open Module</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 def render_booklet_grid():
-    """Render booklet-style module grid - nrcdnl94"""
+    """Render booklet-style module grid (legacy) - nrcdnl94"""
     modules = [
-        {"icon": "🧬", "title": "Bireysel Analiz", "desc": "Epigenetik yaş hesaplama"},
-        {"icon": "📊", "title": "Toplu Analiz", "desc": "Batch işleme"},
-        {"icon": "🔬", "title": "Madde Tespiti", "desc": "1,815 madde"},
-        {"icon": "💊", "title": "Kombinasyonlar", "desc": "Sinerjik etkiler"},
-        {"icon": "🧪", "title": "Chemoinformatics", "desc": "Moleküler analiz"},
-        {"icon": "🌐", "title": "Dünya Veritabanları", "desc": "GWAS/EWAS"},
-        {"icon": "📈", "title": "PRS Analizi", "desc": "Poligenik risk"},
-        {"icon": "📋", "title": "Raporlar", "desc": "PDF çıktı"}
+        {"title": "Individual Analysis", "desc": "Epigenetic age calculation"},
+        {"title": "Batch Analysis", "desc": "Batch processing"},
+        {"title": "Substance Detection", "desc": "1,815 substances"},
+        {"title": "Combinations", "desc": "Synergistic effects"},
+        {"title": "Chemoinformatics", "desc": "Molecular analysis"},
+        {"title": "World Databases", "desc": "GWAS/EWAS"},
+        {"title": "PRS Analysis", "desc": "Polygenic risk"},
+        {"title": "Reports", "desc": "PDF output"}
     ]
     
     st.markdown('<div class="booklet-grid">', unsafe_allow_html=True)
@@ -503,7 +908,6 @@ def render_booklet_grid():
         with cols[i % 4]:
             st.markdown(f"""
             <div class="booklet-item">
-                <span class="icon">{mod['icon']}</span>
                 <h4>{mod['title']}</h4>
                 <p>{mod['desc']}</p>
             </div>
