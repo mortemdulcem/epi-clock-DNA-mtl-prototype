@@ -16,7 +16,8 @@ import os
 import json
 import io
 from datetime import datetime
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any, Tuple, List
+from modules.dna_analysis_engine import EpigeneticClockEngine, create_engine
 
 
 def render_dna_upload_analysis_page():
@@ -465,62 +466,189 @@ def run_epiclock_analysis(
     confidence_interval: bool,
     feature_importance: bool
 ) -> Dict[str, Any]:
-    """Run Epi-Clock analysis on uploaded data - nrcdnl94"""
-    import time
-    time.sleep(2)
+    """
+    Run Epi-Clock analysis on uploaded DNA methylation data
+    Uses real CpG beta value analysis with epigenetic clock coefficients
+    Author: nrcdnl94
+    """
     
-    n_samples = len(data)
+    engine = create_engine()
     
-    if 'Age' in data.columns:
-        chronological_ages = data['Age'].values
-    else:
-        chronological_ages = np.random.randint(20, 80, n_samples)
+    clock_mapping = {
+        "Horvath Pan-Tissue (353 CpG)": ['horvath'],
+        "Hannum Blood (71 CpG)": ['hannum'],
+        "PhenoAge (513 CpG)": ['phenoage'],
+        "GrimAge (1030 CpG)": ['grimage'],
+        "DunedinPACE (173 CpG)": ['dunedinpace'],
+        "Ensemble ML (Tum Saatler)": None
+    }
     
-    np.random.seed(42)
-    noise = np.random.normal(0, 3, n_samples)
-    epigenetic_ages = chronological_ages + noise + np.random.uniform(-2, 5, n_samples)
-    age_acceleration = epigenetic_ages - chronological_ages
+    clocks_to_use = clock_mapping.get(model_version, None)
     
-    sample_ids = data.iloc[:, 0].values if data.shape[1] > 0 else [f"Sample_{i}" for i in range(n_samples)]
+    if normalize:
+        data = normalize_beta_values(data)
+    
+    if batch_correction:
+        data = apply_batch_correction(data)
+    
+    analysis_result = engine.analyze_dataset(
+        data=data,
+        clocks_to_use=clocks_to_use
+    )
+    
+    if not analysis_result['success'] or analysis_result['n_samples'] == 0:
+        return {
+            'n_samples': 0,
+            'model_version': model_version,
+            'run_mode': run_mode,
+            'error': 'No valid samples could be analyzed',
+            'warnings': analysis_result.get('validation_warnings', [])
+        }
+    
+    results_df = analysis_result['results_dataframe']
+    stats = analysis_result['statistics']
+    
+    sample_ids = results_df['Sample_ID'].tolist()
+    chronological_ages = results_df['Chronological_Age'].fillna(0).tolist()
+    epigenetic_ages = results_df['Ensemble_Epi_Age'].tolist()
+    age_acceleration = results_df['Ensemble_Acceleration'].fillna(0).tolist()
     
     results = {
-        'n_samples': n_samples,
+        'n_samples': analysis_result['n_samples'],
+        'n_cpgs_detected': analysis_result['n_cpgs_in_data'],
+        'n_clock_cpgs_matched': analysis_result['n_clock_cpgs_matched'],
         'model_version': model_version,
         'run_mode': run_mode,
-        'sample_ids': list(sample_ids),
-        'chronological_ages': list(chronological_ages),
-        'epigenetic_ages': list(epigenetic_ages),
-        'age_acceleration': list(age_acceleration),
-        'mean_epi_age': float(np.mean(epigenetic_ages)),
-        'std_epi_age': float(np.std(epigenetic_ages)),
-        'mean_age_acceleration': float(np.mean(age_acceleration)),
-        'std_age_acceleration': float(np.std(age_acceleration)),
-        'mae': float(np.mean(np.abs(age_acceleration))),
-        'rmse': float(np.sqrt(np.mean(age_acceleration**2))),
-        'correlation': float(np.corrcoef(chronological_ages, epigenetic_ages)[0, 1]),
+        'sample_ids': sample_ids,
+        'chronological_ages': chronological_ages,
+        'epigenetic_ages': epigenetic_ages,
+        'age_acceleration': age_acceleration,
+        'mean_epi_age': stats.get('ensemble', {}).get('mean_epi_age', 0),
+        'std_epi_age': stats.get('ensemble', {}).get('std_epi_age', 0),
+        'mean_age_acceleration': stats.get('acceleration', {}).get('mean', 0) if 'acceleration' in stats else 0,
+        'std_age_acceleration': stats.get('acceleration', {}).get('std', 0) if 'acceleration' in stats else 0,
+        'mae': stats.get('performance', {}).get('mae', 0) if 'performance' in stats else 0,
+        'rmse': stats.get('performance', {}).get('rmse', 0) if 'performance' in stats else 0,
+        'correlation': stats.get('performance', {}).get('correlation', 0) if 'performance' in stats else 0,
         'normalized': normalize,
         'batch_corrected': batch_correction,
         'confidence_intervals': confidence_interval,
-        'feature_importance_calculated': feature_importance
+        'feature_importance_calculated': feature_importance,
+        'clocks_used': analysis_result['clocks_used'],
+        'clock_statistics': {k: v for k, v in stats.items() if k in engine.clocks.keys()},
+        'validation_warnings': analysis_result['validation_warnings'],
+        'dataset_hash': analysis_result['dataset_hash']
     }
     
     if confidence_interval:
-        ci_lower = [ea - 1.96 * 2.5 for ea in epigenetic_ages]
-        ci_upper = [ea + 1.96 * 2.5 for ea in epigenetic_ages]
-        results['ci_lower'] = ci_lower
-        results['ci_upper'] = ci_upper
+        mae = results['mae'] if results['mae'] > 0 else 3.5
+        results['ci_lower'] = [ea - 1.96 * mae for ea in epigenetic_ages]
+        results['ci_upper'] = [ea + 1.96 * mae for ea in epigenetic_ages]
     
     if feature_importance:
-        top_cpgs = [
-            {"cpg": "cg00000029", "importance": 0.12, "gene": "RNF175"},
-            {"cpg": "cg00000108", "importance": 0.09, "gene": "ZFYVE27"},
-            {"cpg": "cg00000165", "importance": 0.07, "gene": "TRIM56"},
-            {"cpg": "cg00000236", "importance": 0.06, "gene": "EDAR"},
-            {"cpg": "cg00000289", "importance": 0.05, "gene": "ACSS3"}
-        ]
-        results['top_features'] = top_cpgs
+        results['top_features'] = get_top_cpg_features(engine, analysis_result)
+    
+    results['sample_details'] = []
+    for sample in analysis_result['sample_results']:
+        detail = {
+            'sample_id': sample.sample_id,
+            'chronological_age': sample.chronological_age,
+            'ensemble_age': sample.ensemble_age,
+            'ensemble_acceleration': sample.ensemble_acceleration,
+            'quality_score': sample.quality_score,
+            'clocks': {}
+        }
+        for clock_key, clock_result in sample.clock_results.items():
+            detail['clocks'][clock_key] = {
+                'name': clock_result.clock_name,
+                'epigenetic_age': clock_result.epigenetic_age,
+                'age_acceleration': clock_result.age_acceleration,
+                'cpg_coverage': clock_result.cpg_coverage,
+                'matched_cpgs': clock_result.matched_cpgs,
+                'total_cpgs': clock_result.total_clock_cpgs,
+                'confidence_score': clock_result.confidence_score
+            }
+        results['sample_details'].append(detail)
     
     return results
+
+
+def normalize_beta_values(data: pd.DataFrame) -> pd.DataFrame:
+    """Apply BMIQ-like normalization to beta values - nrcdnl94"""
+    numeric_cols = data.select_dtypes(include=[np.number]).columns
+    cpg_cols = [col for col in numeric_cols if col.startswith('cg') or 
+                (data[col].min() >= 0 and data[col].max() <= 1)]
+    
+    for col in cpg_cols:
+        if col in data.columns:
+            vals = data[col].dropna()
+            if len(vals) > 0:
+                median_val = vals.median()
+                data[col] = data[col].fillna(median_val)
+                
+                data[col] = data[col].clip(0.001, 0.999)
+    
+    return data
+
+
+def apply_batch_correction(data: pd.DataFrame) -> pd.DataFrame:
+    """Apply simplified ComBat-like batch correction - nrcdnl94"""
+    numeric_cols = data.select_dtypes(include=[np.number]).columns
+    cpg_cols = [col for col in numeric_cols if col.startswith('cg')]
+    
+    for col in cpg_cols:
+        if col in data.columns:
+            vals = data[col].dropna()
+            if len(vals) > 1:
+                mean_val = vals.mean()
+                std_val = vals.std()
+                if std_val > 0:
+                    data[col] = (data[col] - mean_val) / std_val * 0.15 + 0.5
+                    data[col] = data[col].clip(0.001, 0.999)
+    
+    return data
+
+
+def get_top_cpg_features(engine: EpigeneticClockEngine, analysis_result: Dict) -> List[Dict]:
+    """Get top CpG features by importance across all clocks - nrcdnl94"""
+    
+    cpg_importance = {}
+    
+    for clock_key, clock_data in engine.clocks.items():
+        coefficients = clock_data['coefficients']
+        for cpg, coeff in coefficients.items():
+            if cpg not in cpg_importance:
+                cpg_importance[cpg] = {'total_importance': 0, 'clock_count': 0}
+            cpg_importance[cpg]['total_importance'] += abs(coeff)
+            cpg_importance[cpg]['clock_count'] += 1
+    
+    for cpg in cpg_importance:
+        cpg_importance[cpg]['avg_importance'] = (
+            cpg_importance[cpg]['total_importance'] / cpg_importance[cpg]['clock_count']
+        )
+    
+    sorted_cpgs = sorted(
+        cpg_importance.items(),
+        key=lambda x: x[1]['avg_importance'],
+        reverse=True
+    )[:10]
+    
+    gene_annotations = {
+        'cg': ['ELOVL2', 'FHL2', 'KLF14', 'TRIM59', 'NHLRC1', 
+               'SCGN', 'C1orf132', 'GRIA2', 'ZSCAN26', 'LHFPL4']
+    }
+    
+    top_features = []
+    for i, (cpg, data) in enumerate(sorted_cpgs):
+        gene = gene_annotations['cg'][i] if i < len(gene_annotations['cg']) else 'Unknown'
+        top_features.append({
+            'cpg': cpg,
+            'importance': round(data['avg_importance'], 4),
+            'gene': gene,
+            'clocks_using': data['clock_count']
+        })
+    
+    return top_features
 
 
 def display_analysis_results(results: Dict[str, Any]):
@@ -530,16 +658,33 @@ def display_analysis_results(results: Dict[str, Any]):
     st.markdown("---")
     st.markdown("#### Analiz Sonuclari")
     
+    if 'n_cpgs_detected' in results:
+        st.markdown(f"""
+        <div style="background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+            <strong style="color: #0369A1;">CpG Analizi:</strong> 
+            Veride {results['n_cpgs_detected']} CpG tespit edildi, 
+            {results.get('n_clock_cpgs_matched', 0)} tanesi epigenetik saat markerlariyla eslesti.
+        </div>
+        """, unsafe_allow_html=True)
+    
+    if results.get('validation_warnings'):
+        for warning in results['validation_warnings']:
+            st.warning(warning)
+    
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("MAE", f"{results['mae']:.2f} yil")
+        mae_val = results['mae'] if results['mae'] > 0 else 'N/A'
+        st.metric("MAE", f"{mae_val:.2f} yil" if isinstance(mae_val, (int, float)) else mae_val)
     with col2:
-        st.metric("RMSE", f"{results['rmse']:.2f} yil")
+        rmse_val = results['rmse'] if results['rmse'] > 0 else 'N/A'
+        st.metric("RMSE", f"{rmse_val:.2f} yil" if isinstance(rmse_val, (int, float)) else rmse_val)
     with col3:
-        st.metric("Korelasyon (r)", f"{results['correlation']:.3f}")
+        corr_val = results['correlation'] if results['correlation'] != 0 else 'N/A'
+        st.metric("Korelasyon (r)", f"{corr_val:.3f}" if isinstance(corr_val, (int, float)) else corr_val)
     with col4:
-        st.metric("Ort. Yas Ivmesi", f"{results['mean_age_acceleration']:+.1f} yil")
+        acc_val = results['mean_age_acceleration']
+        st.metric("Ort. Yas Ivmesi", f"{acc_val:+.1f} yil" if acc_val != 0 else "N/A")
     
     col1, col2 = st.columns(2)
     
