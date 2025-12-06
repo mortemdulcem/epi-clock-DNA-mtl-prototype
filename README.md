@@ -628,6 +628,45 @@ This software is protected by copyright law and international intellectual prope
 
 ---
 
+## UCSD Epigenetic Clock License Notice
+
+> **⚠️ IMPORTANT: Third-Party License Requirements**
+
+The epigenetic clock algorithms in this software are based on methods developed at **University of California, San Diego (UCSD)** and other institutions. Commercial use requires separate licensing.
+
+### Patented Technologies
+
+| Clock | Patent/License | Contact |
+|:------|:---------------|:--------|
+| **Horvath Multi-tissue** | US Patent 9,938,579 | innovation@ucsd.edu |
+| **GrimAge** | UCSD Technology Transfer | innovation@ucsd.edu |
+| **PhenoAge** | UCSD/UCLA Tech Transfer | innovation@ucsd.edu |
+| **DunedinPACE** | Duke/Columbia University | - |
+
+### License Types
+
+| Type | Description | Cost |
+|:-----|:------------|:-----|
+| **Academic/Non-Commercial** | Research institutions only | Free (with agreement) |
+| **Commercial** | Any commercial application | Fee-based licensing |
+
+### Contact Information
+
+```
+University of California, San Diego
+Office of Innovation and Commercialization
+Email: innovation@ucsd.edu
+Website: https://innovation.ucsd.edu/
+Phone: (858) 534-5815
+```
+
+### Prototype Disclaimer
+
+> This platform uses **SIMULATED coefficients** for demonstration purposes.
+> Actual proprietary coefficients require proper licensing from UCSD.
+
+---
+
 <div align="center">
 
 ## 🔒 COPYRIGHT & LEGAL NOTICE

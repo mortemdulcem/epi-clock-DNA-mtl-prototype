@@ -173,3 +173,11 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Analysis: Focus on clinical applications
 - Visualization: Interactive Plotly charts
 - Platform Type: PROTOTYPE with simulated data
+
+## UCSD Epigenetic Clock License
+- Epigenetic clocks (Horvath, GrimAge, PhenoAge, DunedinPACE) are patented by UCSD
+- US Patent 9,938,579 (Horvath Multi-tissue Clock)
+- Academic use: Free with institutional agreement
+- Commercial use: Requires licensing from UCSD Innovation Office
+- Contact: innovation@ucsd.edu | https://innovation.ucsd.edu/
+- This prototype uses SIMULATED coefficients - actual values require proper licensing

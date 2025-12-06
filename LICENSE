@@ -71,13 +71,112 @@ IMPORTANT: READ CAREFULLY BEFORE ACCESSING THIS SOFTWARE
    This license is governed by Turkish and international copyright law.
 
 ================================================================================
+                    UCSD EPIGENETIC CLOCK LICENSE NOTICE
+================================================================================
+
+IMPORTANT THIRD-PARTY LICENSE REQUIREMENTS:
+
+The epigenetic clock algorithms implemented in this software are based on 
+methods developed at the University of California, San Diego (UCSD) and 
+other institutions. Commercial use requires separate licensing.
+
+PATENTED TECHNOLOGIES (UCSD):
+-----------------------------
+The following epigenetic clocks are patented by UCSD and require licensing 
+for commercial applications:
+
+1. Horvath Multi-tissue Clock (DNAmAge)
+   - US Patent 9,938,579
+   - 353 CpG sites, pan-tissue applicability
+   - Inventor: Steve Horvath, PhD, ScD
+
+2. GrimAge Clock
+   - UCSD Technology Transfer Office
+   - 1,030 CpG sites, mortality prediction
+   - Lu AT, et al. (2019) Aging 11:303-327
+
+3. PhenoAge Clock
+   - UCSD/UCLA Technology Transfer
+   - 513 CpG sites, 9 clinical biomarkers
+   - Levine ME, et al. (2018) Aging 10:573-591
+
+4. SkinBloodClock
+   - UCSD Technology Transfer Office
+   - Skin and blood optimized
+
+5. DunedinPACE
+   - Duke University / Columbia University
+   - Pace of aging measurement
+   - Belsky DW, et al. (2022) eLife 11:e73420
+
+LICENSE TYPES:
+--------------
+A) ACADEMIC/NON-COMMERCIAL LICENSE
+   - Available for research institutions
+   - Requires institutional agreement
+   - Contact: innovation@ucsd.edu
+
+B) COMMERCIAL LICENSE
+   - Required for any commercial application
+   - Fee-based licensing agreement
+   - Contact: innovation@ucsd.edu
+   - Website: https://innovation.ucsd.edu/
+
+PROTOTYPE DISCLAIMER:
+---------------------
+This EpiClock platform uses SIMULATED coefficients for demonstration and 
+research purposes. The actual proprietary coefficients are NOT included 
+and require proper licensing from UCSD for accurate implementation.
+
+For licensing inquiries:
+  University of California, San Diego
+  Office of Innovation and Commercialization
+  9500 Gilman Drive, MC 0910
+  La Jolla, CA 92093-0910
+  Email: innovation@ucsd.edu
+  Phone: (858) 534-5815
+
+================================================================================
+ORIGINAL PUBLICATIONS - CITATION REQUIREMENTS
+================================================================================
+
+Users of this software must cite the following original publications:
+
+1. Horvath S. (2013) 
+   DNA methylation age of human tissues and cell types. 
+   Genome Biology 14:R115.
+   DOI: 10.1186/gb-2013-14-10-r115
+
+2. Hannum G, et al. (2013) 
+   Genome-wide methylation profiles reveal quantitative views of human aging rates. 
+   Molecular Cell 49:359-367.
+   DOI: 10.1016/j.molcel.2012.10.016
+
+3. Levine ME, et al. (2018) 
+   An epigenetic biomarker of aging for lifespan and healthspan. 
+   Aging 10:573-591.
+   DOI: 10.18632/aging.101414
+
+4. Lu AT, et al. (2019) 
+   DNA methylation GrimAge strongly predicts lifespan and healthspan. 
+   Aging 11:303-327.
+   DOI: 10.18632/aging.101684
+
+5. Belsky DW, et al. (2022) 
+   DunedinPACE, a DNA methylation biomarker of the pace of aging. 
+   eLife 11:e73420.
+   DOI: 10.7554/eLife.73420
+
+================================================================================
 AUTHOR INFORMATION
 ================================================================================
 
 Author: Dr. Nurcan Denli Bayır
 Digital Signature: nrcdnl94
 Platform: EpiClock Prototype v4.0
+Institution: Department of Forensic Medicine
 Year: 2024-2025
+Repository: https://github.com/mortemdulcem/epi-clock-DNA-mtl-prototype
 
 ================================================================================
                     UNAUTHORIZED USE IS STRICTLY PROHIBITED
