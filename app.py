@@ -3655,7 +3655,9 @@ def render_home_page(components):
     """Render the home page with DNA Upload & Analysis interface - nrcdnl94"""
     
     render_dna_upload_analysis_page()
-    return
+    
+    st.markdown("---")
+    st.markdown("## Platform Istatistikleri ve Performans")
     
     col1, col2, col3, col4 = st.columns(4)
     
