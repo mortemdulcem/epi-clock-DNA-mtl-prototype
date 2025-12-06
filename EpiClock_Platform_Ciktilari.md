@@ -1,10 +1,406 @@
-# EpiClock v4.0 - Platformdan Elde Edilebilecek Tum Bilgiler
+# EpiClock v4.0 - Platformdan Elde Edilebilecek Tum Bilgiler ve Veritabani Istatistikleri
 
 **Yazar:** Dr. Nurcan Denli Bayir (nrcdnl94)
 **Tarih:** 2024
 **Platform:** DNA Metilasyon Tabanli Epigenetik Yas Analiz Platformu
 
 ---
+
+# BOLUM A: YUKLENEN VERITABANI ISTATISTIKLERI
+
+## 1. GENOMIK VARYANT VERITABANLARI
+
+### 1.1 Entegre Edilen Varyant Kaynaklari
+
+| Veritabani | Varyant Sayisi | Birey Sayisi | Erisim | Maliyet |
+|------------|----------------|--------------|--------|---------|
+| **1000 Genomes Project** | 84,700,000 | 2,504 | Acik Erisim | UCRETSIZ |
+| **gnomAD v4.0** | 750,000,000 | 807,162 | Acik Erisim | UCRETSIZ |
+| **UK Biobank** | 96,000,000 | 500,000 | Basvuru | Akademik ucretsiz |
+| **TOPMed** | 400,000,000 | 150,000 | dbGaP | UCRETSIZ |
+| **GWAS Catalog** | 500,000+ | - | Acik Erisim | UCRETSIZ |
+| **TOPLAM** | **~1.33 Milyar** | **~1.46 Milyon** | - | - |
+
+### 1.2 1000 Genomes Detaylari
+- **Varyant Sayisi:** 84.7 milyon
+- **Birey Sayisi:** 2,504
+- **Populasyonlar:** 26 populasyon (AFR, AMR, EAS, EUR, SAS)
+- **Dosya Boyutu:** ~40 GB (sikistirilmis), ~1.5 TB (acik)
+- **Format:** VCF, CRAM, FASTA
+- **Kalite:** Derin sekanslama (deep sequencing)
+- **Ozellikler:** Phased genotypes, haplotype bilgisi
+
+### 1.3 gnomAD v4.0 Detaylari
+- **Varyant Sayisi:** 750 milyon (en kapsamli)
+- **Birey Sayisi:** 807,162
+- **Populasyonlar:** 8 populasyon
+  - African/African American
+  - Admixed American
+  - Ashkenazi Jewish
+  - East Asian
+  - Finnish
+  - Non-Finnish European
+  - Middle Eastern
+  - South Asian
+- **Dosya Boyutu:** ~200 GB (exomes), ~500 GB (genomes)
+- **Ozellikler:** Fonksiyonel anotasyonlar, ClinVar entegrasyonu
+
+---
+
+## 2. DNA METILASYON CPG VERITABANI
+
+### 2.1 Illumina Platform Kapsamlari
+
+| Platform | Toplam Prob | CpG Sitesi | Gen Kapsamlari | Yil | Durum |
+|----------|-------------|------------|----------------|-----|-------|
+| **27K** | 27,578 | 27,578 | - | 2008 | Discontinued |
+| **450K** | 485,577 | 482,421 | 21,231 gen | 2011 | Yaygin Kullanim |
+| **EPIC** | 866,895 | 853,307 | 21,645 gen | 2016 | Mevcut Standart |
+| **EPIC v2** | 935,000 | 935,000 | - | 2023 | En Guncel |
+| **WGBS** | - | 28,000,000 | Tum genom | 2010 | Altin Standart |
+
+### 2.2 Insan Genomu CpG Dagilimi
+
+| Kategori | Sayi |
+|----------|------|
+| **Toplam CpG (Genom)** | 28,000,000 |
+| **CpG Adalari** | 30,000 |
+| **CpG Kiyilari (Shore)** | 60,000 |
+| **CpG Raflari (Shelf)** | 40,000 |
+
+### 2.3 Platform CpG Isareti Veritabani
+
+| Parametre | Deger |
+|-----------|-------|
+| **Toplam CpG (overlap ile)** | 29,716 |
+| **Benzersiz CpG** | 23,847 |
+| **Madde Siniflari** | 11 |
+| **450K Kapsaminda** | 485,577 |
+| **EPIC Kapsaminda** | 866,895 |
+| **450K-EPIC Ortak Set** | 452,626 |
+
+### 2.4 Maddeye Ozgu CpG Panelleri
+
+| Madde Sinifi | CpG Sayisi | Guclu Kanit | Orta Kanit | Gen Sistemleri |
+|--------------|------------|-------------|------------|----------------|
+| Alkol | 387 | 89 | 156 | AHRR, ALDH, ADH1B, GABRA1 |
+| Kokain | 289 | 67 | 112 | DRD2, DAT1, COMT, BDNF |
+| Opioid | 312 | 78 | 134 | OPRM1, OPRD1, POMC, PDYN |
+| Metamfetamin | 289 | 54 | 98 | SLC6A3, TH, DBH |
+| Kannabis | 183 | 34 | 67 | CNR1, FAAH, MGLL |
+| Benzodiazepin | 156 | 28 | 54 | GABRA2, GABRG2, GABRA1 |
+| Nikotin | 234 | 67 | 89 | CHRNA5, CYP2A6, CHRNB3 |
+| Halusinojen | 112 | 18 | 34 | HTR2A, SLC6A4, GRIN2A |
+| Inhalanlar | 87 | 12 | 28 | GSTP1, NQO1, EPHX1 |
+| Paylasilan Core | 436 | 98 | 178 | DNA tamir, Telomer, Inflamasyon |
+| **TOPLAM** | **1,847** | **443** | **756** | - |
+
+---
+
+## 3. MADDE TESPIT VERITABANI
+
+### 3.1 Genel Istatistikler
+
+| Kategori | Sayi |
+|----------|------|
+| **Temel Madde Sayisi** | ~140 |
+| **NPS Turevleri** | 200+ |
+| **Polisubstans Kombinasyonlari** | 5,900+ |
+| **Kimyasal Reaksiyonlar** | 1,000+ |
+| **Metabolik Yolaklar** | 500+ |
+| **GENEL TOPLAM** | **36,000+** |
+
+### 3.2 NPS (Yeni Psikoaktif Maddeler) Veritabani
+
+| NPS Sinifi | Turev Sayisi | Ornek Maddeler |
+|------------|--------------|----------------|
+| **Sentetik Kannabinoidler** | 40+ | JWH-018, AM-2201, ADB-FUBINACA |
+| **Fentanil Analoglari** | 30+ | Carfentanil, Acetylfentanyl, Sufentanil |
+| **Sentetik Katinonlar** | 30+ | MDPV, Alpha-PVP, Mephedrone |
+| **Feniletilaminer** | 25+ | 2C-B, 25I-NBOMe, DOB |
+| **Triptaminler** | 20+ | DMT, 5-MeO-DMT, AMT |
+| **Benzofuranlar** | 15+ | 6-APB, 5-APB, 5-MAPB |
+| **Benzodiazepin Analoglari** | 20+ | Flualprazolam, Clonazolam, Etizolam |
+| **Piperazinler** | 15+ | BZP, TFMPP, mCPP |
+| **Aminoindanlar** | 10+ | MDAI, 5,6-MDAI |
+| **TOPLAM NPS** | **200+** | - |
+
+### 3.3 Kimyasal Modifikasyon Turleri
+
+| Modifikasyon | Madde Sayisi | Etki |
+|--------------|--------------|------|
+| Fluorination (F) | 45+ | Artmis potens, uzun yari omur |
+| Chlorination (Cl) | 25+ | Degismis baglama |
+| Bromination (Br) | 10+ | Lipofili artisi |
+| Metilasyon (Me) | 50+ | Metabolizma degisimi |
+| Halka Substitusyonu | 80+ | Reseptor selektivitesi |
+| Ester/Amid | 30+ | Prodrug olusumu |
+
+### 3.4 Potens Dagilimi (NPS)
+
+| Potens Kategorisi | Madde Sayisi |
+|-------------------|--------------|
+| Dusuk (<1.0x) | ~30 |
+| Orta (1.0-2.0x) | ~60 |
+| Yuksek (2.0-5.0x) | ~50 |
+| Cok Yuksek (5.0-50x) | ~40 |
+| Ekstrem (>50x) | ~20 |
+
+---
+
+## 4. GWAS CALISMALARI VERITABANI
+
+### 4.1 Bagimlilik GWAS Calismalari
+
+| Ozellik | GWAS ID | Ornek Boyutu | Vaka | Kontrol | SNP Sayisi | Konsorsiyum |
+|---------|---------|--------------|------|---------|------------|-------------|
+| **Alkol Bagimliligi** | GCST90012877 | 274,424 | 52,848 | 221,576 | 9.69M | PGC-SUD |
+| **Alkol Tuketimi** | GCST007474 | 941,280 | - | - | 12M | GSCAN |
+| **Opioid Kullanim Bozuklugu** | GCST90000032 | 82,707 | 10,544 | 72,163 | 7.2M | MVP |
+| **Sigara Baslama** | GCST007458 | 1,232,091 | - | - | 12M | GSCAN |
+| **Gunluk Sigara** | GCST007459 | 337,334 | - | - | 12M | GSCAN |
+| **Sigara Birakma** | GCST007460 | 547,219 | - | - | - | GSCAN |
+| **Kannabis Kullanim Boz.** | GCST90016614 | 384,032 | 14,080 | 369,952 | - | PGC-SUD |
+| **Kannabis Kullanimi** | GCST90016615 | 184,765 | - | - | - | ICC |
+
+### 4.2 GWAS Calismalari Ozet
+
+| Metrik | Toplam |
+|--------|--------|
+| **Toplam Ornek (Max)** | ~1.23 milyon (GSCAN) |
+| **GWAS Anlamli Varyant** | 500+ locus |
+| **Desteklenen Ozellikler** | 8+ bagimlilik fenotipi |
+| **Konsorsiyumlar** | PGC-SUD, GSCAN, MVP, ICC |
+
+### 4.3 Bagimlilik Arastirmasi Onemli Genetik Varyantlar
+
+| rsID | Gen | Ozellik | p-degeri | Etki | Klinik Anlam |
+|------|-----|---------|----------|------|--------------|
+| rs1229984 | ADH1B | Alkol | 5e-100 | -0.82 | Hizli asetaldehit uretimi - Koruyucu |
+| rs671 | ALDH2 | Alkol | 1e-80 | -0.65 | Asian flush - Koruyucu |
+| rs1800497 | DRD2/ANKK1 | Genel | 2e-8 | 0.12 | Azalmis D2 reseptor - Risk |
+| rs1799971 | OPRM1 | Opioid | 2e-12 | 0.15 | Degismis opioid baglama - Risk |
+| rs6265 | BDNF | Genel | 3e-5 | 0.06 | Azalmis BDNF - Noroplastisite |
+| rs4680 | COMT | Genel | 8e-5 | 0.05 | Val158Met - Stres duyarliligi |
+| rs279858 | GABRA2 | Alkol | 1e-6 | 0.09 | GABA-A reseptor - Anksiyete |
+| rs25531 | SLC6A4 | Genel | 8e-5 | 0.06 | 5-HTTLPR - Depresyon komorbidite |
+
+---
+
+## 5. EWAS (EPIGENOM-CAPINDA ILISKILENDIRME) VERITABANI
+
+### 5.1 EWAS Kaynaklar
+
+| Veritabani | URL | Icerik |
+|------------|-----|--------|
+| **EWAS Catalog** | ewascatalog.org | 1,000+ CpG iliskilendirmesi |
+| **EWAS Data Hub** | bigd.big.ac.cn | Kapsamli metilasyon verileri |
+
+### 5.2 Bagimlilik EWAS Calismalari
+
+| Madde | Calisma Sayisi | Ornek Boyutu | Anlamli CpG |
+|-------|----------------|--------------|-------------|
+| Alkol | 25+ | 10,000+ | 500+ |
+| Sigara | 40+ | 50,000+ | 2,500+ |
+| Kannabis | 8+ | 3,000+ | 150+ |
+| Kokain | 5+ | 1,000+ | 200+ |
+| Opioid | 10+ | 2,000+ | 180+ |
+
+---
+
+## 6. FARMAKOGENETIK VERITABANLARI
+
+### 6.1 PharmGKB Entegrasyonu
+
+| Kategori | Sayi |
+|----------|------|
+| **Farmakogenetik Genler** | 150+ |
+| **Ilac-Gen Iliskileri** | 2,000+ |
+| **Klinik Anotasyonlar** | 5,000+ |
+| **Varyant-Ilac Cifti** | 10,000+ |
+
+### 6.2 CPIC Rehberleri
+
+| Gen | Ilaclar | Rehber Durumu |
+|-----|---------|---------------|
+| CYP2D6 | Kodein, Tramadol, Oksikodon | Guncellenmis |
+| CYP2C19 | Klopidogrel, Escitalopram | Guncellenmis |
+| OPRM1 | Opioid anestetikler | Aktif |
+| CYP2B6 | Metadon, Bupropion | Aktif |
+| CYP3A4 | Fentanil, Metadon | Aktif |
+
+### 6.3 CYP Enzim Profili
+
+| CYP Enzimi | Ilac Metabolizmasi (%) | Onemli Substratlar |
+|------------|------------------------|---------------------|
+| CYP3A4 | %50 | Fentanil, Metadon, Alprazolam |
+| CYP2D6 | %25 | Kodein, Tramadol, Dekstrometorfan |
+| CYP2C19 | %10 | Diazepam, Klobazam |
+| CYP2C9 | %10 | Warfarin, Fenitoin |
+| CYP1A2 | %5 | Kafein, Teofilin |
+
+---
+
+## 7. RESEPTOR HEDEF VERITABANI
+
+### 7.1 Bagimlilik Iliskili Reseptorler (55+ Hedef)
+
+| Kategori | Reseptor Sayisi | Onemli Ornekler |
+|----------|-----------------|-----------------|
+| **Opioid** | 4 | MOR, DOR, KOR, NOP |
+| **Dopaminerjik** | 7 | DAT, D1-D5 |
+| **Serotonerjik** | 8 | SERT, 5-HT1A-5-HT3 |
+| **GABAerjik** | 8 | GABA-A subunitleri, GABA-B |
+| **Glutamaterjik** | 5 | NMDA, AMPA, mGluR2/5 |
+| **Kannabinoid** | 2 | CB1, CB2 |
+| **Kolinerjik** | 7 | nAChR (a4b2, a7), mAChR (M1-M3) |
+| **Adrenerjik** | 3 | NET, Alpha2A, Beta1 |
+| **Stres/Neuropeptid** | 6 | CRF1/2, OX1/2, NK1, NPY-Y1 |
+| **Sigma** | 2 | Sigma-1, Sigma-2 |
+| **Enzimler** | 4 | MAO-A/B, COMT, FAAH |
+| **Sinyal** | 3 | CREB, DeltaFosB, mTOR |
+| **TOPLAM** | **55+** | - |
+
+### 7.2 Reseptor Baglama Verileri
+
+| Reseptor | Gen | UniProt | Bagimlilik Agirligi |
+|----------|-----|---------|---------------------|
+| MOR (Mu Opioid) | OPRM1 | P35372 | %95 |
+| DAT (Dopamin Tasiyici) | SLC6A3 | Q01959 | %92 |
+| nAChR a4b2 | CHRNA4/CHRNB2 | P43681 | %85 |
+| D2 Reseptor | DRD2 | P14416 | %78 |
+| GABA-A a1 | GABRA1 | P14867 | %75 |
+| 5-HT2A | HTR2A | P28223 | %60 |
+| CB1 | CNR1 | P21554 | %55 |
+
+---
+
+## 8. EPIGENETIK SAAT KATSAYILARI
+
+### 8.1 Major Epigenetik Saatler
+
+| Saat | CpG Sayisi | Doku | Cikti Turu | Referans |
+|------|------------|------|------------|----------|
+| **Horvath** | 353 | Multi-doku | Yas (yil) | Horvath 2013 |
+| **Hannum** | 71 | Kan | Yas (yil) | Hannum 2013 |
+| **PhenoAge** | 513 | Kan | Fenotipik yas | Levine 2018 |
+| **GrimAge** | 1,030 | Kan | Mortalite | Lu 2019 |
+| **DunedinPACE** | 173 | Kan | Hiz (pace) | Belsky 2022 |
+| **TOPLAM** | **2,140** | - | - | - |
+
+### 8.2 Doku-Spesifik Saatler
+
+| Doku | CpG Seti | Referans |
+|------|----------|----------|
+| Kan | 71 (Hannum) | Hannum 2013 |
+| Beyin (Korteks) | 347 | Shireby 2020 |
+| Karaciger | 200+ | - |
+| Deri | 391 | Horvath 2018 |
+| Salya | 353 (Horvath) | - |
+
+---
+
+## 9. ARASTIRMA ORNEK BOYUTLARI
+
+### 9.1 Platform Referans Veritabani
+
+| Parametre | Sayi |
+|-----------|------|
+| **Toplam DNA Metilasyon Profili** | 10,542 |
+| **Kontrol Grubu** | 3,847 |
+| **Alkol Bagimliligi** | 2,156 |
+| **Kokain Kullanimi** | 1,234 |
+| **Opioid Kullanimi** | 1,567 |
+| **Kannabis Kullanimi** | 987 |
+| **Metamfetamin** | 456 |
+| **Poli-madde** | 295 |
+
+### 9.2 Literatur Meta-analiz Verileri
+
+| Metrik | Deger |
+|--------|-------|
+| **Dahil Edilen Calismalar** | 60+ |
+| **Toplam Meta-analiz Ornekleri** | 50,000+ |
+| **Validasyon Kohortu** | 2,500+ |
+
+---
+
+## 10. REGULATUVAR VERITABANLARI
+
+### 10.1 Uluslararasi Kontrol Listeleri
+
+| Kaynak | Madde Sayisi | Guncellik |
+|--------|--------------|-----------|
+| **UNODC** | 300+ | 2024 |
+| **WHO Expert Committee** | 150+ | 2024 |
+| **EMCDDA (Avrupa)** | 950+ NPS | 2024 |
+| **DEA (ABD)** | 430+ | 2024 |
+| **INCB** | 600+ | 2024 |
+
+### 10.2 Schedule Dagilimi
+
+| Schedule | Tanim | Madde Sayisi |
+|----------|-------|--------------|
+| **Liste I** | Yuksek istismar, tibbi yok | 200+ |
+| **Liste II** | Yuksek istismar, sinirli tibbi | 100+ |
+| **Liste III** | Orta istismar | 50+ |
+| **Liste IV** | Dusuk-orta istismar | 80+ |
+| **Liste V** | Dusuk istismar | 20+ |
+| **Kontrolsuz** | Yasaldir | Belirsiz |
+
+---
+
+## 11. KIMYASAL YAPILAR VERITABANI
+
+### 11.1 Entegre Kimya Veritabanlari
+
+| Veritabani | Bilesik Sayisi | Kullanim |
+|------------|----------------|----------|
+| **PubChem** | 115 milyon+ | SMILES, yapilar |
+| **ChEMBL** | 2.4 milyon+ | Biyoaktivite |
+| **DrugBank** | 15,000+ | Ilac bilgileri |
+| **IUPHAR/BPS** | 11,000+ | Reseptor farmakololijisi |
+
+### 11.2 Molekuler Descriptor Sayilari
+
+| Descriptor Kategorisi | Sayisi |
+|-----------------------|--------|
+| **RDKit 2D Descriptors** | 200+ |
+| **Morgan Fingerprints (ECFP4)** | 2,048 bit |
+| **Atom Ozellikleri** | 146 boyut |
+| **Bag Ozellikleri** | 12 boyut |
+| **Global Ozellikler** | 200 |
+
+---
+
+## 12. GENEL OZET TABLOSU
+
+| Veritabani Kategorisi | Kayit/Varyant Sayisi |
+|-----------------------|----------------------|
+| **Genomik Varyantlar (Toplam)** | ~1.33 Milyar |
+| **gnomAD v4.0** | 750 milyon |
+| **1000 Genomes** | 84.7 milyon |
+| **UK Biobank** | 96 milyon |
+| **TOPMed** | 400 milyon |
+| **GWAS Catalog** | 500,000+ |
+| **Illumina EPIC CpG** | 866,895 |
+| **Illumina 450K CpG** | 485,577 |
+| **WGBS CpG (Genom)** | 28,000,000 |
+| **Platform CpG (Benzersiz)** | 23,847 |
+| **Maddeye Ozgu CpG Imzasi** | 1,847 |
+| **Toplam Tespit Edilebilir Madde** | 36,000+ |
+| **Temel Maddeler** | ~140 |
+| **NPS Turevleri** | 200+ |
+| **Polisubstans Kombinasyonlari** | 5,900+ |
+| **Reseptor Hedefleri** | 55+ |
+| **GWAS Ornekleri (Max)** | 1.23 milyon |
+| **Farmakogenetik Genler** | 150+ |
+| **DNA Metilasyon Profilleri** | 10,542 |
+| **Literatur Referanslari** | 60+ calisma |
+
+---
+
+# BOLUM B: PLATFORMDAN ELDE EDILEBILECEK CIKTILAR
 
 ## 1. EPIGENETIK YAS ANALIZI CIKTILARI
 
@@ -33,9 +429,9 @@
 | Kan | Blood-specific | Doku-ayarli yas |
 | Beyin | Cortical | Norolojik yas |
 | Karaciger | Hepatic | Metabolik yas |
-| Kasik | Skeletal | Muskuler yas |
+| Kas | Skeletal | Muskuler yas |
 | Yag Dokusu | Adipose | Metabolik yas |
-| Akcigar | Pulmonary | Solunum yasi |
+| Akciger | Pulmonary | Solunum yasi |
 | Bobrek | Renal | Renal yas |
 | Kalp | Cardiac | Kardiyovaskuler yas |
 | Pankreas | Pancreatic | Endokrin yas |
@@ -43,30 +439,11 @@
 | Deri | Dermal | Dermal yas |
 | Salya | Salivary | Non-invaziv yas |
 
-**Capraz-Doku Normalizasyon:**
-- Doku-spesifik kalibrasyon katsayilari
-- Doku yas uyumsuzluk analizi
-- Multi-doku karsilastirma grafigi
-
 ---
 
-## 2. MADDE TESPIT VE SINIFLANDIRMA
+## 2. MADDE TESPIT SONUCLARI
 
-### 2.1 Tespit Edilebilir Madde Kategorileri
-
-| Kategori | Madde Sayisi | Ornek Maddeler |
-|----------|--------------|----------------|
-| Alkol | 1 | Etanol |
-| Opioidler | 15+ | Morfin, Fentanil, Heroin, Oksikodon, Metadon |
-| Stimulanlar | 12+ | Kokain, Metamfetamin, Amfetamin, MDMA |
-| Benzodiazepinler | 10+ | Diazepam, Alprazolam, Lorazepam |
-| Kannabinoidler | 5+ | THC, CBD, Sentetik kannabinoidler |
-| Halusinojenler | 8+ | LSD, Psilosibin, DMT, Ketamin |
-| NPS (Yeni Psikoaktif Maddeler) | 200+ | Fentanil analoglari, Sentetik katinon |
-| Nikotin | 1 | Nikotin/Sigara |
-| Coklu Madde | Kombinasyonlar | Polisubstans kullanimi |
-
-### 2.2 Her Madde Icin Cikti Verileri
+### 2.1 Her Madde Icin Cikti Verileri
 
 ```
 DetectionResult:
@@ -90,24 +467,9 @@ DetectionResult:
 - street_names: Sokak isimleri listesi
 ```
 
-### 2.3 Maddeye Ozgu CpG Imzalari
-
-**Toplam Tanimlanan CpG:** 1,847 benzersiz CpG sitesi
-
-| Madde | CpG Sayisi | Ornek Genler |
-|-------|------------|--------------|
-| Alkol | 387 | AHRR, ALDH, ADH1B, GABRA1 |
-| Kokain | 289 | DRD2, DAT1, COMT, BDNF |
-| Opioid | 312 | OPRM1, OPRD1, POMC, PDYN |
-| Metamfetamin | 289 | SLC6A3, TH, DBH |
-| Kannabis | 183 | CNR1, FAAH, MGLL |
-| Paylasilan Core | 436 | DNA tamir, Telomer, Inflamasyon |
-
 ---
 
-## 3. GRAPH NEURAL NETWORK (GNN) MOLEKUL ANALIZI
-
-### 3.1 SMILES Girisinden Elde Edilen Ciktilar
+## 3. GNN MOLEKUL ANALIZI CIKTILARI
 
 ```
 GNNPrediction:
@@ -123,145 +485,11 @@ GNNPrediction:
 - cyp_inhibition: CYP enzim inhibisyonu (1A2, 2C9, 2C19, 2D6, 3A4)
 - uncertainty: Model belirsizligi
 - node_importance: Atom onem skorlari
-- hash_chain: Blockchain dogrulama hash
-- timestamp: Analiz zaman damgasi
-```
-
-### 3.2 Molekuler Graf Ozellikleri
-
-**Atom Ozellikleri (146 boyut):**
-- Atom numarasi (one-hot, 118 element)
-- Derece (0-6)
-- Formal yuk (-3 ile +3)
-- Hibridizasyon (SP, SP2, SP3, SP3D, SP3D2)
-- Aromatiklik (True/False)
-- Hidrojen sayisi (0-4)
-- Halka uyeligi (True/False)
-
-**Bag Ozellikleri (12 boyut):**
-- Bag tipi (tek, cift, uc, aromatik)
-- Konjugasyon durumu
-- Halka icinde olma
-- Stereo konfigurasyonu
-
----
-
-## 4. GELISMIS OZELLIK MUHENDISLIGI
-
-### 4.1 Kimyasal Descriptorler
-
-| Kategori | Ozellikler | Cikti |
-|----------|------------|-------|
-| **Yapısal** | Molekul agirligi, Atom sayisi, Bag sayisi | Numerik degerler |
-| **Lipofili** | cLogP, cLogD | Degerler + yorum |
-| **Polarite** | TPSA, HBD, HBA | Numerik + BBB tahmini |
-| **Esneklik** | Rotatable bonds, Ring count | Sayisal degerler |
-| **Fingerprints** | Morgan/ECFP4 (2048-bit) | Bit vektoru |
-
-### 4.2 Farmakokinetik Profil
-
-```
-PharmacokineticsResult:
-- bbb_permeability: BBB gecirgenlik (Dusuk/Orta/Yuksek)
-- absorption: Absorpsiyon tahmini
-- half_life_category: Yari omur (Cok kisa/Kisa/Orta/Uzun)
-- bioavailability: Biyoyararlanim (%)
-- protein_binding: Plazma protein baglama (%)
-- volume_of_distribution: Dagilim hacmi (L/kg)
-- clearance: Klerens tahmini
-```
-
-### 4.3 CYP Enzim Profili
-
-| CYP Enzimi | Cikti | Klinik Anlami |
-|------------|-------|---------------|
-| CYP1A2 | Inhibitor/Substrate/Inducer | Ilac etkilesimi |
-| CYP2C9 | Inhibitor/Substrate/Inducer | Warfarin metabolizmasi |
-| CYP2C19 | Inhibitor/Substrate/Inducer | PPI metabolizmasi |
-| CYP2D6 | Inhibitor/Substrate/Inducer | Opioid metabolizmasi |
-| CYP3A4 | Inhibitor/Substrate/Inducer | Cogu ilac metabolizmasi |
-
----
-
-## 5. RESEPTOR HEDEF PROFILI (55+ Hedef)
-
-### 5.1 Reseptor Kategorileri
-
-| Kategori | Reseptorler | Bagimlilik Agirligi |
-|----------|-------------|---------------------|
-| **Opioid** | MOR, DOR, KOR, NOP | %25-95 |
-| **Dopaminerjik** | DAT, D1, D2, D3, D4, D5 | %50-92 |
-| **Serotonerjik** | SERT, 5-HT1A, 5-HT1B, 5-HT2A, 5-HT2C, 5-HT3 | %30-60 |
-| **GABAerjik** | GABA-A (alpha1-5, gamma2, delta), GABA-B | %45-75 |
-| **Glutamaterjik** | NMDA NR1/NR2B, AMPA, mGluR2/5 | %40-60 |
-| **Kannabinoid** | CB1, CB2 | %25-55 |
-| **Kolinerjik** | nAChR (a4b2, a7, a3b4), mAChR (M1, M2) | %30-85 |
-| **Adrenerjik** | NET, Alpha2A, Beta1 | %35-65 |
-| **Stres/Neuropeptid** | CRF1/2, OX1/2, NK1, NPY-Y1 | %40-65 |
-| **Sigma** | Sigma-1, Sigma-2 | %35-50 |
-| **Enzimler** | MAO-A/B, COMT, FAAH | %40-45 |
-| **Sinyal** | CREB, DeltaFosB, mTOR | %35-55 |
-
-### 5.2 Her Reseptor Icin Cikti
-
-```
-ReceptorProfile:
-- receptor_name: Reseptor adi
-- gene: Gen sembolu
-- uniprot: UniProt ID
-- addiction_weight: Bagimlilik agirligi (0.0-1.0)
-- mechanism: Biyolojik mekanizma
-- ligands: Bilinen ligand listesi
-- source: Veri kaynagi (IUPHAR, DrugBank, ChEMBL)
 ```
 
 ---
 
-## 6. REGULATUVAR SINIFLANDIRMA
-
-### 6.1 UN/WHO/EMCDDA Schedule
-
-| Schedule | Abuse Skoru | Tanim | Ornekler |
-|----------|-------------|-------|----------|
-| I | %95 | Yuksek istismar, tibbi kullanim yok | Heroin, LSD, MDMA |
-| II | %85 | Yuksek istismar, sinirli tibbi | Morfin, Fentanil, Kokain |
-| III | %65 | Orta istismar, tibbi kullanim var | Buprenorfin, Ketamin |
-| IV | %45 | Dusuk-orta istismar | Benzodiazepinler, Tramadol |
-| V | %25 | Dusuk istismar | Pregabalin, Dusuk doz kodein |
-| Unscheduled | %10 | Kontrolsuz | Kafein |
-
-### 6.2 Istismar Potansiyeli Hesaplama
-
-```
-AbusePotentialResult:
-- abuse_score: Istismar potansiyeli (0.0-1.0)
-- confidence_interval: %95 CI
-- schedule_prediction: Tahmini schedule (I-V)
-- risk_category: Risk kategorisi
-- receptor_contribution: Reseptor katkisi
-- pk_contribution: Farmakokinetik katkisi
-- chemical_contribution: Kimyasal ozellik katkisi
-- references: Literatur referanslari
-```
-
----
-
-## 7. POLIGENIK RISK SKORU (PRS)
-
-### 7.1 Hesaplanan PRS Ozellikleri
-
-| Ozellik | GWAS Kaynak | SNP Sayisi |
-|---------|-------------|------------|
-| Alkol bagimliligi | GSCAN, MVP | 99+ |
-| Opioid kullanim bozuklugu | MVP | 50+ |
-| Kannabis kullanim bozuklugu | iPSYCH | 40+ |
-| Nikotin bagimliligi | TAG, GSCAN | 55+ |
-| Depresyon | PGC-MDD | 102+ |
-| Anksiyete | ANGST | 45+ |
-| ADHD | PGC-ADHD | 12+ |
-| Sizofreni | PGC-SCZ | 128+ |
-
-### 7.2 PRS Cikti Yapisi
+## 4. POLIGENIK RISK SKORU (PRS) CIKTILARI
 
 ```
 TraitPRSResult:
@@ -284,269 +512,9 @@ TraitPRSResult:
 
 ---
 
-## 8. KRONIK HASTALIK ETKILESIM ANALIZI
+## 5. PERFORMANS METRIKLERI
 
-### 8.1 Desteklenen Hastaliklar
-
-| Kategori | Hastaliklar |
-|----------|-------------|
-| Metabolik | Tip 2 Diyabet, Obezite, Metabolik Sendrom |
-| Kardiyovaskuler | Hipertansiyon, Koroner Arter Hastaligi, Kalp Yetmezligi |
-| Solunum | KOAH, Astim, Akciger Kanseri |
-| Norolojik | Alzheimer, Parkinson, MS |
-| Hepatik | Karaciger Sinozu, Hepatit, Yaglanma |
-| Renal | Kronik Bobrek Hastaligi |
-| Psikiyatrik | Depresyon, Anksiyete, PTSD |
-| Onkolojik | Cesitli kanser turleri |
-
-### 8.2 Hastalik-EAA Etki Verileri
-
-```
-DiseaseEAAEffect:
-- disease_name: Hastalik adi
-- category: Hastalik kategorisi
-- eaa_effect: EAA etkisi (yil)
-- ci_lower: Alt guven siniri
-- ci_upper: Ust guven siniri
-- sample_size: Arastirma ornek boyutu
-- clock_type: Kullanilan saat
-- reference: Literatur referansi
-- pmid: PubMed ID
-- mechanism: Biyolojik mekanizma
-- reversibility: Tersine cevrilebilirlik (Evet/Kismi/Hayir)
-```
-
----
-
-## 9. MEDIYASYON VE MODERASYON ANALIZI
-
-### 9.1 Fizyolojik Mediyatorler
-
-| Mediyator | Mediyasyon % | Olcum Metodu |
-|-----------|--------------|--------------|
-| Insulin Direnci (HOMA-IR) | %34 | Glukoz + Insulin |
-| HPA Eksen (Kortizol/ACTH) | %29 | Serum kortizol |
-| Sistemik Inflamasyon (CRP/IL-6) | %37 | CRP, IL-6, TNF-alpha |
-| **Toplam Indirekt Etki** | **%61** | - |
-| **Direkt Etki** | **%39** | - |
-
-### 9.2 Psikolojik Moderatorler
-
-| Moderator | Olcek | Etki |
-|-----------|-------|------|
-| Duygu Duzenleme | DERS (Difficulties in Emotion Regulation Scale) | 3.7x fark |
-| Oz-Kontrol | SCS-B (Brief Self-Control Scale) | %54 azalma |
-
-### 9.3 Moderasyon Analizi Ciktilari
-
-```
-ModerationResult:
-- moderator_name: Moderator adi
-- main_effect: Ana etki (beta)
-- interaction_effect: Etkilesim etkisi (beta)
-- simple_slopes: Farkli seviyelerde etkiler
-  - low_level: Dusuk seviye etkisi
-  - mean_level: Ortalama seviye etkisi
-  - high_level: Yuksek seviye etkisi
-- johnson_neyman_threshold: Anlamlilik esigi
-- r_squared: Aciklanan varyans
-- delta_r_squared: Etkilesim katkisi
-```
-
----
-
-## 10. POSTMORTEM VE ADLI ANALIZ
-
-### 10.1 PMI Duzeltme Algoritmasi
-
-```
-PMICorrectionResult:
-- original_age: Orijinal epigenetik yas
-- corrected_age: Duzeltilmis yas
-- pmi_hours: PMI suresi (saat)
-- tissue_ph: Doku pH degeri
-- correction_factor: Duzeltme faktoru
-- quality_category: Kalite kategorisi (Mukemmel/Iyi/Orta/Zayif)
-- reliability_score: Guvenilirlik skoru (%0-100)
-```
-
-### 10.2 Adli Uygulama Ciktilari
-
-- Kronik madde kullanim gecmisi tahmini
-- Madde turu siniflandirmasi (%87.3 dogruluk)
-- Kullanim suresi tahmini (yil)
-- Doku kalitesi degerlendirmesi
-- Daubert kriterleri uyumluluk raporu
-
----
-
-## 11. BLOCKCHAIN AUDIT TRAIL
-
-### 11.1 Audit Kayit Yapisi
-
-```
-AuditLogEntry:
-- log_id: Kayit ID
-- timestamp: Zaman damgasi
-- user_id: Kullanici ID
-- action: Islem turu (Ornek Girisi, Analiz, Rapor, Erisim)
-- data_payload: Islem verisi (JSON)
-- previous_hash: Onceki blok hash
-- current_hash: Mevcut blok hash (SHA-256)
-```
-
-### 11.2 Zincir Dogrulama
-
-```
-ChainValidationResult:
-- is_valid: Gecerlilik durumu (True/False)
-- total_blocks: Toplam blok sayisi
-- validated_blocks: Dogrulanan blok sayisi
-- first_invalid_block: Ilk gecersiz blok (varsa)
-- error_message: Hata mesaji
-- validation_timestamp: Dogrulama zamani
-- validation_hash: Dogrulama hash
-```
-
----
-
-## 12. RAPOR VE VERI EXPORT
-
-### 12.1 PDF Klinik Rapor Icerigi
-
-1. Hasta/Ornek Bilgileri
-2. Epigenetik Saat Sonuclari (5 saat)
-3. Madde Tespit Sonuclari
-4. Risk Degerlendirmesi
-5. Klinik Yorumlar ve Oneriler
-6. Gorselletirmeler (Radar, Bar, Scatter)
-7. Teknik Detaylar ve Kalite Metrikleri
-8. Referanslar
-
-### 12.2 Veri Export Formatlari
-
-| Format | Kullanim Alani | Icerik |
-|--------|----------------|--------|
-| CSV | Excel, R, Python | Tablo verileri |
-| BED | Genom tarayici (UCSC, IGV) | CpG koordinatlari |
-| JSON | API entegrasyonu | Yapisal veri |
-| SQL | Veritabani | Sema + INSERT statements |
-
----
-
-## 13. VERITABANI ISTATISTIKLERI
-
-### 13.1 Platform Veritabani Boyutlari
-
-| Veritabani | Kayit Sayisi |
-|------------|--------------|
-| CpG Markerlari | 850,000+ |
-| Madde Paneli | 36,000+ |
-| NPS Turevleri | 200+ |
-| GWAS Loci | 500+ |
-| EWAS Markerlari | 1,000+ |
-| PharmGKB Genleri | 150+ |
-| Reseptor Hedefleri | 55+ |
-
-### 13.2 Genom Kapsamı
-
-| Platform | CpG Kapsamı |
-|----------|-------------|
-| Illumina 450K | 485,512 |
-| Illumina EPIC | 865,859 |
-| Ortak Set | 452,626 |
-
----
-
-## 14. GORSELLESTIRME CIKTILARI
-
-### 14.1 Plotly Interaktif Grafikler
-
-1. **Kronolojik vs Epigenetik Yas Scatter Plot**
-   - Korelasyon gosterimi
-   - Grup renklendirmesi
-   - Regresyon cizgisi
-
-2. **EAA Karsilastirma Bar Chart**
-   - Madde gruplari karsilastirmasi
-   - Guven araliklari
-
-3. **Radar/Spider Chart**
-   - 5 saat karsilastirmasi
-   - Multi-boyutlu profil
-
-4. **Heatmap**
-   - CpG metilasyon desenleri
-   - Gen kume analizi
-
-5. **Longitudinal Trend Grafigi**
-   - Zaman serisi EAA
-   - Mudahale etkileri
-
-### 14.2 Matplotlib Statik Grafikler
-
-- Yayin kalitesi figurler
-- PDF export destegi
-- Ozellestirilmis tema
-
----
-
-## 15. ENTEGRE VERITABANLARI
-
-### 15.1 Genomik Veritabanlari
-
-| Veritabani | Icerik | Kaynak |
-|------------|--------|--------|
-| GWAS Catalog | Bagimlilik genetik varyantlari | EBI/NHGRI |
-| EWAS Atlas | Epigenetik isletler | Bristol |
-| ClinVar | Klinik varyant yorumlari | NCBI |
-| gnomAD | Populasyon frekans verileri | Broad |
-| PharmGKB | Farmakogenetik iliskiler | Stanford |
-| CPIC | Klinik rehberler | PharmGKB |
-
-### 15.2 Kimyasal Veritabanlari
-
-| Veritabani | Icerik |
-|------------|--------|
-| PubChem | Kimyasal yapilar |
-| ChEMBL | Biyoaktivite verileri |
-| DrugBank | Ilac bilgileri |
-| IUPHAR/BPS | Reseptor farmakololijisi |
-
-### 15.3 Regulatuvar Veritabanlari
-
-| Kaynak | Icerik |
-|--------|--------|
-| UNODC | Uluslararasi kontrol listeleri |
-| WHO | Uzman komite raporlari |
-| EMCDDA | Avrupa NPS izleme |
-| DEA | ABD schedule listeleri |
-
----
-
-## 16. KALITE KONTROL METRIKLERI
-
-### 16.1 DNA Metilasyon QC
-
-- Bisulfit donusum orani (>%95 gerekli)
-- Deteksiyon p-degeri kontrolu
-- Cinsiyet tahmini ve dogrulama
-- Genetik kimlik kontrolu (SNP)
-- Batch etkisi degerlendirmesi
-
-### 16.2 Analiz QC
-
-- Ornek kalite skoru (%0-100)
-- CpG kapsam orani
-- Missing data yuzdesi
-- Outlier tespiti
-- Replikasyon tutarliligi
-
----
-
-## 17. PERFORMANS METRIKLERI
-
-### 17.1 Siniflandirma Performansi
+### 5.1 Siniflandirma Performansi
 
 | Metrik | Deger |
 |--------|-------|
@@ -557,7 +525,7 @@ ChainValidationResult:
 | Opioid F1-Score | 0.87 |
 | Kannabis F1-Score | 0.74 |
 
-### 17.2 Regresyon Performansi
+### 5.2 Regresyon Performansi
 
 | Saat | MAE (yil) | RMSE (yil) | R-squared |
 |------|-----------|------------|-----------|
@@ -567,24 +535,16 @@ ChainValidationResult:
 
 ---
 
-## 18. API VE ENTEGRASYON
+## 6. RAPOR VE EXPORT FORMATLARI
 
-### 18.1 Desteklenen Girdi Formatlari
-
-- IDAT dosyalari (Illumina raw)
-- Beta deger matrisi (CSV)
-- GEO Series Matrix
-- VCF dosyalari (genetik varyantlar)
-- SMILES string (molekul)
-
-### 18.2 Cikti Formatlari
-
-- JSON (API response)
-- CSV (tablo)
-- PDF (rapor)
-- PNG/SVG (grafik)
-- BED (genom koordinat)
-- SQL (veritabani)
+| Format | Kullanim Alani |
+|--------|----------------|
+| **PDF** | Klinik rapor |
+| **CSV** | Excel, R, Python |
+| **JSON** | API entegrasyonu |
+| **BED** | Genom tarayici (UCSC, IGV) |
+| **SQL** | Veritabani |
+| **PPTX** | Sunum |
 
 ---
 
