@@ -611,16 +611,24 @@ def render_main_header():
         margin-bottom: 20px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
+    .unodc-page-version {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #003366;
+        margin: 0 0 8px 0;
+    }
     .unodc-page-title-text {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         color: #0050A0;
         margin: 0;
+        line-height: 1.4;
     }
     .unodc-page-subtitle-text {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         color: #64748B;
-        margin: 4px 0 0 0;
+        margin: 6px 0 0 0;
+        line-height: 1.5;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -630,7 +638,8 @@ def render_main_header():
     with col1:
         st.markdown("""
         <div class="unodc-page-header-box">
-            <h1 class="unodc-page-title-text">EpiClock v4.0: Madde Bagimliliginin Biyolojik Etkilerinin DNA Metilasyonu Temelli Epigenetik Yas Analizi ile Degerlendirilmesine Yonelik Entegre DNA Analiz Platformu</h1>
+            <div class="unodc-page-version">EpiClock v4.0</div>
+            <h1 class="unodc-page-title-text">Madde Bagimliliginin Biyolojik Etkilerinin DNA Metilasyonu Temelli Epigenetik Yas Analizi ile Degerlendirilmesine Yonelik Entegre DNA Analiz Platformu</h1>
             <p class="unodc-page-subtitle-text">
                 Madde bagimliligina maruz kalmanin organizma uzerindeki uzun vadeli biyolojik etkilerini, DNA metilasyon oruntulerine dayali epigenetik yas tahmini ve yas ivmesi (age acceleration) metrikleri araciligiyla nicel olarak degerlendirmeyi amaclayan, cok gorevli ogrenme (multi-task learning) temelli bir DNA analiz platformu.
             </p>
