@@ -630,9 +630,9 @@ def render_main_header():
     with col1:
         st.markdown("""
         <div class="unodc-page-header-box">
-            <h1 class="unodc-page-title-text">Dashboard - Ulusal DNA Analiz Sistemi</h1>
+            <h1 class="unodc-page-title-text">EpiClock v4.0 - DNA Metilasyon Analiz Platformu</h1>
             <p class="unodc-page-subtitle-text">
-                Adli tip, klinik genetik ve populasyon genetigi icin ulusal duzeyde DNA analiz ve raporlama altyapisi.
+                Epigenetik yas hesaplama, madde tespiti, adli analiz ve klinik karar destek sistemi
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -648,6 +648,158 @@ def render_main_header():
         with btn_col3:
             if st.button("Arama", key="header_search_btn"):
                 st.session_state['show_search'] = True
+    
+    render_infographic_cards()
+
+
+def render_infographic_cards():
+    """Render infographic cards explaining system capabilities - nrcdnl94"""
+    st.markdown("""
+    <style>
+    .info-cards-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin: 16px 0 24px 0;
+    }
+    .info-card {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 16px;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .info-card:hover {
+        border-color: #0050A0;
+        box-shadow: 0 4px 12px rgba(0,80,160,0.1);
+        transform: translateY(-2px);
+    }
+    .info-card-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #0050A0 0%, #00A7D8 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        color: #FFFFFF;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+    .info-card-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #0050A0;
+        margin: 0 0 6px 0;
+    }
+    .info-card-desc {
+        font-size: 0.7rem;
+        color: #64748B;
+        margin: 0;
+        line-height: 1.4;
+    }
+    .info-card-stat {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #003366;
+        margin-top: 8px;
+    }
+    .info-card-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #00A7D8;
+        color: #FFFFFF;
+        font-size: 0.55rem;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+    @media (max-width: 992px) {
+        .info-cards-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 576px) {
+        .info-cards-container {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+    
+    <div class="info-cards-container">
+        <div class="info-card">
+            <div class="info-card-badge">5 Saat</div>
+            <div class="info-card-icon">EP</div>
+            <h3 class="info-card-title">Epigenetik Saatler</h3>
+            <p class="info-card-desc">Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE ile biyolojik yas hesaplama</p>
+            <div class="info-card-stat">2,140 CpG</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">18 Madde</div>
+            <div class="info-card-icon">MT</div>
+            <h3 class="info-card-title">Madde Tespiti</h3>
+            <p class="info-card-desc">Sigara, alkol, kokain, eroin, metamfetamin, esrar ve diger maddelerin DNA'dan tespiti</p>
+            <div class="info-card-stat">100+ CpG Marker</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">6,893 Kayit</div>
+            <div class="info-card-icon">NPS</div>
+            <h3 class="info-card-title">NPS Veritabani</h3>
+            <p class="info-card-desc">Yeni psikoaktif maddeler, sentetik kannabinoidler, fentanil analoglari</p>
+            <div class="info-card-stat">36K+ Varyant</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">12 Doku</div>
+            <div class="info-card-icon">TK</div>
+            <h3 class="info-card-title">Doku-Spesifik Saatler</h3>
+            <p class="info-card-desc">Beyin, karaciger, bobrek, kalp, akciger, kas, kan, tukuruk, deri, yag dokusu</p>
+            <div class="info-card-stat">Capraz Normalizasyon</div>
+        </div>
+    </div>
+    
+    <div class="info-cards-container">
+        <div class="info-card">
+            <div class="info-card-badge">2,800+ Gen</div>
+            <div class="info-card-icon">GN</div>
+            <h3 class="info-card-title">Gen Veritabani</h3>
+            <p class="info-card-desc">Bagimlilik genleri, 14 biyolojik sistem, WHO siniflandirmasi</p>
+            <div class="info-card-stat">14 Sistem</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">6 Ozellik</div>
+            <div class="info-card-icon">PRS</div>
+            <h3 class="info-card-title">Poligenik Risk Skoru</h3>
+            <p class="info-card-desc">Alkol, nikotin, kannabis, opioid, kokain, genel bagimlilik riskleri</p>
+            <div class="info-card-stat">GWAS Destekli</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">Blockchain</div>
+            <div class="info-card-icon">AD</div>
+            <h3 class="info-card-title">Adli Denetim</h3>
+            <p class="info-card-desc">SHA-256 hash zinciri, kanit zinciri, Daubert kriterleri uyumlulugu</p>
+            <div class="info-card-stat">Tamper-Proof</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">10,542</div>
+            <div class="info-card-icon">RF</div>
+            <h3 class="info-card-title">Referans Veritabani</h3>
+            <p class="info-card-desc">15 bagimsiz kohorttan DNA metilasyon profilleri, madde kategorileri</p>
+            <div class="info-card-stat">7 Kategori</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 def render_statistic_cards():
     """Render UNODC-style statistic cards - Tailwind-inspired - nrcdnl94"""
