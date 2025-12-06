@@ -638,18 +638,8 @@ def render_main_header():
         """, unsafe_allow_html=True)
     
     with col2:
-        btn_col1, btn_col2, btn_col3 = st.columns(3)
-        with btn_col1:
-            if st.button("Veri Yukle", key="header_upload_btn"):
-                st.session_state['active_tab'] = 'upload'
-                st.session_state['scroll_to_upload'] = True
-        with btn_col2:
-            if st.button("Yeni Analiz", key="header_new_analysis_btn"):
-                st.session_state['active_tab'] = 'analysis'
-                st.session_state['scroll_to_analysis'] = True
-        with btn_col3:
-            if st.button("Arama", key="header_search_btn"):
-                st.session_state['show_search_dialog'] = True
+        if st.button("Arama", key="header_search_btn"):
+            st.session_state['show_search_dialog'] = True
     
     if st.session_state.get('show_search_dialog', False):
         render_search_dialog()
