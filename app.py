@@ -308,6 +308,14 @@ from modules.abuse_method_detection import (
     AbuseMethodDetectionResult,
     ComprehensiveAbuseAnalysis
 )
+from modules.pharmacological_abuse_intelligence import (
+    PharmacologicalAbuseIntelligence,
+    get_pharmacological_intelligence,
+    PHARMACOLOGICAL_CLASSES,
+    CHEMICAL_TRANSFORMATIONS,
+    SubstanceAnalysisReport,
+    ComprehensiveAnalysisResult
+)
 
 st.set_page_config(
     page_title="EpiClock - DNA Methylation Analysis Platform",
@@ -3087,6 +3095,7 @@ def main():
              "Yasadisi Uretim Tespiti",
              "DNA Uretim Zekasi",
              "Istismar Yontemi Zekasi",
+             "Farmakolojik Analiz Zekasi",
              "Chemoinformatics",
              "Veri Disa Aktar",
              "CpG Veritabani",
@@ -3181,6 +3190,8 @@ def main():
         render_dna_manufacturing_intelligence(components)
     elif "Istismar Yontemi Zekasi" in analysis_mode:
         render_abuse_method_detection(components)
+    elif "Farmakolojik Analiz Zekasi" in analysis_mode:
+        render_pharmacological_intelligence(components)
     elif "Chemoinformatics" in analysis_mode:
         render_cheminformatics(components)
     elif "Veri Disa Aktar" in analysis_mode:
@@ -4317,6 +4328,492 @@ def render_abuse_method_detection(components):
                 st.session_state['abuse_demo_result'] = result
             
             _display_abuse_method_results(result)
+
+
+def render_pharmacological_intelligence(components):
+    """36,000+ Madde Farmakolojik Istismar Analiz Zekasi - nrcdnl94"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## Farmakolojik Istismar Analiz Zekasi")
+    st.markdown("""
+    **36,000+ MADDE KAPSAMLI ANALIZ PLATFORMU**
+    
+    Bu modul, tum farmakolojik maddelerin istismar potansiyelini analiz eder:
+    - **Kimyasal donusum yollari** (legal -> istismar)
+    - **Bagimlilik potansiyeli** (akademik referanslarla, %95 guven araligi)
+    - **DNA metilasyon markerlari** ile tespit
+    - **Kullanim suresi tahmini** (akut/subakut/kronik)
+    - **Adli delil guc degerlendirmesi**
+    """)
+    
+    intelligence = get_pharmacological_intelligence()
+    stats = intelligence.get_database_statistics()
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.metric("Toplam Madde", f"{stats['total_substances']:,}")
+    with col2:
+        st.metric("NPS Turev", f"{stats['nps_derivatives']:,}")
+    with col3:
+        st.metric("Sanal Bilesik", f"{stats['virtual_compounds']:,}")
+    with col4:
+        st.metric("Donusum Yolu", stats['chemical_transformations'])
+    with col5:
+        st.metric("CpG Marker", f"{stats['total_cpg_markers']:,}")
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "DNA Analizi",
+        "Madde Ara",
+        "Kimyasal Donusumler",
+        "Bagimlilik Siniflari",
+        "Kapsamli Rapor",
+        "Demo Analiz"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### DNA Verisi Yukle ve Kapsamli Analiz")
+        st.markdown("""
+        CpG beta degerlerini iceren DNA metilasyon verinizi yukleyin.
+        Sistem 36,000+ madde veritabanini tarayarak kapsamli analiz yapacaktir.
+        """)
+        
+        uploaded_file = st.file_uploader(
+            "DNA Metilasyon Verisi (CSV):",
+            type=['csv'],
+            help="CpG site'lari satir, ornekler sutun olacak sekilde",
+            key="pharm_upload"
+        )
+        
+        sample_id = st.text_input("Ornek ID:", value="PHARM_001", key="pharm_sample_id")
+        
+        if uploaded_file:
+            try:
+                cpg_data = pd.read_csv(uploaded_file)
+                st.success(f"Veri yuklendi: {cpg_data.shape[0]} satir, {cpg_data.shape[1]} sutun")
+                
+                if st.button("Kapsamli Farmakolojik Analiz Baslat", type="primary", key="pharm_analyze"):
+                    with st.spinner("36,000+ madde veritabani taranıyor..."):
+                        result = intelligence.analyze_dna_sample(cpg_data, sample_id)
+                        st.session_state['pharm_result'] = result
+                    
+                    _display_pharmacological_results(result)
+            except Exception as e:
+                st.error(f"Veri okuma hatasi: {str(e)}")
+        
+        if 'pharm_result' in st.session_state:
+            st.markdown("---")
+            st.markdown("### Son Analiz Sonuclari")
+            _display_pharmacological_results(st.session_state['pharm_result'])
+    
+    with tabs[1]:
+        st.markdown("### Madde Veritabani Arama")
+        st.markdown(f"Toplam **{stats['total_substances']:,}** madde icinde arama yapin.")
+        
+        search_query = st.text_input("Madde Adi veya CAS Numarasi:", key="pharm_search")
+        
+        if search_query:
+            results = intelligence.search_substances(search_query, limit=100)
+            
+            if results:
+                st.success(f"{len(results)} sonuc bulundu")
+                
+                result_data = []
+                for r in results:
+                    result_data.append({
+                        "Madde Adi": r['name'],
+                        "CAS": r['cas'],
+                        "Sinif": r['class'],
+                        "Bagimlilik (%)": f"{r['addiction_potential']*100:.0f}%"
+                    })
+                
+                df_results = pd.DataFrame(result_data)
+                st.dataframe(df_results, use_container_width=True, height=400)
+                
+                selected_substance = st.selectbox(
+                    "Detay Gorunumu:",
+                    [r['id'] for r in results],
+                    format_func=lambda x: next((r['name'] for r in results if r['id'] == x), x),
+                    key="substance_detail"
+                )
+                
+                if selected_substance:
+                    profile = intelligence.get_substance_profile(selected_substance)
+                    if profile:
+                        _display_substance_profile(profile)
+            else:
+                st.warning("Sonuc bulunamadi")
+    
+    with tabs[2]:
+        st.markdown("### Kimyasal Donusum Yollari")
+        st.markdown("""
+        Legal maddelerden istismar maddelerine donusum yollari.
+        Her donusum icin bagimlilik potansiyeli, DNA markerlari ve akademik referanslar.
+        """)
+        
+        transformations = intelligence.list_all_transformations()
+        
+        trans_data = []
+        for t in transformations:
+            trans_data.append({
+                "Prekursor": t['precursor'],
+                "Urun": t['product'],
+                "Yontem": t['method'],
+                "Donusum (%)": f"{t['conversion_rate']*100:.0f}%",
+                "Bagimlilik (%)": f"{t['addiction_potential']*100:.0f}%"
+            })
+        
+        df_trans = pd.DataFrame(trans_data)
+        st.dataframe(df_trans, use_container_width=True, height=400)
+        
+        st.markdown("### Donusum Detay Gorunumu")
+        selected_trans = st.selectbox(
+            "Donusum Sec:",
+            list(CHEMICAL_TRANSFORMATIONS.keys()),
+            format_func=lambda x: f"{CHEMICAL_TRANSFORMATIONS[x]['precursor']} -> {CHEMICAL_TRANSFORMATIONS[x]['product']}",
+            key="trans_select"
+        )
+        
+        if selected_trans:
+            trans = CHEMICAL_TRANSFORMATIONS[selected_trans]
+            _display_transformation_details(trans)
+    
+    with tabs[3]:
+        st.markdown("### Farmakolojik Bagimlilik Siniflari")
+        st.markdown("""
+        Her madde sinifi icin ortalama bagimlilik potansiyeli, mekanizma ve anahtar genler.
+        """)
+        
+        class_data = []
+        for class_id, class_info in PHARMACOLOGICAL_CLASSES.items():
+            class_data.append({
+                "Sinif": class_info['name'],
+                "Bagimlilik (%)": f"{class_info['addiction_potential']*100:.0f}%",
+                "Guven Araligi": f"{class_info['addiction_ci'][0]*100:.0f}-{class_info['addiction_ci'][1]*100:.0f}%",
+                "Mekanizma": class_info['mechanism'],
+                "Cekilme": class_info['withdrawal_severity']
+            })
+        
+        df_classes = pd.DataFrame(class_data)
+        st.dataframe(df_classes, use_container_width=True, height=350)
+        
+        selected_class = st.selectbox(
+            "Sinif Detay:",
+            list(PHARMACOLOGICAL_CLASSES.keys()),
+            format_func=lambda x: PHARMACOLOGICAL_CLASSES[x]['name'],
+            key="class_select"
+        )
+        
+        if selected_class:
+            class_info = PHARMACOLOGICAL_CLASSES[selected_class]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                **Sinif:** {class_info['name']}
+                
+                **Bagimlilik Potansiyeli:** %{class_info['addiction_potential']*100:.0f}
+                
+                **%95 Guven Araligi:** {class_info['addiction_ci'][0]*100:.0f}-{class_info['addiction_ci'][1]*100:.0f}%
+                
+                **Mekanizma:** {class_info['mechanism']}
+                
+                **Cekilme Siddeti:** {class_info['withdrawal_severity']}
+                
+                **Tolerans Gelisimi:** {class_info['tolerance_development']}
+                """)
+            
+            with col2:
+                st.markdown("**Anahtar Genler:**")
+                for gene in class_info['key_genes']:
+                    st.markdown(f"- {gene}")
+                
+                st.markdown("**Capraz Tolerans:**")
+                for substance in class_info['cross_tolerance']:
+                    st.markdown(f"- {substance}")
+                
+                st.markdown("**Akademik Referanslar:**")
+                for ref in class_info.get('references', []):
+                    st.markdown(f"- {ref}")
+    
+    with tabs[4]:
+        st.markdown("### Kapsamli Madde Raporu")
+        st.markdown("""
+        Belirli bir madde icin detayli rapor olusturun.
+        Tum donusum yollari, bagimlilik metrikleri ve DNA markerlari.
+        """)
+        
+        report_substance = st.text_input("Madde Adi:", key="report_substance")
+        
+        if st.button("Rapor Olustur", type="primary", key="create_report"):
+            if report_substance:
+                with st.spinner("Kapsamli rapor olusturuluyor..."):
+                    results = intelligence.search_substances(report_substance, limit=1)
+                    transformations = intelligence.get_transformations_for_substance(report_substance)
+                    
+                    if results:
+                        profile = intelligence.get_substance_profile(results[0]['id'])
+                        st.session_state['substance_report'] = {
+                            'profile': profile,
+                            'transformations': transformations,
+                            'query': report_substance
+                        }
+                    else:
+                        st.warning("Madde bulunamadi")
+        
+        if 'substance_report' in st.session_state:
+            report = st.session_state['substance_report']
+            _display_comprehensive_report(report)
+    
+    with tabs[5]:
+        st.markdown("### Demo Analiz")
+        st.markdown("""
+        Gercek veri olmadan sistemin nasil calistigini gormek icin demo analiz yapin.
+        """)
+        
+        demo_sample_id = st.text_input("Demo Ornek ID:", value="PHARM_DEMO_001", key="pharm_demo_id")
+        
+        demo_scenario = st.selectbox(
+            "Senaryo Sec:",
+            [
+                "Temiz (Maruziyet Yok)",
+                "Buscopan Pirolizi",
+                "Kodein-Morfin",
+                "Metamfetamin Sentezi",
+                "Eroin Sentezi",
+                "Fentanil Yama",
+                "Crack Kokain",
+                "Krokodil",
+                "MDMA Sentezi",
+                "LSD Sentezi"
+            ],
+            key="pharm_scenario"
+        )
+        
+        if st.button("Demo Analiz Calistir", type="primary", key="pharm_demo_btn"):
+            with st.spinner("Demo analiz yapiliyor..."):
+                demo_data = intelligence.generate_demo_data(demo_sample_id, demo_scenario)
+                result = intelligence.analyze_dna_sample(demo_data, demo_sample_id)
+                st.session_state['pharm_demo_result'] = result
+            
+            _display_pharmacological_results(result)
+
+
+def _display_pharmacological_results(result):
+    """Farmakolojik analiz sonuclarini goster"""
+    
+    st.markdown("---")
+    st.markdown("### Analiz Ozeti")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        risk_color = "#dc3545" if result.overall_addiction_risk >= 0.7 else "#ffc107" if result.overall_addiction_risk >= 0.5 else "#28a745"
+        st.markdown(f"""
+        <div style="background: {risk_color}22; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2em; font-weight: bold; color: {risk_color};">
+                {result.overall_addiction_risk*100:.0f}%
+            </div>
+            <div style="color: var(--un-gray-600);">Bagimlilik Riski</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.metric("Tespit Edilen Madde", len(result.detected_substances))
+    with col3:
+        st.metric("Donusum Tespiti", len(result.transformations_detected))
+    with col4:
+        st.metric("Kullanim Suresi", result.usage_duration_estimate.split()[0] if result.usage_duration_estimate else "N/A")
+    
+    st.markdown(f"**Kullanim Suresi Tahmini:** {result.usage_duration_estimate}")
+    st.markdown(f"**Hash Zinciri:** `{result.hash_chain}`")
+    
+    if result.detected_substances:
+        st.markdown("### Tespit Edilen Maddeler ve Donusumler")
+        
+        for substance in result.detected_substances:
+            level_color = "#dc3545" if substance.addiction_potential >= 0.7 else "#ffc107" if substance.addiction_potential >= 0.5 else "#28a745"
+            
+            with st.expander(f"{substance.substance_name} - %{substance.addiction_potential*100:.0f} Bagimlilik"):
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown(f"""
+                    **CAS Numarasi:** {substance.cas_number}
+                    
+                    **Farmakolojik Sinif:** {substance.pharmacological_class}
+                    
+                    **Bagimlilik Potansiyeli:** %{substance.addiction_potential*100:.0f}
+                    
+                    **Guven Araligi:** %{substance.addiction_ci[0]*100:.0f} - %{substance.addiction_ci[1]*100:.0f}
+                    
+                    **Adli Guc:** {substance.forensic_strength}
+                    """)
+                    
+                    st.markdown("**Kullanim Suresi:**")
+                    st.markdown(f"- Kategori: {substance.usage_duration_estimate.get('category', 'N/A')}")
+                    days = substance.usage_duration_estimate.get('days', (0, 0))
+                    st.markdown(f"- Tahmin: {days[0]}-{days[1]} gun")
+                
+                with col2:
+                    if substance.chemical_transformations:
+                        st.markdown("**Kimyasal Donusum:**")
+                        for trans in substance.chemical_transformations:
+                            st.markdown(f"- {trans['from']} -> {trans['to']}")
+                            st.markdown(f"  Yontem: {trans['method']}")
+                    
+                    if substance.health_risks:
+                        st.markdown("**Saglik Riskleri:**")
+                        for risk in substance.health_risks:
+                            if "OLUM" in risk.upper():
+                                st.error(risk)
+                            else:
+                                st.warning(risk)
+                    
+                    if substance.references:
+                        st.markdown("**Akademik Referanslar:**")
+                        for ref in substance.references[:3]:
+                            st.markdown(f"- {ref}")
+    
+    st.markdown("### Klinik Oneriler")
+    for rec in result.clinical_recommendations:
+        st.info(rec)
+    
+    st.markdown("### Adli Ozet")
+    forensic = result.forensic_summary
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Toplam Tespit", forensic['total_detections'])
+        st.metric("Donusum Sayisi", forensic['transformations_identified'])
+        st.markdown(f"**Delil Gucu:** {forensic['evidence_strength']}")
+    
+    with col2:
+        if forensic['high_risk_substances']:
+            st.markdown("**Yuksek Riskli Maddeler:**")
+            for sub in forensic['high_risk_substances']:
+                st.error(sub)
+        
+        st.markdown("**Onerilen Testler:**")
+        for test in forensic['recommended_tests']:
+            st.markdown(f"- {test}")
+
+
+def _display_substance_profile(profile):
+    """Madde profili goster"""
+    st.markdown("---")
+    st.markdown(f"### {profile['name']} Detay")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"""
+        **CAS Numarasi:** {profile.get('cas_number', 'N/A')}
+        
+        **Farmakolojik Sinif:** {profile.get('pharmacological_class', 'N/A')}
+        
+        **Bagimlilik Potansiyeli:** %{profile.get('addiction_potential', 0)*100:.0f}
+        
+        **Mekanizma:** {profile.get('mechanism', 'N/A')}
+        
+        **Cekilme Siddeti:** {profile.get('withdrawal_severity', 'N/A')}
+        """)
+    
+    with col2:
+        if profile.get('key_genes'):
+            st.markdown("**Anahtar Genler:**")
+            for gene in profile['key_genes'][:5]:
+                st.markdown(f"- {gene}")
+        
+        if profile.get('cpg_markers'):
+            st.markdown("**CpG Markerlari:**")
+            for marker in profile['cpg_markers'][:3]:
+                st.markdown(f"- {marker['id']} ({marker['gene']})")
+
+
+def _display_transformation_details(trans):
+    """Donusum detaylarini goster"""
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"""
+        **Prekursor:** {trans['precursor']}
+        
+        **CAS:** {trans.get('precursor_cas', 'N/A')}
+        
+        **Urun:** {trans['product']}
+        
+        **CAS:** {trans.get('product_cas', 'N/A')}
+        
+        **Donusum Yontemi:** {trans['transformation']}
+        
+        **Donusum Orani:** %{trans.get('conversion_rate', 0)*100:.0f}
+        
+        **Mekanizma:** {trans.get('mechanism', 'N/A')}
+        """)
+    
+    with col2:
+        st.markdown(f"""
+        **Istismar Formu:** {trans.get('abuse_form', 'N/A')}
+        
+        **Bagimlilik Potansiyeli:** %{trans.get('addiction_potential', 0)*100:.0f}
+        
+        **Potens Degisimi:** {trans.get('potency_change', 'N/A')}
+        """)
+        
+        if trans.get('health_risks'):
+            st.markdown("**Saglik Riskleri:**")
+            for risk in trans['health_risks']:
+                if "OLUM" in risk.upper():
+                    st.error(risk)
+                else:
+                    st.warning(risk)
+        
+        if trans.get('references'):
+            st.markdown("**Akademik Referanslar:**")
+            for ref in trans['references']:
+                st.markdown(f"- {ref}")
+
+
+def _display_comprehensive_report(report):
+    """Kapsamli madde raporu goster"""
+    profile = report.get('profile', {})
+    transformations = report.get('transformations', [])
+    
+    st.markdown("---")
+    st.markdown(f"## Kapsamli Rapor: {profile.get('name', report.get('query'))}")
+    
+    if profile:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            addiction = profile.get('addiction_potential', 0)
+            color = "#dc3545" if addiction >= 0.7 else "#ffc107" if addiction >= 0.5 else "#28a745"
+            st.markdown(f"""
+            <div style="background: {color}22; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2.5em; font-weight: bold; color: {color};">
+                    %{addiction*100:.0f}
+                </div>
+                <div>Bagimlilik Potansiyeli</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.metric("Farmakolojik Sinif", profile.get('pharmacological_class', 'N/A'))
+            st.metric("CAS Numarasi", profile.get('cas_number', 'N/A'))
+        
+        with col3:
+            st.metric("Cekilme Siddeti", profile.get('withdrawal_severity', 'N/A'))
+            st.metric("CpG Marker", len(profile.get('cpg_markers', [])))
+    
+    if transformations:
+        st.markdown("### Iliskili Kimyasal Donusumler")
+        for trans in transformations:
+            with st.expander(f"{trans.get('precursor', 'N/A')} -> {trans.get('product', 'N/A')}"):
+                _display_transformation_details(trans)
+    
+    st.markdown("### Akademik Referanslar")
+    if profile.get('references'):
+        for ref in profile['references']:
+            st.markdown(f"- {ref}")
 
 
 def _display_abuse_method_results(result: ComprehensiveAbuseAnalysis):

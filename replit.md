@@ -101,6 +101,14 @@ Based on: "Detection of Epigenetic Age Acceleration in Addiction Using DNA Methy
 - Cannabis: +0.8 years (95% CI: 0.3-1.4)
 
 ## Recent Changes
+- 2024-12-06: NEW MODULE - Farmakolojik Istismar Analiz Zekasi (Pharmacological Abuse Intelligence)
+  - 36,000+ madde kapsamli veritabani (temel maddeler, NPS turevleri, sanal bilesikler)
+  - 15 kimyasal donusum yolu (Buscopan->Scopolamine, Kodein->Morfin, Pseudoefedrin->Meth, vb.)
+  - 8 farmakolojik sinif bagimlilik potansiyeli (%95 guven araligi ile)
+  - DNA metilasyon markerlari ile madde tespiti
+  - Kullanim suresi tahmini (akut/subakut/kronik)
+  - Akademik referanslar (Volkow, Nestler, Jalali, Strano-Rossi, vb.)
+  - Demo senaryo modlari (10 farkli donusum senaryosu)
 - 2024-12-06: NEW MODULE - Istismar Yontemi Tespit Zekasi (Abuse Method Detection Intelligence)
   - Akademik arastirmalardan derlenen recete ilaci istismar veritabani
   - 10 recete ilaci istismar turu (Buscopan, Oxycodone, Fentanyl, Benzodiazepinler, vb.)
