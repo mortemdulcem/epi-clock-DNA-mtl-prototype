@@ -101,19 +101,33 @@ def render_dna_upload_analysis_page():
     </div>
     """, unsafe_allow_html=True)
     
-    tab1, tab2, tab3 = st.tabs([
-        "1) Veri Yukle",
-        "2) Analiz Baslat",
-        "3) Cikti / Rapor Al"
-    ])
+    active_tab = st.session_state.get('active_tab', 'upload')
     
-    with tab1:
+    if st.session_state.get('scroll_to_upload', False):
+        st.session_state['scroll_to_upload'] = False
+        st.info("Veri yukleme sekmesi aktif")
+    
+    if st.session_state.get('scroll_to_analysis', False):
+        st.session_state['scroll_to_analysis'] = False
+        st.info("Analiz sekmesi aktif - Lutfen once veri yukleyin")
+    
+    tab_names = ["1) Veri Yukle", "2) Analiz Baslat", "3) Cikti / Rapor Al"]
+    
+    default_tab = 0
+    if active_tab == 'analysis':
+        default_tab = 1
+    elif active_tab == 'export':
+        default_tab = 2
+    
+    tabs = st.tabs(tab_names)
+    
+    with tabs[0]:
         render_upload_tab()
     
-    with tab2:
+    with tabs[1]:
         render_analysis_tab()
     
-    with tab3:
+    with tabs[2]:
         render_export_tab()
 
 

@@ -641,15 +641,41 @@ def render_main_header():
         btn_col1, btn_col2, btn_col3 = st.columns(3)
         with btn_col1:
             if st.button("Veri Yukle", key="header_upload_btn"):
-                st.session_state['show_upload_modal'] = True
+                st.session_state['active_tab'] = 'upload'
+                st.session_state['scroll_to_upload'] = True
         with btn_col2:
             if st.button("Yeni Analiz", key="header_new_analysis_btn"):
-                st.session_state['show_new_analysis'] = True
+                st.session_state['active_tab'] = 'analysis'
+                st.session_state['scroll_to_analysis'] = True
         with btn_col3:
             if st.button("Arama", key="header_search_btn"):
-                st.session_state['show_search'] = True
+                st.session_state['show_search_dialog'] = True
+    
+    if st.session_state.get('show_search_dialog', False):
+        render_search_dialog()
     
     render_infographic_cards()
+
+
+def render_search_dialog():
+    """Render search dialog - nrcdnl94"""
+    with st.expander("Arama", expanded=True):
+        search_query = st.text_input("Anahtar kelime girin:", key="search_input", placeholder="CpG, gen adi, madde...")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            search_type = st.selectbox("Arama Tipi:", 
+                ["Tum Veritabani", "CpG Markerlari", "Genler", "Maddeler", "NPS"], 
+                key="search_type")
+        with col2:
+            if st.button("Ara", key="search_execute_btn"):
+                if search_query:
+                    st.session_state['search_results'] = f"'{search_query}' icin arama yapiliyor..."
+                    st.info(f"Arama: '{search_query}' - Tip: {search_type}")
+        
+        if st.button("Kapat", key="close_search_btn"):
+            st.session_state['show_search_dialog'] = False
+            st.rerun()
 
 
 def render_infographic_cards():
