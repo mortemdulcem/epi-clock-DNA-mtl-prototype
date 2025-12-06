@@ -308,6 +308,46 @@ st.markdown("""
         font-weight: 500;
     }
     
+    /* Sidebar Radio Buttons - Readable on dark background - nrcdnl94 */
+    [data-testid="stSidebar"] .stRadio > div > label {
+        color: #FFFFFF !important;
+        background: rgba(0, 158, 219, 0.15) !important;
+        border: 1px solid #009EDB !important;
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        margin: 0.3rem 0;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    [data-testid="stSidebar"] .stRadio > div > label:hover {
+        background: rgba(0, 158, 219, 0.35) !important;
+        border-color: #4DB8E8 !important;
+    }
+    
+    [data-testid="stSidebar"] .stRadio > div > label > div {
+        color: #FFFFFF !important;
+    }
+    
+    [data-testid="stSidebar"] .stRadio > div > label span {
+        color: #FFFFFF !important;
+    }
+    
+    [data-testid="stSidebar"] .stRadio > div > label p {
+        color: #FFFFFF !important;
+    }
+    
+    /* Sidebar selectbox text */
+    [data-testid="stSidebar"] .stSelectbox > div > div {
+        background: rgba(0, 158, 219, 0.15) !important;
+        border: 1px solid #009EDB !important;
+        color: #FFFFFF !important;
+    }
+    
+    [data-testid="stSidebar"] .stSelectbox > div > div > div {
+        color: #FFFFFF !important;
+    }
+    
     /* DNA Helix Animation Container */
     .dna-container {
         position: relative;
