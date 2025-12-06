@@ -324,6 +324,19 @@ from modules.molecular_gnn import (
     REFERENCE_SUBSTANCES,
     validate_model
 )
+from modules.advanced_features import (
+    AdvancedFeatureExtractor,
+    AbuseScoreCalculator,
+    ComprehensiveAnalyzer,
+    get_comprehensive_analyzer,
+    ChemicalFeatures,
+    PharmacologicalProfile,
+    AbuseProfile,
+    SCHEDULE_DEFINITIONS,
+    VALIDATED_SUBSTANCES,
+    RECEPTOR_TARGETS,
+    PHARMACOKINETIC_FACTORS
+)
 
 st.set_page_config(
     page_title="EpiClock - DNA Methylation Analysis Platform",
@@ -3105,6 +3118,7 @@ def main():
              "Istismar Yontemi Zekasi",
              "Farmakolojik Analiz Zekasi",
              "Molekul GNN Analizi",
+             "Ozellik Muhendisligi",
              "Chemoinformatics",
              "Veri Disa Aktar",
              "CpG Veritabani",
@@ -3203,6 +3217,8 @@ def main():
         render_pharmacological_intelligence(components)
     elif "Molekul GNN Analizi" in analysis_mode:
         render_molecular_gnn(components)
+    elif "Ozellik Muhendisligi" in analysis_mode:
+        render_advanced_features(components)
     elif "Chemoinformatics" in analysis_mode:
         render_cheminformatics(components)
     elif "Veri Disa Aktar" in analysis_mode:
@@ -5048,6 +5064,389 @@ def render_molecular_gnn(components):
         - **Atom Ozellik Boyutu:** {model_info['atom_feature_dim']}
         - **Bag Ozellik Boyutu:** {model_info['bond_feature_dim']}
         """)
+
+
+def render_advanced_features(components):
+    """Gelismis Ozellik Muhendisligi - Kimyasal, Farmakolojik, Regulatuvar"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    
+    st.markdown("## Gelismis Ozellik Muhendisligi")
+    st.markdown("""
+    **KIMYASAL + FARMAKOLOJIK + REGULATUVAR OZELLIKLER**
+    
+    Bu modul kapsamli molekul analizi saglar:
+    - **Kimyasal Ozellikler**: Morgan/ECFP fingerprint, cLogP, pKa, HBD/HBA
+    - **Farmakolojik Hedefler**: Opioid, GABA-A, Dopamin reseptorleri
+    - **Farmakokinetik**: BBB gecirgenlik, yari omur, biyoyararlanim
+    - **Regulatuvar**: UN/WHO/EMCDDA Schedule siniflandirmasi
+    - **Istismar Potansiyeli**: Validated + predicted skorlar
+    """)
+    
+    analyzer = get_comprehensive_analyzer()
+    stats = analyzer.get_database_statistics()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Valide Madde", stats['validated_substances'])
+    with col2:
+        st.metric("Schedule Kategori", stats['schedule_categories'])
+    with col3:
+        st.metric("Reseptor Hedef", stats['receptor_targets'])
+    with col4:
+        st.metric("PK Faktor", stats['pharmacokinetic_factors'])
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Molekul Analizi",
+        "Schedule Siniflandirma",
+        "Reseptor Hedefler",
+        "Valide Maddeler",
+        "Toplu Analiz",
+        "PK Faktorler"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Kapsamli Molekul Analizi")
+        
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            smiles_input = st.text_input(
+                "SMILES Girin:",
+                value="CN1CCC[C@H]1c2cccnc2",
+                help="Molekulun SMILES gosterimi",
+                key="feat_smiles"
+            )
+        with col2:
+            substance_name = st.text_input(
+                "Madde Adi (opsiyonel):",
+                value="",
+                key="feat_name"
+            )
+        
+        known_targets = st.multiselect(
+            "Bilinen Hedefler (opsiyonel):",
+            list(RECEPTOR_TARGETS.keys()),
+            key="feat_targets"
+        )
+        
+        if st.button("Kapsamli Analiz Yap", type="primary", key="feat_analyze"):
+            with st.spinner("Analiz yapiliyor..."):
+                result = analyzer.analyze_molecule(
+                    smiles_input,
+                    substance_name,
+                    known_targets if known_targets else None
+                )
+                st.session_state['feat_result'] = result
+        
+        if 'feat_result' in st.session_state:
+            result = st.session_state['feat_result']
+            _display_comprehensive_analysis(result)
+    
+    with tabs[1]:
+        st.markdown("### UN/WHO/EMCDDA Schedule Siniflandirmasi")
+        st.markdown("""
+        Uluslararasi madde kontrol rejimlerine gore siniflandirma.
+        """)
+        
+        schedule_data = []
+        for sched_id, sched_info in SCHEDULE_DEFINITIONS.items():
+            schedule_data.append({
+                "Schedule": sched_info['name'],
+                "Aciklama": sched_info['description'],
+                "Istismar Skoru": f"%{sched_info['abuse_score']*100:.0f}",
+                "Ornek Maddeler": ", ".join(sched_info['examples'][:3])
+            })
+        
+        df_schedule = pd.DataFrame(schedule_data)
+        st.dataframe(df_schedule, use_container_width=True, height=300)
+        
+        selected_schedule = st.selectbox(
+            "Schedule Detay:",
+            list(SCHEDULE_DEFINITIONS.keys()),
+            format_func=lambda x: SCHEDULE_DEFINITIONS[x]['name'],
+            key="sched_select"
+        )
+        
+        if selected_schedule:
+            sched = SCHEDULE_DEFINITIONS[selected_schedule]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                score = sched['abuse_score']
+                color = "#dc3545" if score >= 0.7 else "#ffc107" if score >= 0.4 else "#28a745"
+                st.markdown(f"""
+                <div style="background: {color}22; padding: 20px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 2.5em; font-weight: bold; color: {color};">
+                        %{score*100:.0f}
+                    </div>
+                    <div>Istismar Potansiyeli</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                st.markdown(f"**Aciklama:** {sched['description']}")
+            
+            with col2:
+                st.markdown("**Ornek Maddeler:**")
+                for ex in sched['examples']:
+                    st.markdown(f"- {ex}")
+                
+                st.markdown("**Regulatuvar Kaynak:**")
+                for reg in sched['regulatory']:
+                    st.markdown(f"- {reg}")
+    
+    with tabs[2]:
+        st.markdown("### Farmakolojik Reseptor Hedefleri")
+        st.markdown("""
+        Bagimlilik ile iliskili reseptor hedefleri ve mekanizmalari.
+        """)
+        
+        receptor_data = []
+        for rec_id, rec_info in RECEPTOR_TARGETS.items():
+            receptor_data.append({
+                "Reseptor": rec_info['name'],
+                "Gen": rec_info['gene'],
+                "Bagimlilik Agirligi": f"%{rec_info['addiction_weight']*100:.0f}",
+                "Mekanizma": rec_info['mechanism'][:50] + "..."
+            })
+        
+        df_receptors = pd.DataFrame(receptor_data)
+        st.dataframe(df_receptors, use_container_width=True, height=400)
+        
+        selected_receptor = st.selectbox(
+            "Reseptor Detay:",
+            list(RECEPTOR_TARGETS.keys()),
+            format_func=lambda x: RECEPTOR_TARGETS[x]['name'],
+            key="rec_select"
+        )
+        
+        if selected_receptor:
+            rec = RECEPTOR_TARGETS[selected_receptor]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                **Reseptor:** {rec['name']}
+                
+                **Gen:** {rec['gene']}
+                
+                **Bagimlilik Agirligi:** %{rec['addiction_weight']*100:.0f}
+                
+                **Mekanizma:** {rec['mechanism']}
+                """)
+            
+            with col2:
+                st.markdown("**Bilinen Ligandlar:**")
+                for lig in rec['ligands']:
+                    st.markdown(f"- {lig}")
+    
+    with tabs[3]:
+        st.markdown("### Valide Edilmis Maddeler")
+        st.markdown(f"Toplam **{len(VALIDATED_SUBSTANCES)}** valide madde.")
+        
+        search_query = st.text_input("Madde Ara:", key="val_search")
+        
+        val_data = []
+        for name, info in VALIDATED_SUBSTANCES.items():
+            if search_query.lower() in name.lower():
+                val_data.append({
+                    "Madde": name.title().replace("_", " "),
+                    "Schedule": info['schedule'],
+                    "Istismar (%)": f"%{info['abuse_potential']*100:.0f}",
+                    "Sinif": info['class'],
+                    "Referans": ", ".join(info['refs'][:2])
+                })
+        
+        df_val = pd.DataFrame(val_data)
+        st.dataframe(df_val, use_container_width=True, height=400)
+        
+        st.markdown("### Istismar Potansiyeli Dagilimi")
+        
+        abuse_scores = [v['abuse_potential'] for v in VALIDATED_SUBSTANCES.values()]
+        
+        fig = go.Figure(data=[go.Histogram(x=abuse_scores, nbinsx=20)])
+        fig.update_layout(
+            xaxis_title="Istismar Potansiyeli",
+            yaxis_title="Madde Sayisi",
+            showlegend=False
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[4]:
+        st.markdown("### Toplu Molekul Analizi")
+        
+        batch_input = st.text_area(
+            "SMILES Listesi (satir basina bir tane):",
+            value="CN1CCC[C@H]1c2cccnc2\nCC(=O)Oc1ccccc1C(=O)O\nCN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+            height=150,
+            key="feat_batch"
+        )
+        
+        if st.button("Toplu Analiz Baslat", type="primary", key="feat_batch_btn"):
+            smiles_list = [s.strip() for s in batch_input.split('\n') if s.strip()]
+            
+            with st.spinner(f"{len(smiles_list)} molekul analiz ediliyor..."):
+                results = analyzer.batch_analyze(smiles_list)
+                st.session_state['feat_batch_results'] = results
+            
+            st.success(f"{len(results)} molekul analiz edildi")
+        
+        if 'feat_batch_results' in st.session_state:
+            results = st.session_state['feat_batch_results']
+            
+            batch_data = []
+            for r in results:
+                if 'error' not in r:
+                    abuse = r['abuse_profile']
+                    chem = r['chemical_features']
+                    batch_data.append({
+                        "SMILES": r['smiles'][:25] + "..." if len(r['smiles']) > 25 else r['smiles'],
+                        "MW": f"{chem.molecular_weight:.1f}",
+                        "LogP": f"{chem.logp:.2f}",
+                        "TPSA": f"{chem.tpsa:.1f}",
+                        "Schedule": abuse.un_schedule,
+                        "Istismar (%)": f"{abuse.abuse_potential_score*100:.0f}%",
+                        "Kategori": abuse.abuse_category
+                    })
+            
+            df_batch = pd.DataFrame(batch_data)
+            st.dataframe(df_batch, use_container_width=True, height=300)
+    
+    with tabs[5]:
+        st.markdown("### Farmakokinetik Faktorler")
+        st.markdown("""
+        Istismar potansiyelini etkileyen farmakokinetik faktorler.
+        """)
+        
+        pk_data = []
+        for pk_id, pk_info in PHARMACOKINETIC_FACTORS.items():
+            pk_data.append({
+                "Faktor": pk_id.replace("_", " ").title(),
+                "Aciklama": pk_info['description'],
+                "Carpan": f"x{pk_info['addiction_multiplier']:.2f}"
+            })
+        
+        df_pk = pd.DataFrame(pk_data)
+        st.dataframe(df_pk, use_container_width=True, height=250)
+        
+        st.markdown("""
+        ### Faktorlerin Etki Mekanizmasi
+        
+        1. **Hizli Etki Baslangici** (x1.5)
+           - IV, inhalasyon, burun cekme yollari
+           - Ani odul hissi yaratir
+        
+        2. **Yuksek BBB Gecisi** (x1.3)
+           - LogP 2-4 arasi optimal
+           - Dusuk TPSA (<70) tercih edilir
+        
+        3. **Kisa Yari Omur** (x1.2)
+           - Sik doz tekrari
+           - Yoksunluk semptomlarinin hizli baslangici
+        
+        4. **Yuksek Biyoyararlanim** (x1.1)
+           - Lipinski kurallarina uyum
+           - Dusuk ilk gecis metabolizmasi
+        
+        5. **Aktif Metabolitler** (x1.15)
+           - Orn: Kodein -> Morfin (CYP2D6)
+           - Tramadol -> O-desmetiltramadol
+        """)
+
+
+def _display_comprehensive_analysis(result: Dict):
+    """Kapsamli analiz sonuclarini goster"""
+    import plotly.graph_objects as go
+    
+    st.markdown("---")
+    
+    chem = result['chemical_features']
+    pharm = result['pharmacological_profile']
+    abuse = result['abuse_profile']
+    sched_info = result['schedule_info']
+    
+    st.markdown("### Istismar Potansiyeli")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        score = abuse.abuse_potential_score
+        color = "#dc3545" if score >= 0.7 else "#ffc107" if score >= 0.4 else "#28a745"
+        st.markdown(f"""
+        <div style="background: {color}22; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2em; font-weight: bold; color: {color};">
+                %{score*100:.1f}
+            </div>
+            <div>Istismar Potansiyeli</div>
+            <div style="font-size: 0.8em;">
+                CI: {abuse.abuse_potential_ci[0]*100:.0f}-{abuse.abuse_potential_ci[1]*100:.0f}%
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.metric("Schedule", abuse.un_schedule)
+        st.metric("Kategori", abuse.abuse_category)
+    
+    with col3:
+        st.metric("Reseptor Katki", f"%{abuse.receptor_contribution*100:.0f}")
+        st.metric("PK Katki", f"%{abuse.pharmacokinetic_contribution*100:.0f}")
+    
+    with col4:
+        st.metric("Validasyon", abuse.validation_status)
+        if abuse.references:
+            st.markdown(f"**Ref:** {abuse.references[0]}")
+    
+    st.markdown("### Kimyasal Ozellikler")
+    
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    with col1:
+        st.metric("MW", f"{chem.molecular_weight:.1f}")
+    with col2:
+        st.metric("LogP", f"{chem.logp:.2f}")
+    with col3:
+        st.metric("TPSA", f"{chem.tpsa:.1f}")
+    with col4:
+        st.metric("HBD", chem.hbd)
+    with col5:
+        st.metric("HBA", chem.hba)
+    with col6:
+        st.metric("BBB", f"%{chem.bbb_permeability*100:.0f}")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Aromatik Halka", chem.aromatic_rings)
+    with col2:
+        st.metric("Rotatable Bond", chem.rotatable_bonds)
+    with col3:
+        st.metric("Lipinski Ihlali", chem.lipinski_violations)
+    with col4:
+        st.metric("Veber Ihlali", chem.veber_violations)
+    
+    if chem.pka_acidic or chem.pka_basic:
+        st.markdown("### pKa Tahminleri")
+        col1, col2 = st.columns(2)
+        with col1:
+            if chem.pka_acidic:
+                st.metric("pKa (Asidik)", f"{chem.pka_acidic:.1f}")
+        with col2:
+            if chem.pka_basic:
+                st.metric("pKa (Bazik)", f"{chem.pka_basic:.1f}")
+    
+    st.markdown("### Farmakokinetik Profil")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("BBB Gecis", f"%{pharm.bbb_penetration*100:.0f}")
+    with col2:
+        st.metric("Protein Bag", f"%{pharm.plasma_protein_binding*100:.0f}")
+    with col3:
+        st.metric("Yari Omur", f"{pharm.half_life_hours:.1f} saat")
+    with col4:
+        st.metric("Biyoyararlanim", f"%{pharm.bioavailability*100:.0f}")
+    
+    st.markdown(f"**Hash:** `{abuse.hash_chain}`")
 
 
 def _display_gnn_prediction(pred: GNNPrediction):
