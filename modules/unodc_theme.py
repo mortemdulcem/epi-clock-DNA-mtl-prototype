@@ -36,15 +36,15 @@ def apply_unodc_theme():
     """Apply UNODC-style professional theme to the app - nrcdnl94"""
     st.markdown("""
     <style>
-    /* nrcdnl94 - UNODC Theme CSS */
+    /* nrcdnl94 - UNODC Theme CSS - Tailwind-inspired clean design */
     
     /* Import Professional Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     /* Main App Container */
     .stApp {
-        background: linear-gradient(135deg, #F5F7FA 0%, #E8EEF5 100%);
-        font-family: 'Roboto', 'Open Sans', sans-serif;
+        background: #F8FAFC;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
     /* Hide Streamlit Branding */
@@ -52,20 +52,23 @@ def apply_unodc_theme():
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Sidebar Styling - UN Blue */
+    /* Sidebar Styling - Clean White with Blue Accents */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1A3A5C 0%, #0D2137 100%);
-        border-right: 3px solid #009EDB;
+        background: #FFFFFF;
+        border-right: 1px solid #E2E8F0;
     }
     
     [data-testid="stSidebar"] * {
-        color: #FFFFFF !important;
+        color: #334155 !important;
     }
     
     [data-testid="stSidebar"] .stSelectbox label,
     [data-testid="stSidebar"] .stRadio label {
-        color: #4DB8E8 !important;
+        color: #0050A0 !important;
         font-weight: 500;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
     
     /* Main Header Banner */
@@ -532,130 +535,320 @@ def render_top_navigation():
     """, unsafe_allow_html=True)
 
 def render_main_header():
-    """Render UNODC-style main header with hero section - nrcdnl94"""
+    """Render UNODC-style main header - clean Tailwind-inspired design - nrcdnl94"""
     st.markdown("""
     <style>
-    .hero-header-compact {
-        background: linear-gradient(135deg, #0050A0 0%, #003366 100%);
-        color: white;
-        padding: 24px 32px;
+    .unodc-page-header {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
         border-radius: 8px;
-        margin-bottom: 24px;
-        text-align: center;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    .hero-badge-compact {
-        display: inline-block;
-        background: rgba(255,255,255,0.15);
-        padding: 6px 16px;
-        border-radius: 20px;
-        margin-bottom: 12px;
+    .unodc-page-header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .unodc-page-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #0050A0;
+        margin: 0;
+    }
+    .unodc-page-subtitle {
+        font-size: 0.75rem;
+        color: #64748B;
+        margin: 4px 0 0 0;
+    }
+    .unodc-header-actions {
+        display: flex;
+        gap: 8px;
+    }
+    .unodc-btn-primary {
+        background: #0050A0;
+        color: white;
+        border: 1px solid #0050A0;
+        padding: 6px 14px;
+        border-radius: 4px;
         font-size: 0.75rem;
         font-weight: 500;
-        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s;
     }
-    .hero-title-compact {
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin: 0 0 8px 0;
-        line-height: 1.3;
+    .unodc-btn-primary:hover {
+        background: #003D7A;
     }
-    .hero-subtitle-compact {
-        font-size: 0.95rem;
-        opacity: 0.9;
-        margin: 0;
-        font-weight: 400;
+    .unodc-btn-secondary {
+        background: white;
+        color: #475569;
+        border: 1px solid #CBD5E1;
+        padding: 6px 14px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
     }
-    .hero-author-compact {
-        font-size: 0.7rem;
-        opacity: 0.6;
-        margin-top: 12px;
+    .unodc-btn-secondary:hover {
+        border-color: #0050A0;
+        color: #0050A0;
     }
     </style>
-    <div class="hero-header-compact">
-        <div class="hero-badge-compact">NATIONAL DNA ANALYSIS SYSTEM</div>
-        <h1 class="hero-title-compact">EpiClock - DNA Methylation Analysis Platform</h1>
-        <p class="hero-subtitle-compact">
-            Epigenetic Age Acceleration Detection | Forensic DNA Analysis | Molecular Toxicology
-        </p>
-        <p class="hero-author-compact">
-            Dr. Nurcan Denli Bayir (nrcdnl94) | Copyright 2024
-        </p>
+    <div class="unodc-page-header">
+        <div class="unodc-page-header-content">
+            <div>
+                <h1 class="unodc-page-title">Dashboard - Ulusal DNA Analiz Sistemi</h1>
+                <p class="unodc-page-subtitle">
+                    Adli tip, klinik genetik ve populasyon genetigi icin ulusal duzeyde DNA analiz ve raporlama altyapisi.
+                </p>
+            </div>
+            <div class="unodc-header-actions">
+                <span class="unodc-btn-primary">Yeni Analiz Baslat</span>
+                <span class="unodc-btn-secondary">Gelismis Arama</span>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 def render_statistic_cards():
-    """Render UNODC-style statistic cards - nrcdnl94"""
+    """Render UNODC-style statistic cards - Tailwind-inspired - nrcdnl94"""
     st.markdown("""
     <style>
-    .stat-cards-row {
+    .stat-cards-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        margin: 24px 0;
+        gap: 16px;
+        margin-bottom: 20px;
     }
-    .stat-card-item {
-        background: white;
+    .stat-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
         border-radius: 8px;
-        padding: 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        border-left: 4px solid #0050A0;
-        transition: all 0.2s ease;
+        padding: 12px 16px;
     }
-    .stat-card-item:hover {
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
-    }
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0050A0;
-        line-height: 1.2;
-        margin-bottom: 4px;
-    }
-    .stat-label {
-        font-size: 0.85rem;
-        color: #666666;
-        font-weight: 500;
+    .stat-card-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #64748B;
         text-transform: uppercase;
         letter-spacing: 0.03em;
+        margin: 0;
     }
-    .stat-sublabel {
-        font-size: 0.75rem;
-        color: #999999;
-        margin-top: 4px;
+    .stat-card-value-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-top: 8px;
+    }
+    .stat-card-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #0050A0;
+        margin: 0;
+    }
+    .stat-card-value.danger {
+        color: #DC2626;
+    }
+    .stat-card-meta {
+        font-size: 0.65rem;
+        color: #94A3B8;
     }
     @media (max-width: 768px) {
-        .stat-cards-row {
+        .stat-cards-grid {
             grid-template-columns: repeat(2, 1fr);
         }
     }
     </style>
-    <div class="stat-cards-row">
-        <div class="stat-card-item">
-            <div class="stat-number">29.4M</div>
-            <div class="stat-label">Total CpG Sites</div>
-            <div class="stat-sublabel">Human genome coverage</div>
+    <div class="stat-cards-grid">
+        <div class="stat-card">
+            <p class="stat-card-label">Toplam Ornek</p>
+            <div class="stat-card-value-row">
+                <span class="stat-card-value">1.248</span>
+                <span class="stat-card-meta">Tumu</span>
+            </div>
         </div>
-        <div class="stat-card-item">
-            <div class="stat-number">1,815</div>
-            <div class="stat-label">Detectable Substances</div>
-            <div class="stat-sublabel">From international databases</div>
+        <div class="stat-card">
+            <p class="stat-card-label">Aktif Analizler</p>
+            <div class="stat-card-value-row">
+                <span class="stat-card-value">37</span>
+                <span class="stat-card-meta">Laboratuvar</span>
+            </div>
         </div>
-        <div class="stat-card-item">
-            <div class="stat-number">10,542</div>
-            <div class="stat-label">Reference Profiles</div>
-            <div class="stat-sublabel">15 independent datasets</div>
+        <div class="stat-card">
+            <p class="stat-card-label">Tamamlanan Raporlar</p>
+            <div class="stat-card-value-row">
+                <span class="stat-card-value">892</span>
+                <span class="stat-card-meta">Son 12 ay</span>
+            </div>
         </div>
-        <div class="stat-card-item">
-            <div class="stat-number">17</div>
-            <div class="stat-label">Epigenetic Clocks</div>
-            <div class="stat-sublabel">5 main + 12 tissue-specific</div>
+        <div class="stat-card">
+            <p class="stat-card-label">Uyarilar / QC Sorunlari</p>
+            <div class="stat-card-value-row">
+                <span class="stat-card-value danger">5</span>
+                <span class="stat-card-meta">Inceleme bekleyen</span>
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
+def render_recent_analyses_table():
+    """Render recent analyses table - Tailwind-inspired - nrcdnl94"""
+    st.markdown("""
+    <style>
+    .analyses-section {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .analyses-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .analyses-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #334155;
+        margin: 0;
+    }
+    .analyses-view-all {
+        font-size: 0.75rem;
+        color: #0050A0;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .analyses-view-all:hover {
+        text-decoration: underline;
+    }
+    .analyses-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+    }
+    .analyses-table thead {
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .analyses-table th {
+        padding: 8px 20px;
+        text-align: left;
+        font-weight: 600;
+        color: #64748B;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    .analyses-table th:last-child {
+        text-align: right;
+    }
+    .analyses-table td {
+        padding: 10px 20px;
+        color: #334155;
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .analyses-table td:last-child {
+        text-align: right;
+    }
+    .analyses-table tr:last-child td {
+        border-bottom: none;
+    }
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        font-size: 0.65rem;
+        font-weight: 500;
+    }
+    .status-completed {
+        background: #F0FDF4;
+        color: #166534;
+        border: 1px solid #BBF7D0;
+    }
+    .status-inprogress {
+        background: #FEFCE8;
+        color: #A16207;
+        border: 1px solid #FEF08A;
+    }
+    .status-qc {
+        background: #FEF2F2;
+        color: #DC2626;
+        border: 1px solid #FECACA;
+    }
+    .detail-link {
+        color: #0050A0;
+        font-size: 0.7rem;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .detail-link:hover {
+        text-decoration: underline;
+    }
+    </style>
+    <div class="analyses-section">
+        <div class="analyses-header">
+            <h2 class="analyses-title">Son Analizler</h2>
+            <span class="analyses-view-all">Tumunu Gor</span>
+        </div>
+        <table class="analyses-table">
+            <thead>
+                <tr>
+                    <th>Ornek ID</th>
+                    <th>Tur</th>
+                    <th>Modul</th>
+                    <th>Durum</th>
+                    <th>Tarih</th>
+                    <th>Islem</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025-STR-00123</td>
+                    <td>Kan</td>
+                    <td>STR / Adli</td>
+                    <td><span class="status-badge status-completed">Tamamlandi</span></td>
+                    <td>06.12.2025</td>
+                    <td><span class="detail-link">Detay</span></td>
+                </tr>
+                <tr>
+                    <td>2025-NGS-00456</td>
+                    <td>Tam Kan</td>
+                    <td>NGS</td>
+                    <td><span class="status-badge status-inprogress">Devam Ediyor</span></td>
+                    <td>05.12.2025</td>
+                    <td><span class="detail-link">Detay</span></td>
+                </tr>
+                <tr>
+                    <td>2025-CLN-00078</td>
+                    <td>DNA Ekstrakt</td>
+                    <td>Klinik Genetik</td>
+                    <td><span class="status-badge status-qc">QC Gerekli</span></td>
+                    <td>04.12.2025</td>
+                    <td><span class="detail-link">Detay</span></td>
+                </tr>
+                <tr>
+                    <td>2025-EPI-00891</td>
+                    <td>Salya</td>
+                    <td>Epigenetik Yas</td>
+                    <td><span class="status-badge status-completed">Tamamlandi</span></td>
+                    <td>03.12.2025</td>
+                    <td><span class="detail-link">Detay</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    """, unsafe_allow_html=True)
+
 def render_hero_slider():
-    """Render hero slider section - nrcdnl94"""
+    """Render hero slider section (legacy) - nrcdnl94"""
     slides = [
         {
             "title": "29.4 Million CpG Sites",

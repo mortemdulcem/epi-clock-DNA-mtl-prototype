@@ -181,6 +181,7 @@ from modules.unodc_theme import (
     render_top_navigation,
     render_main_header,
     render_statistic_cards,
+    render_recent_analyses_table,
     render_module_cards,
     render_hero_slider,
     render_booklet_grid,
@@ -3635,96 +3636,13 @@ def render_publication_references():
 
 
 def render_home_page(components):
-    """Render the home page with UNODC style overview - nrcdnl94"""
+    """Render the home page with UNODC/Tailwind style overview - nrcdnl94"""
     
-    # Statistics Cards - Using native Streamlit columns - nrcdnl94
-    st.markdown("### Platform Statistics")
+    # Statistic Cards - UNODC Tailwind Style - nrcdnl94
+    render_statistic_cards()
     
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.metric(
-            label="Total CpG Sites",
-            value="29.4M",
-            delta="Human genome coverage"
-        )
-    
-    with col2:
-        st.metric(
-            label="Detectable Substances",
-            value="1,815",
-            delta="International databases"
-        )
-    
-    with col3:
-        st.metric(
-            label="Reference Profiles",
-            value="10,542",
-            delta="15 independent datasets"
-        )
-    
-    with col4:
-        st.metric(
-            label="Epigenetic Clocks",
-            value="17",
-            delta="5 main + 12 tissue-specific"
-        )
-    
-    st.markdown("---")
-    
-    # Module Cards - Using native Streamlit
-    st.markdown("### Analysis Modules")
-    
-    col1, col2, col3, col4 = st.columns(4)
-    
-    modules_row1 = [
-        ("Forensic STR Analysis", "Short tandem repeat profiling"),
-        ("NGS Variant Analysis", "Next-generation sequencing"),
-        ("Population Genetics", "Ancestry and population structure"),
-        ("Clinical Genomics", "Pharmacogenomics interpretation")
-    ]
-    
-    for i, (title, desc) in enumerate(modules_row1):
-        with [col1, col2, col3, col4][i]:
-            st.markdown(f"""
-            <div style="background: white; border-radius: 8px; padding: 16px; 
-                        box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #E8EEF5;
-                        border-left: 3px solid #0050A0; min-height: 100px;">
-                <h4 style="color: #003366; font-size: 0.9rem; margin: 0 0 8px 0;">{title}</h4>
-                <p style="color: #666; font-size: 0.8rem; margin: 0;">{desc}</p>
-            </div>
-            """, unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    col1, col2, col3, col4 = st.columns(4)
-    
-    modules_row2 = [
-        ("Reports and Legal Output", "Court-ready forensic reports"),
-        ("Data and Statistics", "Laboratory performance metrics"),
-        ("Sample Management", "Chain of custody tracking"),
-        ("Data Protection", "GDPR/KVKK anonymization")
-    ]
-    
-    for i, (title, desc) in enumerate(modules_row2):
-        with [col1, col2, col3, col4][i]:
-            st.markdown(f"""
-            <div style="background: white; border-radius: 8px; padding: 16px; 
-                        box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #E8EEF5;
-                        border-left: 3px solid #0050A0; min-height: 100px;">
-                <h4 style="color: #003366; font-size: 0.9rem; margin: 0 0 8px 0;">{title}</h4>
-                <p style="color: #666; font-size: 0.8rem; margin: 0;">{desc}</p>
-            </div>
-            """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
-    # Prototype Notice - nrcdnl94
-    st.info("""
-    **PROTOTYPE PLATFORM**: This platform uses SIMULATED DATA to demonstrate epigenetic age 
-    analysis methodology and workflow. For actual clinical or research use, real coefficients 
-    and data should be obtained through appropriate academic channels.
-    """)
+    # Recent Analyses Table - nrcdnl94
+    render_recent_analyses_table()
     
     st.markdown("### Platform Features")
     
