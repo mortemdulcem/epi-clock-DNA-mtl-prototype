@@ -733,6 +733,40 @@ def render_infographic_cards():
     
     <div class="info-cards-container">
         <div class="info-card">
+            <div class="info-card-badge">29.4M</div>
+            <div class="info-card-icon">CpG</div>
+            <h3 class="info-card-title">CpG Genom Veritabani</h3>
+            <p class="info-card-desc">Insan genomundaki 29.4 milyon CpG sitesi, kromozom pozisyonlari ve gen anotasyonlari</p>
+            <div class="info-card-stat">28 Milyon Site</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">850K</div>
+            <div class="info-card-icon">AR</div>
+            <h3 class="info-card-title">Illumina Array Destegi</h3>
+            <p class="info-card-desc">EPIC (850K), 450K ve 27K array platformlari, WGBS tam genom analizi</p>
+            <div class="info-card-stat">485,577 Prob</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">750M</div>
+            <div class="info-card-icon">VR</div>
+            <h3 class="info-card-title">Genomik Varyantlar</h3>
+            <p class="info-card-desc">gnomAD, 1000 Genomes, UK Biobank, TOPMed veri kaynaklari entegrasyonu</p>
+            <div class="info-card-stat">12M SNP</div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-badge">36K+</div>
+            <div class="info-card-icon">MK</div>
+            <h3 class="info-card-title">Markush Yapilar</h3>
+            <p class="info-card-desc">NPS tespiti icin 29,277 yapisal varyant, bilinmeyen madde tanimi</p>
+            <div class="info-card-stat">10 Kural Seti</div>
+        </div>
+    </div>
+    
+    <div class="info-cards-container">
+        <div class="info-card">
             <div class="info-card-badge">5 Saat</div>
             <div class="info-card-icon">EP</div>
             <h3 class="info-card-title">Epigenetik Saatler</h3>
@@ -749,11 +783,11 @@ def render_infographic_cards():
         </div>
         
         <div class="info-card">
-            <div class="info-card-badge">6,893 Kayit</div>
+            <div class="info-card-badge">6,893</div>
             <div class="info-card-icon">NPS</div>
             <h3 class="info-card-title">NPS Veritabani</h3>
             <p class="info-card-desc">Yeni psikoaktif maddeler, sentetik kannabinoidler, fentanil analoglari</p>
-            <div class="info-card-stat">36K+ Varyant</div>
+            <div class="info-card-stat">1,920 Sanal</div>
         </div>
         
         <div class="info-card">
@@ -761,13 +795,13 @@ def render_infographic_cards():
             <div class="info-card-icon">TK</div>
             <h3 class="info-card-title">Doku-Spesifik Saatler</h3>
             <p class="info-card-desc">Beyin, karaciger, bobrek, kalp, akciger, kas, kan, tukuruk, deri, yag dokusu</p>
-            <div class="info-card-stat">Capraz Normalizasyon</div>
+            <div class="info-card-stat">Capraz Normal</div>
         </div>
     </div>
     
     <div class="info-cards-container">
         <div class="info-card">
-            <div class="info-card-badge">2,800+ Gen</div>
+            <div class="info-card-badge">2,800+</div>
             <div class="info-card-icon">GN</div>
             <h3 class="info-card-title">Gen Veritabani</h3>
             <p class="info-card-desc">Bagimlilik genleri, 14 biyolojik sistem, WHO siniflandirmasi</p>
@@ -775,18 +809,18 @@ def render_infographic_cards():
         </div>
         
         <div class="info-card">
-            <div class="info-card-badge">6 Ozellik</div>
+            <div class="info-card-badge">GWAS</div>
             <div class="info-card-icon">PRS</div>
             <h3 class="info-card-title">Poligenik Risk Skoru</h3>
             <p class="info-card-desc">Alkol, nikotin, kannabis, opioid, kokain, genel bagimlilik riskleri</p>
-            <div class="info-card-stat">GWAS Destekli</div>
+            <div class="info-card-stat">1.2M Katilimci</div>
         </div>
         
         <div class="info-card">
-            <div class="info-card-badge">Blockchain</div>
-            <div class="info-card-icon">AD</div>
-            <h3 class="info-card-title">Adli Denetim</h3>
-            <p class="info-card-desc">SHA-256 hash zinciri, kanit zinciri, Daubert kriterleri uyumlulugu</p>
+            <div class="info-card-badge">SHA-256</div>
+            <div class="info-card-icon">BC</div>
+            <h3 class="info-card-title">Blockchain Denetim</h3>
+            <p class="info-card-desc">Hash zinciri, kanit zinciri, Daubert kriterleri uyumlulugu, adli analiz</p>
             <div class="info-card-stat">Tamper-Proof</div>
         </div>
         
