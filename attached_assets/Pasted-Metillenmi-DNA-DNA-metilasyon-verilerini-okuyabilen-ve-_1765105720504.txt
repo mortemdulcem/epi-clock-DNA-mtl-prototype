@@ -1,0 +1,229 @@
+Metillenmiş DNA (DNA metilasyon) verilerini okuyabilen ve uluslararası düzeyde kabul gören bir platform kurmak istiyorsan, “hangi tekil modeli ekleyeyim?” yerine, hangi model ailesi + hangi analiz hattı sorusunu birlikte düşünmek zorundasın.
+
+Aşağıda, bugün uluslararası literatürde epigenetik yaş / epigenomik analiz için fiili standart sayılabilecek model ve yaklaşımları, epigenetik yaş (EpiClock), bağımlılık araştırmaları ve geniş ölçekli metilasyon verisi bağlamında özetliyorum.
+
+1. Metilasyon verisi için genel model gereksinimleri
+Metilasyon verilerinin tipik özellikleri:
+
+Çok yüksek boyut:
+Illumina 450K / EPIC: 450.000–850.000 CpG,
+WGBS/oxBS: milyonlarca pozisyon.
+Örnek sayısına göre p ≫ n (özellik sayısı örnek sayısından kat kat fazla).
+Gürültü, batch etkisi, biyolojik kovaryantlar (yaş, cinsiyet, doku, hücre kompozisyonu) kritik.
+Bu nedenle uluslararası standartta bir platformda:
+
+Boyut indirgeme / özellik seçimi şart,
+Regülarizasyonlu modeller ve/veya ağaç tabanlı ansambllar,
+Uygun durumlarda derin öğrenme (özellikle multi-omic, image-like metilasyon pattern’leri, GNN’ler).
+2. Epigenetik yaş ve metilasyon verisi için “klasik” (fiilen kanonik) modeller
+Epigenetik yaş (epigenetic clock) literatüründe gold standard kabul edilen yaklaşımlar:
+
+2.1. Penalize regresyon modelleri (Elastic Net / Lasso / Ridge)
+Kullanım alanı:
+
+Horvath, Hannum, PhenoAge, GrimAge gibi epigenetik saatlerin çoğu,
+penalize linear regresyon (özellikle Elastic Net) ile geliştirilmiştir.
+Neden uluslararası standart?
+
+Çok yüksek boyutlu metilasyon verisinde:
+L1 (Lasso) ve L2 (Ridge) regülarizasyon,
+Feature seçimi + aşırı uyumu (overfitting) kontrolü.
+Yorumlanabilirlik:
+Her CpG için regresyon katsayısı,
+Set halinde epigenetik saat imzası (örneğin 353 CpG Horvath saati vb.).
+Platforma eklemen gerekenler:
+
+Scikit-learn veya eşdeğer kütüphane ile:
+ElasticNet, Lasso, Ridge modelleri,
+cross-validation ile hiperparametre ayarı (α, L1/L2 oranı).
+Kullanım senaryoları:
+Epigenetik yaş tahmini (EpiClock),
+Belirli klinik parametrelerin (örn. madde kullanım süresi, doz, eş tanılar) regresyonu.
+Bu, minimum olarak platformunda olmalı; çünkü literatürdeki clock’ların çok büyük kısmı bu mantığa dayanıyor.
+
+2.2. Ağaç tabanlı topluluk modelleri (Random Forest, Gradient Boosting, XGBoost, LightGBM)
+Kullanım alanı:
+
+Sınıflandırma:
+Madde bağımlılığı vs kontrol,
+Farklı kullanım paternleri (yüksek risk / düşük risk),
+Regresyon:
+Kullanım şiddeti, biyobelirteç düzeyi gibi sürekli çıktılar.
+Neden önemli?
+
+Non-lineer ilişkiler, etkileşimler (CpG × CpG) için çok güçlü,
+Outlier ve non-normal feature dağılımlarına karşı daha dayanıklı,
+Özellik önem skorları ile değişken önemini incelemeye izin verir (FI, SHAP).
+Platforma eklemen gerekenler:
+
+Ağaç tabanlı modeller:
+Random Forest (scikit-learn),
+XGBoost ve/veya LightGBM (büyük ölçekli veri için daha pratik),
+Özellik önemi / SHAP entegrasyonu:
+SHAP value hesaplama (global ve lokal açıklanabilirlik),
+Özellikle adli / klinik bağlamda açıklanabilirlik kritik.
+Bu modeller, epigenetik yaş dışında, bağımlılık ilişkili sınıflandırma ve risk skoru modellermesinde uluslararası makalelerde yaygın kullanılıyor.
+
+3. Derin öğrenme tabanlı modeller (güncel literatür seviyesi)
+Metilasyon verisi için state-of-the-art sayılabilecek modern yaklaşımlar:
+
+3.1. Çok katmanlı sinir ağları (MLP) / autoencoder’lar
+Amaç:
+
+Boyut indirgeme (autoencoder),
+Nonlineer regresyon/sınıflandırma (MLP).
+Uygulama:
+
+Girdi: seçilmiş CpG seti (örneğin 1–10 bin CpG),
+Orta katmanlar: latent temsil (örneğin 128–512 boyut),
+Çıkış:
+Yaş, risk skorları, multi-task output.
+Multi-task learning (MTL):
+
+Epigenetik yaş + bağımlılık riski + ek klinik çıktılar,
+Ortak bir gövde (shared encoder), görev bazlı ayrı kafalar (task-specific heads).
+Senin projenin adında zaten “mtl” var;
+
+bu, MTL-MLP yapısını düşündüğünü gösteriyor. Bu, literatürde giderek daha çok kullanılan bir yaklaşım ve uluslararası standartlara uyumlu.
+
+3.2. Graf sinir ağları (Graph Neural Networks)
+Metilasyon verisini:
+
+Genomik konum + gen regulatuvar ağı + CpG-CpG korelasyonları üzerinden bir graf olarak modellemek,
+
+ve GNN’lerle öğrenmek:
+
+Literatürde giderek artan sayıda çalışma var, özellikle multi-omik entegrasyon için.
+
+Ancak GNN’ler:
+
+Uygulaması ve bakım maliyeti yüksek,
+Açıklanabilirliği klasik modellere göre zor.
+Bu nedenle:
+
+Platform seviyesinde “must” değil,
+Ama “ileri seviye modül” olarak eklenebilecek bir opsiyon.
+3.3. Transformer / sekans tabanlı modeller
+CpG’leri genomik pozisyona göre dizi halinde işleyip,
+attention mekanizmalarıyla öğrenen Transformer tabanlı modeller (özellikle WGBS verisi) yeni yeni literatürde yer alıyor.
+Şu an henüz “klinik/forensik standarda oturmuş” değiller,
+ama orta vadede önemli olacaklar.
+4. Metilasyon verisini okumak için mutlaka eklenmesi gereken işlevler (model öncesi / sonrası)
+Uluslararası standartta bir platform için, sadece ML modelleri yetmez;
+
+aynı zamanda aşağıdaki preprocessing ve QC modüllerini entegre etmen beklenir:
+
+4.1. QC ve normalizasyon modülleri
+Intensite verisi için:
+noob, SWAN, functional normalization (minfi / wateRmelon benzeri R boru hatlarına denk),
+β-values vs M-values dönüşümü,
+Batch effect düzeltme:
+ComBat (sva),
+Varyans stabilize edici teknikler.
+Hücre kompozisyonu düzeltmesi:
+Houseman metodu vb.
+Bu işlemler çoğunlukla R ekosisteminde tanımlı (minfi, ENmix, limma vs);
+
+Python platformunda:
+
+R kodlarını Rscript çağrısı veya rpy2 ile entegre etmek,
+veya
+Python tarafında eşdeğer normalizasyon fonksiyonları yazmak (daha zor, ama mümkün).
+Sonuç:
+
+ML modelinden önce metilasyon verisini bu QC/normalizasyon katmanından geçirmen uluslararası standartlar açısından zorunlu kabul edilebilir.
+
+4.2. Özellik seçimi / boyut indirgeme
+Metilasyon verisini doğrudan 450K–850K CpG ile modellemek:
+
+Neredeyse her zaman aşırı uyuma ve kararsız modellere yol açar.
+Bu nedenle:
+
+İlla klasik clock CpG seti kullanılacaksa:
+Horvath/Hannum/PhenoAge/GrimAge imza CpG’leri,
+Kendi EpiClock modelin için:
+Elastic Net / Lasso ile seçilmiş CpG seti,
+Veya unsupervised boyut indirgeme:
+PCA / autoencoder latent representation.
+Platforma eklenecek modüller:
+
+PCA / UMAP gibi boyut indirgeme algoritmaları,
+Recursive feature elimination (RFE), feature importance tabanlı seçim,
+Mümkünse autoencoder tabanlı latent space üretimi.
+5. Madde bağımlılığı bağlamında EpiClock: hangi modeller özellikle kritik?
+Senin özel senaryon:
+
+“Madde bağımlılığının biyolojik etkilerini DNA metilasyonu ile tespit eden epigenetik yaş analiz sistemi”
+
+Bu bağlamda önerilen ana model seti:
+
+Epigenetik yaş regresyonu için:
+
+Bir adet Elastic Net/Lasso (klasik epigenetik saat standardı),
+Bir adet ağaç tabanlı regresyon (XGBoost / LightGBM),
+İsteğe göre bir MTL-MLP (yaş + başka klinik/bağımlılık skorları).
+Bağımlılık / kötüye kullanım sınıflandırması için:
+
+Logistic Regression + Elastic Net (baseline, yorumlanabilir),
+Random Forest / XGBoost / LightGBM (nonlineer, güçlü performans),
+MTL yapı içinde:
+Task-1: epigenetik yaş,
+Task-2: “bağımlılık durumu” (binary/multiclass),
+Task-3: belki kullanım süresi / doz regresyonu.
+Açıklanabilirlik (uluslararası standartta olmazsa olmaz):
+
+SHAP/TREE-SHAP:
+Her bir CpG’nin ya da feature setinin risk skoruna katkısını göstermek,
+Model raporlarında:
+Top 20 CpG, global feature importance,
+Bireysel hasta için lokal açıklama (lokal SHAP, force plot vs.).
+Özellikle bağımlılık / adli bağlamda:
+
+Yalnızca tahmin değeri değil,
+Tahminin makul bilimsel açıklamasını da vermek zorundasın.
+6. “Platforma ne eklemeliyim?” sorusunun net cevabı
+EpiClock v4.0 gibi, metillenmiş DNA verisini uluslararası standartta okuyup analiz eden bir sistem için, minimum model seti şu olmalı:
+
+Preprocessing/QC katmanı:
+
+Normalizasyon (noob/functional normalization benzeri),
+Batch effect düzeltme (ComBat),
+Doku/hücre kompozisyonu düzeltmesi.
+Epigenetik yaş modelleri:
+
+Penalize linear regresyon (Elastic Net / Lasso) tabanlı epigenetik yaş modeli,
+Ağaç tabanlı regresyon (XGBoost/LightGBM) tabanlı alternatif model,
+İsteğe göre MTL neural network (yaş + ek görevler).
+Bağımlılık/klinikal risk modelleri:
+
+Logistic Regression + Elastic Net (baseline, yorumlanabilir),
+Random Forest/XGBoost sınıflandırıcı (yüksek performans).
+Boyut indirgeme / özellik seçimi:
+
+PCA/UMAP (görselleştirme ve latent representation),
+L1/Elastic Net tabanlı feature selection,
+Opsiyonel autoencoder.
+Açıklanabilirlik:
+
+Model-agnostic: SHAP,
+Ağaç tabanlı: TreeSHAP,
+Rapor modülü: global ve lokal feature importance görselleştirme.
+İleri seviye seçenek (şart değil, ama ileri düzey için uygun):
+
+GNN tabanlı model,
+Transformer tabanlı sekans/pozisyon-aware model.
+Bu set, bugün epigenetik yaş + metilasyon + bağımlılık araştırmaları için:
+
+Hem bilimsel literatürle uyumlu,
+Hem de klinik/adli standart beklentileriyle bağdaşan bir mimari sunar.
+İstersen bir sonraki adımda:
+
+EpiClock platformun için,
+
+tam olarak bu model setini içeren Python tarafında bir “model katmanı iskeleti” yazabilirim:
+
+models/epiclock_elasticnet.py
+models/epiclock_xgboost.py
+models/epiclock_mtl_nn.py
+models/addiction_classifier.py
+şeklinde dosya/dizin tasarımı + her biri için sınıf iskeletleri (fit/predict, save/load) ile.
