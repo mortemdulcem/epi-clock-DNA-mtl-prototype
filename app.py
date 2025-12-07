@@ -3109,6 +3109,7 @@ def main():
         analysis_mode = st.radio(
             "Analiz Turu Secin:",
             ["DNA Veri Analizi",
+             "DNA Laboratuvar Analizi",
              "Kullanim Kilavuzu",
              "Epigenetik Saat Veritabanlari",
              "Kronik Hastalik Etkileri",
@@ -3203,6 +3204,8 @@ def main():
     
     if "Ana Sayfa" in analysis_mode or "DNA Veri Analizi" in analysis_mode:
         render_home_page(components)
+    elif "DNA Laboratuvar Analizi" in analysis_mode:
+        render_dna_laboratory_analysis(components)
     elif "Kullanim Kilavuzu" in analysis_mode:
         render_academic_guide()
     elif "Epigenetik Saat Veritabanlari" in analysis_mode:
@@ -10435,6 +10438,352 @@ def render_polygenic_risk(components):
         
         st.success(f" **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
         st.info(f"**İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
+    
+    render_update_badge()
+
+
+def render_dna_laboratory_analysis(components):
+    """DNA Laboratuvar Analizi - Egitilmis Modeller ile Hastalik ve Madde Tespiti - nrcdnl94"""
+    import plotly.graph_objects as go
+    from modules.trained_detection_models import (
+        get_integrated_analysis_system,
+        generate_demo_case_36f
+    )
+    
+    st.markdown("## DNA Laboratuvar Analizi")
+    st.markdown("""
+    **EGITILMIS MODELLER ILE HASTALIK VE MADDE TESPITI**
+    
+    EWAS Catalog ve akademik literaturden alinan gercek CpG katsayilari ile egitilmis modeller.
+    DNA metilasyon verisinden:
+    - Kronik hastalik tespiti
+    - Madde kullanim tespiti
+    - Kullanim suresi tahmini
+    """)
+    
+    st.warning("""
+    **UYARI:** Bu sonuclar TANI yerine gecmez. Klinik korelasyon gereklidir.
+    Model hassasiyet/ozgulluk degerleri bilimsel literaturden alinmistir.
+    """)
+    
+    analysis_system = get_integrated_analysis_system()
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Hastalik Imzasi", f"{len(analysis_system.disease_detector.disease_signatures)}")
+    with col2:
+        st.metric("Madde Imzasi", f"{len(analysis_system.substance_detector.substance_signatures)}")
+    with col3:
+        st.metric("Egitilmis Model", f"{len(analysis_system.disease_detector.classifiers) + len(analysis_system.substance_detector.classifiers)}")
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Demo Vaka: 36 Yasinda Kadin",
+        "Hastalik Veritabani",
+        "Madde Veritabani",
+        "DNA Yukle ve Analiz"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Demo Vaka: Gizli Hastaliklar ve Madde Kullanimi")
+        st.markdown("""
+        **Senaryo:**
+        - 36 yasinda kadin hasta
+        - 20 yildir astim (SOYLEMIYOR)
+        - Anoreksiya nervoza (SOYLEMIYOR)
+        - 2 tur NPS + kokain kullaniyor (SOYLEMIYOR, normal kanda cikmaz)
+        
+        Sistem DNA metilasyon verisinden tum bunlari tespit edebilir mi?
+        """)
+        
+        if st.button("Demo Analizi Baslat", type="primary"):
+            with st.spinner("DNA metilasyon verisi analiz ediliyor..."):
+                demo_case = generate_demo_case_36f()
+                
+                results = analysis_system.analyze_sample(
+                    methylation_data=demo_case['methylation_data'],
+                    chronological_age=demo_case['chronological_age'],
+                    sex=demo_case['sex']
+                )
+                
+                st.success("Analiz Tamamlandi!")
+                
+                st.markdown("---")
+                st.markdown("### Epigenetik Yas")
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Kronolojik Yas", f"{results['epigenetic_age']['chronological_age']:.0f} yil")
+                with col2:
+                    st.metric("Epigenetik Yas", f"{results['epigenetic_age']['predicted_age']:.1f} yil")
+                with col3:
+                    eaa = results['epigenetic_age']['eaa']
+                    st.metric("EAA", f"{eaa:+.1f} yil", delta=f"{'Yaslanma' if eaa > 0 else 'Genclik'}")
+                
+                st.info(results['epigenetic_age']['eaa_interpretation'])
+                
+                st.markdown("---")
+                st.markdown("### Tespit Edilen Hastaliklar")
+                
+                if results['disease_detections']:
+                    for i, disease in enumerate(results['disease_detections']):
+                        with st.expander(f"{i+1}. {disease['disease_name_tr']} ({disease['disease_name_en']})", expanded=True):
+                            col1, col2, col3 = st.columns(3)
+                            with col1:
+                                st.metric("Olasilik", f"{disease['probability']:.1%}")
+                            with col2:
+                                st.metric("Guven", disease['confidence'])
+                            with col3:
+                                st.metric("Kapsam", f"{disease['cpg_coverage']:.1%}")
+                            
+                            st.info(f"""
+                            **Kategori:** {disease['category']}
+                            
+                            **Etkilenen Genler:** {', '.join(disease['affected_genes'][:5])}
+                            
+                            **Biyolojik Yolaklar:** {', '.join(disease['biological_pathways'][:3])}
+                            
+                            **Akademik Referans:** PubMed {', '.join(disease['pubmed_refs'][:2])}
+                            
+                            **Ornek Boyutu:** {disease['sample_size']:,}
+                            """)
+                else:
+                    st.info("Hastalik tespit edilmedi.")
+                
+                st.markdown("---")
+                st.markdown("### Tespit Edilen Madde Kullanimi")
+                
+                if results['substance_detections']:
+                    for i, substance in enumerate(results['substance_detections']):
+                        with st.expander(f"{i+1}. {substance['substance_name_tr']} ({substance['substance_name_en']})", expanded=True):
+                            col1, col2, col3, col4 = st.columns(4)
+                            with col1:
+                                st.metric("Olasilik", f"{substance['probability']:.1%}")
+                            with col2:
+                                st.metric("Guven", substance['confidence'])
+                            with col3:
+                                st.metric("Tahmini Sure", f"{substance['duration_estimate_years']:.1f} yil")
+                            with col4:
+                                st.metric("Kapsam", f"{substance['cpg_coverage']:.1%}")
+                            
+                            st.warning(f"""
+                            **Sinif:** {substance['substance_class']}
+                            
+                            **Etkilenen Reseptorler:** {', '.join(substance['affected_receptors'])}
+                            
+                            **Etkilenen Genler:** {', '.join(substance['affected_genes'][:5])}
+                            
+                            **Akademik Referans:** PubMed {', '.join(substance['pubmed_refs'][:2])}
+                            """)
+                else:
+                    st.info("Madde kullanimi tespit edilmedi.")
+                
+                st.markdown("---")
+                st.markdown("### Genel Degerlendirme")
+                
+                summary = results['summary']
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    risk_color = {
+                        "Dusuk Risk": "normal",
+                        "Orta Risk": "normal",
+                        "Yuksek Risk": "inverse",
+                        "Cok Yuksek Risk": "inverse"
+                    }
+                    st.metric("Risk Skoru", f"{summary['risk_score']}/100")
+                with col2:
+                    st.metric("Risk Kategorisi", summary['risk_category'])
+                with col3:
+                    st.metric("Toplam Tespit", f"{summary['total_diseases_detected']} hastalik, {summary['total_substances_detected']} madde")
+                
+                st.markdown("#### Anahtar Bulgular")
+                for finding in summary['key_findings']:
+                    st.markdown(f"- {finding}")
+                
+                st.markdown("#### Klinik Oneriler")
+                for rec in summary['recommendations']:
+                    st.markdown(f"- {rec}")
+                
+                st.markdown("---")
+                st.markdown("### Gercek Durumlarla Karsilastirma")
+                
+                st.markdown("**Hastanin GERCEK Durumlari (bilinmiyor varsayilan):**")
+                for condition in demo_case['actual_conditions']:
+                    st.markdown(f"- {condition}")
+                
+                detected_diseases = [d['disease_name_tr'] for d in results['disease_detections']]
+                detected_substances = [s['substance_name_tr'] for s in results['substance_detections']]
+                
+                st.markdown("**Sistem Tespitleri:**")
+                st.markdown(f"- Hastaliklar: {', '.join(detected_diseases) if detected_diseases else 'Yok'}")
+                st.markdown(f"- Maddeler: {', '.join(detected_substances) if detected_substances else 'Yok'}")
+    
+    with tabs[1]:
+        st.markdown("### Hastalik Metilasyon Imzalari Veritabani")
+        st.markdown("EWAS Catalog'dan alinan gercek CpG katsayilari")
+        
+        disease_data = []
+        for disease_id, sig in analysis_system.disease_detector.disease_signatures.items():
+            disease_data.append({
+                'ID': disease_id,
+                'Hastalik (TR)': sig.disease_name_tr,
+                'Hastalik (EN)': sig.disease_name_en,
+                'Kategori': sig.category,
+                'CpG Sayisi': len(sig.cpg_markers),
+                'Hassasiyet': f"{sig.sensitivity:.0%}",
+                'Ozgulluk': f"{sig.specificity:.0%}",
+                'Ornek Boyutu': sig.sample_size,
+                'PubMed': ', '.join(sig.pubmed_ids[:2])
+            })
+        
+        df = pd.DataFrame(disease_data)
+        st.dataframe(df, use_container_width=True)
+        
+        st.markdown("#### Hastalik Detayi")
+        
+        selected_disease = st.selectbox(
+            "Hastalik Sec",
+            options=list(analysis_system.disease_detector.disease_signatures.keys()),
+            format_func=lambda x: analysis_system.disease_detector.disease_signatures[x].disease_name_tr
+        )
+        
+        if selected_disease:
+            sig = analysis_system.disease_detector.disease_signatures[selected_disease]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**CpG Markerlari:**")
+                cpg_df = pd.DataFrame([
+                    {'CpG': cpg, 'Katsayi': f"{coef:+.4f}"}
+                    for cpg, coef in sig.cpg_markers.items()
+                ])
+                st.dataframe(cpg_df, use_container_width=True)
+            
+            with col2:
+                st.markdown("**Biyolojik Bilgi:**")
+                st.info(f"""
+                **Etkilenen Genler:** {', '.join(sig.affected_genes)}
+                
+                **Biyolojik Yolaklar:** {', '.join(sig.biological_pathways)}
+                
+                **EWAS Calismalari:** {', '.join(sig.ewas_study_ids)}
+                """)
+    
+    with tabs[2]:
+        st.markdown("### Madde Kullanim Metilasyon Imzalari Veritabani")
+        st.markdown("Akademik literaturden alinan gercek CpG katsayilari")
+        
+        substance_data = []
+        for sub_id, sig in analysis_system.substance_detector.substance_signatures.items():
+            substance_data.append({
+                'ID': sub_id,
+                'Madde (TR)': sig.substance_name_tr,
+                'Madde (EN)': sig.substance_name_en,
+                'Sinif': sig.substance_class,
+                'CpG Sayisi': len(sig.cpg_markers),
+                'Min. Tespit Suresi': f"{sig.min_detectable_duration_months} ay",
+                'Etkilenen Reseptorler': ', '.join(sig.affected_receptors[:3]),
+                'PubMed': ', '.join(sig.pubmed_ids[:2])
+            })
+        
+        df = pd.DataFrame(substance_data)
+        st.dataframe(df, use_container_width=True)
+        
+        st.markdown("#### Madde Detayi")
+        
+        selected_substance = st.selectbox(
+            "Madde Sec",
+            options=list(analysis_system.substance_detector.substance_signatures.keys()),
+            format_func=lambda x: analysis_system.substance_detector.substance_signatures[x].substance_name_tr
+        )
+        
+        if selected_substance:
+            sig = analysis_system.substance_detector.substance_signatures[selected_substance]
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**CpG Markerlari:**")
+                cpg_df = pd.DataFrame([
+                    {'CpG': cpg, 'Katsayi': f"{coef:+.4f}"}
+                    for cpg, coef in sig.cpg_markers.items()
+                ])
+                st.dataframe(cpg_df, use_container_width=True)
+            
+            with col2:
+                st.markdown("**Doz-Yanit CpG'leri (Sure Tahmini):**")
+                if sig.dose_response_cpgs:
+                    dr_df = pd.DataFrame([
+                        {
+                            'CpG': cpg, 
+                            'Egim': f"{params['slope']:+.4f}/ay",
+                            'Kesim': f"{params['intercept']:+.4f}"
+                        }
+                        for cpg, params in sig.dose_response_cpgs.items()
+                    ])
+                    st.dataframe(dr_df, use_container_width=True)
+                else:
+                    st.info("Doz-yanit verisi yok")
+                
+                st.info(f"""
+                **Etkilenen Reseptorler:** {', '.join(sig.affected_receptors)}
+                
+                **Etkilenen Genler:** {', '.join(sig.affected_genes)}
+                """)
+    
+    with tabs[3]:
+        st.markdown("### DNA Metilasyon Verisi Yukle")
+        st.markdown("""
+        CSV formatinda DNA metilasyon verisi yukleyin.
+        
+        **Beklenen Format:**
+        - Sutun 1: CpG ID (ornek: cg00000029)
+        - Sutun 2: Beta degeri (0-1 arasi)
+        """)
+        
+        uploaded_file = st.file_uploader("DNA Metilasyon CSV", type=['csv'])
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            chron_age = st.number_input("Kronolojik Yas", min_value=0, max_value=120, value=36)
+        with col2:
+            sex = st.selectbox("Cinsiyet", options=['F', 'M'], format_func=lambda x: 'Kadin' if x == 'F' else 'Erkek')
+        
+        if uploaded_file is not None:
+            try:
+                df = pd.read_csv(uploaded_file)
+                st.success(f"Yuklendi: {len(df)} satir")
+                
+                if len(df.columns) >= 2:
+                    cpg_col = df.columns[0]
+                    beta_col = df.columns[1]
+                    
+                    methylation_data = dict(zip(df[cpg_col], df[beta_col]))
+                    
+                    st.info(f"Toplam {len(methylation_data)} CpG yuklendi")
+                    
+                    if st.button("Analiz Et", type="primary"):
+                        with st.spinner("Analiz ediliyor..."):
+                            results = analysis_system.analyze_sample(
+                                methylation_data=methylation_data,
+                                chronological_age=float(chron_age),
+                                sex=sex
+                            )
+                            
+                            st.success("Analiz Tamamlandi!")
+                            
+                            st.markdown("### Sonuclar")
+                            st.json(results)
+            except Exception as e:
+                st.error(f"Dosya okuma hatasi: {e}")
+        else:
+            st.info("Ornek CSV formati:")
+            st.code("""cpg_id,beta_value
+cg00000029,0.523
+cg00000108,0.687
+cg00000109,0.412
+...""")
     
     render_update_badge()
 
