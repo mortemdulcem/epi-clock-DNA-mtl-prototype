@@ -36,6 +36,18 @@ from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
 
+try:
+    from modules.disease_pattern_matcher import (
+        DiseasePatternMatcher,
+        DiseaseMethylationGNN,
+        get_disease_matcher,
+        get_disease_gnn,
+        DifferentialDiagnosisResult
+    )
+    DISEASE_MATCHER_AVAILABLE = True
+except ImportError:
+    DISEASE_MATCHER_AVAILABLE = False
+
 
 class AnomalyType(Enum):
     NORMAL = "Normal Profil"
@@ -495,22 +507,47 @@ class UnknownSubstanceDetector:
         """
         Muhtemel anomali kaynaklarini cikar
         ONEMLI: Tum olasiliklari esit agirlikla degerlendirmeli
+        Hastalik veritabani ile karsilastirir
         """
         sources = []
         
+        disease_matches = []
+        if DISEASE_MATCHER_AVAILABLE and affected_cpgs:
+            try:
+                matcher = get_disease_matcher()
+                disease_matches = matcher.match_methylation_profile(
+                    query_cpgs=affected_cpgs,
+                    top_n=5
+                )
+            except Exception:
+                disease_matches = []
+        
+        if disease_matches:
+            for match in disease_matches[:3]:
+                sources.append({
+                    'source': f"Olasi Hastalik: {match.disease_name}",
+                    'probability': min(0.35, match.similarity_score),
+                    'evidence': f"CpG profili {match.category} kategorisindeki {match.disease_name_en} ile %{match.similarity_score*100:.0f} benzerlik gosteriyor",
+                    'affected_regions': match.matched_cpgs[:5],
+                    'disease_id': match.disease_id,
+                    'category': match.category,
+                    'pathways': match.pathways_affected[:3]
+                })
+        
         if anomaly_type == AnomalyType.UNIDENTIFIED_PATTERN:
-            sources.append({
-                'source': AnomalySource.NEUROLOGICAL_CONDITION.value,
-                'probability': 0.25,
-                'evidence': 'Norolojik durumlar (Otizm, ADHD, vb.) bu bolgeleri etkileyebilir',
-                'affected_regions': affected_cpgs[:3]
-            })
-            sources.append({
-                'source': AnomalySource.GENETIC_VARIANT.value,
-                'probability': 0.25,
-                'evidence': 'Dogal genetik varyantlar metilasyon farkliligina neden olabilir',
-                'affected_regions': affected_cpgs[:3]
-            })
+            if not disease_matches:
+                sources.append({
+                    'source': AnomalySource.NEUROLOGICAL_CONDITION.value,
+                    'probability': 0.25,
+                    'evidence': 'Norolojik durumlar (Otizm, ADHD, vb.) bu bolgeleri etkileyebilir',
+                    'affected_regions': affected_cpgs[:3]
+                })
+                sources.append({
+                    'source': AnomalySource.GENETIC_VARIANT.value,
+                    'probability': 0.25,
+                    'evidence': 'Dogal genetik varyantlar metilasyon farkliligina neden olabilir',
+                    'affected_regions': affected_cpgs[:3]
+                })
             sources.append({
                 'source': AnomalySource.CHRONIC_DISEASE.value,
                 'probability': 0.20,
