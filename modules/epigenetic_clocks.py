@@ -76,7 +76,9 @@ class EpigeneticClockCalculator:
             'description': 'Pan-tissue epigenetic clock (Horvath 2013)',
             'tissue_specific': False,
             'source': 'Genome Biology 14:R115',
-            'doi': '10.1186/gb-2013-14-10-r115'
+            'doi': '10.1186/gb-2013-14-10-r115',
+            'license': 'UCSD_REQUIRED',
+            'license_note': 'UCSD license required for commercial use - using simulated coefficients'
         },
         'hannum': {
             'cpg_count': 71,
@@ -86,7 +88,9 @@ class EpigeneticClockCalculator:
             'description': 'Blood-specific epigenetic clock (Hannum 2013)',
             'tissue_specific': True,
             'source': 'Molecular Cell 49(2):359-367',
-            'doi': '10.1016/j.molcel.2012.10.016'
+            'doi': '10.1016/j.molcel.2012.10.016',
+            'license': 'OPEN_SOURCE',
+            'license_note': 'Published coefficients - free for all uses'
         },
         'phenoage': {
             'cpg_count': 513,
@@ -96,7 +100,9 @@ class EpigeneticClockCalculator:
             'description': 'Phenotypic age predictor (Levine 2018)',
             'tissue_specific': False,
             'source': 'Aging 10(4):573-591',
-            'doi': '10.18632/aging.101414'
+            'doi': '10.18632/aging.101414',
+            'license': 'UCSD_REQUIRED',
+            'license_note': 'UCSD license required for commercial use - using simulated coefficients'
         },
         'grimage': {
             'cpg_count': 1030,
@@ -106,7 +112,9 @@ class EpigeneticClockCalculator:
             'description': 'Mortality-associated clock (Lu 2019)',
             'tissue_specific': False,
             'source': 'Aging 11(2):303-327',
-            'doi': '10.18632/aging.101684'
+            'doi': '10.18632/aging.101684',
+            'license': 'UCSD_REQUIRED',
+            'license_note': 'UCSD license required for commercial use - using simulated coefficients'
         },
         'dunedinpace': {
             'cpg_count': 173,
@@ -117,9 +125,14 @@ class EpigeneticClockCalculator:
             'tissue_specific': False,
             'source': 'eLife 11:e73420',
             'doi': '10.7554/eLife.73420',
-            'github': 'https://github.com/danbelsky/DunedinPACE'
+            'github': 'https://github.com/danbelsky/DunedinPACE',
+            'license': 'OPEN_SOURCE',
+            'license_note': 'CC-BY 4.0 License - fully open source, free for all uses'
         }
     }
+    
+    OPEN_SOURCE_CLOCKS = ['hannum', 'dunedinpace']
+    LICENSED_CLOCKS = ['horvath', 'phenoage', 'grimage']
     
     SUBSTANCE_EAA_EFFECTS = {
         'alcohol': {'grimage': 3.6, 'phenoage': 3.2, 'horvath': 2.3, 'hannum': 2.1, 'dunedinpace': 0.08},

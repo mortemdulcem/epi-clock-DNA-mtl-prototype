@@ -3,7 +3,7 @@
 ## Overview
 EpiClock Prototype is an advanced computational platform designed to detect and quantify epigenetic age acceleration (EAA) in addiction using DNA methylation clocks. Its primary purpose is to provide a comprehensive tool for clinical, research, and forensic applications. The platform integrates five major epigenetic clocks (Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE), tissue-specific clocks, and advanced statistical and machine learning methodologies. It also incorporates forensic features like blockchain audit trails and specialized substance abuse detection intelligence. The project aims to deliver an end-to-end computational approach for epigenetic analysis, offering significant potential for understanding addiction's biological underpinnings and informing clinical decision-making.
 
-**Important:** This is a PROTOTYPE using simulated coefficients and reference data to demonstrate methodology. Real coefficients require proper licensing from original publications.
+**Important:** This platform uses OPEN SOURCE epigenetic clocks (Hannum and DunedinPACE) with real published coefficients. For Horvath, PhenoAge, and GrimAge clocks, simulated coefficients are used as these require UCSD licensing for commercial use.
 
 ## User Preferences
 - Language: Turkish interface preferred ("EN İLERİ SEVİYE" - most advanced level)
@@ -42,4 +42,6 @@ The EpiClock platform is built around a modular architecture, with `app.py` serv
 - **Database:** PostgreSQL.
 - **Genomic Data Sources:** 1000 Genomes, gnomAD, UK Biobank, TOPMed.
 - **Academic Databases:** GWAS Catalog, EWAS Catalog, PharmGKB, CPIC, GEO datasets.
-- **Licensing:** UCSD Epigenetic Clock licenses are required for commercial use of specific clocks (Horvath, GrimAge, PhenoAge, DunedinPACE).
+- **Licensing:** 
+    - **Open Source (No license required):** Hannum (Molecular Cell 2013), DunedinPACE (eLife 2022, CC-BY 4.0)
+    - **UCSD License Required:** Horvath, PhenoAge, GrimAge (using simulated coefficients)

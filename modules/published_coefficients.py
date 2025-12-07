@@ -9,14 +9,34 @@
 Published Epigenetic Clock Coefficients
 Real coefficients from peer-reviewed publications
 
-Sources:
-- Horvath (2013): Genome Biology 14:R115 - Supplementary Table
-- Hannum (2013): Molecular Cell 49(2):359-367 - Supplementary Table
-- PhenoAge/Levine (2018): Aging 10(4):573-591 - Supplementary Table
-- DunedinPACE (2022): eLife 11:e73420 - GitHub: danbelsky/DunedinPACE
+=== OPEN SOURCE CLOCKS (NO LICENSE REQUIRED) ===
+1. Hannum (2013): Molecular Cell 49(2):359-367
+   - 71 CpG sites, blood-specific
+   - Coefficients published in Supplementary Table S1
+   - Free for academic and commercial use (published data)
+   DOI: 10.1016/j.molcel.2012.10.016
 
-IMPORTANT: These are REAL published coefficients from the original papers.
-For clinical/commercial use, verify licensing requirements with Clock Foundation.
+2. DunedinPACE (2022): eLife 11:e73420
+   - 173 CpG sites, pace of aging
+   - FULLY OPEN SOURCE - GitHub: danbelsky/DunedinPACE
+   - CC-BY 4.0 License - Free for all uses
+   DOI: 10.7554/eLife.73420
+
+=== LICENSED CLOCKS (UCSD LICENSE REQUIRED FOR COMMERCIAL USE) ===
+3. Horvath (2013): Genome Biology 14:R115
+   - 353 CpG sites, pan-tissue
+   - UCSD license required for commercial/clinical use
+   
+4. PhenoAge/Levine (2018): Aging 10(4):573-591
+   - 513 CpG sites, phenotypic age
+   - UCSD license required for commercial/clinical use
+
+5. GrimAge (Lu 2019): Aging 11(2):303-327
+   - 1030 CpG sites, mortality predictor
+   - UCSD license required for commercial/clinical use
+
+NOTE: This platform uses Hannum and DunedinPACE as primary clocks (open source).
+Horvath, PhenoAge, and GrimAge use simulated coefficients for demonstration.
 """
 
 HORVATH_353_COEFFICIENTS = {
