@@ -71,6 +71,12 @@ except ImportError:
     DNA_MANUFACTURING_AVAILABLE = False
 
 try:
+    from modules.unknown_substance_detection import UnknownSubstanceDetector, AnomalyType
+    UNKNOWN_DETECTION_AVAILABLE = True
+except ImportError:
+    UNKNOWN_DETECTION_AVAILABLE = False
+
+try:
     from modules.tissue_clocks import TissueSpecificClockCalculator
     TISSUE_CLOCKS_AVAILABLE = True
 except ImportError:
@@ -778,6 +784,35 @@ def run_demo_scenario_analysis(
             except Exception:
                 pass
         
+        if UNKNOWN_DETECTION_AVAILABLE:
+            try:
+                unknown_detector = UnknownSubstanceDetector()
+                
+                unknown_demo = unknown_detector.generate_demo_unknown_substance(
+                    anomaly_level="moderate" if len(substances_used) > 0 else "unknown"
+                )
+                
+                anomaly_result = unknown_detector.analyze_sample(demo_methylation, "DEMO_SAMPLE")
+                
+                results['unknown_substance_detection'] = {
+                    'enabled': True,
+                    'is_anomaly': anomaly_result.is_anomaly,
+                    'anomaly_type': anomaly_result.anomaly_type.value,
+                    'anomaly_score': anomaly_result.anomaly_score,
+                    'confidence': anomaly_result.confidence,
+                    'likely_sources': anomaly_result.likely_sources,
+                    'affected_cpgs': anomaly_result.affected_cpgs,
+                    'interpretation': anomaly_result.interpretation,
+                    'recommendations': anomaly_result.recommendations,
+                    'isolation_score': anomaly_result.isolation_score,
+                    'lof_score': anomaly_result.lof_score,
+                    'reconstruction_error': anomaly_result.reconstruction_error
+                }
+            except Exception as e:
+                results['unknown_substance_detection'] = {'enabled': False, 'error': str(e)}
+        else:
+            results['unknown_substance_detection'] = {'enabled': False}
+        
     except Exception as e:
         results['error'] = str(e)
     
@@ -1017,6 +1052,99 @@ def display_demo_results(results: Dict[str, Any], scenario: Dict[str, Any]):
                     Bu madde icin benzer varyant bulunamadi.
                 </div>
                 """, unsafe_allow_html=True)
+    
+    unknown_detection = results.get('unknown_substance_detection', {})
+    if unknown_detection.get('enabled'):
+        st.markdown("---")
+        st.markdown("#### Bilinmeyen Madde Tespiti (ML Anomali Analizi)")
+        st.markdown('<p style="color: #64748B; font-size: 0.85rem;">Isolation Forest, LOF, Autoencoder ve Z-score yontemleriyle anomali tespiti</p>', unsafe_allow_html=True)
+        
+        anomaly_type = unknown_detection.get('anomaly_type', 'Normal Profil')
+        anomaly_score = unknown_detection.get('anomaly_score', 0)
+        is_anomaly = unknown_detection.get('is_anomaly', False)
+        
+        if is_anomaly:
+            alert_color = "#DC2626" if anomaly_score > 0.7 else "#F59E0B" if anomaly_score > 0.4 else "#3B82F6"
+            alert_bg = "#FEF2F2" if anomaly_score > 0.7 else "#FFFBEB" if anomaly_score > 0.4 else "#EFF6FF"
+            alert_border = "#FECACA" if anomaly_score > 0.7 else "#FDE68A" if anomaly_score > 0.4 else "#BFDBFE"
+            
+            st.markdown(f"""
+            <div style="background: {alert_bg}; border: 2px solid {alert_border}; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: {alert_color}; font-size: 1.1rem;">ANOMALI TESPIT EDILDI</strong>
+                        <div style="color: #64748B; font-size: 0.85rem; margin-top: 4px;">{anomaly_type}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="background: {alert_color}; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 1.2rem;">
+                            %{anomaly_score*100:.0f}
+                        </div>
+                        <div style="color: #64748B; font-size: 0.75rem; margin-top: 4px;">Anomali Skoru</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown(f"""
+            <div style="background: #F8FAFC; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+                <strong style="color: #0F172A;">ML Model Skorlari:</strong>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #0050A0;">{unknown_detection.get('isolation_score', 0):.2f}</div>
+                        <div style="font-size: 0.75rem; color: #64748B;">Isolation Forest</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #0050A0;">{unknown_detection.get('lof_score', 0):.2f}</div>
+                        <div style="font-size: 0.75rem; color: #64748B;">LOF</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #0050A0;">{unknown_detection.get('reconstruction_error', 0):.2f}</div>
+                        <div style="font-size: 0.75rem; color: #64748B;">Autoencoder</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            interpretation = unknown_detection.get('interpretation', '')
+            if interpretation:
+                st.markdown(f"""
+                <div style="background: #FFF7ED; border-left: 4px solid #F97316; padding: 12px 16px; border-radius: 0 6px 6px 0; margin-bottom: 12px;">
+                    <strong style="color: #C2410C;">Yorum:</strong>
+                    <p style="color: #7C2D12; margin-top: 4px; font-size: 0.9rem;">{interpretation}</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            likely_sources = unknown_detection.get('likely_sources', [])
+            if likely_sources:
+                st.markdown("**Muhtemel Kaynaklar:**")
+                for source in likely_sources[:3]:
+                    prob = source.get('probability', 0) * 100
+                    st.markdown(f"""
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #E2E8F0;">
+                        <span>{source.get('source', 'Bilinmiyor')}</span>
+                        <span style="font-weight: 600; color: #0050A0;">%{prob:.0f}</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            recommendations = unknown_detection.get('recommendations', [])
+            if recommendations:
+                st.markdown("**Oneriler:**")
+                for rec in recommendations[:4]:
+                    st.markdown(f"""
+                    <div style="padding: 4px 0; padding-left: 12px; border-left: 2px solid #00A7D8; margin-bottom: 4px; font-size: 0.85rem;">
+                        {rec}
+                    </div>
+                    """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 16px;">
+                <strong style="color: #15803D;">Normal Profil</strong>
+                <p style="color: #166534; margin-top: 4px; font-size: 0.9rem;">
+                    ML anomali dedektorleri normal metilasyon profili tespit etti. 
+                    Bilinmeyen madde izi bulunmadi.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
     
     st.markdown("---")
     st.markdown(f"""
