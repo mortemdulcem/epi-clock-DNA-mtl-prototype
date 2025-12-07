@@ -39,20 +39,22 @@ warnings.filterwarnings('ignore')
 
 class AnomalyType(Enum):
     NORMAL = "Normal Profil"
-    MILD_ANOMALY = "Hafif Anomali"
-    MODERATE_ANOMALY = "Orta Anomali"
-    SEVERE_ANOMALY = "Ciddi Anomali"
-    UNKNOWN_SUBSTANCE = "Bilinmeyen Madde Izi"
+    MILD_ANOMALY = "Hafif Sapma"
+    MODERATE_ANOMALY = "Orta Duzey Sapma"
+    SEVERE_ANOMALY = "Belirgin Sapma"
+    UNIDENTIFIED_PATTERN = "Tanimlanmamis Metilasyon Oruntuleri"
 
 
 class AnomalySource(Enum):
-    UNKNOWN_SUBSTANCE = "Bilinmeyen Madde"
-    NOVEL_NPS = "Yeni Sentetik Madde (NPS)"
-    METABOLITE = "Tanimlanamayan Metabolit"
-    CONTAMINATION = "Cevresel Kontaminasyon"
-    GENETIC_VARIANT = "Genetik Varyant Etkisi"
-    DISEASE_MARKER = "Hastalik Markeri"
-    MIXED_EXPOSURE = "Karisik Maruziyet"
+    NEUROLOGICAL_CONDITION = "Norolojik Durum (Otizm, ADHD, vb.)"
+    PSYCHIATRIC_CONDITION = "Psikiyatrik Durum (Sizofreni, Bipolar, vb.)"
+    GENETIC_VARIANT = "Genetik Varyant / SNP Etkisi"
+    CHRONIC_DISEASE = "Kronik Hastalik Markeri"
+    ENVIRONMENTAL_EXPOSURE = "Cevresel Maruziyet"
+    DIETARY_EFFECT = "Beslenme / Diyet Etkisi"
+    AGING_DRIFT = "Yaslama ile Epigenetik Kayma"
+    POSSIBLE_SUBSTANCE = "Olasi Madde Maruziyeti (Dogrulama Gerekli)"
+    UNKNOWN_ORIGIN = "Kaynagi Belirlenememis"
 
 
 @dataclass
@@ -490,51 +492,114 @@ class UnknownSubstanceDetector:
         affected_cpgs: List[str],
         anomaly_type: AnomalyType
     ) -> List[Dict[str, Any]]:
-        """Muhtemel anomali kaynaklarini cikar"""
+        """
+        Muhtemel anomali kaynaklarini cikar
+        ONEMLI: Tum olasiliklari esit agirlikla degerlendirmeli
+        """
         sources = []
         
-        if anomaly_type == AnomalyType.UNKNOWN_SUBSTANCE:
+        if anomaly_type == AnomalyType.UNIDENTIFIED_PATTERN:
             sources.append({
-                'source': AnomalySource.UNKNOWN_SUBSTANCE.value,
-                'probability': min(0.9, score + 0.2),
-                'evidence': 'Coklu anomali dedektorleri tarafindan tespit edildi',
-                'affected_regions': affected_cpgs[:5]
+                'source': AnomalySource.NEUROLOGICAL_CONDITION.value,
+                'probability': 0.25,
+                'evidence': 'Norolojik durumlar (Otizm, ADHD, vb.) bu bolgeleri etkileyebilir',
+                'affected_regions': affected_cpgs[:3]
             })
             sources.append({
-                'source': AnomalySource.NOVEL_NPS.value,
-                'probability': min(0.7, score),
-                'evidence': 'Bilinen madde imzalariyla eslesmiyor',
+                'source': AnomalySource.GENETIC_VARIANT.value,
+                'probability': 0.25,
+                'evidence': 'Dogal genetik varyantlar metilasyon farkliligina neden olabilir',
                 'affected_regions': affected_cpgs[:3]
+            })
+            sources.append({
+                'source': AnomalySource.CHRONIC_DISEASE.value,
+                'probability': 0.20,
+                'evidence': 'Kronik hastaliklar epigenetik degisikliklere yol acabilir',
+                'affected_regions': affected_cpgs[:3]
+            })
+            sources.append({
+                'source': AnomalySource.POSSIBLE_SUBSTANCE.value,
+                'probability': 0.15,
+                'evidence': 'Madde maruziyeti olasilik dahilinde - DOGRULAMA GEREKLI',
+                'affected_regions': affected_cpgs[:3]
+            })
+            sources.append({
+                'source': AnomalySource.ENVIRONMENTAL_EXPOSURE.value,
+                'probability': 0.15,
+                'evidence': 'Cevresel faktorler (kirlilik, toksinler) etkili olabilir',
+                'affected_regions': affected_cpgs[:2]
             })
         
         elif anomaly_type == AnomalyType.SEVERE_ANOMALY:
             sources.append({
-                'source': AnomalySource.MIXED_EXPOSURE.value,
-                'probability': min(0.75, score + 0.1),
-                'evidence': 'Birden fazla yolak etkilenmis',
+                'source': AnomalySource.CHRONIC_DISEASE.value,
+                'probability': 0.30,
+                'evidence': 'Kronik hastalik belirteci olabilir',
                 'affected_regions': affected_cpgs[:4]
             })
             sources.append({
-                'source': AnomalySource.METABOLITE.value,
-                'probability': min(0.6, score - 0.1),
-                'evidence': 'Ara metabolit imzasi olabilir',
+                'source': AnomalySource.NEUROLOGICAL_CONDITION.value,
+                'probability': 0.25,
+                'evidence': 'Noropsikolojik durumlar bu profili olusturabilir',
+                'affected_regions': affected_cpgs[:3]
+            })
+            sources.append({
+                'source': AnomalySource.POSSIBLE_SUBSTANCE.value,
+                'probability': 0.20,
+                'evidence': 'Madde maruziyeti olasıligi - Ek testlerle dogrulanmali',
+                'affected_regions': affected_cpgs[:3]
+            })
+            sources.append({
+                'source': AnomalySource.GENETIC_VARIANT.value,
+                'probability': 0.15,
+                'evidence': 'Nadir genetik varyant etkisi olabilir',
                 'affected_regions': affected_cpgs[:2]
             })
         
         elif anomaly_type == AnomalyType.MODERATE_ANOMALY:
             sources.append({
-                'source': AnomalySource.CONTAMINATION.value,
-                'probability': min(0.5, score),
-                'evidence': 'Cevresel maruziyetle tutarli',
+                'source': AnomalySource.ENVIRONMENTAL_EXPOSURE.value,
+                'probability': 0.30,
+                'evidence': 'Cevresel maruziyet ile tutarli',
                 'affected_regions': affected_cpgs[:3]
+            })
+            sources.append({
+                'source': AnomalySource.DIETARY_EFFECT.value,
+                'probability': 0.25,
+                'evidence': 'Beslenme/diyet farkliliklari metilasyonu etkiler',
+                'affected_regions': affected_cpgs[:2]
+            })
+            sources.append({
+                'source': AnomalySource.AGING_DRIFT.value,
+                'probability': 0.20,
+                'evidence': 'Yaslanma ile dogal epigenetik kayma',
+                'affected_regions': affected_cpgs[:2]
+            })
+            sources.append({
+                'source': AnomalySource.GENETIC_VARIANT.value,
+                'probability': 0.15,
+                'evidence': 'Dogal varyasyon sinirlarinda',
+                'affected_regions': affected_cpgs[:2]
             })
         
         elif anomaly_type == AnomalyType.MILD_ANOMALY:
             sources.append({
                 'source': AnomalySource.GENETIC_VARIANT.value,
-                'probability': 0.4,
-                'evidence': 'Dogal varyasyon sinirlarinda',
+                'probability': 0.40,
+                'evidence': 'Dogal bireysel varyasyon',
                 'affected_regions': affected_cpgs[:2]
+            })
+            sources.append({
+                'source': AnomalySource.AGING_DRIFT.value,
+                'probability': 0.30,
+                'evidence': 'Normal yaslama sureci',
+                'affected_regions': affected_cpgs[:2]
+            })
+            sources.append({
+                'source': AnomalySource.DIETARY_EFFECT.value,
+                'probability': 0.20,
+                'evidence': 'Beslenme farkliliklari',
+                'affected_regions': affected_cpgs[:1]
             })
         
         return sources
@@ -546,23 +611,29 @@ class UnknownSubstanceDetector:
         affected_cpgs: List[str],
         likely_sources: List[Dict]
     ) -> str:
-        """Klinik yorum olustur"""
+        """
+        Klinik yorum olustur
+        ONEMLI: Dengeli ve cok faktorlu yorum
+        """
+        
+        disclaimer = "\n\nONEMLI UYARI: Bu analiz sonucu tani koydurucu degildir. Metilasyon farkliliklari bircok farkli kaynaktan (genetik, norolojik, cevresel, yasam tarzi, vb.) kaynaklanabilir. Kesin degerlendirme icin klinik korelasyon ve ek testler gereklidir."
         
         if anomaly_type == AnomalyType.NORMAL:
-            return "Metilasyon profili normal sinirlar icinde. Bilinen veya bilinmeyen madde izi tespit edilmedi."
+            return "Metilasyon profili referans populasyonla uyumlu. Belirgin bir sapma tespit edilmedi."
         
         elif anomaly_type == AnomalyType.MILD_ANOMALY:
-            return f"Hafif metilasyon sapmasi tespit edildi (skor: {score:.2f}). Bu, dogal varyasyon veya dusuk duzeyde cevresel maruziyet ile aciklanabilir. {len(affected_cpgs)} CpG bolgesi etkilenmis."
+            return f"Hafif metilasyon sapmasi tespit edildi (skor: {score:.2f}). Bu sapma buyuk olasilikla dogal bireysel varyasyon, yaslanma sureci veya beslenme farkliliklarindan kaynaklanmaktadir. {len(affected_cpgs)} CpG bolgesi normal araligin hafifce disinda." + disclaimer
         
         elif anomaly_type == AnomalyType.MODERATE_ANOMALY:
-            return f"Orta duzeyde anomali tespit edildi (skor: {score:.2f}). {len(affected_cpgs)} CpG bolgesinde normal disinda degerler goruldu. Cevresel maruziyet veya dusuk dozda madde kullanimi mumkun."
+            return f"Orta duzeyde metilasyon sapmasi tespit edildi (skor: {score:.2f}). {len(affected_cpgs)} CpG bolgesinde referans araligin disinda degerler goruldu. Muhtemel kaynaklar: cevresel maruziyet, kronik saglik durumu, genetik varyant veya yasam tarzi faktorleri. Tek bir nedene baglanmamalidir." + disclaimer
         
         elif anomaly_type == AnomalyType.SEVERE_ANOMALY:
-            sources_str = ", ".join([s['source'] for s in likely_sources[:2]])
-            return f"Ciddi metilasyon anomalisi tespit edildi (skor: {score:.2f}). Muhtemel kaynaklar: {sources_str}. {len(affected_cpgs)} CpG bolgesi belirgin sekilde etkilenmis. Ileri analiz onerilir."
+            sources_str = ", ".join([s['source'] for s in likely_sources[:3]])
+            return f"Belirgin metilasyon sapmasi tespit edildi (skor: {score:.2f}). {len(affected_cpgs)} CpG bolgesi normal referans araliginin belirgin disinda. Olasi kaynaklar esit olasilikla: {sources_str}. Ayirici tani icin klinik degerlendirme ve ek laboratuvar testleri onerilir." + disclaimer
         
         else:
-            return f"BILINMEYEN MADDE IZI TESPIT EDILDI (skor: {score:.2f}). Veritabanindaki hicbir bilinen madde imzasiyla eslesmeyen anormal metilasyon oruntuleri goruldu. {len(affected_cpgs)} CpG bolgesinde ciddi sapmalar mevcut. Bu, yeni bir sentetik madde (NPS) veya tanimlanmamis bir metabolit isareti olabilir."
+            sources_str = ", ".join([s['source'] for s in likely_sources[:4]])
+            return f"TANIMLANMAMIS METILASYON ORUNTULERI (skor: {score:.2f}). Referans veritabanindaki bilinen profillerle eslesmeyeneruntular tespit edildi. {len(affected_cpgs)} CpG bolgesinde ciddi sapmalar mevcut.\n\nBU SONUC MADDE KULLANIMI ANLAMINA GELMEZ. Olasi kaynaklar: {sources_str}.\n\nNorolojik durumlar (Otizm, ADHD, Sizofreni vb.), nadir genetik sendromlar, kronik hastaliklar veya cevresel faktorler benzer profiller olusturabilir. Kesin degerlendirme icin multidisipliner klinik korelasyon SARTTIR." + disclaimer
     
     def _generate_recommendations(
         self,
@@ -570,34 +641,44 @@ class UnknownSubstanceDetector:
         score: float,
         likely_sources: List[Dict]
     ) -> List[str]:
-        """Klinik oneriler olustur"""
+        """
+        Klinik oneriler olustur
+        ONEMLI: Dengeli ve cok yonlu degerlendirme
+        """
         recommendations = []
         
         if anomaly_type == AnomalyType.NORMAL:
-            recommendations.append("Rutin takip yeterlidir")
+            recommendations.append("Metilasyon profili normal sinirlar icinde - rutin takip yeterli")
         
         elif anomaly_type == AnomalyType.MILD_ANOMALY:
-            recommendations.append("3-6 ay icinde kontrol ornekleme onerilir")
-            recommendations.append("Cevresel maruziyet sorgulanmali")
+            recommendations.append("Dogal varyasyon olarak degerlendirilir - rutin takip onerilir")
+            recommendations.append("Yasam tarzi faktorleri (diyet, uyku, stres) sorgulanabilir")
+            recommendations.append("Genetik danismanlik gerekli degildir")
         
         elif anomaly_type == AnomalyType.MODERATE_ANOMALY:
-            recommendations.append("Detayli madde tarama paneli uygulanmali")
-            recommendations.append("Klinik degerlendirme onerilir")
-            recommendations.append("Ek biyolojik ornek alinmasi dusunulmeli")
+            recommendations.append("Multidisipliner klinik degerlendirme onerilir")
+            recommendations.append("Hasta oykusu detayli alinmali (saglik, cevresel, mesleki)")
+            recommendations.append("Norolojik/psikiyatrik konsultasyon degerlendirilmeli")
+            recommendations.append("Gerekirse genetik test (SNP array) onerilir")
+            recommendations.append("Cevresel/mesleki maruziyet taramasi yapilabilir")
         
         elif anomaly_type == AnomalyType.SEVERE_ANOMALY:
-            recommendations.append("Acil klinik degerlendirme gerekli")
-            recommendations.append("Kapsamli toksikoloji paneli uygulanmali")
-            recommendations.append("Ileri molekuler analiz (LC-MS/MS) onerilir")
-            recommendations.append("Hasta gecmisi ve cevresel maruziyetler detayli incelenmeli")
+            recommendations.append("Kapsamli klinik degerlendirme ZORUNLUDUR")
+            recommendations.append("Noroloji/Psikiyatri konsultasyonu istenmeli")
+            recommendations.append("Genetik test (WES/WGS) onerilir - nadir sendromlar icin")
+            recommendations.append("Kronik hastalik taramasi (kanser, otoimmun, metabolik)")
+            recommendations.append("Cevresel toksin maruziyeti arastirilmali")
+            recommendations.append("Ek dogrulayici testler olmadan sonuca varilmamali")
         
         else:
-            recommendations.append("ACIL: Bilinmeyen madde protokolu baslatilmali")
-            recommendations.append("Kapsamli toksikoloji paneli (GC-MS, LC-MS/MS)")
-            recommendations.append("Ornek ileri analiz icin saklanmali")
-            recommendations.append("Adli makamlar bilgilendirilmeli (gerekirse)")
-            recommendations.append("Benzerligi yuksek bilinen maddeler icin hedefe yonelik testler")
-            recommendations.append("Karsilastirmali NPS veritabani taramasi")
+            recommendations.append("KAPSAMLI MULTIDISIPLINER DEGERLENDIRME GEREKLI")
+            recommendations.append("UYARI: Tek basina madde kullanimi olarak yorumlanmamali")
+            recommendations.append("Noropsikolojik degerlendirme (Otizm, ADHD, vb. icin)")
+            recommendations.append("Genetik konsultasyon ve test onerilir")
+            recommendations.append("Kronik hastalik taramasi (tam kan, biyokimya, hormon)")
+            recommendations.append("Mesleki/cevresel maruziyet oykusu alinmali")
+            recommendations.append("Sadece tum olasi nedenler dislandiktan sonra madde olasiligi degerlendirilebilir")
+            recommendations.append("Kesin karar icin ek biyolojik ornekler (idrar, sac) ile dogrulama")
         
         return recommendations
     

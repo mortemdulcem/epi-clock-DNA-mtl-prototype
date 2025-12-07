@@ -1056,30 +1056,43 @@ def display_demo_results(results: Dict[str, Any], scenario: Dict[str, Any]):
     unknown_detection = results.get('unknown_substance_detection', {})
     if unknown_detection.get('enabled'):
         st.markdown("---")
-        st.markdown("#### Bilinmeyen Madde Tespiti (ML Anomali Analizi)")
-        st.markdown('<p style="color: #64748B; font-size: 0.85rem;">Isolation Forest, LOF, Autoencoder ve Z-score yontemleriyle anomali tespiti</p>', unsafe_allow_html=True)
+        st.markdown("#### Metilasyon Profili Sapma Analizi (ML Tabanli)")
+        st.markdown('<p style="color: #64748B; font-size: 0.85rem;">Referans populasyona gore metilasyon sapmasi analizi (Isolation Forest, LOF, Autoencoder)</p>', unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div style="background: #FEF3C7; border: 1px solid #FDE68A; border-radius: 6px; padding: 10px; margin-bottom: 12px;">
+            <strong style="color: #92400E; font-size: 0.85rem;">ONEMLI UYARI:</strong>
+            <span style="color: #78350F; font-size: 0.8rem;">
+                Metilasyon sapmalari bircok kaynaktan (norolojik durumlar, genetik varyantlar, kronik hastaliklar, 
+                cevresel faktorler, yasam tarzi) kaynaklanabilir. Bu analiz TANI KOYDURUCU DEGILDIR.
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
         
         anomaly_type = unknown_detection.get('anomaly_type', 'Normal Profil')
         anomaly_score = unknown_detection.get('anomaly_score', 0)
         is_anomaly = unknown_detection.get('is_anomaly', False)
         
         if is_anomaly:
-            alert_color = "#DC2626" if anomaly_score > 0.7 else "#F59E0B" if anomaly_score > 0.4 else "#3B82F6"
-            alert_bg = "#FEF2F2" if anomaly_score > 0.7 else "#FFFBEB" if anomaly_score > 0.4 else "#EFF6FF"
-            alert_border = "#FECACA" if anomaly_score > 0.7 else "#FDE68A" if anomaly_score > 0.4 else "#BFDBFE"
+            alert_color = "#0050A0"
+            alert_bg = "#F0F9FF"
+            alert_border = "#BAE6FD"
             
             st.markdown(f"""
             <div style="background: {alert_bg}; border: 2px solid {alert_border}; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <strong style="color: {alert_color}; font-size: 1.1rem;">ANOMALI TESPIT EDILDI</strong>
+                        <strong style="color: {alert_color}; font-size: 1.1rem;">METILASYON SAPMASI TESPIT EDILDI</strong>
                         <div style="color: #64748B; font-size: 0.85rem; margin-top: 4px;">{anomaly_type}</div>
+                        <div style="color: #DC2626; font-size: 0.75rem; margin-top: 2px; font-style: italic;">
+                            (Madde kullanimi dahil bircok neden olabilir - tek basina yorum yapilmamali)
+                        </div>
                     </div>
                     <div style="text-align: right;">
                         <div style="background: {alert_color}; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 1.2rem;">
                             %{anomaly_score*100:.0f}
                         </div>
-                        <div style="color: #64748B; font-size: 0.75rem; margin-top: 4px;">Anomali Skoru</div>
+                        <div style="color: #64748B; font-size: 0.75rem; margin-top: 4px;">Sapma Skoru</div>
                     </div>
                 </div>
             </div>
