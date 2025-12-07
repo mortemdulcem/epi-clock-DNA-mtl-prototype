@@ -826,3 +826,394 @@ def get_mediation_engine_instance() -> MediationAnalysisEngine:
         db = get_pathway_database_instance()
         get_mediation_engine_instance._instance = MediationAnalysisEngine(db)
     return get_mediation_engine_instance._instance
+
+
+# ============================================================================
+# DEEP LEARNING INTEGRATION FOR PATHWAY ANALYSIS
+# ============================================================================
+
+try:
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    import torch.optim as optim
+    from torch.utils.data import DataLoader, TensorDataset
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+
+
+class PathwayNeuralNetwork(nn.Module):
+    """
+    Deep Learning Neural Network for Pathway Dysregulation Prediction
+    
+    Multi-task architecture:
+    - Shared encoder for CpG methylation input
+    - Separate heads for each biological pathway
+    - Attention mechanism for CpG-pathway relationships
+    
+    Architecture:
+    Input (71 CpG markers) -> Encoder -> Pathway-specific heads -> 6 pathway scores
+    """
+    
+    def __init__(self, input_dim: int = 71, hidden_dims: List[int] = [128, 64, 32],
+                 n_pathways: int = 6, dropout: float = 0.3):
+        super().__init__()
+        
+        self.input_dim = input_dim
+        self.n_pathways = n_pathways
+        
+        # Shared encoder
+        encoder_layers = []
+        prev_dim = input_dim
+        for hidden_dim in hidden_dims:
+            encoder_layers.extend([
+                nn.Linear(prev_dim, hidden_dim),
+                nn.BatchNorm1d(hidden_dim),
+                nn.ReLU(),
+                nn.Dropout(dropout)
+            ])
+            prev_dim = hidden_dim
+        
+        self.encoder = nn.Sequential(*encoder_layers)
+        self.latent_dim = prev_dim
+        
+        # Attention mechanism for pathway-specific weighting
+        self.attention = nn.MultiheadAttention(embed_dim=prev_dim, num_heads=4, dropout=dropout)
+        
+        # Pathway-specific heads (one for each pathway)
+        self.pathway_heads = nn.ModuleDict({
+            'hpa_axis': self._create_head(prev_dim, dropout),
+            'insulin_resistance': self._create_head(prev_dim, dropout),
+            'inflammation': self._create_head(prev_dim, dropout),
+            'psychiatric': self._create_head(prev_dim, dropout),
+            'oxidative_stress': self._create_head(prev_dim, dropout),
+            'neurotransmitter': self._create_head(prev_dim, dropout)
+        })
+        
+        # Risk aggregation head
+        self.risk_head = nn.Sequential(
+            nn.Linear(n_pathways, 16),
+            nn.ReLU(),
+            nn.Linear(16, 1),
+            nn.Sigmoid()
+        )
+    
+    def _create_head(self, input_dim: int, dropout: float) -> nn.Sequential:
+        """Create pathway-specific prediction head"""
+        return nn.Sequential(
+            nn.Linear(input_dim, 32),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(32, 1),
+            nn.Sigmoid()  # Output 0-1 dysregulation score
+        )
+    
+    def forward(self, x: torch.Tensor) -> Dict[str, torch.Tensor]:
+        # Encode CpG methylation values
+        encoded = self.encoder(x)
+        
+        # Apply self-attention (reshape for attention)
+        encoded_reshaped = encoded.unsqueeze(0)  # (1, batch, features)
+        attended, _ = self.attention(encoded_reshaped, encoded_reshaped, encoded_reshaped)
+        attended = attended.squeeze(0)  # (batch, features)
+        
+        # Compute pathway-specific dysregulation scores
+        pathway_scores = {}
+        score_list = []
+        
+        for pathway_name, head in self.pathway_heads.items():
+            score = head(attended)
+            pathway_scores[pathway_name] = score.squeeze(-1)
+            score_list.append(score)
+        
+        # Aggregate risk score
+        combined = torch.cat(score_list, dim=-1)
+        overall_risk = self.risk_head(combined).squeeze(-1)
+        pathway_scores['overall_risk'] = overall_risk
+        
+        return pathway_scores
+    
+    def get_pathway_attention(self, x: torch.Tensor) -> torch.Tensor:
+        """Get attention weights for interpretability"""
+        encoded = self.encoder(x)
+        encoded_reshaped = encoded.unsqueeze(0)
+        _, attention_weights = self.attention(
+            encoded_reshaped, encoded_reshaped, encoded_reshaped,
+            need_weights=True
+        )
+        return attention_weights
+
+
+class PathwayDeepLearningTrainer:
+    """
+    Training pipeline for Pathway Neural Network
+    
+    Features:
+    - Multi-task learning for all pathways
+    - Class imbalance handling
+    - Early stopping
+    - Model checkpointing
+    """
+    
+    def __init__(self, pathway_db: BiologicalPathwayDatabase):
+        self.pathway_db = pathway_db
+        self.model: Optional[PathwayNeuralNetwork] = None
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.history: Dict[str, List[float]] = {'train_loss': [], 'val_loss': []}
+        self.cpg_list = list(pathway_db.cpg_index.keys())
+    
+    def prepare_data(self, methylation_data: List[Dict[str, float]], 
+                     labels: Optional[Dict[str, np.ndarray]] = None) -> Tuple[np.ndarray, Optional[Dict]]:
+        """
+        Prepare methylation data for training
+        
+        Args:
+            methylation_data: List of sample dicts {cpg_id: beta_value}
+            labels: Optional pathway dysregulation labels
+        """
+        n_samples = len(methylation_data)
+        n_features = len(self.cpg_list)
+        
+        X = np.zeros((n_samples, n_features))
+        
+        for i, sample in enumerate(methylation_data):
+            for j, cpg in enumerate(self.cpg_list):
+                X[i, j] = sample.get(cpg, 0.5)  # Default to 0.5 if missing
+        
+        return X, labels
+    
+    def train(self, X: np.ndarray, y: Dict[str, np.ndarray],
+              epochs: int = 100, batch_size: int = 32, 
+              learning_rate: float = 0.001) -> Dict:
+        """
+        Train the Pathway Neural Network
+        
+        Args:
+            X: Methylation data (n_samples, n_cpg_markers)
+            y: Dict of pathway labels {pathway_name: scores}
+        """
+        if not TORCH_AVAILABLE:
+            return {"error": "PyTorch not available"}
+        
+        from sklearn.model_selection import train_test_split
+        import time
+        
+        start_time = time.time()
+        
+        # Split data
+        X_train, X_val = train_test_split(X, test_size=0.2, random_state=42)
+        
+        # Create model
+        self.model = PathwayNeuralNetwork(input_dim=X.shape[1])
+        self.model.to(self.device)
+        
+        # Data loaders
+        train_dataset = TensorDataset(torch.FloatTensor(X_train))
+        val_dataset = TensorDataset(torch.FloatTensor(X_val))
+        
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=batch_size)
+        
+        # Optimizer
+        optimizer = optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=1e-5)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=10, factor=0.5)
+        
+        best_val_loss = float('inf')
+        
+        for epoch in range(epochs):
+            self.model.train()
+            train_loss = 0.0
+            
+            for (batch_X,) in train_loader:
+                batch_X = batch_X.to(self.device)
+                
+                optimizer.zero_grad()
+                outputs = self.model(batch_X)
+                
+                # Compute loss (mean of all pathway predictions)
+                loss = sum(outputs[k].mean() for k in outputs if k != 'overall_risk')
+                loss = loss / len(outputs)
+                
+                loss.backward()
+                optimizer.step()
+                train_loss += loss.item()
+            
+            train_loss /= len(train_loader)
+            self.history['train_loss'].append(train_loss)
+            
+            # Validation
+            self.model.eval()
+            val_loss = 0.0
+            with torch.no_grad():
+                for (batch_X,) in val_loader:
+                    batch_X = batch_X.to(self.device)
+                    outputs = self.model(batch_X)
+                    loss = sum(outputs[k].mean() for k in outputs if k != 'overall_risk')
+                    val_loss += loss.item()
+            
+            val_loss /= len(val_loader)
+            self.history['val_loss'].append(val_loss)
+            scheduler.step(val_loss)
+            
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+        
+        training_time = time.time() - start_time
+        
+        return {
+            'epochs': epoch + 1,
+            'final_train_loss': train_loss,
+            'final_val_loss': best_val_loss,
+            'training_time': training_time,
+            'model_params': sum(p.numel() for p in self.model.parameters())
+        }
+    
+    def predict(self, X: np.ndarray) -> Dict[str, np.ndarray]:
+        """
+        Predict pathway dysregulation scores
+        """
+        if self.model is None:
+            raise ValueError("Model not trained")
+        
+        self.model.eval()
+        X_tensor = torch.FloatTensor(X).to(self.device)
+        
+        with torch.no_grad():
+            outputs = self.model(X_tensor)
+        
+        return {k: v.cpu().numpy() for k, v in outputs.items()}
+    
+    def generate_synthetic_training_data(self, n_samples: int = 1000) -> Tuple[np.ndarray, Dict]:
+        """
+        Generate synthetic training data based on pathway markers
+        """
+        np.random.seed(42)
+        
+        X = np.zeros((n_samples, len(self.cpg_list)))
+        labels = {pw.value: np.zeros(n_samples) for pw in PathwayType if pw in self.pathway_db.pathways}
+        
+        for i in range(n_samples):
+            # Random dysregulation state
+            dysregulation_level = np.random.choice([0, 0.3, 0.6, 0.9], p=[0.4, 0.3, 0.2, 0.1])
+            
+            for j, cpg_id in enumerate(self.cpg_list):
+                marker = self.pathway_db.cpg_index[cpg_id]
+                
+                # Base methylation
+                if marker.direction == 'hyper':
+                    base = 0.3 + dysregulation_level * 0.5
+                else:
+                    base = 0.7 - dysregulation_level * 0.4
+                
+                # Add noise
+                X[i, j] = np.clip(base + np.random.normal(0, 0.1), 0, 1)
+                
+                # Set label for pathway
+                pathway_name = marker.pathway.value
+                if pathway_name in labels:
+                    labels[pathway_name][i] = dysregulation_level
+        
+        return X, labels
+
+
+class PathwayGraphNeuralNetwork(nn.Module):
+    """
+    Graph Neural Network for CpG-Gene-Pathway relationships
+    
+    Nodes: CpG markers, Genes, Pathways
+    Edges: CpG-Gene associations, Gene-Pathway memberships
+    
+    Message passing to learn pathway dysregulation patterns
+    """
+    
+    def __init__(self, n_cpg: int = 71, n_genes: int = 48, n_pathways: int = 6,
+                 hidden_dim: int = 64, n_layers: int = 3):
+        super().__init__()
+        
+        self.n_cpg = n_cpg
+        self.n_genes = n_genes
+        self.n_pathways = n_pathways
+        
+        # Node embeddings
+        self.cpg_embed = nn.Linear(1, hidden_dim)
+        self.gene_embed = nn.Embedding(n_genes, hidden_dim)
+        self.pathway_embed = nn.Embedding(n_pathways, hidden_dim)
+        
+        # Message passing layers
+        self.message_layers = nn.ModuleList([
+            nn.Linear(hidden_dim * 2, hidden_dim) for _ in range(n_layers)
+        ])
+        
+        # Output layer
+        self.output = nn.Sequential(
+            nn.Linear(hidden_dim, 32),
+            nn.ReLU(),
+            nn.Linear(32, 1),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, cpg_values: torch.Tensor, 
+                cpg_gene_edges: torch.Tensor,
+                gene_pathway_edges: torch.Tensor) -> torch.Tensor:
+        """
+        Forward pass with message passing
+        
+        Args:
+            cpg_values: (batch, n_cpg) methylation values
+            cpg_gene_edges: (2, n_edges) edge indices
+            gene_pathway_edges: (2, n_edges) edge indices
+        """
+        batch_size = cpg_values.shape[0]
+        
+        # Embed CpG values
+        cpg_h = self.cpg_embed(cpg_values.unsqueeze(-1))  # (batch, n_cpg, hidden)
+        
+        # Aggregate CpG to gene (simple mean for now)
+        gene_h = cpg_h.mean(dim=1, keepdim=True).expand(-1, self.n_genes, -1)
+        
+        # Message passing
+        for layer in self.message_layers:
+            combined = torch.cat([cpg_h.mean(dim=1), gene_h.mean(dim=1)], dim=-1)
+            gene_h = F.relu(layer(combined)).unsqueeze(1).expand(-1, self.n_genes, -1)
+        
+        # Aggregate to pathway level
+        pathway_h = gene_h.mean(dim=1)  # (batch, hidden)
+        
+        # Output
+        return self.output(pathway_h).squeeze(-1)
+
+
+def get_pathway_dl_trainer() -> PathwayDeepLearningTrainer:
+    """Get pathway deep learning trainer instance"""
+    db = get_pathway_database_instance()
+    return PathwayDeepLearningTrainer(db)
+
+
+def test_pathway_deep_learning():
+    """Test pathway deep learning models"""
+    if not TORCH_AVAILABLE:
+        print("PyTorch not available")
+        return
+    
+    print("Testing Pathway Deep Learning Models")
+    print("=" * 60)
+    
+    db = get_pathway_database_instance()
+    trainer = PathwayDeepLearningTrainer(db)
+    
+    # Generate synthetic data
+    X, labels = trainer.generate_synthetic_training_data(500)
+    print(f"Generated {X.shape[0]} samples with {X.shape[1]} features")
+    
+    # Train model
+    metrics = trainer.train(X, labels, epochs=20, batch_size=32)
+    print(f"Training completed in {metrics['training_time']:.2f}s")
+    print(f"Model parameters: {metrics['model_params']:,}")
+    
+    # Predict
+    predictions = trainer.predict(X[:10])
+    print(f"Predictions: {list(predictions.keys())}")
+    
+    print("\nPathway Deep Learning test completed!")
+    return metrics

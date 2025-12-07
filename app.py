@@ -10479,7 +10479,8 @@ def render_biological_pathway_analysis(components):
         "Insulin Direnci",
         "Inflamasyon",
         "Psikiyatrik Mediasyon",
-        "Simulasyon Analizi"
+        "Simulasyon Analizi",
+        "Derin Ogrenme Egitimi"
     ])
     
     with tabs[0]:
@@ -10733,6 +10734,112 @@ def render_biological_pathway_analysis(components):
                     
                     Izlenmesi Gereken: {', '.join(rec['monitoring'][:3])}
                     """)
+    
+    with tabs[6]:
+        st.markdown("### Derin Ogrenme Model Egitimi")
+        st.markdown("""
+        **PATHWAY NEURAL NETWORK**
+        
+        PyTorch tabanli derin ogrenme modeli ile biyolojik yol disregulasyon tahmini.
+        
+        **Mimari:**
+        - Giris: 71 CpG marker metilasyon degeri
+        - Paylasimli Encoder: [128, 64, 32] noron
+        - Multi-Head Attention mekanizmasi
+        - 6 yol-spesifik tahmin basi
+        - Toplam risk agregasyonu
+        """)
+        
+        from modules.pathway_biomarkers import (
+            get_pathway_dl_trainer, TORCH_AVAILABLE, PathwayNeuralNetwork
+        )
+        
+        if not TORCH_AVAILABLE:
+            st.error("PyTorch yuklu degil. Derin ogrenme modelleri kullanilamaz.")
+        else:
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                n_samples = st.number_input("Egitim Ornegi", min_value=100, max_value=5000, value=500)
+            with col2:
+                epochs = st.number_input("Epoch Sayisi", min_value=10, max_value=200, value=50)
+            with col3:
+                batch_size = st.selectbox("Batch Size", [16, 32, 64, 128], index=1)
+            
+            if st.button("Pathway Neural Network Egit"):
+                with st.spinner("Model egitiliyor..."):
+                    trainer = get_pathway_dl_trainer()
+                    
+                    X, labels = trainer.generate_synthetic_training_data(n_samples)
+                    
+                    metrics = trainer.train(X, labels, epochs=epochs, batch_size=batch_size)
+                    
+                    st.success("Model egitimi tamamlandi!")
+                    
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Epoch", metrics['epochs'])
+                    with col2:
+                        st.metric("Train Loss", f"{metrics['final_train_loss']:.6f}")
+                    with col3:
+                        st.metric("Val Loss", f"{metrics['final_val_loss']:.6f}")
+                    with col4:
+                        st.metric("Parametre", f"{metrics['model_params']:,}")
+                    
+                    st.markdown("#### Tahmin Testi")
+                    test_predictions = trainer.predict(X[:5])
+                    
+                    pred_df = pd.DataFrame({
+                        'Ornek': range(1, 6),
+                        'HPA Ekseni': [f"{v:.3f}" for v in test_predictions['hpa_axis']],
+                        'Insulin': [f"{v:.3f}" for v in test_predictions['insulin_resistance']],
+                        'Inflamasyon': [f"{v:.3f}" for v in test_predictions['inflammation']],
+                        'Psikiyatrik': [f"{v:.3f}" for v in test_predictions['psychiatric']],
+                        'Genel Risk': [f"{v:.3f}" for v in test_predictions['overall_risk']]
+                    })
+                    st.dataframe(pred_df, use_container_width=True)
+                    
+                    st.markdown("#### Egitim Grafigi")
+                    import plotly.graph_objects as go
+                    
+                    fig = go.Figure()
+                    fig.add_trace(go.Scatter(
+                        y=trainer.history['train_loss'],
+                        mode='lines',
+                        name='Train Loss',
+                        line=dict(color='#0050A0')
+                    ))
+                    fig.add_trace(go.Scatter(
+                        y=trainer.history['val_loss'],
+                        mode='lines',
+                        name='Val Loss',
+                        line=dict(color='#00A7D8')
+                    ))
+                    fig.update_layout(
+                        title="Egitim ve Validasyon Kaybi",
+                        xaxis_title="Epoch",
+                        yaxis_title="Loss",
+                        height=400
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+            
+            st.markdown("---")
+            st.markdown("#### Model Mimarisi Detay")
+            
+            model = PathwayNeuralNetwork(input_dim=71)
+            total_params = sum(p.numel() for p in model.parameters())
+            trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+            
+            st.info(f"""
+            **PathwayNeuralNetwork**
+            
+            - Giris Boyutu: 71 (CpG marker)
+            - Encoder Katmanlari: Linear(71->128) + BN + ReLU + Dropout(0.3)
+            - Attention: MultiheadAttention(32, heads=4)
+            - Pathway Heads: 6 adet (her biri: Linear(32->32) + ReLU + Linear(32->1) + Sigmoid)
+            - Risk Aggregation: Linear(6->16) + ReLU + Linear(16->1) + Sigmoid
+            
+            **Parametre Sayisi:** {total_params:,} (Hepsi egitilabilir: {trainable_params:,})
+            """)
     
     st.markdown("---")
     st.markdown("### Literatur Referanslari")
