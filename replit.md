@@ -23,6 +23,9 @@ The EpiClock platform is built around a modular architecture, with `app.py` serv
 **Technical Implementations & Feature Specifications:**
 - **Epigenetic Clocks:** Implements five major epigenetic clocks and 12 tissue-specific clocks, with cross-tissue normalization algorithms.
 - **Machine Learning:** Features an ensemble ML model (Random Forest, XGBoost, ElasticNet) for accurate age prediction.
+- **Deep Learning Models:** MLP (Multi-Layer Perceptron), Autoencoder for dimensionality reduction, VAE (Variational Autoencoder), MTL-NN (Multi-Task Learning Neural Network) for joint age/substance/risk prediction.
+- **Data Preprocessing:** ComBat batch correction, Houseman cell composition estimation, functional normalization, quality control pipeline.
+- **Model Explainability:** SHAP/TreeSHAP integration for feature importance, clinical report generation with CpG contribution analysis.
 - **Reference Database:** A large reference database of 10,542 DNA methylation profiles categorized by substance use.
 - **Advanced Analytics:** Includes differential methylation, mediation, moderation analysis, GSEA, and multi-omics integration (MOFA/PLS).
 - **Forensic Features:** Incorporates a SHA-256 blockchain audit trail for tamper detection, chain of custody tracking, and postmortem validation with PMI correction.
