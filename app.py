@@ -3147,7 +3147,8 @@ def main():
              "Veritabani Yonetimi",
              "Rapor Olustur",
              "ML Egitim ve API",
-             "CpG Cakisma Analizi"],
+             "CpG Cakisma Analizi",
+             "Evrensel Farmakoloji DB"],
             index=0
         )
         
@@ -3280,6 +3281,8 @@ def main():
         render_ml_training_page(components)
     elif "CpG Cakisma Analizi" in analysis_mode:
         render_cpg_overlap_analysis(components)
+    elif "Evrensel Farmakoloji DB" in analysis_mode:
+        render_universal_pharmacology_database(components)
     
     render_professional_footer()
 
@@ -10426,6 +10429,236 @@ def render_polygenic_risk(components):
         
         st.success(f" **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
         st.info(f"**İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
+    
+    render_update_badge()
+
+
+def render_universal_pharmacology_database(components):
+    """Evrensel Farmakoloji Veritabani - Global Drug Databases - nrcdnl94"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    from modules.universal_pharmacology_database import (
+        UniversalPharmacologyDatabase, SubstanceCategory, AbuseSchedule
+    )
+    
+    st.markdown("## Evrensel Farmakoloji Veritabani")
+    st.markdown("""
+    **GLOBAL ILAC VE MADDE VERITABANI ENTEGRASYONU**
+    
+    Bu modul, dunyanin en buyuk farmakoloji veritabanlarindan veri entegrasyonu saglar:
+    
+    - **PubChem:** 119 milyon kimyasal bilesen
+    - **DrugBank:** 20,000+ ilac profili
+    - **ChEMBL:** 2.4 milyon biyoaktif molekul
+    - **UNODC NPS:** 1,200+ yeni psikoaktif madde
+    - **EMCDDA:** 950+ Avrupa NPS izleme
+    - **DEA:** 480+ kontrollu madde
+    """)
+    
+    db = UniversalPharmacologyDatabase()
+    stats = db.get_statistics()
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.metric("Toplam Madde", f"{stats['total_substances']:,}")
+    with col2:
+        st.metric("Yuksek Riskli", stats['high_risk_count'])
+    with col3:
+        st.metric("Ort. Abuse Pot.", f"%{stats['mean_abuse_potential']*100:.1f}")
+    with col4:
+        st.metric("Kategori", len(stats['category_distribution']))
+    with col5:
+        st.metric("Reseptor Hedef", len(stats['top_receptor_targets']))
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Kategori Dagilimi",
+        "Madde Arama",
+        "Reseptor Analizi",
+        "Yuksek Riskli",
+        "Veritabani Listesi"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Farmakolojik Kategori Dagilimi")
+        
+        cat_data = stats['category_distribution']
+        fig = go.Figure(data=[
+            go.Pie(
+                labels=list(cat_data.keys()),
+                values=list(cat_data.values()),
+                hole=0.4,
+                marker_colors=px.colors.qualitative.Set3
+            )
+        ])
+        fig.update_layout(title="Madde Kategorileri", height=500)
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("### Siniflandirma Dagilimi (DEA/UNODC)")
+        sched_data = stats['schedule_distribution']
+        fig2 = go.Figure(data=[
+            go.Bar(
+                x=list(sched_data.keys()),
+                y=list(sched_data.values()),
+                marker_color='#0050A0'
+            )
+        ])
+        fig2.update_layout(
+            title="Kontrollu Madde Siniflandirmasi",
+            xaxis_title="Sinif",
+            yaxis_title="Madde Sayisi",
+            height=400
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+    
+    with tabs[1]:
+        st.markdown("### Madde Arama")
+        
+        search_query = st.text_input("Madde Adi veya Anahtar Kelime:")
+        
+        if search_query:
+            results = db.search_by_name(search_query)
+            
+            if results:
+                st.success(f"{len(results)} sonuc bulundu")
+                
+                for sub in results[:20]:
+                    with st.expander(f"{sub.name_common} ({sub.name_turkish})"):
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.write(f"**Kategori:** {sub.category.value}")
+                            st.write(f"**Sinif:** {sub.schedule.value}")
+                            st.write(f"**Abuse Potansiyeli:** %{sub.abuse_potential*100:.1f}")
+                            st.write(f"**Bagimlilik:** %{sub.addiction_liability*100:.1f}")
+                        with col2:
+                            st.write(f"**Reseptorler:** {', '.join(sub.receptor_targets)}")
+                            st.write(f"**CpG Siteler:** {', '.join(sub.predicted_cpg_sites[:5])}")
+                            st.write(f"**Kaynak:** {sub.source_database}")
+                            if sub.smiles:
+                                st.write(f"**SMILES:** {sub.smiles[:50]}...")
+            else:
+                st.warning("Sonuc bulunamadi")
+    
+    with tabs[2]:
+        st.markdown("### Reseptor Hedef Analizi")
+        
+        receptor_data = stats['top_receptor_targets']
+        
+        fig = go.Figure(data=[
+            go.Bar(
+                y=list(receptor_data.keys()),
+                x=list(receptor_data.values()),
+                orientation='h',
+                marker_color='#003366'
+            )
+        ])
+        fig.update_layout(
+            title="En Cok Hedeflenen Reseptorler",
+            xaxis_title="Madde Sayisi",
+            yaxis_title="Reseptor",
+            height=500
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        selected_receptor = st.selectbox(
+            "Reseptor Secin:",
+            list(receptor_data.keys())
+        )
+        
+        if selected_receptor:
+            receptor_substances = db.get_by_receptor(selected_receptor)
+            st.info(f"{selected_receptor} hedefleyen {len(receptor_substances)} madde")
+            
+            receptor_df = pd.DataFrame([
+                {
+                    'Madde': s.name_common,
+                    'Turkce': s.name_turkish,
+                    'Kategori': s.category.value,
+                    'Abuse %': round(s.abuse_potential * 100, 1)
+                }
+                for s in receptor_substances[:30]
+            ])
+            st.dataframe(receptor_df, use_container_width=True)
+    
+    with tabs[3]:
+        st.markdown("### Yuksek Riskli Maddeler")
+        
+        threshold = st.slider("Risk Esigi:", 0.5, 1.0, 0.85, 0.05)
+        high_risk = db.get_high_abuse_potential(threshold)
+        
+        st.warning(f"{len(high_risk)} madde %{threshold*100:.0f} ustu abuse potansiyeline sahip")
+        
+        if high_risk:
+            risk_df = pd.DataFrame([
+                {
+                    'Madde': s.name_common,
+                    'Turkce': s.name_turkish,
+                    'Kategori': s.category.value,
+                    'Sinif': s.schedule.value,
+                    'Abuse %': round(s.abuse_potential * 100, 1),
+                    'Bagimlilik %': round(s.addiction_liability * 100, 1),
+                    'Reseptorler': ', '.join(s.receptor_targets[:3])
+                }
+                for s in sorted(high_risk, key=lambda x: x.abuse_potential, reverse=True)[:50]
+            ])
+            st.dataframe(risk_df, use_container_width=True, height=500)
+    
+    with tabs[4]:
+        st.markdown("### Tam Veritabani Listesi")
+        
+        selected_category = st.selectbox(
+            "Kategori Filtrele:",
+            ["Tumu"] + [cat.value for cat in SubstanceCategory]
+        )
+        
+        if selected_category == "Tumu":
+            df = db.export_to_dataframe()
+        else:
+            cat_enum = next((c for c in SubstanceCategory if c.value == selected_category), None)
+            if cat_enum:
+                substances = db.get_by_category(cat_enum)
+                df = pd.DataFrame([
+                    {
+                        'key': s.name_common.lower().replace(" ", "_"),
+                        'name_common': s.name_common,
+                        'name_turkish': s.name_turkish,
+                        'category': s.category.value,
+                        'schedule': s.schedule.value,
+                        'abuse_potential': s.abuse_potential,
+                        'addiction_liability': s.addiction_liability,
+                        'receptors': ', '.join(s.receptor_targets),
+                        'cpg_sites': ', '.join(s.predicted_cpg_sites[:3]),
+                        'source': s.source_database
+                    }
+                    for s in substances
+                ])
+            else:
+                df = db.export_to_dataframe()
+        
+        st.dataframe(df, use_container_width=True, height=600)
+        
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            "CSV Olarak Indir",
+            csv,
+            f"pharmacology_database_{selected_category.lower().replace(' ', '_')}.csv",
+            "text/csv"
+        )
+    
+    st.markdown("---")
+    st.markdown("### Veri Kaynaklari")
+    st.info("""
+    **Entegre Veritabanlari:**
+    - PubChem (NCBI) - Kimyasal yapilar ve biyoaktivite
+    - DrugBank - Ilac hedefleri ve farmakoloji
+    - ChEMBL (EMBL-EBI) - Biyoaktif molekuller
+    - UNODC Early Warning System - NPS izleme
+    - EMCDDA - Avrupa uyusturucu izleme
+    - DEA - ABD kontrollu maddeler
+    
+    **Epigenetik Tahminler:** CpG siteleri literatur ve ML tahmini ile belirlenmistir.
+    """)
     
     render_update_badge()
 
