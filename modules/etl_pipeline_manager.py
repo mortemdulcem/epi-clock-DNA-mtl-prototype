@@ -34,6 +34,14 @@ try:
 except ImportError:
     pass
 
+# GEO and UNODC imports
+try:
+    from modules.geo_data_integration import GEODataLoader, GEODataClient
+    from modules.unodc_data_sources import UNODCDataLoader, ContinuousLearningSystem
+    HAS_GEO_UNODC = True
+except ImportError:
+    HAS_GEO_UNODC = False
+
 
 class PipelineStatus(Enum):
     IDLE = "idle"
@@ -483,44 +491,151 @@ class ETLPipelineManager:
         
         return results
     
+    def sync_geo_datasets(self, max_studies: int = 50) -> Dict[str, Any]:
+        """
+        GEO DataSets'ten metilasyon calismalarini senkronize et
+        
+        Faz 3 - GEO veri entegrasyonu
+        """
+        results = {
+            'addiction_studies': {},
+            'disease_studies': {},
+            'errors': []
+        }
+        
+        if not HAS_GEO_UNODC:
+            results['errors'].append("GEO modulu yuklenemedi")
+            return results
+        
+        try:
+            geo_loader = GEODataLoader(self.db_url)
+            
+            # Bagimlilik calismalari
+            results['addiction_studies'] = geo_loader.import_addiction_studies(
+                max_studies=max_studies // 2
+            )
+            
+            # Hastalik calismalari
+            results['disease_studies'] = geo_loader.import_disease_studies(
+                max_studies=max_studies // 2
+            )
+            
+        except Exception as e:
+            results['errors'].append(str(e))
+        
+        return results
+    
+    def sync_unodc_substances(self) -> Dict[str, Any]:
+        """
+        UNODC programli maddelerini senkronize et
+        
+        Faz 2 - UNODC madde genisletme
+        """
+        results = {
+            'substances_loaded': 0,
+            'categories': {},
+            'errors': []
+        }
+        
+        if not HAS_GEO_UNODC:
+            results['errors'].append("UNODC modulu yuklenemedi")
+            return results
+        
+        try:
+            unodc_loader = UNODCDataLoader(self.db_url)
+            results = unodc_loader.load_scheduled_substances()
+            
+        except Exception as e:
+            results['errors'].append(str(e))
+        
+        return results
+    
+    def run_continuous_learning(self) -> Dict[str, Any]:
+        """
+        Surekli ogrenme sistemini calistir
+        
+        Faz 4 - Surekli ogrenme, model guncelleme
+        """
+        results = {
+            'update_results': {},
+            'models_retrained': 0,
+            'errors': []
+        }
+        
+        if not HAS_GEO_UNODC:
+            results['errors'].append("Continuous learning modulu yuklenemedi")
+            return results
+        
+        try:
+            learning_system = ContinuousLearningSystem(self.db_url)
+            results['update_results'] = learning_system.run_scheduled_update()
+            
+        except Exception as e:
+            results['errors'].append(str(e))
+        
+        return results
+    
     def run_full_pipeline(self, progress_callback: Callable = None) -> Dict[str, Any]:
         """
         Tam ETL pipeline calistir
         
-        Adimlar:
-        1. Tablolari olustur
-        2. EWAS verilerini senkronize et
-        3. Terapotik ilaclari yukle
-        4. Modelleri egit
+        Adimlar (Faz 0-4):
+        1. Tablolari olustur (Faz 0)
+        2. EWAS verilerini senkronize et (Faz 1)
+        3. PharmGKB/Terapotik ilaclari yukle (Faz 1)
+        4. UNODC madde genisletme (Faz 2)
+        5. GEO veri entegrasyonu (Faz 3)
+        6. Modelleri egit (Faz 4)
+        7. Surekli ogrenme baslat (Faz 4)
         """
         results = {
             'tables_created': False,
             'ewas_sync': {},
             'medications_sync': {},
+            'unodc_sync': {},
+            'geo_sync': {},
             'models_trained': {},
+            'continuous_learning': {},
             'started_at': datetime.now().isoformat(),
             'completed_at': None
         }
         
-        # 1. Tablolar
+        total_steps = 7
+        
+        # Faz 0: Tablolar
         if progress_callback:
-            progress_callback(1, 4, "Veritabani tablolari olusturuluyor...")
+            progress_callback(1, total_steps, "Faz 0: Veritabani tablolari olusturuluyor...")
         results['tables_created'] = self.create_tables()
         
-        # 2. EWAS Sync
+        # Faz 1: EWAS Sync
         if progress_callback:
-            progress_callback(2, 4, "EWAS verileri senkronize ediliyor...")
+            progress_callback(2, total_steps, "Faz 1: EWAS verileri senkronize ediliyor...")
         results['ewas_sync'] = self.sync_ewas_catalog()
         
-        # 3. Medications
+        # Faz 1: Medications (PharmGKB)
         if progress_callback:
-            progress_callback(3, 4, "Terapotik ilaclar yukleniyor...")
+            progress_callback(3, total_steps, "Faz 1: PharmGKB/Terapotik ilaclar yukleniyor...")
         results['medications_sync'] = self.sync_therapeutic_medications()
         
-        # 4. Train Models
+        # Faz 2: UNODC Madde Genisletme
         if progress_callback:
-            progress_callback(4, 4, "Modeller egitiliyor...")
+            progress_callback(4, total_steps, "Faz 2: UNODC maddeleri senkronize ediliyor...")
+        results['unodc_sync'] = self.sync_unodc_substances()
+        
+        # Faz 3: GEO Veri Entegrasyonu
+        if progress_callback:
+            progress_callback(5, total_steps, "Faz 3: GEO metilasyon calismalari yukleniyor...")
+        results['geo_sync'] = self.sync_geo_datasets()
+        
+        # Faz 4: Train Models
+        if progress_callback:
+            progress_callback(6, total_steps, "Faz 4: Modeller egitiliyor...")
         results['models_trained'] = self.train_all_models()
+        
+        # Faz 4: Continuous Learning
+        if progress_callback:
+            progress_callback(7, total_steps, "Faz 4: Surekli ogrenme sistemi baslatiliyor...")
+        results['continuous_learning'] = self.run_continuous_learning()
         
         results['completed_at'] = datetime.now().isoformat()
         
