@@ -40,6 +40,18 @@ try:
 except ImportError:
     EXPLAINABILITY_AVAILABLE = False
 
+try:
+    from modules.substance_detection import SubstanceDetectionEngine, SUBSTANCE_SIGNATURES
+    SUBSTANCE_DETECTION_AVAILABLE = True
+except ImportError:
+    SUBSTANCE_DETECTION_AVAILABLE = False
+
+try:
+    from modules.abuse_method_detection import AbuseMethodDetectionEngine
+    ABUSE_METHOD_AVAILABLE = True
+except ImportError:
+    ABUSE_METHOD_AVAILABLE = False
+
 
 def render_dna_upload_analysis_page():
     """Render the DNA data upload and analysis page - nrcdnl94"""
@@ -601,6 +613,52 @@ def run_epiclock_analysis(
     if feature_importance:
         results['top_features'] = get_top_cpg_features(engine, analysis_result)
     
+    if SUBSTANCE_DETECTION_AVAILABLE:
+        try:
+            substance_engine = SubstanceDetectionEngine()
+            substance_results = substance_engine.analyze_methylation_data(data)
+            
+            detected_substances = []
+            for key, result in substance_results.items():
+                if result.detected and result.confidence >= 0.6:
+                    detected_substances.append({
+                        'key': key,
+                        'name_tr': result.substance_name_tr,
+                        'name_en': result.substance_name_en,
+                        'confidence': result.confidence,
+                        'detection_score': result.detection_score,
+                        'estimated_duration_months': result.estimated_duration_months,
+                        'markers_found': result.markers_found,
+                        'markers_total': result.markers_total
+                    })
+            
+            detected_substances.sort(key=lambda x: x['confidence'], reverse=True)
+            results['substance_detection'] = {
+                'enabled': True,
+                'detected_count': len(detected_substances),
+                'substances': detected_substances[:20]
+            }
+        except Exception as e:
+            results['substance_detection'] = {
+                'enabled': False,
+                'error': str(e)
+            }
+    else:
+        results['substance_detection'] = {'enabled': False}
+    
+    if ABUSE_METHOD_AVAILABLE:
+        try:
+            abuse_engine = AbuseMethodDetectionEngine()
+            abuse_results = abuse_engine.analyze_methylation_data(data)
+            results['abuse_method_detection'] = {
+                'enabled': True,
+                'results': abuse_results
+            }
+        except Exception as e:
+            results['abuse_method_detection'] = {'enabled': False, 'error': str(e)}
+    else:
+        results['abuse_method_detection'] = {'enabled': False}
+    
     results['sample_details'] = []
     for sample in analysis_result['sample_results']:
         detail = {
@@ -796,6 +854,49 @@ def display_analysis_results(results: Dict[str, Any]):
         
         feature_df = pd.DataFrame(results['top_features'])
         st.dataframe(feature_df, use_container_width=True, hide_index=True)
+    
+    substance_results = results.get('substance_detection', {})
+    if substance_results.get('enabled') and substance_results.get('detected_count', 0) > 0:
+        st.markdown("---")
+        st.markdown("#### Madde Tespit Sonuclari")
+        st.markdown(f"""
+        <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+            <strong style="color: #92400E;">Dikkat:</strong> 
+            DNA metilasyon analizinde {substance_results['detected_count']} potansiyel madde/ilac izi tespit edildi.
+        </div>
+        """, unsafe_allow_html=True)
+        
+        for sub in substance_results.get('substances', [])[:10]:
+            confidence_pct = sub['confidence'] * 100
+            duration_months = sub.get('estimated_duration_months', 0)
+            duration_text = f"{duration_months:.0f} ay" if duration_months > 0 else "Belirsiz"
+            
+            color = '#DC2626' if confidence_pct >= 80 else '#F59E0B' if confidence_pct >= 60 else '#6B7280'
+            
+            st.markdown(f"""
+            <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #0050A0;">{sub['name_tr']}</strong>
+                        <span style="color: #64748B; font-size: 0.8rem;"> ({sub['name_en']})</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="background: {color}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">
+                            %{confidence_pct:.0f} Guven
+                        </span>
+                    </div>
+                </div>
+                <div style="font-size: 0.75rem; color: #64748B; margin-top: 4px;">
+                    Tahmini Kullanim Suresi: {duration_text} | 
+                    Bulunan Marker: {sub['markers_found']}/{sub['markers_total']}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    abuse_results = results.get('abuse_method_detection', {})
+    if abuse_results.get('enabled') and abuse_results.get('results'):
+        st.markdown("#### Suistimal Yontemi Tespiti")
+        st.info("Piroliz/yakma, enjeksiyon gibi kullanim yontemleri analiz edildi.")
 
 
 def generate_export(
