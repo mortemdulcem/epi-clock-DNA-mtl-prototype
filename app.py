@@ -3148,7 +3148,8 @@ def main():
              "Rapor Olustur",
              "ML Egitim ve API",
              "CpG Cakisma Analizi",
-             "Evrensel Farmakoloji DB"],
+             "Evrensel Farmakoloji DB",
+             "Biyolojik Yol Analizi"],
             index=0
         )
         
@@ -3283,6 +3284,8 @@ def main():
         render_cpg_overlap_analysis(components)
     elif "Evrensel Farmakoloji DB" in analysis_mode:
         render_universal_pharmacology_database(components)
+    elif "Biyolojik Yol Analizi" in analysis_mode:
+        render_biological_pathway_analysis(components)
     
     render_professional_footer()
 
@@ -10429,6 +10432,319 @@ def render_polygenic_risk(components):
         
         st.success(f" **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
         st.info(f"**İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
+    
+    render_update_badge()
+
+
+def render_biological_pathway_analysis(components):
+    """Biyolojik Yol Analizi - HPA, Insulin, Inflamasyon, Psikiyatrik Mediasyon - nrcdnl94"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    from modules.pathway_biomarkers import (
+        get_pathway_database_instance, get_mediation_engine_instance,
+        PathwayType, DysregulationSeverity
+    )
+    
+    st.markdown("## Biyolojik Yol Analizi")
+    st.markdown("""
+    **MADDE KULLANIMININ BIYOLOJIK YOLLAR UZERINDEKI ETKISI**
+    
+    Bu modul, madde kullaniminin biyolojik sistemler uzerindeki etkilerini analiz eder:
+    
+    - **HPA Ekseni:** Kortizol stres yaniti, FKBP5, NR3C1 genleri
+    - **Insulin Direnci:** Metabolik disfonksiyon, IRS1, ADIPOQ genleri
+    - **Kronik Inflamasyon:** IL6, TNF, CRP, NFkB sinyal yolagi
+    - **Psikiyatrik Mediasyon:** Depresyon, anksiyete, PTSD baglantilari
+    """)
+    
+    pathway_db = get_pathway_database_instance()
+    mediation_engine = get_mediation_engine_instance()
+    stats = pathway_db.get_statistics()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Toplam Yol", stats['total_pathways'])
+    with col2:
+        st.metric("CpG Marker", stats['total_markers'])
+    with col3:
+        st.metric("Gen", stats['total_genes'])
+    with col4:
+        st.metric("Literatur Kaynakli", "71 marker")
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Yol Ozeti",
+        "HPA Ekseni",
+        "Insulin Direnci",
+        "Inflamasyon",
+        "Psikiyatrik Mediasyon",
+        "Simulasyon Analizi"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Biyolojik Yol Veritabani Ozeti")
+        
+        pathway_data = []
+        for pt, profile in pathway_db.pathways.items():
+            pathway_data.append({
+                'Yol': profile.name_turkish,
+                'Marker Sayisi': len(profile.markers),
+                'Gen Sayisi': len(set(m.gene for m in profile.markers)),
+                'Iliskili Madde': len(profile.related_substances),
+                'Iliskili Hastalik': len(profile.related_diseases)
+            })
+        
+        df = pd.DataFrame(pathway_data)
+        st.dataframe(df, use_container_width=True)
+        
+        fig = go.Figure(data=[
+            go.Bar(
+                x=[p['Yol'] for p in pathway_data],
+                y=[p['Marker Sayisi'] for p in pathway_data],
+                marker_color='#0050A0'
+            )
+        ])
+        fig.update_layout(
+            title="Yol Basina CpG Marker Sayisi",
+            xaxis_title="Biyolojik Yol",
+            yaxis_title="Marker Sayisi",
+            height=400
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[1]:
+        st.markdown("### HPA Ekseni Disregulasyonu")
+        
+        hpa_profile = pathway_db.pathways[PathwayType.HPA_AXIS]
+        
+        st.info(f"""
+        **{hpa_profile.name_turkish}**
+        
+        {hpa_profile.description}
+        
+        **Iliskili Maddeler:** {', '.join(hpa_profile.related_substances)}
+        
+        **Iliskili Hastaliklar:** {', '.join(hpa_profile.related_diseases)}
+        
+        **Mediasyon Hedefleri:** {', '.join(hpa_profile.mediation_targets)}
+        """)
+        
+        st.markdown("#### CpG Markerlari")
+        hpa_markers = []
+        for m in hpa_profile.markers:
+            hpa_markers.append({
+                'CpG': m.cpg_id,
+                'Gen': m.gene,
+                'Kromozom': m.chromosome,
+                'Yon': 'Hipermetilasyon' if m.direction == 'hyper' else 'Hipometilasyon',
+                'Etki Buyuklugu': m.effect_size,
+                'Guven': f"%{m.confidence*100:.0f}",
+                'Aciklama': m.description
+            })
+        st.dataframe(pd.DataFrame(hpa_markers), use_container_width=True)
+        
+        genes = list(set(m.gene for m in hpa_profile.markers))
+        st.markdown(f"**Anahtar Genler:** {', '.join(genes)}")
+    
+    with tabs[2]:
+        st.markdown("### Insulin Direnci")
+        
+        ir_profile = pathway_db.pathways[PathwayType.INSULIN_RESISTANCE]
+        
+        st.info(f"""
+        **{ir_profile.name_turkish}**
+        
+        {ir_profile.description}
+        
+        **Iliskili Maddeler:** {', '.join(ir_profile.related_substances)}
+        
+        **Iliskili Hastaliklar:** {', '.join(ir_profile.related_diseases)}
+        
+        **Mediasyon Hedefleri:** {', '.join(ir_profile.mediation_targets)}
+        """)
+        
+        st.markdown("#### CpG Markerlari")
+        ir_markers = []
+        for m in ir_profile.markers:
+            ir_markers.append({
+                'CpG': m.cpg_id,
+                'Gen': m.gene,
+                'Kromozom': m.chromosome,
+                'Yon': 'Hipermetilasyon' if m.direction == 'hyper' else 'Hipometilasyon',
+                'Etki Buyuklugu': m.effect_size,
+                'Guven': f"%{m.confidence*100:.0f}"
+            })
+        st.dataframe(pd.DataFrame(ir_markers), use_container_width=True)
+    
+    with tabs[3]:
+        st.markdown("### Kronik Inflamasyon")
+        
+        inf_profile = pathway_db.pathways[PathwayType.INFLAMMATION]
+        
+        st.info(f"""
+        **{inf_profile.name_turkish}**
+        
+        {inf_profile.description}
+        
+        **Iliskili Maddeler:** {', '.join(inf_profile.related_substances)}
+        
+        **Iliskili Hastaliklar:** {', '.join(inf_profile.related_diseases)}
+        
+        **Mediasyon Hedefleri:** {', '.join(inf_profile.mediation_targets)}
+        """)
+        
+        st.markdown("#### CpG Markerlari")
+        inf_markers = []
+        for m in inf_profile.markers:
+            inf_markers.append({
+                'CpG': m.cpg_id,
+                'Gen': m.gene,
+                'Yon': 'Hipermetilasyon' if m.direction == 'hyper' else 'Hipometilasyon',
+                'Etki': m.effect_size,
+                'Aciklama': m.description
+            })
+        st.dataframe(pd.DataFrame(inf_markers), use_container_width=True)
+        
+        st.markdown("#### Inflamasyon Sinyal Agi")
+        st.markdown("""
+        ```
+        [Madde Kullanimi] --> [NFkB Aktivasyonu] --> [IL6/TNF/IL1B Salgilanmasi]
+                                    |
+                                    v
+                          [CRP Yukselmesi] --> [Sistemik Inflamasyon]
+                                    |
+                                    v
+                          [Kronik Hastalik Riski]
+        ```
+        """)
+    
+    with tabs[4]:
+        st.markdown("### Psikiyatrik Bozukluklar Mediyasyonu")
+        
+        psy_profile = pathway_db.pathways[PathwayType.PSYCHIATRIC]
+        
+        st.info(f"""
+        **{psy_profile.name_turkish}**
+        
+        {psy_profile.description}
+        
+        **Iliskili Maddeler:** {', '.join(psy_profile.related_substances)}
+        
+        **Iliskili Hastaliklar:** {', '.join(psy_profile.related_diseases)}
+        
+        **Mediasyon Hedefleri:** {', '.join(psy_profile.mediation_targets)}
+        """)
+        
+        st.markdown("#### Mediasyon Modeli")
+        st.markdown("""
+        **Madde Kullanimi -> Epigenetik Degisim -> Psikiyatrik Sonuc**
+        
+        ```
+        [Madde Kullanimi]
+              |
+              v
+        [BDNF Metilasyonu] -----> [Noroplasitisite Azalmasi]
+              |
+              v
+        [SLC6A4 Metilasyonu] ---> [Serotonin Disfonksiyonu]
+              |
+              v
+        [COMT/MAOA Degisimi] ---> [Dopamin/Noradrenalin Dengesizligi]
+              |
+              v
+        [Depresyon / Anksiyete / PTSD]
+        ```
+        """)
+        
+        st.markdown("#### CpG Markerlari")
+        psy_markers = []
+        for m in psy_profile.markers:
+            psy_markers.append({
+                'CpG': m.cpg_id,
+                'Gen': m.gene,
+                'Yon': 'Hiper' if m.direction == 'hyper' else 'Hipo',
+                'Etki': m.effect_size,
+                'Guven': f"%{m.confidence*100:.0f}",
+                'Aciklama': m.description
+            })
+        st.dataframe(pd.DataFrame(psy_markers), use_container_width=True)
+    
+    with tabs[5]:
+        st.markdown("### Simulasyon Analizi")
+        st.markdown("Ornek metilasyon verisi ile yol disregulasyon analizi")
+        
+        if st.button("Simulasyon Calistir"):
+            np.random.seed(42)
+            
+            simulated_data = {}
+            for cpg_id in pathway_db.cpg_index.keys():
+                marker = pathway_db.cpg_index[cpg_id]
+                if marker.direction == "hyper":
+                    simulated_data[cpg_id] = np.random.uniform(0.5, 0.9)
+                else:
+                    simulated_data[cpg_id] = np.random.uniform(0.1, 0.4)
+            
+            report = mediation_engine.generate_pathway_report(simulated_data)
+            
+            st.markdown("#### Analiz Sonuclari")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Analiz Edilen Yol", report['summary']['total_pathways_analyzed'])
+            with col2:
+                st.metric("Kritik Yol", report['summary']['critical_pathways'])
+            with col3:
+                st.metric("Maks Disregulasyon", f"%{report['summary']['highest_dysregulation']*100:.1f}")
+            
+            st.markdown("#### Yol Skorlari")
+            scores_df = pd.DataFrame([
+                {'Yol': name, 'Skor': data['score'], 'Siddet': data['severity']}
+                for name, data in report['pathway_scores'].items()
+            ])
+            scores_df = scores_df.sort_values('Skor', ascending=False)
+            
+            fig = go.Figure(data=[
+                go.Bar(
+                    y=scores_df['Yol'],
+                    x=scores_df['Skor'],
+                    orientation='h',
+                    marker_color=['#d32f2f' if s > 0.6 else '#ff9800' if s > 0.4 else '#4caf50' 
+                                 for s in scores_df['Skor']]
+                )
+            ])
+            fig.update_layout(
+                title="Yol Disregulasyon Skorlari",
+                xaxis_title="Disregulasyon Skoru (0-1)",
+                yaxis_title="Biyolojik Yol",
+                height=400
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            st.dataframe(scores_df, use_container_width=True)
+            
+            if report['recommendations']:
+                st.markdown("#### Oneriler")
+                for rec in report['recommendations']:
+                    st.warning(f"""
+                    **{rec['pathway']}** - {rec['severity']}
+                    
+                    Iliskili Hastaliklar: {', '.join(rec['related_diseases'][:3])}
+                    
+                    Izlenmesi Gereken: {', '.join(rec['monitoring'][:3])}
+                    """)
+    
+    st.markdown("---")
+    st.markdown("### Literatur Referanslari")
+    st.info("""
+    **HPA Ekseni:** Zannas et al. 2015 (Mol Psychiatry), Klengel et al. 2013 (Nat Neurosci)
+    
+    **Insulin Direnci:** Hidalgo et al. 2014 (Hum Mol Genet), Dayeh et al. 2014 (PLoS Genet)
+    
+    **Inflamasyon:** Ligthart et al. 2016 (Nat Commun), Stevenson et al. 2020 (Genome Biol)
+    
+    **Psikiyatrik:** Hannon et al. 2016 (Nat Neurosci), Walton et al. 2019 (Am J Psychiatry)
+    """)
     
     render_update_badge()
 
