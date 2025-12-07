@@ -10475,7 +10475,8 @@ def render_therapeutic_medications(components):
         "Ilac Listesi",
         "Kategori Analizi",
         "Kombinasyon Hesaplayici",
-        "Ilac Ara",
+        "Derin Ogrenme Modelleri",
+        "Graf Sinir Agi (GNN)",
         "Demo: 10 Yillik Tedavi"
     ])
     
@@ -10585,46 +10586,158 @@ def render_therapeutic_medications(components):
                 st.info("Hesaplamak icin ilac secin.")
     
     with tabs[3]:
-        st.markdown("### Ilac Ara")
+        st.markdown("### Derin Ogrenme Modelleri")
+        st.markdown("""
+        **PyTorch Tabanli Yapay Zeka Modelleri**
         
-        search_term = st.text_input("Ilac Adi (Jenerik veya Marka)", placeholder="metformin, Lipitor...")
+        Terapotik ilaclarin epigenetik etkilerini tahmin eden guclu derin ogrenme modelleri.
+        """)
         
-        if search_term:
-            results = med_db.search_by_name(search_term)
+        from modules.therapeutic_deep_learning import get_therapeutic_dl_engine
+        dl_engine = get_therapeutic_dl_engine()
+        summary = dl_engine.get_model_summary()
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("PyTorch Durumu", "Aktif" if summary['torch_available'] else "Simulasyon")
+        with col2:
+            st.metric("Toplam Parametre", f"{summary['total_parameters']:,}" if isinstance(summary['total_parameters'], int) else "N/A")
+        
+        st.markdown("#### Model Mimarileri")
+        
+        model_cols = st.columns(3)
+        for i, (name, info) in enumerate(summary['models'].items()):
+            with model_cols[i % 3]:
+                param_count = info.get('parameters', 'N/A')
+                param_str = f"{param_count:,}" if isinstance(param_count, int) else param_count
+                st.info(f"""
+                **{name}**
+                
+                {info['description']}
+                
+                Parametre: {param_str}
+                """)
+        
+        st.markdown("#### Multi-Task Model Tahmini")
+        
+        demo_meds = st.multiselect(
+            "Ilac Sec",
+            options=list(med_db.medications.keys()),
+            default=['metformin', 'statin', 'ace_inhibitor'],
+            format_func=lambda x: med_db.medications[x].name_turkish
+        )
+        
+        if demo_meds and st.button("Multi-Task Tahmin Calistir"):
+            durations = {m: 10.0 for m in demo_meds}
+            result = dl_engine.predict_multitask(demo_meds, durations)
             
-            if results:
-                for med in results:
-                    st.markdown(f"### {med.name_turkish} ({med.name_english})")
-                    
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("EAA Etkisi", f"{med.eaa_effect:+.1f} yil")
-                    with col2:
-                        st.metric("Yon", med.eaa_direction.value)
-                    with col3:
-                        st.metric("Ornek Boyutu", med.sample_size)
-                    
-                    st.info(f"""
-                    **Kategori:** {med.category.value}
-                    
-                    **Jenerik Isimler:** {', '.join(med.generic_names)}
-                    
-                    **Marka Isimleri:** {', '.join(med.brand_names)}
-                    
-                    **Mekanizma:** {med.mechanism_turkish}
-                    
-                    **Hedef Genler:** {', '.join(med.target_genes)}
-                    
-                    **Etkilenen CpG:** {', '.join(med.affected_cpgs) if med.affected_cpgs else 'Belirlenmemis'}
-                    
-                    **Referans:** {med.key_reference}
-                    
-                    **PubMed:** {', '.join(med.pubmed_ids)}
-                    """)
-            else:
-                st.warning(f"'{search_term}' icin sonuc bulunamadi.")
+            st.success("Tahmin Tamamlandi!")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("EAA Etkisi", f"{result['predictions']['eaa_effect']:+.2f} yil")
+            with col2:
+                st.metric("Sinerji Potansiyeli", f"{result['predictions']['synergy_potential']:.1%}")
+            with col3:
+                st.metric("Yan Etki Riski", f"{result['predictions']['adverse_risk']:.1%}")
+            
+            st.markdown("##### Yolak Etkileri")
+            pathway_data = pd.DataFrame([
+                {'Yolak': name, 'Etki': impact}
+                for name, impact in result['predictions']['pathway_impacts'].items()
+            ])
+            
+            fig = go.Figure(data=[
+                go.Bar(
+                    x=pathway_data['Yolak'],
+                    y=pathway_data['Etki'],
+                    marker_color=['#4caf50' if e < 0 else '#d32f2f' if e > 0 else '#9e9e9e' 
+                                 for e in pathway_data['Etki']]
+                )
+            ])
+            fig.update_layout(title="Yolak Etki Skorlari", height=400)
+            st.plotly_chart(fig, use_container_width=True)
     
     with tabs[4]:
+        st.markdown("### Graf Sinir Agi (GNN)")
+        st.markdown("""
+        **Ilac-Gen-CpG Iliskilerinin Graf Analizi**
+        
+        Message Passing Neural Network ile ilac etkilesimlerinin modellenmesi.
+        """)
+        
+        from modules.therapeutic_deep_learning import get_therapeutic_dl_engine
+        dl_engine = get_therapeutic_dl_engine()
+        
+        gnn_meds = st.multiselect(
+            "Graf icin Ilac Sec",
+            options=list(med_db.medications.keys()),
+            default=['metformin', 'statin'],
+            format_func=lambda x: med_db.medications[x].name_turkish,
+            key="gnn_meds"
+        )
+        
+        if gnn_meds and st.button("Graf Analizi"):
+            graph = dl_engine.build_medication_graph(gnn_meds)
+            result = dl_engine.predict_gnn(gnn_meds, {m: 10.0 for m in gnn_meds})
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Ilac Dugumu", graph['num_medications'])
+            with col2:
+                st.metric("Gen Dugumu", graph['num_genes'])
+            with col3:
+                st.metric("CpG Dugumu", graph['num_cpgs'])
+            with col4:
+                st.metric("Kenar Sayisi", graph['num_edges'])
+            
+            st.metric("GNN Tahmini", f"{result['prediction']:+.2f} yil")
+            
+            st.markdown("##### Graf Yapisi")
+            
+            import networkx as nx
+            import matplotlib.pyplot as plt
+            
+            G = nx.DiGraph()
+            
+            node_colors = []
+            for node in graph['nodes']:
+                G.add_node(node['name'])
+                if node['type'] == 'medication':
+                    node_colors.append('#0050A0')
+                elif node['type'] == 'gene':
+                    node_colors.append('#00A7D8')
+                else:
+                    node_colors.append('#003366')
+            
+            for i, (src, tgt) in enumerate(graph['edges']):
+                G.add_edge(graph['nodes'][src]['name'], graph['nodes'][tgt]['name'])
+            
+            fig, ax = plt.subplots(figsize=(12, 8))
+            pos = nx.spring_layout(G, k=2, iterations=50)
+            
+            nx.draw(G, pos, ax=ax, 
+                   node_color=node_colors,
+                   node_size=1000,
+                   font_size=8,
+                   font_weight='bold',
+                   with_labels=True,
+                   edge_color='#666666',
+                   arrows=True,
+                   arrowsize=10)
+            
+            ax.set_title("Ilac-Gen-CpG Grafi")
+            st.pyplot(fig)
+            plt.close()
+            
+            st.markdown("""
+            **Renk Kodlari:**
+            - Koyu Mavi: Ilac
+            - Turkuaz: Gen
+            - Lacivert: CpG
+            """)
+    
+    with tabs[5]:
         st.markdown("### Demo: 10 Yillik Diyabet + Kolesterol Tedavisi")
         st.markdown("""
         **Senaryo:** Hasta 10 yildir asagidaki ilaclari kullaniyor:
