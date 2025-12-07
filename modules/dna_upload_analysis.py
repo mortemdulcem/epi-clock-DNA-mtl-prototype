@@ -19,6 +19,27 @@ from datetime import datetime
 from typing import Optional, Dict, Any, Tuple, List
 from modules.dna_analysis_engine import EpigeneticClockEngine, create_engine
 
+try:
+    from modules.real_data_loader import RealDataLoader, LoadedMethylationData
+    REAL_LOADER_AVAILABLE = True
+except ImportError:
+    REAL_LOADER_AVAILABLE = False
+
+try:
+    from modules.methylation_preprocessing import (
+        MethylationPreprocessor, ComBatCorrection, 
+        CellCompositionEstimator, QualityControl
+    )
+    PREPROCESSING_AVAILABLE = True
+except ImportError:
+    PREPROCESSING_AVAILABLE = False
+
+try:
+    from modules.model_explainability import EpigeneticExplainer, ModelAgnosticExplainer
+    EXPLAINABILITY_AVAILABLE = True
+except ImportError:
+    EXPLAINABILITY_AVAILABLE = False
+
 
 def render_dna_upload_analysis_page():
     """Render the DNA data upload and analysis page - nrcdnl94"""
@@ -209,6 +230,38 @@ def render_upload_tab():
             
             st.markdown("#### Veri Onizlemesi")
             st.dataframe(df.head(10), use_container_width=True, hide_index=True)
+            
+            if REAL_LOADER_AVAILABLE:
+                st.markdown("#### CpG Dogrulama ve Saat Kapsami")
+                try:
+                    loader = RealDataLoader()
+                    uploaded_file.seek(0)
+                    loaded_result = loader.load_file(uploaded_file)
+                    
+                    st.session_state['loaded_methylation'] = loaded_result
+                    
+                    for msg in loaded_result.validation_messages:
+                        if msg.startswith("ERROR"):
+                            st.error(msg)
+                        elif msg.startswith("WARNING"):
+                            st.warning(msg)
+                        elif msg.startswith("SUCCESS"):
+                            st.success(msg)
+                        else:
+                            st.info(msg)
+                    
+                    clock_coverage = loaded_result.metadata.get('clock_coverage', {})
+                    if clock_coverage:
+                        st.markdown("**Epigenetik Saat CpG Kapsami:**")
+                        cov_col1, cov_col2 = st.columns(2)
+                        with cov_col1:
+                            hannum_cov = clock_coverage.get('hannum', 0) * 100
+                            st.metric("Hannum (Acik Kaynak)", f"{hannum_cov:.0f}%")
+                        with cov_col2:
+                            dunedin_cov = clock_coverage.get('dunedinpace', 0) * 100
+                            st.metric("DunedinPACE (Acik Kaynak)", f"{dunedin_cov:.0f}%")
+                except Exception as e:
+                    st.warning(f"CpG dogrulama atlandı: {str(e)}")
             
             if st.button("Veriyi Kaydet ve Devam Et", key="save_data_btn"):
                 st.session_state['data_saved'] = True
