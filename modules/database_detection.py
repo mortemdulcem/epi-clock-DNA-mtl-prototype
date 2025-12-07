@@ -182,10 +182,10 @@ class DatabaseDetectionSystem:
                                 patient_cpgs: Dict[str, float],
                                 sensitivity: float = 0.8) -> Tuple[float, float, int]:
         """
-        Olasilik hesapla
+        Olasilik hesapla - Gelismis Algoritma
         
         Args:
-            signature_cpgs: Imza CpG katsayilari {cpg: expected_beta}
+            signature_cpgs: Imza CpG katsayilari {cpg: expected_beta_change}
             patient_cpgs: Hasta CpG degerleri {cpg: measured_beta}
             sensitivity: Model duyarliligi
         
@@ -200,36 +200,51 @@ class DatabaseDetectionSystem:
         if len(matched_cpgs) == 0:
             return 0.0, 0.0, 0
         
-        # Lineer skor hesapla
-        score = 0.0
+        # Gelismis skor hesaplama - Beta katsayilarina gore
+        concordant_count = 0
+        total_score = 0.0
+        
         for cpg in matched_cpgs:
-            expected = signature_cpgs[cpg]
-            measured = patient_cpgs[cpg]
+            coef = signature_cpgs[cpg]  # EWAS beta katsayisi (- veya +)
+            measured = patient_cpgs[cpg]  # Olculen beta (0-1 arasi)
             
-            # Beta farki (expected yonunde sapma)
-            if expected < 0:  # Hipometilasyon bekleniyor
-                if measured < 0.5:  # Normal deger civarinda
-                    contribution = (0.5 - measured) * abs(expected) * 10
-                else:
-                    contribution = 0
+            # Normal referans: 0.5 (orta metilasyon)
+            deviation = measured - 0.5
+            
+            # Katsayi ile ayni yonde sapma = pozitif katki
+            if coef < 0:  # Hipometilasyon bekleniyor
+                if deviation < 0:  # Olcum de dusuk = uyumlu
+                    concordant_count += 1
+                    # Sapma buyuklugu * katsayi buyuklugu
+                    total_score += abs(deviation) * abs(coef) * 20
+                elif deviation > 0.1:  # Ters yonde belirgin sapma
+                    total_score -= abs(deviation) * abs(coef) * 5
             else:  # Hipermetilasyon bekleniyor
-                if measured > 0.5:
-                    contribution = (measured - 0.5) * abs(expected) * 10
-                else:
-                    contribution = 0
-            
-            score += contribution
+                if deviation > 0:  # Olcum de yuksek = uyumlu
+                    concordant_count += 1
+                    total_score += abs(deviation) * abs(coef) * 20
+                elif deviation < -0.1:  # Ters yonde belirgin sapma
+                    total_score -= abs(deviation) * abs(coef) * 5
         
-        # Normalize et
-        max_score = len(matched_cpgs) * 0.5
-        normalized_score = min(1.0, score / max_score) if max_score > 0 else 0
+        # Uyumluluk orani
+        concordance_rate = concordant_count / len(matched_cpgs)
         
-        # Sigmoid ile olasiliga cevir
-        probability = 1 / (1 + np.exp(-5 * (normalized_score - 0.3)))
+        # Normalize skor (0-1 arasi)
+        max_possible = len(matched_cpgs) * 0.5 * 0.1 * 20  # max deviation * max coef * multiplier
+        normalized_score = min(1.0, max(0, total_score / max_possible)) if max_possible > 0 else 0
         
-        # Confidence: kapsam * duyarlilik
+        # Olasilik: concordance + skor birlesimi
+        base_prob = concordance_rate * 0.6 + normalized_score * 0.4
+        
+        # En az 1 CpG eslesirse ve uyumluluk yuksekse
+        if concordant_count >= 1 and concordance_rate >= 0.3:
+            probability = min(0.95, base_prob + 0.2)
+        else:
+            probability = base_prob * 0.5
+        
+        # Confidence: kapsam * duyarlilik * uyumluluk
         coverage = len(matched_cpgs) / len(signature_cpgs)
-        confidence = coverage * sensitivity
+        confidence = coverage * sensitivity * (0.5 + concordance_rate * 0.5)
         
         return float(probability), float(confidence), len(matched_cpgs)
     
