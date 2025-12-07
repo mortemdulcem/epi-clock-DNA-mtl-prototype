@@ -3149,7 +3149,8 @@ def main():
              "ML Egitim ve API",
              "CpG Cakisma Analizi",
              "Evrensel Farmakoloji DB",
-             "Biyolojik Yol Analizi"],
+             "Biyolojik Yol Analizi",
+             "Terapotik Ilac Etkileri"],
             index=0
         )
         
@@ -3286,6 +3287,8 @@ def main():
         render_universal_pharmacology_database(components)
     elif "Biyolojik Yol Analizi" in analysis_mode:
         render_biological_pathway_analysis(components)
+    elif "Terapotik Ilac Etkileri" in analysis_mode:
+        render_therapeutic_medications(components)
     
     render_professional_footer()
 
@@ -10432,6 +10435,280 @@ def render_polygenic_risk(components):
         
         st.success(f" **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
         st.info(f"**İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
+    
+    render_update_badge()
+
+
+def render_therapeutic_medications(components):
+    """Terapotik Ilac Epigenetik Etkileri - Metformin, Insulin, Statin - nrcdnl94"""
+    import plotly.graph_objects as go
+    from modules.therapeutic_medications import (
+        get_therapeutic_medication_database, MedicationCategory, EpigeneticEffect
+    )
+    
+    st.markdown("## Terapotik Ilac Epigenetik Etkileri")
+    st.markdown("""
+    **RECETELI ILACLARIN EPIGENETIK YASA ETKISI**
+    
+    Kronik hastalik tedavisinde kullanilan ilaclarin DNA metilasyonu ve epigenetik yas uzerindeki etkileri.
+    Literatur tabanli EAA (Epigenetic Age Acceleration) degerleri.
+    
+    **Negatif deger = Koruyucu (yasi azaltir) | Pozitif deger = Hizlandirici (yasi arttirir)**
+    """)
+    
+    med_db = get_therapeutic_medication_database()
+    stats = med_db.get_statistics()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Toplam Ilac", stats['total_medications'])
+    with col2:
+        st.metric("Koruyucu", stats['protective_count'], delta=f"-{stats['protective_count']} ilac")
+    with col3:
+        st.metric("Hizlandirici", stats['accelerating_count'], delta=f"+{stats['accelerating_count']} ilac")
+    with col4:
+        st.metric("Notr", stats['neutral_count'])
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Ilac Listesi",
+        "Kategori Analizi",
+        "Kombinasyon Hesaplayici",
+        "Ilac Ara",
+        "Demo: 10 Yillik Tedavi"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Tum Terapotik Ilaclar ve EAA Etkileri")
+        
+        med_data = []
+        for med in med_db.medications.values():
+            med_data.append({
+                'Ilac': med.name_turkish,
+                'Kategori': med.category.value,
+                'EAA Etkisi (Yil)': med.eaa_effect,
+                'Yon': med.eaa_direction.value,
+                'Guven Araligi': f"({med.confidence_interval[0]}, {med.confidence_interval[1]})",
+                'Ornek Boyutu': med.sample_size,
+                'Tipik Sure (Yil)': med.typical_duration_years
+            })
+        
+        df = pd.DataFrame(med_data)
+        df = df.sort_values('EAA Etkisi (Yil)')
+        st.dataframe(df, use_container_width=True)
+        
+        fig = go.Figure()
+        colors = ['#4caf50' if e < 0 else '#d32f2f' if e > 0 else '#9e9e9e' 
+                  for e in df['EAA Etkisi (Yil)']]
+        
+        fig.add_trace(go.Bar(
+            y=df['Ilac'],
+            x=df['EAA Etkisi (Yil)'],
+            orientation='h',
+            marker_color=colors
+        ))
+        fig.update_layout(
+            title="Ilac Basina EAA Etkisi (Yil)",
+            xaxis_title="EAA Etkisi (- Koruyucu, + Hizlandirici)",
+            yaxis_title="Ilac",
+            height=600
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tabs[1]:
+        st.markdown("### Kategori Bazli Analiz")
+        
+        for category in MedicationCategory:
+            meds = med_db.get_by_category(category)
+            if meds:
+                st.markdown(f"#### {category.value}")
+                
+                for med in meds:
+                    color = "green" if med.eaa_effect < 0 else "red" if med.eaa_effect > 0 else "gray"
+                    st.markdown(f"""
+                    **{med.name_turkish}** ({', '.join(med.brand_names[:3])})
+                    - EAA Etkisi: :{color}[{med.eaa_effect:+.1f} yil]
+                    - Mekanizma: {med.mechanism_turkish[:100]}...
+                    - Hedef Genler: {', '.join(med.target_genes[:5])}
+                    """)
+                
+                st.markdown("---")
+    
+    with tabs[2]:
+        st.markdown("### Ilac Kombinasyonu Hesaplayici")
+        st.markdown("Kullandiginiz ilaclari secin ve toplam epigenetik etkiyi hesaplayin.")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### Ilac Secimi")
+            selected_meds = {}
+            
+            for med_id, med in med_db.medications.items():
+                if st.checkbox(f"{med.name_turkish}", key=f"med_{med_id}"):
+                    duration = st.number_input(
+                        f"{med.name_turkish} - Kullanim Suresi (Yil)",
+                        min_value=0.5, max_value=30.0, value=5.0,
+                        key=f"dur_{med_id}"
+                    )
+                    selected_meds[med_id] = duration
+        
+        with col2:
+            st.markdown("#### Sonuc")
+            
+            if selected_meds:
+                result = med_db.calculate_combined_effect(
+                    list(selected_meds.keys()),
+                    selected_meds
+                )
+                
+                color = "green" if result['total_eaa_effect'] < 0 else "red"
+                st.metric(
+                    "Toplam EAA Etkisi",
+                    f"{result['total_eaa_effect']:+.2f} yil",
+                    delta=result['direction']
+                )
+                
+                st.markdown("##### Ilac Bazli Etkiler")
+                for eff in result['medication_effects']:
+                    st.write(f"- {eff['medication']}: {eff['adjusted_effect']:+.2f} yil ({eff['duration_years']:.1f} yil kullanim)")
+                
+                if result['synergies']:
+                    st.success(f"Sinerjiler: {len(result['synergies'])} adet - Koruyucu etki arttirildi!")
+                    for s in result['synergies']:
+                        st.write(f"  - {s[0]} + {s[1]}")
+                
+                if result['antagonisms']:
+                    st.warning(f"Antagonizmler: {len(result['antagonisms'])} adet")
+            else:
+                st.info("Hesaplamak icin ilac secin.")
+    
+    with tabs[3]:
+        st.markdown("### Ilac Ara")
+        
+        search_term = st.text_input("Ilac Adi (Jenerik veya Marka)", placeholder="metformin, Lipitor...")
+        
+        if search_term:
+            results = med_db.search_by_name(search_term)
+            
+            if results:
+                for med in results:
+                    st.markdown(f"### {med.name_turkish} ({med.name_english})")
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("EAA Etkisi", f"{med.eaa_effect:+.1f} yil")
+                    with col2:
+                        st.metric("Yon", med.eaa_direction.value)
+                    with col3:
+                        st.metric("Ornek Boyutu", med.sample_size)
+                    
+                    st.info(f"""
+                    **Kategori:** {med.category.value}
+                    
+                    **Jenerik Isimler:** {', '.join(med.generic_names)}
+                    
+                    **Marka Isimleri:** {', '.join(med.brand_names)}
+                    
+                    **Mekanizma:** {med.mechanism_turkish}
+                    
+                    **Hedef Genler:** {', '.join(med.target_genes)}
+                    
+                    **Etkilenen CpG:** {', '.join(med.affected_cpgs) if med.affected_cpgs else 'Belirlenmemis'}
+                    
+                    **Referans:** {med.key_reference}
+                    
+                    **PubMed:** {', '.join(med.pubmed_ids)}
+                    """)
+            else:
+                st.warning(f"'{search_term}' icin sonuc bulunamadi.")
+    
+    with tabs[4]:
+        st.markdown("### Demo: 10 Yillik Diyabet + Kolesterol Tedavisi")
+        st.markdown("""
+        **Senaryo:** Hasta 10 yildir asagidaki ilaclari kullaniyor:
+        - Metformin (Tip 2 Diyabet)
+        - Insulin Glargine (Tip 2 Diyabet)
+        - Atorvastatin (Kolesterol)
+        - Lisinopril (Hipertansiyon)
+        """)
+        
+        if st.button("Demo Analizi Calistir"):
+            result = med_db.calculate_combined_effect(
+                ['metformin', 'insulin_therapeutic', 'atorvastatin', 'ace_inhibitor'],
+                {
+                    'metformin': 10,
+                    'insulin_therapeutic': 10,
+                    'atorvastatin': 10,
+                    'ace_inhibitor': 10
+                }
+            )
+            
+            st.success("Analiz Tamamlandi!")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Toplam EAA Etkisi", f"{result['total_eaa_effect']:+.2f} yil")
+            with col2:
+                st.metric("Yon", result['direction'])
+            with col3:
+                st.metric("Analiz Edilen Ilac", result['medications_analyzed'])
+            
+            st.markdown("#### Ilac Bazli Etkiler")
+            
+            effects_df = pd.DataFrame(result['medication_effects'])
+            effects_df.columns = ['Ilac', 'Baz Etki', 'Sure (Yil)', 'Ayarli Etki', 'Yon']
+            st.dataframe(effects_df, use_container_width=True)
+            
+            fig = go.Figure(data=[
+                go.Bar(
+                    x=[e['medication'] for e in result['medication_effects']],
+                    y=[e['adjusted_effect'] for e in result['medication_effects']],
+                    marker_color=['#4caf50' if e['adjusted_effect'] < 0 else '#d32f2f' 
+                                 for e in result['medication_effects']]
+                )
+            ])
+            fig.update_layout(
+                title="Ilac Bazli EAA Etkileri",
+                xaxis_title="Ilac",
+                yaxis_title="EAA Etkisi (Yil)",
+                height=400
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            if result['synergies']:
+                st.markdown("#### Sinerji Etkileri")
+                st.success(f"{len(result['synergies'])} sinerji tespit edildi - Koruyucu etki guclendirildi!")
+                for s in result['synergies']:
+                    st.write(f"- {s[0]} + {s[1]}: Birlikte kullanim etkiyi arttirir")
+            
+            st.markdown("#### Klinik Yorum")
+            if result['total_eaa_effect'] < -1:
+                st.success("""
+                **OLUMLU SONUC:** Bu ilac kombinasyonu epigenetik yasi azaltici (koruyucu) etkiye sahiptir.
+                
+                Ozellikle metformin ve statinlerin sinerjik etkisi sayesinde toplam koruyucu etki guclendirilmistir.
+                Insulin tedavisinin hafif hizlandirici etkisi, diger ilaclarin koruyucu etkisi ile dengelenmistir.
+                """)
+            elif result['total_eaa_effect'] > 1:
+                st.warning("Bu kombinasyon epigenetik yaslanmayi hizlandirabilir. Alternatif tedaviler degerlendirilmeli.")
+            else:
+                st.info("Bu kombinasyon epigenetik yas uzerinde notr etkiye sahiptir.")
+    
+    st.markdown("---")
+    st.markdown("### Referanslar")
+    st.info("""
+    **Metformin:** Kulkarni AS et al. Aging Cell 2018; Barzilai N et al. Cell Metab 2016
+    
+    **Statinler:** Ligthart S et al. Nat Commun 2016; Horvath S et al. Aging 2016
+    
+    **Antihipertansifler:** Roetker NS et al. Circ Cardiovasc Genet 2018
+    
+    **Kortikosteroidler:** Zannas AS et al. Mol Psychiatry 2015
+    
+    **Genel:** Quach A et al. Aging 2017 - Lifestyle factors and epigenetic aging
+    """)
     
     render_update_badge()
 
