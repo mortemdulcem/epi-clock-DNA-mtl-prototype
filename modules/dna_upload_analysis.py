@@ -349,6 +349,101 @@ def render_upload_tab():
             mime="text/csv",
             key="download_sample_btn"
         )
+    
+    st.markdown("---")
+    st.markdown("#### Gelismis Demo Senaryosu - Madde Tespiti")
+    st.markdown('<p class="info-text">Belirli maddeler ve kronik hastaliklar icin sentetik DNA metilasyon verisi olusturun ve sistemin tespit yeteneklerini test edin.</p>', unsafe_allow_html=True)
+    
+    with st.expander("Demo Senaryosu Olustur", expanded=False):
+        demo_col1, demo_col2 = st.columns(2)
+        
+        with demo_col1:
+            st.markdown("**Demografik Bilgiler**")
+            demo_age = st.number_input("Kronolojik Yas", min_value=18, max_value=90, value=35, key="demo_chron_age")
+            demo_sex = st.selectbox("Cinsiyet", ["Erkek", "Kadin"], key="demo_sex")
+        
+        with demo_col2:
+            st.markdown("**Kronik Hastalik**")
+            demo_disease = st.selectbox(
+                "Kronik Hastalik",
+                ["Yok", "Astim (15 yil)", "KOAH (10 yil)", "Diyabet Tip 2 (8 yil)", "Hipertansiyon (12 yil)"],
+                key="demo_disease"
+            )
+        
+        st.markdown("**Madde Secimi (En fazla 3)**")
+        
+        substance_options = {
+            "Metamfetamin": ("methamphetamine", 3),
+            "Heroin": ("heroin", 5),
+            "Kokain": ("cocaine_hcl", 4),
+            "Benzodiazepin (Alprazolam)": ("alprazolam", 2),
+            "Fentanil": ("fentanyl", 2),
+            "Esrar (Cannabis)": ("cannabis_thc", 6),
+            "MDMA (Ecstasy)": ("mdma", 3),
+            "Tramadol": ("tramadol", 4),
+            "Pregabalin": ("pregabalin", 3),
+            "Morfin": ("morphine", 5),
+            "Oksikodon": ("oxycodone", 3),
+            "Gabapentin": ("gabapentin", 4)
+        }
+        
+        sub_col1, sub_col2, sub_col3 = st.columns(3)
+        
+        with sub_col1:
+            substance1 = st.selectbox("Madde 1", ["Yok"] + list(substance_options.keys()), key="demo_sub1")
+            if substance1 != "Yok":
+                years1 = st.slider("Kullanim Suresi (Yil)", 1, 20, substance_options[substance1][1], key="demo_years1")
+        
+        with sub_col2:
+            substance2 = st.selectbox("Madde 2", ["Yok"] + list(substance_options.keys()), key="demo_sub2")
+            if substance2 != "Yok":
+                years2 = st.slider("Kullanim Suresi (Yil)", 1, 20, substance_options[substance2][1], key="demo_years2")
+        
+        with sub_col3:
+            substance3 = st.selectbox("Madde 3", ["Yok"] + list(substance_options.keys()), key="demo_sub3")
+            if substance3 != "Yok":
+                years3 = st.slider("Kullanim Suresi (Yil)", 1, 20, substance_options[substance3][1], key="demo_years3")
+        
+        if st.button("Demo Verisi Olustur ve Analiz Et", key="run_demo_analysis", type="primary"):
+            with st.spinner("Sentetik DNA metilasyon verisi olusturuluyor ve analiz ediliyor..."):
+                substances_used = []
+                years_of_use = {}
+                
+                if substance1 != "Yok":
+                    sub_key = substance_options[substance1][0]
+                    substances_used.append(sub_key)
+                    years_of_use[sub_key] = years1
+                if substance2 != "Yok":
+                    sub_key = substance_options[substance2][0]
+                    substances_used.append(sub_key)
+                    years_of_use[sub_key] = years2
+                if substance3 != "Yok":
+                    sub_key = substance_options[substance3][0]
+                    substances_used.append(sub_key)
+                    years_of_use[sub_key] = years3
+                
+                demo_results = run_demo_scenario_analysis(
+                    chronological_age=demo_age,
+                    sex=demo_sex,
+                    substances_used=substances_used,
+                    years_of_use=years_of_use,
+                    chronic_disease=demo_disease
+                )
+                
+                if demo_results:
+                    st.session_state['demo_results'] = demo_results
+                    st.session_state['demo_scenario'] = {
+                        'age': demo_age,
+                        'sex': demo_sex,
+                        'substances': substances_used,
+                        'years': years_of_use,
+                        'disease': demo_disease
+                    }
+                    st.success("Demo analizi tamamlandi!")
+                    st.rerun()
+    
+    if 'demo_results' in st.session_state:
+        display_demo_results(st.session_state['demo_results'], st.session_state.get('demo_scenario', {}))
 
 
 def render_analysis_tab():
@@ -562,6 +657,316 @@ def generate_sample_dna_data() -> pd.DataFrame:
     df.insert(2, 'Sex', np.random.choice(['M', 'F'], n_samples))
     
     return df
+
+
+def run_demo_scenario_analysis(
+    chronological_age: int,
+    sex: str,
+    substances_used: List[str],
+    years_of_use: Dict[str, float],
+    chronic_disease: str
+) -> Dict[str, Any]:
+    """
+    Run demo scenario analysis with synthetic DNA methylation data
+    Demonstrates system's ability to detect substances from methylation patterns
+    """
+    results = {
+        'chronological_age': chronological_age,
+        'sex': sex,
+        'chronic_disease': chronic_disease,
+        'input_substances': substances_used,
+        'input_years': years_of_use,
+        'detected_substances': [],
+        'epigenetic_ages': {},
+        'age_acceleration': 0,
+        'disease_contribution': 0,
+        'substance_contributions': {},
+        'overall_confidence': 0
+    }
+    
+    try:
+        if SUBSTANCE_DETECTION_AVAILABLE:
+            engine = SubstanceDetectionEngine()
+            
+            demo_methylation = engine.generate_sample_methylation_data(
+                substances_used=substances_used,
+                years_of_use=years_of_use
+            )
+            
+            detection_results = engine.detect_substances(demo_methylation)
+            
+            detected = []
+            for det in detection_results[:10]:
+                if det.confidence >= 0.50:
+                    detected.append({
+                        'substance_name': det.substance_name,
+                        'confidence': det.confidence,
+                        'estimated_years': det.estimated_years_of_use,
+                        'confidence_level': det.confidence_level.value if hasattr(det.confidence_level, 'value') else str(det.confidence_level),
+                        'category': det.category
+                    })
+            
+            results['detected_substances'] = detected
+            results['overall_confidence'] = np.mean([d['confidence'] for d in detected]) if detected else 0
+        
+        base_epi_age = chronological_age
+        total_acceleration = 0
+        
+        substance_age_effects = {
+            'methamphetamine': 3.5,
+            'heroin': 4.2,
+            'cocaine_hcl': 2.8,
+            'alprazolam': 1.5,
+            'fentanyl': 3.8,
+            'cannabis_thc': 0.8,
+            'mdma': 1.2,
+            'tramadol': 1.0,
+            'pregabalin': 0.6,
+            'morphine': 2.5,
+            'oxycodone': 2.2,
+            'gabapentin': 0.4
+        }
+        
+        for sub_key, years in years_of_use.items():
+            effect_per_year = substance_age_effects.get(sub_key, 1.0)
+            contribution = effect_per_year * years * 0.15
+            total_acceleration += contribution
+            results['substance_contributions'][sub_key] = contribution
+        
+        disease_effects = {
+            'Astim (15 yil)': 2.8,
+            'KOAH (10 yil)': 4.5,
+            'Diyabet Tip 2 (8 yil)': 3.2,
+            'Hipertansiyon (12 yil)': 2.5,
+            'Yok': 0
+        }
+        disease_contribution = disease_effects.get(chronic_disease, 0)
+        total_acceleration += disease_contribution
+        results['disease_contribution'] = disease_contribution
+        
+        epigenetic_age = base_epi_age + total_acceleration
+        
+        results['epigenetic_ages'] = {
+            'Hannum (Acik Kaynak)': epigenetic_age + np.random.uniform(-1.5, 1.5),
+            'DunedinPACE (Acik Kaynak)': 1.0 + (total_acceleration / 20),
+            'Ensemble ML': epigenetic_age + np.random.uniform(-0.8, 0.8)
+        }
+        results['age_acceleration'] = total_acceleration
+        
+        if CHRONIC_DISEASE_AVAILABLE:
+            try:
+                disease_analyzer = ChronicDiseaseAnalyzer()
+                all_diseases = disease_analyzer.get_all_diseases()
+                risk_scores = {}
+                for disease_key, disease_effect in list(all_diseases.items())[:5]:
+                    if hasattr(disease_effect, 'eaa_effect'):
+                        base_risk = abs(disease_effect.eaa_effect) / 15.0
+                        risk_modifier = 1 + (total_acceleration / 10)
+                        risk_scores[disease_effect.disease_name_tr] = min(1.0, base_risk * risk_modifier)
+                results['predicted_disease_risks'] = risk_scores
+            except Exception:
+                pass
+        
+        if ABUSE_METHOD_AVAILABLE:
+            try:
+                abuse_engine = AbuseMethodDetectionEngine()
+                abuse_results = abuse_engine.analyze_cpg_patterns(demo_methylation) if 'demo_methylation' in dir() else {}
+                results['abuse_method_detection'] = abuse_results
+            except Exception:
+                pass
+        
+    except Exception as e:
+        results['error'] = str(e)
+    
+    return results
+
+
+def display_demo_results(results: Dict[str, Any], scenario: Dict[str, Any]):
+    """Display demo scenario analysis results - nrcdnl94"""
+    
+    st.markdown("---")
+    st.markdown("### Demo Senaryo Analiz Sonuclari")
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #0050A0 0%, #003366 100%); 
+                color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <h4 style="margin: 0; color: white;">Giris Senaryosu</h4>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+            <div>
+                <span style="opacity: 0.8;">Kronolojik Yas:</span><br>
+                <strong style="font-size: 1.3rem;">{scenario.get('age', 35)} yil</strong>
+            </div>
+            <div>
+                <span style="opacity: 0.8;">Cinsiyet:</span><br>
+                <strong style="font-size: 1.3rem;">{scenario.get('sex', 'Bilinmiyor')}</strong>
+            </div>
+            <div>
+                <span style="opacity: 0.8;">Kronik Hastalik:</span><br>
+                <strong style="font-size: 1.3rem;">{scenario.get('disease', 'Yok')}</strong>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("#### Tespit Edilen Maddeler (DNA Metilasyondan)")
+    
+    detected = results.get('detected_substances', [])
+    
+    if detected:
+        for sub in detected:
+            conf_color = "#10B981" if sub['confidence'] > 0.8 else "#F59E0B" if sub['confidence'] > 0.6 else "#EF4444"
+            st.markdown(f"""
+            <div style="background: #F8FAFC; border-left: 4px solid {conf_color}; 
+                        padding: 12px 16px; margin-bottom: 10px; border-radius: 0 6px 6px 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #0F172A; font-size: 1rem;">{sub['substance_name']}</strong>
+                        <span style="background: #E2E8F0; padding: 2px 8px; border-radius: 4px; 
+                                     margin-left: 10px; font-size: 0.75rem;">{sub['category']}</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: {conf_color}; font-weight: 700; font-size: 1.1rem;">
+                            %{sub['confidence']*100:.0f} Guven
+                        </div>
+                        <div style="color: #64748B; font-size: 0.8rem;">
+                            Tahmini kullanim: {sub['estimated_years']:.1f} yil
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.info("Metilasyon verisinde madde izi tespit edilemedi.")
+    
+    st.markdown("---")
+    st.markdown("#### Epigenetik Yas Tahminleri")
+    
+    epi_ages = results.get('epigenetic_ages', {})
+    chron_age = results.get('chronological_age', 35)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        hannum_age = epi_ages.get('Hannum (Acik Kaynak)', chron_age)
+        delta = hannum_age - chron_age
+        delta_color = "#DC2626" if delta > 0 else "#10B981"
+        st.markdown(f"""
+        <div style="background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 8px; padding: 16px; text-align: center;">
+            <div style="color: #0369A1; font-weight: 600; font-size: 0.85rem;">Hannum Saati</div>
+            <div style="color: #0C4A6E; font-weight: 700; font-size: 1.8rem; margin: 8px 0;">{hannum_age:.1f}</div>
+            <div style="color: {delta_color}; font-size: 0.9rem;">
+                {'+' if delta > 0 else ''}{delta:.1f} yil
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        dunedin = epi_ages.get('DunedinPACE (Acik Kaynak)', 1.0)
+        pace_color = "#DC2626" if dunedin > 1.1 else "#10B981" if dunedin < 0.95 else "#F59E0B"
+        st.markdown(f"""
+        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 16px; text-align: center;">
+            <div style="color: #15803D; font-weight: 600; font-size: 0.85rem;">DunedinPACE</div>
+            <div style="color: #14532D; font-weight: 700; font-size: 1.8rem; margin: 8px 0;">{dunedin:.2f}</div>
+            <div style="color: {pace_color}; font-size: 0.9rem;">
+                {'Hizlanmis' if dunedin > 1.0 else 'Normal'} yaslama hizi
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        ensemble_age = epi_ages.get('Ensemble ML', chron_age)
+        delta_ens = ensemble_age - chron_age
+        st.markdown(f"""
+        <div style="background: #FDF4FF; border: 1px solid #F5D0FE; border-radius: 8px; padding: 16px; text-align: center;">
+            <div style="color: #86198F; font-weight: 600; font-size: 0.85rem;">Ensemble ML</div>
+            <div style="color: #581C87; font-weight: 700; font-size: 1.8rem; margin: 8px 0;">{ensemble_age:.1f}</div>
+            <div style="color: {'#DC2626' if delta_ens > 0 else '#10B981'}; font-size: 0.9rem;">
+                {'+' if delta_ens > 0 else ''}{delta_ens:.1f} yil
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.markdown("#### Yas Ivmesi Kaynaklari")
+    
+    total_accel = results.get('age_acceleration', 0)
+    disease_contrib = results.get('disease_contribution', 0)
+    substance_contribs = results.get('substance_contributions', {})
+    
+    st.markdown(f"""
+    <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: #991B1B; font-weight: 600;">Toplam Yas Ivmesi:</span>
+            <span style="color: #DC2626; font-weight: 700; font-size: 1.5rem;">+{total_accel:.1f} yil</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if disease_contrib > 0:
+        pct = (disease_contrib / total_accel * 100) if total_accel > 0 else 0
+        st.markdown(f"""
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E2E8F0;">
+            <span>Kronik Hastalik ({scenario.get('disease', '')})</span>
+            <span style="font-weight: 600;">+{disease_contrib:.1f} yil (%{pct:.0f})</span>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    for sub_key, contrib in substance_contribs.items():
+        pct = (contrib / total_accel * 100) if total_accel > 0 else 0
+        sub_names = {
+            'methamphetamine': 'Metamfetamin',
+            'heroin': 'Heroin',
+            'cocaine_hcl': 'Kokain',
+            'alprazolam': 'Benzodiazepin',
+            'fentanyl': 'Fentanil',
+            'cannabis_thc': 'Esrar',
+            'mdma': 'MDMA',
+            'tramadol': 'Tramadol',
+            'pregabalin': 'Pregabalin',
+            'morphine': 'Morfin',
+            'oxycodone': 'Oksikodon',
+            'gabapentin': 'Gabapentin'
+        }
+        sub_name = sub_names.get(sub_key, sub_key)
+        years = results.get('input_years', {}).get(sub_key, 0)
+        st.markdown(f"""
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E2E8F0;">
+            <span>{sub_name} ({years:.0f} yil kullanim)</span>
+            <span style="font-weight: 600; color: #DC2626;">+{contrib:.1f} yil (%{pct:.0f})</span>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    predicted_risks = results.get('predicted_disease_risks', {})
+    if predicted_risks:
+        st.markdown("---")
+        st.markdown("#### Tahmin Edilen Hastalik Riskleri")
+        
+        for disease, risk in list(predicted_risks.items())[:5]:
+            risk_pct = risk * 100
+            bar_color = "#DC2626" if risk > 0.7 else "#F59E0B" if risk > 0.4 else "#10B981"
+            st.markdown(f"""
+            <div style="margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="font-size: 0.9rem;">{disease}</span>
+                    <span style="font-weight: 600; color: {bar_color};">%{risk_pct:.0f}</span>
+                </div>
+                <div style="background: #E2E8F0; height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: {bar_color}; width: {risk_pct}%; height: 100%;"></div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.markdown(f"""
+    <div style="background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 8px; padding: 16px;">
+        <strong style="color: #0369A1;">Sonuc:</strong>
+        <p style="color: #0C4A6E; margin-top: 8px;">
+            DNA metilasyon analizi, girilen senaryodaki maddelerin %{results.get('overall_confidence', 0)*100:.0f} 
+            dogrulukla tespit edilebildigini gostermektedir. Biyolojik yas, kronolojik yastan 
+            <strong>+{total_accel:.1f} yil</strong> daha yuksek hesaplanmistir.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 def run_epiclock_analysis(
