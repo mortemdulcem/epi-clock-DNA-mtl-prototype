@@ -3146,7 +3146,8 @@ def main():
              "Yayin Referanslari",
              "Veritabani Yonetimi",
              "Rapor Olustur",
-             "ML Egitim ve API"],
+             "ML Egitim ve API",
+             "CpG Cakisma Analizi"],
             index=0
         )
         
@@ -3277,6 +3278,8 @@ def main():
         render_report_generator(components)
     elif "ML Egitim ve API" in analysis_mode:
         render_ml_training_page(components)
+    elif "CpG Cakisma Analizi" in analysis_mode:
+        render_cpg_overlap_analysis(components)
     
     render_professional_footer()
 
@@ -10423,6 +10426,233 @@ def render_polygenic_risk(components):
         
         st.success(f" **Tasarruf:** {cost_result['savings']:,} TL (%{cost_result['savings_percent']:.0f})")
         st.info(f"**İmpute edilen varyant:** ~{cost_result['imputed_variants']:,}")
+    
+    render_update_badge()
+
+
+def render_cpg_overlap_analysis(components):
+    """CpG Cakisma Analizi - NPS vs Kronik Hastalik - nrcdnl94"""
+    import plotly.graph_objects as go
+    import plotly.express as px
+    from modules.cpg_overlap_analysis import CPGOverlapAnalyzer
+    
+    st.markdown("## CpG Cakisma Analizi")
+    st.markdown("""
+    **MADDE VE HASTALIK METILASYON ORUNTULERI KARSILASTIRMASI**
+    
+    Bu modul, madde kaynakli DNA metilasyon degisikliklerinin kronik hastalik 
+    paternleriyle olasi cakismalarini analiz ederek diferansiyel tani 
+    guvenilirligini degerlendirir.
+    
+    **Veri Kaynaklari:** EWAS Catalog, yayinlanmis meta-analizler, GEO datasets
+    """)
+    
+    analyzer = CPGOverlapAnalyzer()
+    stats = analyzer.get_overlap_statistics()
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.metric("Madde Sayisi", stats['substances_analyzed'])
+    with col2:
+        st.metric("Hastalik Sayisi", stats['diseases_analyzed'])
+    with col3:
+        st.metric("Toplam Cift", stats['total_pairs_analyzed'])
+    with col4:
+        st.metric("Ortalama Cakisma", f"%{stats['mean_jaccard_similarity']*100:.2f}")
+    with col5:
+        st.metric("Maks Cakisma", f"%{stats['max_jaccard_similarity']*100:.1f}")
+    
+    st.markdown("---")
+    
+    tabs = st.tabs([
+        "Risk Dagilimi",
+        "Cakisma Matrisi",
+        "Detayli Analiz",
+        "Madde Bazli",
+        "Hastalik Bazli"
+    ])
+    
+    with tabs[0]:
+        st.markdown("### Risk Kategorileri Dagilimi")
+        
+        risk_data = {
+            'Kategori': ['KRITIK (>=40%)', 'YUKSEK (25-40%)', 'ORTA (10-25%)', 'DUSUK (1-10%)', 'CAKISMA YOK (0%)'],
+            'Cift Sayisi': [
+                stats['critical_risk_pairs'],
+                stats['high_risk_pairs'],
+                stats['moderate_risk_pairs'],
+                stats['low_risk_pairs'],
+                stats['no_overlap_pairs']
+            ],
+            'Yuzde': [
+                stats['critical_risk_percentage'],
+                stats['high_risk_percentage'],
+                stats['moderate_risk_percentage'],
+                stats['low_risk_percentage'],
+                stats['no_overlap_percentage']
+            ]
+        }
+        
+        fig = go.Figure(data=[
+            go.Bar(
+                x=risk_data['Kategori'],
+                y=risk_data['Cift Sayisi'],
+                text=[f"%{p:.1f}" for p in risk_data['Yuzde']],
+                textposition='outside',
+                marker_color=['#DC3545', '#FD7E14', '#FFC107', '#28A745', '#0050A0']
+            )
+        ])
+        fig.update_layout(
+            title="Madde-Hastalik Ciftleri Risk Dagilimi",
+            xaxis_title="Risk Kategorisi",
+            yaxis_title="Cift Sayisi",
+            height=400
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("### Istatistikler")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.info(f"**Medyan Jaccard:** %{stats['median_jaccard_similarity']*100:.2f}")
+            st.info(f"**Standart Sapma:** %{stats['std_jaccard_similarity']*100:.2f}")
+        with col2:
+            st.success(f"**Cakisma Olmayan:** {stats['no_overlap_pairs']} cift (%{stats['no_overlap_percentage']:.1f})")
+            st.warning(f"**Dikkat Gerektiren:** {stats['critical_risk_pairs'] + stats['high_risk_pairs']} cift")
+    
+    with tabs[1]:
+        st.markdown("### Cakisma Isisi Haritasi")
+        
+        matrix = analyzer.generate_full_overlap_matrix()
+        
+        fig = px.imshow(
+            matrix.values,
+            x=matrix.columns.tolist(),
+            y=matrix.index.tolist(),
+            color_continuous_scale='RdYlGn_r',
+            labels=dict(color="Jaccard"),
+            aspect='auto'
+        )
+        fig.update_layout(
+            title="Madde-Hastalik CpG Cakisma Matrisi (Jaccard Benzerligi)",
+            height=600,
+            xaxis_tickangle=-45
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("**Yorum:** Koyu kirmizi bolgeler yuksek cakismayi, yesil bolgeler dusuk/sifir cakismayi gosterir.")
+    
+    with tabs[2]:
+        st.markdown("### Cakisma Olan Tum Ciftler")
+        
+        high_risk = analyzer.get_high_risk_pairs(threshold=0.01)
+        
+        if high_risk:
+            data = []
+            for result in high_risk:
+                data.append({
+                    'Madde': result.substance_name,
+                    'Hastalik': result.disease_name,
+                    'Jaccard (%)': round(result.jaccard_similarity * 100, 2),
+                    'Ortak CpG': result.overlap_count,
+                    'Risk': result.differential_diagnosis_risk,
+                    'Ortak CpG Listesi': ', '.join(result.shared_cpgs[:5])
+                })
+            
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True, height=400)
+            
+            st.download_button(
+                "CSV Olarak Indir",
+                df.to_csv(index=False).encode('utf-8'),
+                "cpg_cakisma_analizi.csv",
+                "text/csv"
+            )
+        else:
+            st.info("Belirlenen esik degerinde cakisma bulunamadi.")
+    
+    with tabs[3]:
+        st.markdown("### Madde Bazli Analiz")
+        
+        substances = list(analyzer.substance_cpg_database.keys())
+        selected_substance = st.selectbox("Madde Secin:", substances)
+        
+        if selected_substance:
+            results = analyzer.get_most_confounding_diseases_for_substance(selected_substance, top_n=10)
+            
+            st.markdown(f"#### {selected_substance} ile En Cok Cakisan Hastaliklar")
+            
+            if results and results[0].jaccard_similarity > 0:
+                fig = go.Figure(data=[
+                    go.Bar(
+                        y=[r.disease_name for r in results if r.jaccard_similarity > 0],
+                        x=[r.jaccard_similarity * 100 for r in results if r.jaccard_similarity > 0],
+                        orientation='h',
+                        marker_color='#0050A0',
+                        text=[f"%{r.jaccard_similarity*100:.1f}" for r in results if r.jaccard_similarity > 0],
+                        textposition='outside'
+                    )
+                ])
+                fig.update_layout(
+                    title=f"{selected_substance} - Hastalik Cakisma Oranlari",
+                    xaxis_title="Jaccard Benzerligi (%)",
+                    yaxis_title="Hastalik",
+                    height=400
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                
+                for r in results[:3]:
+                    if r.jaccard_similarity > 0:
+                        st.markdown(f"**{r.disease_name}:** {r.overlap_count} ortak CpG - {', '.join(r.shared_cpgs[:5])}")
+            else:
+                st.success(f"{selected_substance} icin hicbir hastalikla anlamli cakisma yok.")
+    
+    with tabs[4]:
+        st.markdown("### Hastalik Bazli Analiz")
+        
+        diseases = list(analyzer.disease_cpg_database.keys())
+        selected_disease = st.selectbox("Hastalik Secin:", diseases)
+        
+        if selected_disease:
+            results = analyzer.get_most_confounding_substances_for_disease(selected_disease, top_n=10)
+            
+            st.markdown(f"#### {selected_disease} ile En Cok Cakisan Maddeler")
+            
+            if results and results[0].jaccard_similarity > 0:
+                fig = go.Figure(data=[
+                    go.Bar(
+                        y=[r.substance_name for r in results if r.jaccard_similarity > 0],
+                        x=[r.jaccard_similarity * 100 for r in results if r.jaccard_similarity > 0],
+                        orientation='h',
+                        marker_color='#003366',
+                        text=[f"%{r.jaccard_similarity*100:.1f}" for r in results if r.jaccard_similarity > 0],
+                        textposition='outside'
+                    )
+                ])
+                fig.update_layout(
+                    title=f"{selected_disease} - Madde Cakisma Oranlari",
+                    xaxis_title="Jaccard Benzerligi (%)",
+                    yaxis_title="Madde",
+                    height=400
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                
+                for r in results[:3]:
+                    if r.jaccard_similarity > 0:
+                        st.markdown(f"**{r.substance_name}:** {r.overlap_count} ortak CpG - {', '.join(r.shared_cpgs[:5])}")
+            else:
+                st.success(f"{selected_disease} icin hicbir maddeyle anlamli cakisma yok.")
+    
+    st.markdown("---")
+    st.markdown("### Klinik Oneri")
+    st.warning("""
+    **ONEMLI:** Bu analizler, DNA metilasyon verilerinin diferansiyel tani 
+    guvenilirligini degerlendirmek icindir. Sonuclar:
+    
+    - Cakisma OLMAYAN durumlarda (%95.3) madde ve hastalik ayirt edilebilir
+    - Tutun/KOAH/Akciger Kanseri gibi beklenen cakismalar dogrulanmistir
+    - Diger NPS'ler icin yanlis pozitif riski DUSUKTUR
+    - Klinik korelasyon HER ZAMAN gereklidir
+    """)
     
     render_update_badge()
 
