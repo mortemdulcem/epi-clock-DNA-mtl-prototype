@@ -708,6 +708,9 @@ def run_demo_scenario_analysis(
             
             results['detected_substances'] = detected
             results['overall_confidence'] = np.mean([d['confidence'] for d in detected]) if detected else 0
+            
+            similarity_matrix = engine.get_variant_similarity_matrix(substances_used, top_n=5)
+            results['similarity_matrix'] = similarity_matrix
         
         base_epi_age = chronological_age
         total_acceleration = 0
@@ -955,6 +958,65 @@ def display_demo_results(results: Dict[str, Any], scenario: Dict[str, Any]):
                 </div>
             </div>
             """, unsafe_allow_html=True)
+    
+    similarity_matrix = results.get('similarity_matrix', {})
+    if similarity_matrix:
+        st.markdown("---")
+        st.markdown("#### Varyant-Madde Benzerlik Analizi")
+        st.markdown('<p style="color: #64748B; font-size: 0.85rem;">Her tespit edilen maddenin diger maddelere CpG marker benzerligi (Jaccard indeksi ve ortak marker oranina gore)</p>', unsafe_allow_html=True)
+        
+        for sub_key, sim_data in similarity_matrix.items():
+            sub_name = sim_data.get('substance_name', sub_key)
+            category = sim_data.get('category', 'Bilinmiyor')
+            similar_substances = sim_data.get('similar_substances', [])
+            
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0050A0 0%, #003366 100%); 
+                        color: white; padding: 12px 16px; border-radius: 8px 8px 0 0; margin-top: 15px;">
+                <strong>{sub_name}</strong>
+                <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; 
+                             margin-left: 10px; font-size: 0.75rem;">{category}</span>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            if similar_substances:
+                st.markdown("""
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-top: none; 
+                            border-radius: 0 0 8px 8px; padding: 12px;">
+                """, unsafe_allow_html=True)
+                
+                for sim in similar_substances[:5]:
+                    sim_pct = sim['similarity_percent']
+                    sim_color = "#10B981" if sim_pct > 50 else "#F59E0B" if sim_pct > 25 else "#94A3B8"
+                    same_cat = "Ayni kategori" if sim['same_category'] else ""
+                    
+                    st.markdown(f"""
+                    <div style="display: flex; justify-content: space-between; align-items: center; 
+                                padding: 8px 0; border-bottom: 1px solid #E2E8F0;">
+                        <div>
+                            <span style="font-weight: 500;">{sim['substance_name_tr']}</span>
+                            <span style="color: #64748B; font-size: 0.75rem; margin-left: 8px;">
+                                ({sim['shared_markers']} ortak CpG marker)
+                            </span>
+                            {f'<span style="background: #DBEAFE; color: #1E40AF; padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; margin-left: 8px;">{same_cat}</span>' if same_cat else ''}
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="background: {sim_color}; color: white; padding: 4px 10px; 
+                                        border-radius: 4px; font-weight: 600; font-size: 0.9rem;">
+                                %{sim_pct:.1f}
+                            </div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-top: none; 
+                            border-radius: 0 0 8px 8px; padding: 12px; color: #64748B;">
+                    Bu madde icin benzer varyant bulunamadi.
+                </div>
+                """, unsafe_allow_html=True)
     
     st.markdown("---")
     st.markdown(f"""

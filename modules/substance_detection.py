@@ -3698,6 +3698,79 @@ class SubstanceDetectionEngine:
             'detected_substances': [r.substance_name_tr for r in detected],
             'most_severe': max(detected, key=lambda x: x.estimated_duration_years).substance_name_tr if detected else None
         }
+    
+    def calculate_substance_similarity(self, substance_key: str, top_n: int = 10) -> List[Dict]:
+        """
+        Belirli bir maddenin diger maddelere CpG marker benzerligi
+        Jaccard indeksi ve ortak marker sayisina gore hesaplar
+        """
+        if substance_key not in self.signatures:
+            return []
+        
+        target_sig = self.signatures[substance_key]
+        target_cpgs = set(target_sig.marker_cpgs)
+        
+        similarities = []
+        
+        for key, sig in self.signatures.items():
+            if key == substance_key:
+                continue
+            
+            other_cpgs = set(sig.marker_cpgs)
+            
+            intersection = len(target_cpgs & other_cpgs)
+            union = len(target_cpgs | other_cpgs)
+            
+            if union > 0:
+                jaccard = intersection / union
+            else:
+                jaccard = 0
+            
+            marker_overlap = intersection / len(target_cpgs) if len(target_cpgs) > 0 else 0
+            
+            category_bonus = 0.1 if sig.category == target_sig.category else 0
+            subcategory_bonus = 0.05 if sig.subcategory == target_sig.subcategory else 0
+            
+            direction_match = 1.0 if sig.direction == target_sig.direction else 0.7
+            
+            similarity_score = (jaccard * 0.4 + marker_overlap * 0.4) * direction_match + category_bonus + subcategory_bonus
+            similarity_percent = min(99.9, similarity_score * 100)
+            
+            if similarity_percent > 5:
+                similarities.append({
+                    'substance_key': key,
+                    'substance_name_tr': sig.substance_name_tr,
+                    'substance_name_en': sig.substance_name_en,
+                    'category': sig.category,
+                    'similarity_percent': round(similarity_percent, 1),
+                    'shared_markers': intersection,
+                    'target_markers': len(target_cpgs),
+                    'other_markers': len(other_cpgs),
+                    'jaccard_index': round(jaccard, 3),
+                    'same_category': sig.category == target_sig.category,
+                    'mechanism_similarity': 'Yuksek' if sig.direction == target_sig.direction else 'Dusuk'
+                })
+        
+        similarities.sort(key=lambda x: x['similarity_percent'], reverse=True)
+        return similarities[:top_n]
+    
+    def get_variant_similarity_matrix(self, detected_substances: List[str], top_n: int = 5) -> Dict[str, List[Dict]]:
+        """
+        Tespit edilen maddeler icin benzerlik matrisi olustur
+        Her madde icin en benzer diger maddeleri dondur
+        """
+        similarity_matrix = {}
+        
+        for sub_key in detected_substances:
+            if sub_key in self.signatures:
+                similar = self.calculate_substance_similarity(sub_key, top_n)
+                similarity_matrix[sub_key] = {
+                    'substance_name': self.signatures[sub_key].substance_name_tr,
+                    'category': self.signatures[sub_key].category,
+                    'similar_substances': similar
+                }
+        
+        return similarity_matrix
 
 
 _detection_engine = None
