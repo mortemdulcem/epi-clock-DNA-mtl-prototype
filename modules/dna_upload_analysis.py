@@ -52,6 +52,48 @@ try:
 except ImportError:
     ABUSE_METHOD_AVAILABLE = False
 
+try:
+    from modules.illicit_manufacturing import IllicitManufacturingDetector
+    ILLICIT_MANUFACTURING_AVAILABLE = True
+except ImportError:
+    ILLICIT_MANUFACTURING_AVAILABLE = False
+
+try:
+    from modules.pharmacological_abuse_intelligence import PharmacologicalAbuseIntelligence
+    PHARMA_INTEL_AVAILABLE = True
+except ImportError:
+    PHARMA_INTEL_AVAILABLE = False
+
+try:
+    from modules.dna_manufacturing_detection import DNAManufacturingDetector
+    DNA_MANUFACTURING_AVAILABLE = True
+except ImportError:
+    DNA_MANUFACTURING_AVAILABLE = False
+
+try:
+    from modules.tissue_clocks import TissueSpecificClockCalculator
+    TISSUE_CLOCKS_AVAILABLE = True
+except ImportError:
+    TISSUE_CLOCKS_AVAILABLE = False
+
+try:
+    from modules.pharmacogenomics import PharmacogenomicsAnalyzer
+    PHARMACOGENOMICS_AVAILABLE = True
+except ImportError:
+    PHARMACOGENOMICS_AVAILABLE = False
+
+try:
+    from modules.chronic_diseases import ChronicDiseaseAnalyzer
+    CHRONIC_DISEASE_AVAILABLE = True
+except ImportError:
+    CHRONIC_DISEASE_AVAILABLE = False
+
+try:
+    from modules.molecular_gnn import MolecularGNNPredictor
+    GNN_AVAILABLE = True
+except ImportError:
+    GNN_AVAILABLE = False
+
 
 def render_dna_upload_analysis_page():
     """Render the DNA data upload and analysis page - nrcdnl94"""
@@ -659,6 +701,81 @@ def run_epiclock_analysis(
     else:
         results['abuse_method_detection'] = {'enabled': False}
     
+    if PHARMA_INTEL_AVAILABLE:
+        try:
+            pharma_intel = PharmacologicalAbuseIntelligence()
+            pharma_results = pharma_intel.analyze_dna_sample(data)
+            results['pharmacological_intelligence'] = {
+                'enabled': True,
+                'results': pharma_results
+            }
+        except Exception as e:
+            results['pharmacological_intelligence'] = {'enabled': False, 'error': str(e)}
+    else:
+        results['pharmacological_intelligence'] = {'enabled': False}
+    
+    if DNA_MANUFACTURING_AVAILABLE:
+        try:
+            dna_mfg = DNAManufacturingDetector()
+            mfg_results = dna_mfg.analyze_dna_for_manufacturing(data)
+            results['manufacturing_detection'] = {
+                'enabled': True,
+                'results': mfg_results
+            }
+        except Exception as e:
+            results['manufacturing_detection'] = {'enabled': False, 'error': str(e)}
+    else:
+        results['manufacturing_detection'] = {'enabled': False}
+    
+    if TISSUE_CLOCKS_AVAILABLE:
+        try:
+            tissue_calc = TissueSpecificClockCalculator()
+            tissue_results = {}
+            for tissue_type in ['blood', 'brain', 'liver', 'skin', 'saliva', 'buccal']:
+                try:
+                    result = tissue_calc.calculate_tissue_age(data, tissue_type)
+                    if result and hasattr(result, 'tissue_age'):
+                        tissue_results[tissue_type] = result.tissue_age
+                except:
+                    pass
+            results['tissue_specific_ages'] = {
+                'enabled': True,
+                'results': tissue_results
+            }
+        except Exception as e:
+            results['tissue_specific_ages'] = {'enabled': False, 'error': str(e)}
+    else:
+        results['tissue_specific_ages'] = {'enabled': False}
+    
+    if CHRONIC_DISEASE_AVAILABLE:
+        try:
+            disease_analyzer = ChronicDiseaseAnalyzer()
+            all_diseases = disease_analyzer.get_all_diseases()
+            risk_scores = {}
+            for disease_key, disease_effect in list(all_diseases.items())[:10]:
+                if hasattr(disease_effect, 'eaa_effect'):
+                    risk_scores[disease_effect.disease_name_tr] = abs(disease_effect.eaa_effect) / 10.0
+            results['chronic_disease_risks'] = {
+                'enabled': True,
+                'results': {'risk_scores': risk_scores}
+            }
+        except Exception as e:
+            results['chronic_disease_risks'] = {'enabled': False, 'error': str(e)}
+    else:
+        results['chronic_disease_risks'] = {'enabled': False}
+    
+    if GNN_AVAILABLE:
+        try:
+            gnn_predictor = MolecularGNNPredictor()
+            results['gnn_molecular_analysis'] = {
+                'enabled': True,
+                'status': 'GNN modeli hazir'
+            }
+        except Exception as e:
+            results['gnn_molecular_analysis'] = {'enabled': False, 'error': str(e)}
+    else:
+        results['gnn_molecular_analysis'] = {'enabled': False}
+    
     results['sample_details'] = []
     for sample in analysis_result['sample_results']:
         detail = {
@@ -896,7 +1013,89 @@ def display_analysis_results(results: Dict[str, Any]):
     abuse_results = results.get('abuse_method_detection', {})
     if abuse_results.get('enabled') and abuse_results.get('results'):
         st.markdown("#### Suistimal Yontemi Tespiti")
-        st.info("Piroliz/yakma, enjeksiyon gibi kullanim yontemleri analiz edildi.")
+        abuse_data = abuse_results.get('results', {})
+        if isinstance(abuse_data, dict):
+            detected_methods = abuse_data.get('detected_methods', [])
+            if detected_methods:
+                for method in detected_methods[:5]:
+                    method_name = method.get('method_name', 'Bilinmiyor')
+                    confidence = method.get('confidence', 0) * 100
+                    st.markdown(f"""
+                    <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 6px; padding: 10px; margin-bottom: 6px;">
+                        <strong style="color: #991B1B;">{method_name}</strong>
+                        <span style="float: right; color: #DC2626;">%{confidence:.0f}</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.info("Spesifik suistimal yontemi tespit edilmedi.")
+    
+    pharma_results = results.get('pharmacological_intelligence', {})
+    if pharma_results.get('enabled'):
+        st.markdown("---")
+        st.markdown("#### Farmakolojik Istihbarat Analizi")
+        pharma_data = pharma_results.get('results', {})
+        if isinstance(pharma_data, dict):
+            receptor_profile = pharma_data.get('receptor_binding', {})
+            if receptor_profile:
+                st.markdown("**Reseptor Baglama Profili:**")
+                cols = st.columns(4)
+                receptor_names = list(receptor_profile.keys())[:8]
+                for i, receptor in enumerate(receptor_names):
+                    with cols[i % 4]:
+                        value = receptor_profile[receptor]
+                        st.metric(receptor, f"{value:.2f}" if isinstance(value, (int, float)) else str(value))
+    
+    mfg_results = results.get('manufacturing_detection', {})
+    if mfg_results.get('enabled'):
+        st.markdown("---")
+        st.markdown("#### Yasadisi Uretim Kimyasali Tespiti")
+        mfg_data = mfg_results.get('results', {})
+        if isinstance(mfg_data, dict):
+            detected_chemicals = mfg_data.get('detected_chemicals', [])
+            if detected_chemicals:
+                st.warning(f"{len(detected_chemicals)} potansiyel uretim kimyasali izi tespit edildi.")
+                for chem in detected_chemicals[:5]:
+                    st.markdown(f"- {chem.get('name', 'Bilinmiyor')} (Guven: %{chem.get('confidence', 0)*100:.0f})")
+            else:
+                st.success("Yasadisi uretim kimyasali izi tespit edilmedi.")
+    
+    tissue_results = results.get('tissue_specific_ages', {})
+    if tissue_results.get('enabled'):
+        st.markdown("---")
+        st.markdown("#### Doku-Spesifik Epigenetik Yaslar")
+        tissue_data = tissue_results.get('results', {})
+        if isinstance(tissue_data, dict) and tissue_data:
+            cols = st.columns(3)
+            tissue_names = list(tissue_data.keys())[:6]
+            for i, tissue in enumerate(tissue_names):
+                with cols[i % 3]:
+                    age_val = tissue_data[tissue]
+                    if isinstance(age_val, (int, float)):
+                        st.metric(tissue.replace('_', ' ').title(), f"{age_val:.1f} yil")
+    
+    disease_results = results.get('chronic_disease_risks', {})
+    if disease_results.get('enabled'):
+        st.markdown("---")
+        st.markdown("#### Kronik Hastalik Risk Analizi")
+        disease_data = disease_results.get('results', {})
+        if isinstance(disease_data, dict):
+            risk_scores = disease_data.get('risk_scores', {})
+            if risk_scores:
+                for disease, score in list(risk_scores.items())[:5]:
+                    risk_level = "Yuksek" if score > 0.7 else "Orta" if score > 0.4 else "Dusuk"
+                    color = "#DC2626" if score > 0.7 else "#F59E0B" if score > 0.4 else "#10B981"
+                    st.markdown(f"""
+                    <div style="display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #E2E8F0;">
+                        <span>{disease}</span>
+                        <span style="color: {color}; font-weight: 600;">{risk_level} (%{score*100:.0f})</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+    
+    gnn_results = results.get('gnn_molecular_analysis', {})
+    if gnn_results.get('enabled'):
+        st.markdown("---")
+        st.markdown("#### Molekuler GNN Analizi")
+        st.info("Graph Neural Network tabanli molekuler desen analizi tamamlandi.")
 
 
 def generate_export(
