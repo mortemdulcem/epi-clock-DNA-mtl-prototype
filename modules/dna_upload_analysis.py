@@ -1129,15 +1129,51 @@ def display_demo_results(results: Dict[str, Any], scenario: Dict[str, Any]):
             
             likely_sources = unknown_detection.get('likely_sources', [])
             if likely_sources:
-                st.markdown("**Muhtemel Kaynaklar:**")
-                for source in likely_sources[:3]:
-                    prob = source.get('probability', 0) * 100
-                    st.markdown(f"""
-                    <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #E2E8F0;">
-                        <span>{source.get('source', 'Bilinmiyor')}</span>
-                        <span style="font-weight: 600; color: #0050A0;">%{prob:.0f}</span>
+                disease_sources = [s for s in likely_sources if 'disease_id' in s]
+                other_sources = [s for s in likely_sources if 'disease_id' not in s]
+                
+                if disease_sources:
+                    st.markdown("**Hastalik Profili Eslesmeleri (EWAS Veritabani):**")
+                    st.markdown("""
+                    <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 4px; padding: 8px; margin-bottom: 8px; font-size: 0.75rem; color: #92400E;">
+                        Bu eslesme TANI KOYDURUCU degildir. Sadece metilasyon profili benzerligi gosterir.
                     </div>
                     """, unsafe_allow_html=True)
+                    
+                    for source in disease_sources[:5]:
+                        prob = source.get('probability', 0) * 100
+                        category = source.get('category', '')
+                        pathways = source.get('pathways', [])
+                        pathways_str = ", ".join(pathways[:2]) if pathways else ""
+                        
+                        st.markdown(f"""
+                        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: #0050A0;">{source.get('source', '')}</strong>
+                                    <div style="font-size: 0.75rem; color: #64748B;">{category}</div>
+                                    <div style="font-size: 0.7rem; color: #94A3B8; margin-top: 2px;">Yolaklar: {pathways_str}</div>
+                                </div>
+                                <div style="background: #0050A0; color: white; padding: 4px 10px; border-radius: 4px; font-weight: 600;">
+                                    %{prob:.0f}
+                                </div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #475569; margin-top: 6px; border-top: 1px solid #E2E8F0; padding-top: 6px;">
+                                {source.get('evidence', '')}
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                
+                if other_sources:
+                    st.markdown("**Diger Olasi Kaynaklar:**")
+                    for source in other_sources[:4]:
+                        prob = source.get('probability', 0) * 100
+                        st.markdown(f"""
+                        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #E2E8F0;">
+                            <span>{source.get('source', 'Bilinmiyor')}</span>
+                            <span style="font-weight: 600; color: #0050A0;">%{prob:.0f}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
             
             recommendations = unknown_detection.get('recommendations', [])
             if recommendations:

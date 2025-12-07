@@ -35,6 +35,14 @@ The EpiClock platform is built around a modular architecture, with `app.py` serv
     - **DNA Manufacturing Chemical Detection:** AI system to identify illicit manufacturing chemicals from DNA sequences.
     - **Molecular Graph Neural Network (GNN) Analysis:** PyTorch-based MPNN for multi-task prediction of addiction, toxicity, metabolism, and receptor binding.
     - **Advanced Feature Engineering:** Chemical property analysis, pharmacological receptor targeting, pharmacokinetics, and abuse potential scoring.
+- **Disease Methylation Database & Differential Diagnosis:**
+    - **Comprehensive Disease Database:** 50+ chronic diseases with literature-based CpG markers from EWAS Catalog
+    - **Disease Categories:** Neurological (Alzheimer, Parkinson, MS, ALS), Neurodevelopmental (Autism, ADHD, Down Syndrome, Rett), Psychiatric (Schizophrenia, Bipolar, Depression, PTSD), Cancer (Breast, Lung, Colorectal, Prostate, Leukemia), Metabolic (Type 2 Diabetes, Obesity, NAFLD), Autoimmune (RA, Lupus, Crohn's), Cardiovascular (Atherosclerosis, Hypertension), Environmental (Smoking, Pollution, Heavy Metals), Aging
+    - **Disease Pattern Matcher:** ML-based Jaccard similarity matching between methylation profiles and disease signatures
+    - **Deep Learning Autoencoder:** PyTorch-based disease classification from latent representations
+    - **Disease GNN (Graph Neural Network):** CpG-Gene-Disease relationship graph for pathway enrichment
+    - **Differential Diagnosis System:** Multi-source anomaly interpretation with clinical disclaimers
+    - **Safety Features:** Clear disclaimers that methylation anomalies are NOT diagnostic - requires clinical correlation
 - **Data Management:** PostgreSQL database for managing CpG markers, substance panels, gene systems, and clock information.
 - **Report Generation:** Automated PDF clinical reports with interpretations.
 - **Comprehensive Databases:** Integration of GWAS, EWAS, PharmGKB, and various substance/gene databases.

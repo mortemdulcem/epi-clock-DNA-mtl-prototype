@@ -460,7 +460,7 @@ class UnknownSubstanceDetector:
         elif combined_score < 0.8:
             anomaly_type = AnomalyType.SEVERE_ANOMALY
         else:
-            anomaly_type = AnomalyType.UNKNOWN_SUBSTANCE
+            anomaly_type = AnomalyType.UNIDENTIFIED_PATTERN
         
         healthy_mean, healthy_std = self.reference_builder.get_healthy_statistics()
         deviations = np.abs(sample_array - healthy_mean) / (healthy_std + 1e-8)
