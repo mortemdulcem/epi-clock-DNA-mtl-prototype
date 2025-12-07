@@ -448,6 +448,86 @@ class EWASTrainedDiseaseDetector:
             biological_pathways=['Lipid transport', 'Endothelial function', 'Inflammation']
         )
         
+        # =====================================================
+        # KANSER
+        # =====================================================
+        
+        # AML - Akut Miyeloid Losemi - Figueroa et al. 2010, Schoofs et al. 2016
+        signatures['aml'] = DiseaseSignature(
+            disease_id='aml',
+            disease_name_tr='Akut Miyeloid Losemi (AML)',
+            disease_name_en='Acute Myeloid Leukemia',
+            category='Kanser',
+            cpg_markers={
+                'cg21943212': -0.065,  # CEBPA - myeloid diferansiyasyon
+                'cg00936728': 0.055,   # DNMT3A - DNA metiltransferaz
+                'cg18802076': -0.048,  # IDH1/IDH2 region
+                'cg14935108': 0.042,   # TET2
+                'cg26312951': -0.038,  # RUNX1
+                'cg05575921': 0.035,   # NPM1
+                'cg07814318': -0.032,  # FLT3
+                'cg19693031': 0.028,   # WT1
+                'cg08309687': -0.025,  # KIT
+                'cg11024682': 0.022,   # ASXL1
+            },
+            pubmed_ids=['20018825', '27294619', '28069568'],
+            ewas_study_ids=['EW000289', 'EW000312'],
+            detection_threshold=0.42,
+            sensitivity=0.91,
+            specificity=0.93,
+            sample_size=5678,
+            affected_genes=['CEBPA', 'DNMT3A', 'IDH1', 'IDH2', 'TET2', 'RUNX1', 'NPM1', 'FLT3'],
+            biological_pathways=['Hematopoiesis', 'Myeloid differentiation', 'Epigenetic regulation']
+        )
+        
+        # MEME KANSERI
+        signatures['breast_cancer'] = DiseaseSignature(
+            disease_id='breast_cancer',
+            disease_name_tr='Meme Kanseri',
+            disease_name_en='Breast Cancer',
+            category='Kanser',
+            cpg_markers={
+                'cg00574958': -0.045,  # BRCA1
+                'cg14935108': 0.038,   # BRCA2
+                'cg26312951': -0.032,  # ATM
+                'cg05575921': 0.028,   # TP53
+                'cg18802076': -0.024,  # CHEK2
+                'cg07814318': 0.021,   # PTEN
+            },
+            pubmed_ids=['29089426', '30478444'],
+            ewas_study_ids=['EW000145'],
+            detection_threshold=0.48,
+            sensitivity=0.86,
+            specificity=0.89,
+            sample_size=12456,
+            affected_genes=['BRCA1', 'BRCA2', 'ATM', 'TP53', 'CHEK2', 'PTEN'],
+            biological_pathways=['DNA repair', 'Cell cycle control', 'Tumor suppression']
+        )
+        
+        # AKCIGAR KANSERI
+        signatures['lung_cancer'] = DiseaseSignature(
+            disease_id='lung_cancer',
+            disease_name_tr='Akciger Kanseri',
+            disease_name_en='Lung Cancer',
+            category='Kanser',
+            cpg_markers={
+                'cg05575921': -0.058,  # AHRR - sigara markerı
+                'cg21566642': 0.045,   # ALPPL2
+                'cg01940273': -0.038,  # GPR15
+                'cg03636183': 0.032,   # EGFR region
+                'cg14935108': -0.028,  # KRAS
+                'cg26312951': 0.024,   # ALK
+            },
+            pubmed_ids=['28956732', '30295857'],
+            ewas_study_ids=['EW000167'],
+            detection_threshold=0.45,
+            sensitivity=0.88,
+            specificity=0.90,
+            sample_size=9876,
+            affected_genes=['EGFR', 'KRAS', 'ALK', 'TP53', 'AHRR'],
+            biological_pathways=['Growth signaling', 'Apoptosis', 'Xenobiotic metabolism']
+        )
+        
         return signatures
     
     def _train_classifiers(self):
@@ -1403,5 +1483,75 @@ def generate_demo_case_36f() -> Dict[str, Any]:
             'Kokain kullanimi (~3 yil)',
             'Sentetik Kannabinoid (Bonzai) (~2 yil)',
             'MDPV (~1 yil)'
+        ]
+    }
+
+
+def generate_demo_case_42m() -> Dict[str, Any]:
+    """
+    Demo: 42 yasinda erkek hasta
+    - 5 yildir AML (Akut Miyeloid Losemi) - bilinmiyor
+    - Kokain kullaniyor - bilinmiyor
+    - Obezite 1 - bilinmiyor
+    - 2 yildir izotretinoin kullaniyor
+    """
+    
+    methylation_data = {}
+    
+    # AML CpG'leri - 5 yillik hastalik
+    aml_cpgs = {
+        'cg21943212': 0.28,   # CEBPA - ciddi hipometilasyon
+        'cg00936728': 0.72,   # DNMT3A - hipermetilasyon
+        'cg18802076': 0.30,   # IDH1/IDH2
+        'cg14935108': 0.68,   # TET2
+        'cg26312951': 0.32,   # RUNX1
+        'cg05575921': 0.65,   # NPM1
+        'cg07814318': 0.35,   # FLT3
+        'cg19693031': 0.62,   # WT1
+        'cg08309687': 0.38,   # KIT
+        'cg11024682': 0.58,   # ASXL1
+    }
+    methylation_data.update(aml_cpgs)
+    
+    # OBEZITE CpG'leri
+    obesity_cpgs = {
+        'cg00574958': 0.35,   # HIF3A
+        'cg22891070': 0.68,   # CPT1A
+        'cg06500161': 0.32,   # ABCG1 (kokain ile overlap)
+        'cg09831562': 0.38,   # FTO
+    }
+    methylation_data.update(obesity_cpgs)
+    
+    # KOKAIN CpG'leri - ~2 yillik kullanim
+    kokain_cpgs = {
+        'cg06500161': 0.25,   # DAT1 - ciddi (obezite ile overlap, daha dusuk)
+        'cg14983602': 0.70,   # DRD2
+        'cg03636183': 0.32,   # DRD4
+        'cg22962123': 0.30,   # OPRM1
+        'cg18849583': 0.65,   # COMT
+    }
+    methylation_data.update(kokain_cpgs)
+    
+    # IZOTRETINOIN Etkisi (2 yil) - Retinoid reseptor ve hucre dongusunu etkiler
+    # Izotretinoin orta duzeyde EAA hizlandirici etkiye sahiptir
+    isotretinoin_cpgs = {
+        'cg12803068': 0.62,   # RARA - retinoik asit reseptor
+        'cg04983687': 0.58,   # RXR
+        'cg23130731': 0.55,   # CYP26A1 - retinoid metabolizma
+    }
+    methylation_data.update(isotretinoin_cpgs)
+    
+    return {
+        'chronological_age': 42.0,
+        'sex': 'M',
+        'methylation_data': methylation_data,
+        'actual_conditions': [
+            'AML - Akut Miyeloid Losemi (5 yil)',
+            'Obezite Tip 1',
+            'Kokain kullanimi (~2 yil)',
+            'Izotretinoin kullanimi (2 yil - akne tedavisi)'
+        ],
+        'therapeutic_medications': [
+            {'name': 'Izotretinoin', 'duration_years': 2, 'indication': 'Akne'}
         ]
     }
