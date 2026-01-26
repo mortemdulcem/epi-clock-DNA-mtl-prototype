@@ -4,10 +4,12 @@ import os
 st.set_page_config(page_title="EpiClock Downloads", layout="wide")
 
 st.title("EpiClock v4.0 - Dosya Indirme")
+st.markdown("---")
 
 files = {
-    "Makale_Orijinal.pdf": "Orijinal Makale (945 KB)",
-    "EpiClock_v4_Sunum_20260126.pptx": "Guncel Sunum - 26 Ocak 2026 (97 KB)",
+    "DNA_Metilasyon_EpiClock_v4_Tam_Makale.pdf": "Q1 Makale - Guncel Veriler + 8 Yeni Modul (24 KB)",
+    "Makale_Orijinal.pdf": "Orijinal Makale (945 KB, 29 sayfa)",
+    "EpiClock_v4_Sunum_20260126.pptx": "Guncel Sunum - 26 Ocak 2026 (97 KB, 51 slayt)",
     "EpiClock_v4_Sunum_20251206.pptx": "Eski Sunum - 6 Aralik 2025 (85 KB)",
     "EpiClock_Dosyalar.zip": "Tum Dosyalar ZIP (649 KB)"
 }
@@ -20,7 +22,11 @@ for filename, description in files.items():
                 label=f"Indir: {description}",
                 data=f.read(),
                 file_name=filename,
-                mime="application/octet-stream"
+                mime="application/octet-stream",
+                key=filename
             )
     else:
         st.warning(f"{filename} bulunamadi")
+
+st.markdown("---")
+st.info("Dosyalari indirmek icin yukardaki butonlara tiklayin.")
