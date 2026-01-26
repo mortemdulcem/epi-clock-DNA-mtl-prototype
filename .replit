@@ -2,7 +2,7 @@ modules = ["python-3.11", "postgresql-16"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["cairo", "cargo", "catch2", "comic-neue", "coordgenlibs", "eigen", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "inchi", "libiconv", "libxcrypt", "maeparser", "openssl", "pkg-config", "qhull", "rapidjson", "rustc", "tcl", "tk", "xsimd", "unzip", "zip"]
+packages = ["cairo", "cargo", "catch2", "comic-neue", "coordgenlibs", "eigen", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "gumbo", "harfbuzz", "inchi", "jbig2dec", "libiconv", "libjpeg_turbo", "libxcrypt", "maeparser", "mupdf", "openjpeg", "openssl", "pkg-config", "qhull", "rapidjson", "rustc", "swig", "tcl", "tk", "unzip", "xcbuild", "xsimd", "zip"]
 
 [deployment]
 deploymentTarget = "autoscale"
