@@ -3,6 +3,20 @@ import os
 
 st.set_page_config(page_title="EpiClock Downloads", layout="wide")
 
+st.markdown("""
+<style>
+    * {
+        font-size: 10pt !important;
+    }
+    h1 {
+        font-size: 14pt !important;
+    }
+    .stDownloadButton button {
+        font-size: 10pt !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title("EpiClock v4.0 - Dosya Indirme")
 st.markdown("---")
 
