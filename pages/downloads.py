@@ -21,7 +21,7 @@ st.title("EpiClock v4.0 - Dosya Indirme")
 st.markdown("---")
 
 files = {
-    "EpiClock_v4_Tam_Makale_Profesyonel.docx": "WORD MAKALE v4.0 (516 KB) - 20 Tablo + 6 Grafik + Guncel Istatistikler",
+    "EpiClock_v4_Tam_Makale_Profesyonel.docx": "WORD MAKALE v4.0 (369 KB) - Times New Roman 12pt, 100 Kaynak, 25+ Tablo",
     "DNA_Metilasyon_EpiClock_v4_Tam_Makale_Guncel.pdf": "PDF MAKALE v4.0 - TAM (39 sayfa, 509 KB) - Orijinal + 8 Yeni Modul",
     "Makale_Orijinal.pdf": "Orijinal Makale (945 KB, 29 sayfa)",
     "EpiClock_Sunum_97_Slayt.pptx": "Kapsamli Sunum (29 MB, 97 slayt)",
