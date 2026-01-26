@@ -30,16 +30,16 @@ files = {
 }
 
 for filename, description in files.items():
-    filepath = f"/home/runner/workspace/{filename}"
-    if os.path.exists(filepath):
-        with open(filepath, "rb") as f:
-            st.download_button(
-                label=f"Indir: {description}",
-                data=f.read(),
-                file_name=filename,
-                mime="application/octet-stream",
-                key=filename
-            )
+    if os.path.exists(filename):
+        with open(filename, "rb") as f:
+            file_data = f.read()
+        st.download_button(
+            label=f"Indir: {description}",
+            data=file_data,
+            file_name=filename,
+            mime="application/octet-stream",
+            key=filename
+        )
     else:
         st.warning(f"{filename} bulunamadi")
 
