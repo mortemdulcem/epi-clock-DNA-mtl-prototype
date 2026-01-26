@@ -53,6 +53,14 @@ The EpiClock platform is built around a modular architecture, with `app.py` serv
     - **Academic Reporting:** STROBE-ME checklist (38 items), TRIPOD checklist, Supplementary materials generator, Methods/Results section templates, Data availability statements
     - **Reproducibility Infrastructure:** Global seed management (Python, NumPy, PyTorch, TensorFlow), Environment capture, Data checksums (SHA256), Pipeline tracking with manifests, Version control integration, Requirements generation
     - **Test Suite:** 32 pytest unit/integration tests covering all validation modules (100% pass rate)
+    - **EWAS Reporting Standards:** P-value thresholds (P<1e-7), DMR analysis, methQTL integration, cell-type deconvolution, batch effect correction tracking
+    - **MIQE Standards:** qPCR validation checklist, primer design standards, amplification efficiency tracking
+    - **MIAME Standards:** Microarray experiment metadata, GEO/ArrayExpress submission generators, SOFT file creation
+    - **FAIR Principles:** Persistent identifiers, Dublin Core/DataCite metadata, data licensing (CC-BY-4.0), provenance tracking
+    - **MINSEQE Standards:** Sequencing experiment metadata, SRA/ENA submission generators, WGBS/RRBS support
+    - **GATHER Standards:** Gene list reporting, pathway analysis standards, GO enrichment documentation
+    - **REMARK Standards:** Biomarker cutoff determination, prognostic model validation, C-index, calibration analysis
+    - **STARD Standards:** Diagnostic accuracy metrics, sensitivity/specificity with CI, ROC analysis, DeLong test for AUC comparison
 
 ## External Dependencies
 - **Python Libraries:** `streamlit`, `pandas`, `numpy`, `scikit-learn`, `xgboost`, `plotly`, `matplotlib`, `seaborn`, `scipy`, `statsmodels`, `reportlab`, `openpyxl`, `psycopg2-binary`, `sqlalchemy`, `rdkit`, `torch`.
