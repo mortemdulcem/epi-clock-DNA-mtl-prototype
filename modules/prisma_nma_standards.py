@@ -1167,5 +1167,282 @@ def test_prisma_nma():
     return analyzer
 
 
+# ============================================================================
+# VISUALIZATION FUNCTIONS (Plotly)
+# ============================================================================
+
+def create_network_graph_plotly(network_data: Dict[str, Any]) -> Any:
+    """
+    Plotly ile Network Meta-Analiz agi gorsellestirmesi
+    
+    UNODC Renk Paleti:
+    - Primary: #0050A0
+    - Secondary: #003366
+    - Accent: #00A7D8
+    """
+    try:
+        import plotly.graph_objects as go
+    except ImportError:
+        return None
+    
+    nodes = network_data.get("nodes", [])
+    edges = network_data.get("edges", [])
+    
+    if not nodes:
+        return None
+    
+    # UNODC color palette
+    UNODC_PRIMARY = "#0050A0"
+    UNODC_SECONDARY = "#003366"
+    UNODC_ACCENT = "#00A7D8"
+    
+    # Calculate node positions (circular layout)
+    n_nodes = len(nodes)
+    angles = np.linspace(0, 2 * np.pi, n_nodes, endpoint=False)
+    
+    node_x = [np.cos(a) * 2 for a in angles]
+    node_y = [np.sin(a) * 2 for a in angles]
+    
+    # Create node id to position mapping
+    node_positions = {}
+    for i, node in enumerate(nodes):
+        node_positions[node["id"]] = (node_x[i], node_y[i])
+    
+    # Edge traces
+    edge_traces = []
+    for edge in edges:
+        x0, y0 = node_positions.get(edge["source"], (0, 0))
+        x1, y1 = node_positions.get(edge["target"], (0, 0))
+        
+        edge_trace = go.Scatter(
+            x=[x0, x1, None],
+            y=[y0, y1, None],
+            mode='lines',
+            line=dict(width=edge.get("weight", 1) * 0.5, color=UNODC_SECONDARY),
+            hoverinfo='none',
+            showlegend=False
+        )
+        edge_traces.append(edge_trace)
+    
+    # Node trace
+    node_sizes = [n.get("size", 20) for n in nodes]
+    node_labels = [n.get("label", n["id"]) for n in nodes]
+    node_hover = [
+        f"{n.get('label', n['id'])}<br>Katilimci: {n.get('participants', 0)}"
+        for n in nodes
+    ]
+    
+    node_trace = go.Scatter(
+        x=node_x,
+        y=node_y,
+        mode='markers+text',
+        marker=dict(
+            size=node_sizes,
+            color=UNODC_PRIMARY,
+            line=dict(width=2, color=UNODC_ACCENT)
+        ),
+        text=node_labels,
+        textposition="top center",
+        textfont=dict(size=10, color=UNODC_SECONDARY),
+        hovertext=node_hover,
+        hoverinfo='text',
+        showlegend=False
+    )
+    
+    # Create figure
+    fig = go.Figure(data=edge_traces + [node_trace])
+    
+    fig.update_layout(
+        title=dict(
+            text="Network Meta-Analysis Evidence Network",
+            font=dict(size=16, color=UNODC_SECONDARY)
+        ),
+        showlegend=False,
+        hovermode='closest',
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        margin=dict(l=20, r=20, t=50, b=20),
+        height=500
+    )
+    
+    return fig
+
+
+def create_forest_plot_plotly(nma_results: List[Dict[str, Any]]) -> Any:
+    """Forest plot gorsellestirmesi"""
+    try:
+        import plotly.graph_objects as go
+    except ImportError:
+        return None
+    
+    if not nma_results:
+        return None
+    
+    UNODC_PRIMARY = "#0050A0"
+    UNODC_ACCENT = "#00A7D8"
+    
+    comparisons = [r["comparison"] for r in nma_results]
+    effects = [r["effect"] for r in nma_results]
+    ci_lower = [r["ci"][0] for r in nma_results]
+    ci_upper = [r["ci"][1] for r in nma_results]
+    
+    fig = go.Figure()
+    
+    # Error bars (CI)
+    for i, (comp, effect, low, high) in enumerate(zip(comparisons, effects, ci_lower, ci_upper)):
+        fig.add_trace(go.Scatter(
+            x=[low, high],
+            y=[i, i],
+            mode='lines',
+            line=dict(color=UNODC_PRIMARY, width=2),
+            showlegend=False,
+            hoverinfo='skip'
+        ))
+    
+    # Point estimates
+    fig.add_trace(go.Scatter(
+        x=effects,
+        y=list(range(len(effects))),
+        mode='markers',
+        marker=dict(
+            size=10,
+            color=UNODC_PRIMARY,
+            symbol='diamond'
+        ),
+        text=[f"{e:.3f} ({l:.3f}, {h:.3f})" for e, l, h in zip(effects, ci_lower, ci_upper)],
+        hoverinfo='text',
+        showlegend=False
+    ))
+    
+    # Null effect line
+    fig.add_vline(x=0, line=dict(color='gray', dash='dash', width=1))
+    
+    fig.update_layout(
+        title=dict(
+            text="Forest Plot - NMA Effect Estimates",
+            font=dict(size=16, color="#003366")
+        ),
+        xaxis_title="Effect Size (SMD)",
+        yaxis=dict(
+            tickmode='array',
+            tickvals=list(range(len(comparisons))),
+            ticktext=comparisons,
+            autorange='reversed'
+        ),
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        height=max(400, len(comparisons) * 30),
+        margin=dict(l=200)
+    )
+    
+    return fig
+
+
+def create_sucra_ranking_plot(rankings: List[Dict[str, Any]]) -> Any:
+    """SUCRA siralama grafigi"""
+    try:
+        import plotly.graph_objects as go
+    except ImportError:
+        return None
+    
+    if not rankings:
+        return None
+    
+    UNODC_PRIMARY = "#0050A0"
+    UNODC_ACCENT = "#00A7D8"
+    
+    treatments = [r["treatment"] for r in rankings]
+    sucra_values = [r["sucra"] * 100 for r in rankings]
+    
+    # Color gradient based on SUCRA
+    colors = [UNODC_PRIMARY if s > 50 else UNODC_ACCENT for s in sucra_values]
+    
+    fig = go.Figure(go.Bar(
+        x=sucra_values,
+        y=treatments,
+        orientation='h',
+        marker_color=colors,
+        text=[f"{s:.1f}%" for s in sucra_values],
+        textposition='outside'
+    ))
+    
+    fig.update_layout(
+        title=dict(
+            text="SUCRA Rankings - Treatment Effectiveness",
+            font=dict(size=16, color="#003366")
+        ),
+        xaxis_title="SUCRA (%)",
+        xaxis=dict(range=[0, 105]),
+        yaxis=dict(autorange='reversed'),
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        height=max(300, len(treatments) * 40),
+        margin=dict(l=200)
+    )
+    
+    return fig
+
+
+def create_prisma_flow_diagram(flow_data: Dict[str, int]) -> Any:
+    """PRISMA akis diyagrami"""
+    try:
+        import plotly.graph_objects as go
+    except ImportError:
+        return None
+    
+    UNODC_PRIMARY = "#0050A0"
+    UNODC_SECONDARY = "#003366"
+    UNODC_ACCENT = "#00A7D8"
+    
+    # Default values
+    identified = flow_data.get("identified", 0)
+    duplicates = flow_data.get("duplicates", 0)
+    screened = flow_data.get("screened", identified - duplicates)
+    excluded_title = flow_data.get("excluded_title", int(screened * 0.6))
+    full_text = flow_data.get("full_text", screened - excluded_title)
+    excluded_full = flow_data.get("excluded_full", int(full_text * 0.3))
+    included = flow_data.get("included", full_text - excluded_full)
+    
+    # Sankey diagram
+    fig = go.Figure(go.Sankey(
+        node=dict(
+            pad=15,
+            thickness=20,
+            line=dict(color=UNODC_SECONDARY, width=0.5),
+            label=[
+                f"Identified (n={identified})",
+                f"Screened (n={screened})",
+                f"Full-text assessed (n={full_text})",
+                f"Included (n={included})",
+                f"Duplicates (n={duplicates})",
+                f"Excluded by title (n={excluded_title})",
+                f"Excluded full-text (n={excluded_full})"
+            ],
+            color=[UNODC_PRIMARY, UNODC_PRIMARY, UNODC_PRIMARY, 
+                   UNODC_ACCENT, "#cccccc", "#cccccc", "#cccccc"]
+        ),
+        link=dict(
+            source=[0, 0, 1, 1, 2, 2],
+            target=[1, 4, 2, 5, 3, 6],
+            value=[screened, duplicates, full_text, excluded_title, 
+                   included, excluded_full],
+            color=["rgba(0,80,160,0.3)"] * 6
+        )
+    ))
+    
+    fig.update_layout(
+        title=dict(
+            text="PRISMA Flow Diagram",
+            font=dict(size=16, color=UNODC_SECONDARY)
+        ),
+        height=500,
+        paper_bgcolor='white'
+    )
+    
+    return fig
+
+
 if __name__ == "__main__":
     test_prisma_nma()
