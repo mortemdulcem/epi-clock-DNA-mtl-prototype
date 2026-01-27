@@ -172,6 +172,32 @@ def inject_professional_css():
             color: white;
         }
         
+        /* Sidebar radio button labels - white color */
+        [data-testid="stSidebar"] .stRadio label {
+            color: white !important;
+        }
+        
+        [data-testid="stSidebar"] .stRadio p {
+            color: white !important;
+        }
+        
+        [data-testid="stSidebar"] .stRadio span {
+            color: white !important;
+        }
+        
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+            color: white !important;
+        }
+        
+        /* Radio button text styling */
+        section[data-testid="stSidebar"] label[data-baseweb="radio"] {
+            color: white !important;
+        }
+        
+        section[data-testid="stSidebar"] label[data-baseweb="radio"] div {
+            color: white !important;
+        }
+        
         /* Table styling */
         .dataframe {
             border: 1px solid var(--unodc-accent) !important;
