@@ -44,6 +44,15 @@ The EpiClock platform is built around a modular architecture, with `app.py` serv
     - **Differential Diagnosis System:** Multi-source anomaly interpretation with clinical disclaimers
     - **Safety Features:** Clear disclaimers that methylation anomalies are NOT diagnostic - requires clinical correlation
 - **Data Management:** PostgreSQL database for managing CpG markers, substance panels, gene systems, and clock information.
+- **Auto-Sync Database System (v4.0 NEW):**
+    - **Automatic External Database Synchronization:** Real-time integration with GWAS Catalog, EWAS Catalog, PubChem APIs
+    - **New Substance Detection:** Automatically detects and imports new addiction-related substances
+    - **CpG Marker Updates:** Syncs latest EWAS findings for addiction exposures
+    - **GWAS Study Integration:** Imports addiction-related genome-wide association studies
+    - **Change Detection:** SHA-256 hashing for efficient update detection
+    - **Scheduler:** Configurable auto-sync intervals (6h, 12h, 24h, weekly)
+    - **Rate Limiting:** API-compliant request throttling for each data source
+    - **SQLAlchemy Models:** SyncedSubstance, SyncedGWASStudy, SyncedEWASMarker, SyncLog tables
 - **Report Generation:** Automated PDF clinical reports with interpretations.
 - **Comprehensive Databases:** Integration of GWAS, EWAS, PharmGKB, and various substance/gene databases.
 - **Code Protection:** Mechanisms for code protection and anti-copying.
