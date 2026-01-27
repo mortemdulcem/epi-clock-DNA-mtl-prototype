@@ -49,6 +49,11 @@ from modules.audit import (
     AuditAction,
     get_audit_summary_table
 )
+from modules.auto_sync_database import (
+    DatabaseSyncManager,
+    create_sync_manager,
+    get_database_statistics as get_sync_statistics
+)
 
 # Page configuration
 st.set_page_config(
@@ -1030,6 +1035,144 @@ def render_advanced_mode_info():
     
     st.info("To access the full research platform with all advanced features, please contact the research team or access through the institutional portal.")
 
+def render_database_sync_page():
+    """Render database auto-sync management page"""
+    st.markdown("""
+    <div class="main-header">
+        <h1>Database Auto-Sync</h1>
+        <p>Automatic synchronization with external genomic databases</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    try:
+        sync_manager = create_sync_manager()
+        status = get_sync_statistics()
+        
+        st.markdown("### Connected Data Sources")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.markdown("""
+            <div class="info-card">
+                <h3>GWAS Catalog</h3>
+                <p>NHGRI-EBI</p>
+                <p style="color: #00A7D8;">Genome-wide association studies</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div class="info-card">
+                <h3>EWAS Catalog</h3>
+                <p>Epigenome-wide studies</p>
+                <p style="color: #00A7D8;">CpG-phenotype associations</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown("""
+            <div class="info-card">
+                <h3>PubChem</h3>
+                <p>NCBI</p>
+                <p style="color: #00A7D8;">Substance database</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown("""
+            <div class="info-card">
+                <h3>PharmGKB</h3>
+                <p>Pharmacogenomics</p>
+                <p style="color: #00A7D8;">Drug-gene interactions</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        st.markdown("### Sync Statistics")
+        
+        counts = status.get("counts", {})
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Synced Substances", counts.get("substances", 0))
+        with col2:
+            st.metric("GWAS Studies", counts.get("gwas_studies", 0))
+        with col3:
+            st.metric("EWAS Markers", counts.get("ewas_markers", 0))
+        
+        st.markdown("---")
+        
+        st.markdown("### Manual Synchronization")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            sync_source = st.selectbox(
+                "Select Data Source",
+                ["All Sources", "GWAS Catalog", "EWAS Catalog", "PubChem"]
+            )
+            
+            if st.button("Run Sync Now", type="primary"):
+                with st.spinner(f"Syncing from {sync_source}..."):
+                    if sync_source == "All Sources":
+                        results = sync_manager.sync_all()
+                        for source, result in results.items():
+                            if result.status == "success":
+                                st.success(f"{source}: {result.records_added} new records added, {result.records_updated} updated")
+                            else:
+                                st.warning(f"{source}: Sync completed with issues")
+                    elif sync_source == "GWAS Catalog":
+                        result = sync_manager.sync_gwas_catalog()
+                        st.success(f"GWAS: {result.records_added} added, {result.records_updated} updated")
+                    elif sync_source == "EWAS Catalog":
+                        result = sync_manager.sync_ewas_catalog()
+                        st.success(f"EWAS: {result.records_added} added, {result.records_updated} updated")
+                    elif sync_source == "PubChem":
+                        result = sync_manager.sync_pubchem_substances()
+                        st.success(f"PubChem: {result.records_added} added, {result.records_updated} updated")
+        
+        with col2:
+            st.markdown("""
+            <div class="feature-box">
+                <h4>Automatic Updates</h4>
+                <p>When enabled, the system automatically checks external databases for new entries:</p>
+                <ul>
+                    <li>New substance entries from PubChem</li>
+                    <li>New GWAS associations for addiction traits</li>
+                    <li>New EWAS CpG markers</li>
+                </ul>
+                <p>Changes are detected via SHA-256 hashing and only modified records are updated.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        st.markdown("### Recent Sync History")
+        
+        recent_syncs = status.get("recent_syncs", [])
+        if recent_syncs:
+            import pandas as pd
+            df = pd.DataFrame(recent_syncs)
+            st.dataframe(df, use_container_width=True)
+        else:
+            st.info("No sync history available yet. Run a sync to populate this table.")
+        
+        st.markdown("""
+        <div class="feature-box">
+            <h4>About Database Synchronization</h4>
+            <p>This system automatically integrates with major genomic and pharmacological databases to keep 
+            the EpiClock platform updated with the latest research findings. New substances, genetic variants, 
+            and epigenetic markers discovered in published research are automatically incorporated into 
+            the analysis pipeline.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    except Exception as e:
+        st.error(f"Database sync module initialization error: {str(e)}")
+        st.info("The sync module requires database connection. Please ensure DATABASE_URL is configured.")
+
 def main():
     inject_professional_css()
     
@@ -1045,7 +1188,7 @@ def main():
         
         page = st.radio(
             "Navigation",
-            ["Home", "Analysis", "Epigenetic Clocks", "Downloads", "About", "Advanced Mode"],
+            ["Home", "Analysis", "Epigenetic Clocks", "Database Sync", "Downloads", "About", "Advanced Mode"],
             label_visibility="collapsed"
         )
         
@@ -1066,6 +1209,8 @@ def main():
         render_analysis_page()
     elif page == "Epigenetic Clocks":
         render_clocks_page()
+    elif page == "Database Sync":
+        render_database_sync_page()
     elif page == "Downloads":
         render_downloads_page()
     elif page == "About":

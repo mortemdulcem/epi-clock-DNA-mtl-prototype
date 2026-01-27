@@ -65,7 +65,7 @@ if SQLALCHEMY_AVAILABLE:
         cas_number = Column(String(50))
         addiction_potential = Column(Float)
         cpg_markers = Column(JSON)
-        metadata = Column(JSON)
+        extra_data = Column(JSON)
         data_hash = Column(String(64))
         created_at = Column(DateTime, default=datetime.utcnow)
         updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -90,7 +90,7 @@ if SQLALCHEMY_AVAILABLE:
         sample_size = Column(Integer)
         ancestry = Column(String(200))
         source = Column(String(50), default='GWAS_Catalog')
-        metadata = Column(JSON)
+        extra_data = Column(JSON)
         data_hash = Column(String(64))
         created_at = Column(DateTime, default=datetime.utcnow)
         updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -113,7 +113,7 @@ if SQLALCHEMY_AVAILABLE:
         tissue = Column(String(100))
         array_type = Column(String(50))
         source = Column(String(50), default='EWAS_Catalog')
-        metadata = Column(JSON)
+        extra_data = Column(JSON)
         data_hash = Column(String(64))
         created_at = Column(DateTime, default=datetime.utcnow)
         updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -569,7 +569,7 @@ class DatabaseSyncManager:
                         
                         if existing:
                             if existing.data_hash != data_hash:
-                                existing.metadata = study_data
+                                existing.extra_data = study_data
                                 existing.data_hash = data_hash
                                 existing.updated_at = datetime.utcnow()
                                 result.records_updated += 1
@@ -584,7 +584,7 @@ class DatabaseSyncManager:
                                 gene_name=study_data.get("gene_name"),
                                 p_value=study_data.get("p_value"),
                                 source="GWAS_Catalog",
-                                metadata=study_data,
+                                extra_data=study_data,
                                 data_hash=data_hash
                             )
                             session.add(new_study)
@@ -652,7 +652,7 @@ class DatabaseSyncManager:
                                 existing.gene = marker_data.get("gene")
                                 existing.p_value = marker_data.get("p_value")
                                 existing.effect_size = marker_data.get("effect_size")
-                                existing.metadata = marker_data
+                                existing.extra_data = marker_data
                                 existing.data_hash = data_hash
                                 result.records_updated += 1
                             else:
@@ -672,7 +672,7 @@ class DatabaseSyncManager:
                                 sample_size=marker_data.get("sample_size"),
                                 tissue=marker_data.get("tissue"),
                                 source="EWAS_Catalog",
-                                metadata=marker_data,
+                                extra_data=marker_data,
                                 data_hash=data_hash
                             )
                             session.add(new_marker)
@@ -745,7 +745,7 @@ class DatabaseSyncManager:
                                 existing.smiles = substance_data.get("smiles")
                                 existing.inchi_key = substance_data.get("inchi_key")
                                 existing.chemical_formula = substance_data.get("molecular_formula")
-                                existing.metadata = substance_data
+                                existing.extra_data = substance_data
                                 existing.data_hash = data_hash
                                 result.records_updated += 1
                             else:
@@ -759,7 +759,7 @@ class DatabaseSyncManager:
                                 smiles=substance_data.get("smiles"),
                                 inchi_key=substance_data.get("inchi_key"),
                                 chemical_formula=substance_data.get("molecular_formula"),
-                                metadata=substance_data,
+                                extra_data=substance_data,
                                 data_hash=data_hash
                             )
                             session.add(new_substance)
