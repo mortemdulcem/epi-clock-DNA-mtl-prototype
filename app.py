@@ -758,6 +758,101 @@ def render_footer():
     </div>
     """, unsafe_allow_html=True)
 
+def render_advanced_mode_info():
+    st.markdown("""
+    <div class="info-card">
+        <h3>Advanced Research Platform</h3>
+        <p>The full EpiClock v4.0 platform includes comprehensive research tools:</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="info-card">
+            <h3>Analysis Modules</h3>
+            <div class="feature-box">
+                <ul>
+                    <li>Multi-tissue epigenetic clock analysis</li>
+                    <li>Ensemble machine learning predictions</li>
+                    <li>Deep learning models (MLP, VAE, MTL-NN)</li>
+                    <li>Longitudinal aging trajectory analysis</li>
+                    <li>Gene set enrichment analysis (GSEA)</li>
+                    <li>Multi-omics integration (MOFA/PLS)</li>
+                </ul>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-card">
+            <h3>Genomic Tools</h3>
+            <div class="feature-box">
+                <ul>
+                    <li>Variant calling and annotation</li>
+                    <li>Pharmacogenomics analysis</li>
+                    <li>Polygenic risk score calculation</li>
+                    <li>ClinVar/gnomAD integration</li>
+                    <li>PharmGKB drug response</li>
+                </ul>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="info-card">
+            <h3>Forensic Features</h3>
+            <div class="feature-box">
+                <ul>
+                    <li>Blockchain audit trail (SHA-256)</li>
+                    <li>Chain of custody tracking</li>
+                    <li>Postmortem interval correction</li>
+                    <li>Tamper detection simulation</li>
+                    <li>Court-admissible reporting</li>
+                </ul>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-card">
+            <h3>Substance Detection</h3>
+            <div class="feature-box">
+                <ul>
+                    <li>36,000+ substance database</li>
+                    <li>Chemical transformation tracking</li>
+                    <li>Abuse method detection</li>
+                    <li>Molecular GNN analysis</li>
+                    <li>Manufacturing chemical detection</li>
+                </ul>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="info-card">
+        <h3>Publication Standards</h3>
+        <p>Full compliance with 11 international standards for Q1 journal publication:</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem;">
+            <span style="background: #0050A0; color: white; padding: 5px 15px; border-radius: 20px;">PRISMA-NMA</span>
+            <span style="background: #003366; color: white; padding: 5px 15px; border-radius: 20px;">STROBE-ME</span>
+            <span style="background: #00A7D8; color: white; padding: 5px 15px; border-radius: 20px;">TRIPOD</span>
+            <span style="background: #0050A0; color: white; padding: 5px 15px; border-radius: 20px;">EWAS</span>
+            <span style="background: #003366; color: white; padding: 5px 15px; border-radius: 20px;">MIQE</span>
+            <span style="background: #00A7D8; color: white; padding: 5px 15px; border-radius: 20px;">MIAME</span>
+            <span style="background: #0050A0; color: white; padding: 5px 15px; border-radius: 20px;">FAIR</span>
+            <span style="background: #003366; color: white; padding: 5px 15px; border-radius: 20px;">MINSEQE</span>
+            <span style="background: #00A7D8; color: white; padding: 5px 15px; border-radius: 20px;">GATHER</span>
+            <span style="background: #0050A0; color: white; padding: 5px 15px; border-radius: 20px;">REMARK</span>
+            <span style="background: #003366; color: white; padding: 5px 15px; border-radius: 20px;">STARD</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.info("To access the full research platform with all advanced features, please contact the research team or access through the institutional portal.")
+
 def main():
     inject_professional_css()
     
@@ -773,7 +868,7 @@ def main():
         
         page = st.radio(
             "Navigation",
-            ["Home", "Analysis", "Epigenetic Clocks", "Downloads", "About"],
+            ["Home", "Analysis", "Epigenetic Clocks", "Downloads", "About", "Advanced Mode"],
             label_visibility="collapsed"
         )
         
@@ -798,6 +893,8 @@ def main():
         render_downloads_page()
     elif page == "About":
         render_about_page()
+    elif page == "Advanced Mode":
+        render_advanced_mode_info()
     
     render_footer()
 
