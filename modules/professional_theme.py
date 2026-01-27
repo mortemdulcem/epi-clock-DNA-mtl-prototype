@@ -819,16 +819,16 @@ def render_academic_footer():
     }}
     </style>
     <div class="academic-footer-custom">
-        <div class="footer-title">EpiClock Prototype - Akademik Arastirma Platformu</div>
+        <div class="footer-title">EpiClock Prototype - Academic Research Platform</div>
         <div class="footer-text">
-            <strong>Arastirmaci:</strong> Dr. Nurcan Denli Bayir, M.D., Ph.D., M.Sc., J.D.<br>
-            <strong>Platform:</strong> DNA Metilasyon Tabanli Epigenetik Yas Analizi<br>
-            <strong>Versiyon:</strong> {EPICLOCK_VERSION} | <strong>Build:</strong> {BUILD_DATE}<br>
-            Bu platform, bagimlilik arastirmalarinda epigenetik yas ivmelenmesini analiz etmek icin 
-            tasarlanmis akademik bir arastirma aracidir.
+            <strong>Researcher:</strong> Dr. Nurcan Denli Bayir, M.D., Ph.D., M.Sc., J.D.<br>
+            <strong>Platform:</strong> DNA Methylation-Based Epigenetic Age Analysis<br>
+            <strong>Version:</strong> {EPICLOCK_VERSION} | <strong>Build:</strong> {BUILD_DATE}<br>
+            This platform is an academic research tool designed to analyze epigenetic age acceleration 
+            in addiction research.
         </div>
         <div class="footer-timestamp">
-            Son Guncelleme: {timestamp} (Turkiye Saati)
+            Last Update: {timestamp} (Turkey Time)
         </div>
     </div>
     """, unsafe_allow_html=True)
