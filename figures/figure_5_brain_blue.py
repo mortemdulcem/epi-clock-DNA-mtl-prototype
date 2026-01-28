@@ -21,18 +21,18 @@ COLORS = {
     'bg': '#F8FAFC',
 }
 
-# Data - positions adjusted for this specific brain illustration
+# Data - positions adjusted for AI-generated brain illustration
 regions_data = {
     'Prefrontal Cortex': {'eaa': 5.3, 'ci': (4.2, 6.5), 'n': 48, 'color': BLUES[0], 
-                          'pos': (0.22, 0.65), 'label_pos': (0.08, 0.85)},
+                          'pos': (0.20, 0.45), 'label_pos': (0.05, 0.15)},
     'Nucleus Accumbens': {'eaa': 4.1, 'ci': (3.2, 5.1), 'n': 36, 'color': BLUES[1],
-                          'pos': (0.35, 0.42), 'label_pos': (0.08, 0.25)},
+                          'pos': (0.38, 0.52), 'label_pos': (0.05, 0.85)},
     'Hippocampus': {'eaa': 3.2, 'ci': (2.3, 4.2), 'n': 24, 'color': BLUES[2],
-                    'pos': (0.55, 0.45), 'label_pos': (0.85, 0.60)},
+                    'pos': (0.65, 0.48), 'label_pos': (0.92, 0.72)},
     'Amygdala': {'eaa': 3.5, 'ci': (2.6, 4.4), 'n': 21, 'color': BLUES[3],
-                 'pos': (0.42, 0.35), 'label_pos': (0.08, 0.08)},
+                 'pos': (0.50, 0.58), 'label_pos': (0.92, 0.35)},
     'VTA': {'eaa': 2.8, 'ci': (1.9, 3.7), 'n': 18, 'color': BLUES[4],
-            'pos': (0.52, 0.32), 'label_pos': (0.85, 0.25)},
+            'pos': (0.48, 0.72), 'label_pos': (0.05, 0.52)},
 }
 
 fig = plt.figure(figsize=(20, 12), facecolor='white')
@@ -42,7 +42,7 @@ gs = fig.add_gridspec(1, 2, width_ratios=[1.4, 1], wspace=0.08)
 ax1 = fig.add_subplot(gs[0, 0])
 ax1.set_facecolor('white')
 
-brain_img = mpimg.imread('figures/brain_illustration.png')
+brain_img = mpimg.imread('figures/brain_generated.png')
 ax1.imshow(brain_img, aspect='auto')
 
 img_h, img_w = brain_img.shape[:2]
