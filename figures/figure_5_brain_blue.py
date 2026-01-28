@@ -21,18 +21,19 @@ COLORS = {
     'bg': '#F8FAFC',
 }
 
-# Data - positions adjusted for 3D realistic brain illustration
+# Data - positions with CLEAR SEPARATION - no overlapping labels
+# Brain markers inside, labels completely outside with proper spacing
 regions_data = {
     'Prefrontal Cortex': {'eaa': 5.3, 'ci': (4.2, 6.5), 'n': 48, 'color': BLUES[0], 
-                          'pos': (0.18, 0.35), 'label_pos': (0.03, 0.12)},
+                          'pos': (0.18, 0.32), 'label_pos': (-0.12, 0.32)},  # Far left
     'Nucleus Accumbens': {'eaa': 4.1, 'ci': (3.2, 5.1), 'n': 36, 'color': BLUES[1],
-                          'pos': (0.30, 0.52), 'label_pos': (0.03, 0.88)},
+                          'pos': (0.32, 0.48), 'label_pos': (-0.12, 0.60)},  # Left upper
     'Hippocampus': {'eaa': 3.2, 'ci': (2.3, 4.2), 'n': 24, 'color': BLUES[2],
-                    'pos': (0.68, 0.55), 'label_pos': (0.93, 0.75)},
+                    'pos': (0.65, 0.52), 'label_pos': (1.08, 0.52)},  # Right middle
     'Amygdala': {'eaa': 3.5, 'ci': (2.6, 4.4), 'n': 21, 'color': BLUES[3],
-                 'pos': (0.42, 0.55), 'label_pos': (0.93, 0.32)},
+                 'pos': (0.48, 0.58), 'label_pos': (1.08, 0.75)},  # Right upper
     'VTA': {'eaa': 2.8, 'ci': (1.9, 3.7), 'n': 18, 'color': BLUES[4],
-            'pos': (0.42, 0.72), 'label_pos': (0.03, 0.55)},
+            'pos': (0.45, 0.72), 'label_pos': (-0.12, 0.88)},  # Left bottom
 }
 
 fig = plt.figure(figsize=(20, 12), facecolor='white')
@@ -47,23 +48,25 @@ ax1.imshow(brain_img, aspect='auto')
 
 img_h, img_w = brain_img.shape[:2]
 
-# Region markers with blue gradient
+# Region markers - simple numbered circles
+marker_num = 1
 for region, data in regions_data.items():
     x = data['pos'][0] * img_w
     y = (1 - data['pos'][1]) * img_h
     
     # Glow effect (blue tones)
-    for r, alpha in [(40, 0.2), (30, 0.35), (22, 0.5)]:
+    for r, alpha in [(35, 0.15), (25, 0.3)]:
         circle = Circle((x, y), r, facecolor=data['color'], alpha=alpha, zorder=5)
         ax1.add_patch(circle)
     
-    # Inner marker
-    circle = Circle((x, y), 15, facecolor=data['color'], edgecolor='white', 
+    # Inner marker with number only
+    circle = Circle((x, y), 18, facecolor=data['color'], edgecolor='white', 
                     linewidth=3, alpha=0.95, zorder=10)
     ax1.add_patch(circle)
     
-    ax1.text(x, y, f"+{data['eaa']}", ha='center', va='center', 
-            fontsize=8, fontweight='bold', color='white', zorder=11)
+    ax1.text(x, y, str(marker_num), ha='center', va='center', 
+            fontsize=11, fontweight='bold', color='white', zorder=11)
+    marker_num += 1
 
 # Labels with connection lines
 for region, data in regions_data.items():
@@ -92,8 +95,9 @@ for region, data in regions_data.items():
     ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=9,
             fontweight='bold', color='white', bbox=bbox, zorder=12)
 
-ax1.set_xlim(0, img_w)
-ax1.set_ylim(img_h, 0)
+# Extended limits to show labels outside brain
+ax1.set_xlim(-img_w * 0.25, img_w * 1.2)
+ax1.set_ylim(img_h * 1.05, -img_h * 0.05)
 ax1.axis('off')
 ax1.set_title('A. Sagittal Brain Section - Regional EAA Mapping', fontsize=14, 
               fontweight='bold', color=COLORS['primary'], loc='left', pad=15)
