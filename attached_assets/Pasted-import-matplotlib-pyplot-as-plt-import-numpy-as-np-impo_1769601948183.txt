@@ -1,0 +1,59 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+
+# Veri hazırlama
+interventions = ['Kombine Müdahale', 'Diyet', 'Egzersiz', 'Madde Bırakma (5 yıl)', 
+                'Mindfulness+Yoga', 'Madde Bırakma (1 yıl)', 'Tüm Müdahaleler']
+
+effects = [-4.60, -3.23, -2.87, -3.18, -1.96, -1.52, -2.73]
+
+ci_lower = [-5.8, -4.1, -3.6, -4.2, -2.7, -2.3, -3.4]
+ci_upper = [-3.4, -2.4, -2.1, -2.1, -1.2, -0.7, -2.1]
+
+# CI genişliklerini hesaplama
+ci_errors_lower = [abs(effects[i] - ci_lower[i]) for i in range(len(effects))]
+ci_errors_upper = [abs(effects[i] - ci_upper[i]) for i in range(len(effects))]
+ci_errors = np.array([ci_errors_lower, ci_errors_upper])
+
+# Renk paleti
+colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#7f7f7f']
+
+# Figür oluşturma
+plt.figure(figsize=(10, 6))
+
+# Forest plot tarzında çizim
+y_pos = np.arange(len(interventions))
+
+# Çizgi ve noktaları çizme
+for i, (effect, color) in enumerate(zip(effects, colors)):
+    plt.plot([ci_lower[i], ci_upper[i]], [y_pos[i], y_pos[i]], 
+             color=color, linewidth=2.5, alpha=0.8)
+    plt.scatter(effect, y_pos[i], s=150, color=color, zorder=10, 
+               edgecolor='black', linewidth=1)
+
+# Dikey çizgi (sıfır etkiyi göstermek için)
+plt.axvline(x=0, color='gray', linestyle='--', alpha=0.7)
+
+# Eksen etiketleri ve başlık
+plt.yticks(y_pos, interventions, fontsize=12)
+plt.xlabel('Epigenetik Yaş Değişimi (yıl)', fontsize=14)
+plt.title('Müdahale Türüne Göre Epigenetik Yaş Değişimi', fontsize=16, pad=20)
+
+# Eksen sınırları
+plt.xlim(-6.5, 1)
+
+# Izgara çizgileri
+plt.grid(axis='x', linestyle='--', alpha=0.3)
+
+# Değerleri gösterme
+for i, effect in enumerate(effects):
+    plt.text(effect-0.2, y_pos[i]-0.25, f"{effect} yıl", 
+            ha='center', va='top', fontsize=10, fontweight='bold')
+
+# Açıklama metni
+plt.figtext(0.5, 0.01, 'Not: Hata çubukları %95 güven aralıklarını göstermektedir. n=473, 6 çalışma.', 
+            ha='center', fontsize=10, style='italic')
+
+plt.tight_layout()
+plt.show()
