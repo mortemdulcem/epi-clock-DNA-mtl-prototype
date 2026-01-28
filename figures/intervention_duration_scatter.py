@@ -51,24 +51,28 @@ for i, (duration, effect, intervention, color, size) in enumerate(zip(durations,
     ax.scatter(duration, effect, s=size, color=color, alpha=0.85, 
                edgecolor='white', linewidth=2.5, zorder=10)
 
-# Add intervention labels with smart positioning
-label_offsets = [
-    (0, -0.45),   # Dietary
-    (0, 0.35),    # Exercise
-    (0, -0.45),   # Mindfulness
-    (0, 0.4),     # Combined
-    (0, 0.35),    # Cessation 1y
-    (0, -0.5),    # Cessation 5y
+# Add intervention labels with smart positioning (avoid overlap)
+# Format: (x_pos, y_pos, horizontal_align) - absolute positions
+label_positions = [
+    (4.5, -3.8, 'center'),    # Dietary
+    (25, -2.5, 'center'),     # Exercise
+    (5, -1.2, 'center'),      # Mindfulness
+    (20, -5.0, 'center'),     # Combined
+    (90, -0.7, 'center'),     # Cessation 1y
+    (350, -2.5, 'center'),    # Cessation 5y
 ]
 
-for i, (duration, effect, intervention, offset) in enumerate(zip(durations, effects, interventions, label_offsets)):
-    ax.annotate(intervention, 
+for i, (duration, effect, intervention, pos) in enumerate(zip(durations, effects, interventions, label_positions)):
+    x_pos, y_pos, ha = pos
+    ax.annotate(intervention.replace('\n', ' '), 
                 xy=(duration, effect),
-                xytext=(duration * (1 + offset[0] * 0.1), effect + offset[1]),
-                fontsize=10, ha='center', va='center',
+                xytext=(x_pos, y_pos),
+                fontsize=9, ha=ha, va='center',
                 fontweight='500', color=UNODC_SECONDARY,
+                arrowprops=dict(arrowstyle='->', color='#666666', lw=1.2, 
+                               connectionstyle='arc3,rad=0.15'),
                 bbox=dict(boxstyle='round,pad=0.3', facecolor='white', 
-                         edgecolor='#E5E7EB', alpha=0.9))
+                         edgecolor='#CCCCCC', alpha=0.95, linewidth=1.5))
 
 # Trend line (logarithmic fit)
 x_trend = np.linspace(5, 300, 200)
@@ -105,7 +109,7 @@ fig.text(0.5, 0.915, 'Dose-Response Analysis of Lifestyle and Cessation Interven
 
 # Log scale for x-axis
 ax.set_xscale('log')
-ax.set_xlim(5, 350)
+ax.set_xlim(4, 400)
 ax.set_ylim(-5.5, 0.8)
 
 # Custom x-axis ticks
