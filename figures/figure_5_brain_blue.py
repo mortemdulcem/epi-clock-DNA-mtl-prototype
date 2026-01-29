@@ -43,8 +43,8 @@ regions_data = {
 }
 
 # Create figure - large size for publication
-fig = plt.figure(figsize=(28, 16), facecolor='white')
-gs = fig.add_gridspec(1, 2, width_ratios=[1.5, 1], wspace=0.12)
+fig = plt.figure(figsize=(26, 14), facecolor='white')
+gs = fig.add_gridspec(1, 2, width_ratios=[2, 0.8], wspace=0.15)
 
 # Panel A: Brain Image with labels
 ax1 = fig.add_subplot(gs[0, 0])
@@ -131,10 +131,10 @@ eaa_sorted = [eaa_vals[i] for i in sorted_idx]
 colors_sorted = [colors[i] for i in sorted_idx]
 n_sorted = [n_vals[i] for i in sorted_idx]
 
-# Create horizontal bars
+# Create horizontal bars - thinner bars
 y_positions = np.arange(len(regions_sorted))
 bars = ax2.barh(y_positions, eaa_sorted, color=colors_sorted, edgecolor='white', 
-                linewidth=2, height=0.7, alpha=0.9)
+                linewidth=1, height=0.4, alpha=0.9)
 
 # Error bars (95% CI approximation)
 ci_errors = [0.6, 0.5, 0.5, 0.5, 0.5]
