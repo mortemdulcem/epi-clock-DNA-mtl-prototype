@@ -52,9 +52,9 @@ ax.add_patch(header)
 
 # Title
 ax.text(50, 94, 'POSTMORTEM TISSUE pH ANALYSIS', ha='center', va='center',
-        fontsize=22, fontweight='bold', color='white', fontfamily='serif')
+        fontsize=32, fontweight='bold', color='white', fontfamily='serif')
 ax.text(50, 90, 'DNA Methylation Clock Performance by Tissue Acidification Level',
-        ha='center', va='center', fontsize=12, color=COLORS['highlight'], fontfamily='serif')
+        ha='center', va='center', fontsize=18, color=COLORS['highlight'], fontfamily='serif')
 
 # ============ LEFT PANEL - TISSUE DEGRADATION DIAGRAM ============
 # Panel border
@@ -63,9 +63,9 @@ left_panel = FancyBboxPatch((3, 25), 30, 60, boxstyle="round,pad=0.01,rounding_s
 ax.add_patch(left_panel)
 
 ax.text(18, 83, 'Postmortem Tissue', ha='center', va='center',
-        fontsize=13, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
+        fontsize=18, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
 ax.text(18, 80, 'pH Degradation Timeline', ha='center', va='center',
-        fontsize=10, color=COLORS['text'], fontfamily='serif')
+        fontsize=14, color=COLORS['text'], fontfamily='serif')
 
 # Draw tissue sample containers (test tubes/vials)
 tube_x = [10, 18, 26]
@@ -89,21 +89,21 @@ for i, (x, col, label, ph) in enumerate(zip(tube_x, tube_colors, tube_labels, tu
     ax.add_patch(cap)
     
     # Labels
-    ax.text(x, 46, label, ha='center', va='top', fontsize=8, color=COLORS['text'], fontfamily='serif')
-    ax.text(x, 55 + liquid_height/2, ph, ha='center', va='center', fontsize=9, 
+    ax.text(x, 46, label, ha='center', va='top', fontsize=12, color=COLORS['text'], fontfamily='serif')
+    ax.text(x, 55 + liquid_height/2, ph, ha='center', va='center', fontsize=13, 
             fontweight='bold', color='white', fontfamily='serif')
 
 # PMI Arrow
 ax.annotate('', xy=(28, 40), xytext=(8, 40),
             arrowprops=dict(arrowstyle='->', color=COLORS['primary'], lw=2))
 ax.text(18, 37, 'PMI (Postmortem Interval)', ha='center', va='center',
-        fontsize=9, color=COLORS['primary'], fontfamily='serif', style='italic')
+        fontsize=13, color=COLORS['primary'], fontfamily='serif', style='italic')
 
 # pH decrease indicator
 ax.text(18, 32, 'Tissue Acidification', ha='center', va='center',
-        fontsize=10, fontweight='bold', color=COLORS['secondary'], fontfamily='serif')
+        fontsize=14, fontweight='bold', color=COLORS['secondary'], fontfamily='serif')
 ax.text(18, 29, 'pH 7.0 → 5.0', ha='center', va='center',
-        fontsize=11, color=COLORS['text'], fontfamily='serif')
+        fontsize=15, color=COLORS['text'], fontfamily='serif')
 
 # ============ RIGHT PANEL - pH CATEGORIES TABLE ============
 right_x = 36
@@ -119,7 +119,7 @@ ax.add_patch(table_header)
 headers = ['pH Category', 'Range', 'n', 'MAE', '95% CI', 'R²', 'Status']
 header_x = [right_x+8, right_x+22, right_x+30, right_x+38, right_x+48, right_x+56, right_x+62]
 for hx, htxt in zip(header_x, headers):
-    ax.text(hx, 81.5, htxt, ha='center', va='center', fontsize=10, 
+    ax.text(hx, 81.5, htxt, ha='center', va='center', fontsize=14, 
             fontweight='bold', color='white', fontfamily='serif')
 
 # Data rows
@@ -142,17 +142,17 @@ for i, data in enumerate(ph_data):
     # Data values
     row_y = y - row_height/2 + 1
     ax.text(right_x + 8, row_y, data['category'], ha='center', va='center',
-            fontsize=10, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
+            fontsize=14, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
     ax.text(right_x + 22, row_y, f"pH {data['range']}", ha='center', va='center',
-            fontsize=10, color=COLORS['text'], fontfamily='serif')
+            fontsize=14, color=COLORS['text'], fontfamily='serif')
     ax.text(right_x + 30, row_y, str(data['n']), ha='center', va='center',
-            fontsize=10, color=COLORS['text'], fontfamily='serif')
+            fontsize=14, color=COLORS['text'], fontfamily='serif')
     ax.text(right_x + 38, row_y, f"{data['mae']} yr", ha='center', va='center',
-            fontsize=10, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
+            fontsize=14, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
     ax.text(right_x + 48, row_y, data['ci'], ha='center', va='center',
-            fontsize=10, color=COLORS['text'], fontfamily='serif')
+            fontsize=14, color=COLORS['text'], fontfamily='serif')
     ax.text(right_x + 56, row_y, f"{data['r2']:.2f}", ha='center', va='center',
-            fontsize=10, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
+            fontsize=14, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
     
     # Status badge
     badge = FancyBboxPatch((right_x + 57, row_y - 2.5), 10, 5,
@@ -160,7 +160,7 @@ for i, data in enumerate(ph_data):
                             facecolor=data['color'], edgecolor='white', linewidth=1)
     ax.add_patch(badge)
     ax.text(right_x + 62, row_y, data['status'], ha='center', va='center',
-            fontsize=7, fontweight='bold', color='white', fontfamily='serif')
+            fontsize=10, fontweight='bold', color='white', fontfamily='serif')
 
 # ============ BOTTOM SECTION - STATISTICS & LEGEND ============
 # Statistics box
@@ -169,11 +169,11 @@ stats_box = FancyBboxPatch((36, 8), 62, 14, boxstyle="round,pad=0.01,rounding_si
 ax.add_patch(stats_box)
 
 ax.text(67, 18, 'STATISTICAL ANALYSIS', ha='center', va='center',
-        fontsize=12, fontweight='bold', color='white', fontfamily='serif')
+        fontsize=16, fontweight='bold', color='white', fontfamily='serif')
 ax.text(67, 14, 'ANOVA: F(3,104) = 18.4, p < 0.001 ***', ha='center', va='center',
-        fontsize=11, color=COLORS['highlight'], fontfamily='serif')
+        fontsize=14, color=COLORS['highlight'], fontfamily='serif')
 ax.text(67, 10.5, 'Significant difference in MAE across tissue pH categories', ha='center', va='center',
-        fontsize=10, color='white', fontfamily='serif')
+        fontsize=13, color='white', fontfamily='serif')
 
 # Forensic note
 note_box = FancyBboxPatch((3, 8), 30, 14, boxstyle="round,pad=0.01,rounding_size=0.3",
@@ -181,15 +181,15 @@ note_box = FancyBboxPatch((3, 8), 30, 14, boxstyle="round,pad=0.01,rounding_size
 ax.add_patch(note_box)
 
 ax.text(18, 18, 'FORENSIC NOTE', ha='center', va='center',
-        fontsize=11, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
+        fontsize=15, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
 ax.text(18, 14, 'PMI-corrected Horvath clock', ha='center', va='center',
-        fontsize=9, color=COLORS['text'], fontfamily='serif')
+        fontsize=12, color=COLORS['text'], fontfamily='serif')
 ax.text(18, 11, 'Total n = 108 postmortem samples', ha='center', va='center',
-        fontsize=9, color=COLORS['text'], fontfamily='serif')
+        fontsize=12, color=COLORS['text'], fontfamily='serif')
 
 # Footer legend
 ax.text(50, 4, 'MAE = Mean Absolute Error | CI = Confidence Interval | R² = Coefficient of Determination | PMI = Postmortem Interval',
-        ha='center', va='center', fontsize=8, color=COLORS['tertiary'], fontfamily='serif')
+        ha='center', va='center', fontsize=11, color=COLORS['tertiary'], fontfamily='serif')
 
 plt.savefig('figures/output/table_14_ph_performance.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')

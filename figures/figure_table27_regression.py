@@ -43,9 +43,9 @@ header = FancyBboxPatch((0, 10), 100, 80, boxstyle="round,pad=0.01,rounding_size
 ax_header.add_patch(header)
 
 ax_header.text(50, 65, 'HIERARCHICAL MULTIVARIATE REGRESSION ANALYSIS', ha='center', va='center',
-               fontsize=20, fontweight='bold', color='white', fontfamily='serif')
+               fontsize=28, fontweight='bold', color='white', fontfamily='serif')
 ax_header.text(50, 35, 'Epigenetic Age Acceleration Predictors (n = 3,847)', ha='center', va='center',
-               fontsize=13, color=COLORS['highlight'], fontfamily='serif')
+               fontsize=18, color=COLORS['highlight'], fontfamily='serif')
 
 # ============ LEFT PANEL - STACKED BAR / R² BUILD-UP ============
 ax_left = fig.add_axes([0.05, 0.25, 0.42, 0.58])
@@ -75,21 +75,21 @@ for i, (val, col, lab) in enumerate(zip(values, colors_stack, labels_stack)):
     # Label inside bar
     if val >= 0.05:
         ax_left.text(left_pos + val/2, 0, f'{val*100:.0f}%', ha='center', va='center',
-                    fontsize=14, fontweight='bold', color='white', fontfamily='serif')
+                    fontsize=20, fontweight='bold', color='white', fontfamily='serif')
     left_pos += val
 
 # Y-axis label
 ax_left.set_yticks([0])
-ax_left.set_yticklabels(['Explained\nVariance (R²)'], fontsize=12, fontweight='bold', color=COLORS['primary'])
+ax_left.set_yticklabels(['Explained\nVariance (R²)'], fontsize=16, fontweight='bold', color=COLORS['primary'])
 
 # X-axis
 ax_left.set_xlim(0, 0.5)
 ax_left.set_xticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
-ax_left.set_xticklabels(['0%', '10%', '20%', '30%', '40%', '50%'], fontsize=11)
-ax_left.set_xlabel('Cumulative Explained Variance (R²)', fontsize=12, fontweight='bold', color=COLORS['primary'])
+ax_left.set_xticklabels(['0%', '10%', '20%', '30%', '40%', '50%'], fontsize=14)
+ax_left.set_xlabel('Cumulative Explained Variance (R²)', fontsize=16, fontweight='bold', color=COLORS['primary'])
 
 # Title
-ax_left.set_title('A. Variance Decomposition', fontsize=14, fontweight='bold', 
+ax_left.set_title('A. Variance Decomposition', fontsize=18, fontweight='bold', 
                   color=COLORS['primary'], pad=15, loc='left')
 
 # Legend below
@@ -100,7 +100,7 @@ for i, (col, lab, val) in enumerate(zip(colors_stack, labels_stack, values)):
                       facecolor=col, edgecolor='white', linewidth=1)
     ax_left.add_patch(rect)
     ax_left.text(x_pos + 0.025, legend_y + 0.04, f'{lab.replace(chr(10), " ")}: {val*100:.0f}%', 
-                transform=ax_left.transAxes, fontsize=9, va='center', color=COLORS['text'])
+                transform=ax_left.transAxes, fontsize=12, va='center', color=COLORS['text'])
 
 ax_left.spines['top'].set_visible(False)
 ax_left.spines['right'].set_visible(False)
@@ -115,7 +115,7 @@ ax_right.set_ylim(0, 100)
 ax_right.axis('off')
 
 ax_right.text(50, 98, 'B. Model Progression', ha='center', va='top',
-              fontsize=14, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
+              fontsize=18, fontweight='bold', color=COLORS['primary'], fontfamily='serif')
 
 # Draw model boxes with arrows
 box_height = 18
@@ -137,24 +137,24 @@ for i, model in enumerate(models):
     ax_right.add_patch(indicator)
     
     # Model name
-    ax_right.text(12, y - 4, model['name'], fontsize=13, fontweight='bold',
+    ax_right.text(12, y - 4, model['name'], fontsize=18, fontweight='bold',
                   color=COLORS['primary'], fontfamily='serif')
     
     # Variables
-    ax_right.text(12, y - 10, model['vars'], fontsize=9, color=COLORS['text'],
+    ax_right.text(12, y - 10, model['vars'], fontsize=12, color=COLORS['text'],
                   fontfamily='serif', va='top')
     
     # R² value - large
-    ax_right.text(70, y - 6, f"R² = {model['r2']:.2f}", fontsize=14, fontweight='bold',
+    ax_right.text(70, y - 6, f"R² = {model['r2']:.2f}", fontsize=20, fontweight='bold',
                   color=COLORS['primary'], ha='center', fontfamily='serif')
     
     # Delta R² and stats
     if model['delta_r2']:
-        ax_right.text(70, y - 12, f"ΔR² = {model['delta_r2']:.2f}", fontsize=10,
+        ax_right.text(70, y - 12, f"ΔR² = {model['delta_r2']:.2f}", fontsize=14,
                       color=box_color, ha='center', fontweight='bold', fontfamily='serif')
-        ax_right.text(88, y - 6, f"F = {model['f']}", fontsize=9, color=COLORS['text'],
+        ax_right.text(88, y - 6, f"F = {model['f']}", fontsize=12, color=COLORS['text'],
                       ha='center', fontfamily='serif')
-        ax_right.text(88, y - 11, f"p {model['p']}", fontsize=9, color=COLORS['tertiary'],
+        ax_right.text(88, y - 11, f"p {model['p']}", fontsize=12, color=COLORS['tertiary'],
                       ha='center', fontfamily='serif')
     
     # Arrow to next model
@@ -176,17 +176,17 @@ summary_box = FancyBboxPatch((0, 20), 100, 75, boxstyle="round,pad=0.01,rounding
 ax_bottom.add_patch(summary_box)
 
 ax_bottom.text(50, 80, 'KEY FINDINGS', ha='center', va='center',
-               fontsize=14, fontweight='bold', color='white', fontfamily='serif')
+               fontsize=18, fontweight='bold', color='white', fontfamily='serif')
 
 ax_bottom.text(50, 58, 'Substance use (18%) + Physiological mediators (7%) + Psychological moderators (5%)',
-               ha='center', va='center', fontsize=12, color=COLORS['highlight'], fontfamily='serif')
+               ha='center', va='center', fontsize=16, color=COLORS['highlight'], fontfamily='serif')
 
 ax_bottom.text(50, 38, 'Together explain 30% of epigenetic aging variance beyond demographics',
-               ha='center', va='center', fontsize=13, fontweight='bold', color='white', fontfamily='serif')
+               ha='center', va='center', fontsize=17, fontweight='bold', color='white', fontfamily='serif')
 
 # Footer
 ax_bottom.text(50, 8, 'HOMA-IR = Homeostatic Model Assessment for Insulin Resistance | DERS = Difficulties in Emotion Regulation Scale | SCS-B = Self-Compassion Scale',
-               ha='center', va='center', fontsize=8, color=COLORS['tertiary'], fontfamily='serif')
+               ha='center', va='center', fontsize=11, color=COLORS['tertiary'], fontfamily='serif')
 
 plt.savefig('figures/output/table_27_regression.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
