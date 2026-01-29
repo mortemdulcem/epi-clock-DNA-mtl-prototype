@@ -19,7 +19,7 @@ COLORS = {
 
 np.random.seed(42)
 
-fig, ax = plt.subplots(figsize=(14, 10), facecolor='white', dpi=300)
+fig, ax = plt.subplots(figsize=(14, 10), facecolor='white', dpi=1200)
 
 ax.set_title('Supplementary Figure S8: Brain Region-Specific Epigenetic Age Acceleration', 
              fontsize=18, fontweight='bold', color=COLORS['dark_navy'], pad=20)
@@ -111,7 +111,7 @@ legend_elements = [
 ax.legend(handles=legend_elements, loc='upper left', fontsize=11, framealpha=0.9)
 
 plt.tight_layout()
-plt.savefig('figures/output/supplementary_figure_s8.png', dpi=300, bbox_inches='tight',
+plt.savefig('figures/output/supplementary_figure_s8.png', dpi=1200, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 

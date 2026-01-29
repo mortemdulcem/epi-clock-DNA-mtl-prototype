@@ -19,7 +19,7 @@ COLORS = {
 
 np.random.seed(42)
 
-fig, axes = plt.subplots(2, 3, figsize=(18, 12), facecolor='white', dpi=300)
+fig, axes = plt.subplots(2, 3, figsize=(18, 12), facecolor='white', dpi=1200)
 axes = axes.flatten()
 
 fig.suptitle('Supplementary Figure S4: Differential Methylation Volcano Plots', 
@@ -91,7 +91,7 @@ fig.legend(handles=legend_elements, loc='lower center', ncol=3, fontsize=11,
            framealpha=0.9, bbox_to_anchor=(0.5, 0.01))
 
 plt.tight_layout(rect=[0, 0.05, 1, 0.95])
-plt.savefig('figures/output/supplementary_figure_s4.png', dpi=300, bbox_inches='tight',
+plt.savefig('figures/output/supplementary_figure_s4.png', dpi=1200, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 

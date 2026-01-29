@@ -19,7 +19,7 @@ COLORS = {
     'light_gray': '#F8F9FA'
 }
 
-fig, ax = plt.subplots(figsize=(18, 22), facecolor='white', dpi=300)
+fig, ax = plt.subplots(figsize=(18, 22), facecolor='white', dpi=1200)
 ax.set_xlim(0, 100)
 ax.set_ylim(0, 100)
 ax.axis('off')
@@ -107,7 +107,7 @@ ax.text(50, 1.5, 'Final Dataset: n=10,542 samples | 773,765 CpGs | 5 Clocks | 6 
         fontsize=10, fontweight='bold', color=COLORS['dark_navy'], ha='center', va='center')
 
 plt.tight_layout()
-plt.savefig('figures/output/supplementary_figure_s1.png', dpi=300, bbox_inches='tight',
+plt.savefig('figures/output/supplementary_figure_s1.png', dpi=1200, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 

@@ -19,7 +19,7 @@ COLORS = {
 
 np.random.seed(42)
 
-fig, axes = plt.subplots(2, 3, figsize=(18, 12), facecolor='white', dpi=300)
+fig, axes = plt.subplots(2, 3, figsize=(18, 12), facecolor='white', dpi=1200)
 axes = axes.flatten()
 
 fig.suptitle('Supplementary Figure S3: Epigenetic Clock Calibration', 
@@ -101,7 +101,7 @@ axes[5].text(0.5, 0.5, summary_text, transform=axes[5].transAxes,
              color=COLORS['dark_navy'], family='monospace')
 
 plt.tight_layout(rect=[0, 0, 1, 0.95])
-plt.savefig('figures/output/supplementary_figure_s3.png', dpi=300, bbox_inches='tight',
+plt.savefig('figures/output/supplementary_figure_s3.png', dpi=1200, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 

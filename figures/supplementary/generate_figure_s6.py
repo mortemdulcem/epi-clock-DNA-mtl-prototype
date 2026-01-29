@@ -15,7 +15,7 @@ COLORS = {
     'cyan': '#0077B6',
 }
 
-fig, axes = plt.subplots(1, 2, figsize=(16, 8), facecolor='white', dpi=300)
+fig, axes = plt.subplots(1, 2, figsize=(16, 8), facecolor='white', dpi=1200)
 
 fig.suptitle('Supplementary Figure S6: Moderation Interaction Effects', 
              fontsize=18, fontweight='bold', color=COLORS['dark_navy'], y=0.98)
@@ -102,7 +102,7 @@ fig.text(0.5, 0.02,
          ha='center', fontsize=12, fontweight='bold', color=COLORS['dark_navy'])
 
 plt.tight_layout(rect=[0, 0.05, 1, 0.95])
-plt.savefig('figures/output/supplementary_figure_s6.png', dpi=300, bbox_inches='tight',
+plt.savefig('figures/output/supplementary_figure_s6.png', dpi=1200, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 

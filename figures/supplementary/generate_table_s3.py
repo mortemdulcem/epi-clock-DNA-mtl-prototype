@@ -18,7 +18,7 @@ COLORS = {
     'light_gray': '#F8F9FA'
 }
 
-fig = plt.figure(figsize=(22, 20), facecolor='white', dpi=300)
+fig = plt.figure(figsize=(22, 20), facecolor='white', dpi=1200)
 ax = fig.add_subplot(111)
 ax.set_xlim(0, 100)
 ax.set_ylim(0, 100)
@@ -128,7 +128,7 @@ ax.text(50, 2, 'Full list of 1,847 CpGs available in supplementary data file (Ex
         fontsize=10, style='italic', color='gray', ha='center')
 
 plt.tight_layout()
-plt.savefig('figures/output/supplementary_table_s3.png', dpi=300, bbox_inches='tight',
+plt.savefig('figures/output/supplementary_table_s3.png', dpi=1200, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 
