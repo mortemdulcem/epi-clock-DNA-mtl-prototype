@@ -67,13 +67,13 @@ for region, data in regions_data.items():
         circle = Circle((x, y), r, facecolor=data['color'], alpha=alpha, zorder=5)
         ax1.add_patch(circle)
     
-    # Main marker circle with number
-    circle = Circle((x, y), 22, facecolor=data['color'], edgecolor='white', 
-                    linewidth=4, alpha=0.95, zorder=10)
+    # Main marker circle with number - white background, black text
+    circle = Circle((x, y), 18, facecolor='white', edgecolor=data['color'], 
+                    linewidth=3, alpha=0.95, zorder=10)
     ax1.add_patch(circle)
     
     ax1.text(x, y, str(marker_num), ha='center', va='center', 
-            fontsize=18, fontweight='bold', color='white', zorder=11)
+            fontsize=12, fontweight='bold', color='black', zorder=11)
     marker_num += 1
 
 # Draw labels OUTSIDE the brain image - NO OVERLAP - 32pt
