@@ -44,10 +44,10 @@ gs = fig.add_gridspec(1, 2, width_ratios=[1.5, 1], wspace=0.12)
 
 # Panel A: Brain Image with labels
 ax1 = fig.add_subplot(gs[0, 0])
-ax1.set_facecolor('black')
+ax1.set_facecolor('white')
 
-# Load brain image - use original aspect ratio (no compression)
-brain_img = mpimg.imread('figures/brain_anatomical.png')
+# Load brain image with white background - original aspect ratio
+brain_img = mpimg.imread('figures/brain_white_bg.png')
 ax1.imshow(brain_img, aspect='equal')
 
 img_h, img_w = brain_img.shape[:2]
@@ -96,12 +96,12 @@ for region, data in regions_data.items():
     elif 'Amygdala' in region:
         short_name = 'AMY'
     
-    # Label with 24pt font - clear and readable
+    # Label with 18pt font - clear and readable
     label_text = f"{short_name}\n+{data['eaa']} yr\nn={data['n']}"
     
-    bbox = dict(boxstyle='round,pad=0.5', facecolor=data['color'], 
-                edgecolor='white', linewidth=4, alpha=0.95)
-    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=24,
+    bbox = dict(boxstyle='round,pad=0.4', facecolor=data['color'], 
+                edgecolor='white', linewidth=3, alpha=0.95)
+    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=18,
             fontweight='bold', color='white', bbox=bbox, zorder=12)
 
 # Extended limits for labels outside image - more space on left
