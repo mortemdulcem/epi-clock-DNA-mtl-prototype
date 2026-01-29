@@ -24,19 +24,18 @@ COLORS = {
     'bg': '#F8FAFC',
 }
 
-# Brain regions with anatomically correct positions for sagittal section
-# Labels positioned FAR OUTSIDE to avoid any overlap
+# Brain regions - ALL labels on LEFT side with MAXIMUM vertical spacing
 regions_data = {
     'Prefrontal Cortex': {'eaa': 5.3, 'n': 48, 'color': BLUES[0], 
-                          'marker': (0.78, 0.30), 'label_pos': (1.15, 0.15)},
-    'Hippocampus': {'eaa': 3.2, 'n': 24, 'color': BLUES[2],
-                    'marker': (0.58, 0.50), 'label_pos': (1.15, 0.40)},
-    'Amygdala': {'eaa': 3.5, 'n': 21, 'color': BLUES[3],
-                 'marker': (0.48, 0.60), 'label_pos': (1.15, 0.62)},
-    'VTA': {'eaa': 2.8, 'n': 18, 'color': BLUES[4],
-            'marker': (0.38, 0.72), 'label_pos': (1.15, 0.85)},
+                          'marker': (0.78, 0.30), 'label_pos': (-0.28, 0.05)},
     'Nucleus Accumbens': {'eaa': 4.1, 'n': 36, 'color': BLUES[1],
-                          'marker': (0.52, 0.42), 'label_pos': (-0.22, 0.42)},
+                          'marker': (0.52, 0.42), 'label_pos': (-0.28, 0.28)},
+    'Hippocampus': {'eaa': 3.2, 'n': 24, 'color': BLUES[2],
+                    'marker': (0.58, 0.50), 'label_pos': (-0.28, 0.51)},
+    'Amygdala': {'eaa': 3.5, 'n': 21, 'color': BLUES[3],
+                 'marker': (0.48, 0.60), 'label_pos': (-0.28, 0.74)},
+    'VTA': {'eaa': 2.8, 'n': 18, 'color': BLUES[4],
+            'marker': (0.38, 0.72), 'label_pos': (-0.28, 0.97)},
 }
 
 # Create figure - large size for publication
@@ -47,9 +46,9 @@ gs = fig.add_gridspec(1, 2, width_ratios=[1.5, 1], wspace=0.12)
 ax1 = fig.add_subplot(gs[0, 0])
 ax1.set_facecolor('black')
 
-# Load brain image
+# Load brain image - use original aspect ratio (no compression)
 brain_img = mpimg.imread('figures/brain_anatomical.png')
-ax1.imshow(brain_img, aspect='auto')
+ax1.imshow(brain_img, aspect='equal')
 
 img_h, img_w = brain_img.shape[:2]
 
@@ -97,17 +96,17 @@ for region, data in regions_data.items():
     elif 'Amygdala' in region:
         short_name = 'AMY'
     
-    # Label with 32pt font
+    # Label with 24pt font - clear and readable
     label_text = f"{short_name}\n+{data['eaa']} yr\nn={data['n']}"
     
-    bbox = dict(boxstyle='round,pad=0.7', facecolor=data['color'], 
-                edgecolor='white', linewidth=5, alpha=0.95)
-    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=32,
+    bbox = dict(boxstyle='round,pad=0.5', facecolor=data['color'], 
+                edgecolor='white', linewidth=4, alpha=0.95)
+    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=24,
             fontweight='bold', color='white', bbox=bbox, zorder=12)
 
-# Extended limits for labels outside image
-ax1.set_xlim(-img_w * 0.35, img_w * 1.28)
-ax1.set_ylim(img_h * 1.08, -img_h * 0.08)
+# Extended limits for labels outside image - more space on left
+ax1.set_xlim(-img_w * 0.45, img_w * 1.15)
+ax1.set_ylim(img_h * 1.10, -img_h * 0.10)
 ax1.axis('off')
 ax1.set_title('A. Sagittal Brain Section - Regional EAA', fontsize=24, 
               fontweight='bold', color=COLORS['primary'], loc='left', pad=20)
