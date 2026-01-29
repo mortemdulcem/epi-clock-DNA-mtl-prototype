@@ -9,8 +9,12 @@ from matplotlib.patches import FancyBboxPatch, Circle
 import matplotlib.image as mpimg
 import numpy as np
 
-# Use serif font globally (Times New Roman alternative)
+# Use professional serif font globally (academic publication style)
 plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['DejaVu Serif', 'Palatino', 'Georgia', 'Century Schoolbook', 'serif']
+plt.rcParams['font.weight'] = 'normal'
+plt.rcParams['axes.labelweight'] = 'bold'
+plt.rcParams['axes.titleweight'] = 'bold'
 
 # Blue-Black Color Palette
 BLUES = ['#0A2647', '#144272', '#205295', '#2C74B3', '#0077B6']
