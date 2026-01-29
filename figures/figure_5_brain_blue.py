@@ -100,12 +100,12 @@ for region, data in regions_data.items():
     elif 'Amygdala' in region:
         short_name = 'AMY'
     
-    # Label with 18pt font - clear and readable
-    label_text = f"{short_name}\n+{data['eaa']} yr\nn={data['n']}"
+    # Label with 14pt font - single line format
+    label_text = f"{short_name} +{data['eaa']} yr (n={data['n']})"
     
-    bbox = dict(boxstyle='round,pad=0.4', facecolor=data['color'], 
-                edgecolor='white', linewidth=3, alpha=0.95)
-    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=18,
+    bbox = dict(boxstyle='round,pad=0.3', facecolor=data['color'], 
+                edgecolor='white', linewidth=2, alpha=0.95)
+    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=14,
             fontweight='bold', color='white', bbox=bbox, zorder=12)
 
 # Extended limits for labels outside image - more space on left
