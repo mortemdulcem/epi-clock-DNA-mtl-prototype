@@ -131,10 +131,10 @@ eaa_sorted = [eaa_vals[i] for i in sorted_idx]
 colors_sorted = [colors[i] for i in sorted_idx]
 n_sorted = [n_vals[i] for i in sorted_idx]
 
-# Create horizontal bars - minimum spacing, thin bars
-y_positions = np.arange(len(regions_sorted)) * 0.42  # Minimum spacing
+# Create horizontal bars - thin bars with minimum spacing
+y_positions = np.arange(len(regions_sorted)) * 0.28  # Minimum spacing
 bars = ax2.barh(y_positions, eaa_sorted, color=colors_sorted, edgecolor='white', 
-                linewidth=1, height=0.22, alpha=0.9)
+                linewidth=0.5, height=0.18, alpha=0.9)
 
 # Error bars (95% CI approximation)
 ci_errors = [0.6, 0.5, 0.5, 0.5, 0.5]
