@@ -21,22 +21,21 @@ COLORS = {
     'bg': '#F8FAFC',
 }
 
-# Data - positions with CLEAR SEPARATION - no overlapping labels
-# Brain markers inside, labels completely outside with proper spacing
+# Data - positions with CLEAR SEPARATION - labels far outside for visibility
 regions_data = {
     'Prefrontal Cortex': {'eaa': 5.3, 'ci': (4.2, 6.5), 'n': 48, 'color': BLUES[0], 
-                          'pos': (0.18, 0.32), 'label_pos': (-0.12, 0.32)},  # Far left
+                          'pos': (0.18, 0.32), 'label_pos': (-0.20, 0.25)},  # Far left bottom
     'Nucleus Accumbens': {'eaa': 4.1, 'ci': (3.2, 5.1), 'n': 36, 'color': BLUES[1],
-                          'pos': (0.32, 0.48), 'label_pos': (-0.12, 0.60)},  # Left upper
+                          'pos': (0.32, 0.48), 'label_pos': (-0.20, 0.55)},  # Left middle
     'Hippocampus': {'eaa': 3.2, 'ci': (2.3, 4.2), 'n': 24, 'color': BLUES[2],
-                    'pos': (0.65, 0.52), 'label_pos': (1.08, 0.52)},  # Right middle
+                    'pos': (0.65, 0.52), 'label_pos': (1.15, 0.45)},  # Right lower
     'Amygdala': {'eaa': 3.5, 'ci': (2.6, 4.4), 'n': 21, 'color': BLUES[3],
-                 'pos': (0.48, 0.58), 'label_pos': (1.08, 0.75)},  # Right upper
+                 'pos': (0.48, 0.58), 'label_pos': (1.15, 0.72)},  # Right upper
     'VTA': {'eaa': 2.8, 'ci': (1.9, 3.7), 'n': 18, 'color': BLUES[4],
-            'pos': (0.45, 0.72), 'label_pos': (-0.12, 0.88)},  # Left bottom
+            'pos': (0.45, 0.72), 'label_pos': (-0.20, 0.85)},  # Left top
 }
 
-fig = plt.figure(figsize=(20, 12), facecolor='white')
+fig = plt.figure(figsize=(24, 14), facecolor='white')
 gs = fig.add_gridspec(1, 2, width_ratios=[1.4, 1], wspace=0.08)
 
 # Panel A: Brain Image
@@ -65,7 +64,7 @@ for region, data in regions_data.items():
     ax1.add_patch(circle)
     
     ax1.text(x, y, str(marker_num), ha='center', va='center', 
-            fontsize=11, fontweight='bold', color='white', zorder=11)
+            fontsize=14, fontweight='bold', color='white', zorder=11)
     marker_num += 1
 
 # Labels with connection lines
@@ -90,14 +89,14 @@ for region, data in regions_data.items():
     
     label_text = f"{short_name}\n+{data['eaa']} yr\nn={data['n']}"
     
-    bbox = dict(boxstyle='round,pad=0.4', facecolor=data['color'], 
-                edgecolor='white', linewidth=2, alpha=0.95)
-    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=9,
+    bbox = dict(boxstyle='round,pad=0.8', facecolor=data['color'], 
+                edgecolor='white', linewidth=4, alpha=0.95)
+    ax1.text(lx, ly, label_text, ha='center', va='center', fontsize=18,
             fontweight='bold', color='white', bbox=bbox, zorder=12)
 
-# Extended limits to show labels outside brain
-ax1.set_xlim(-img_w * 0.25, img_w * 1.2)
-ax1.set_ylim(img_h * 1.05, -img_h * 0.05)
+# Extended limits to show labels outside brain - expanded for larger labels
+ax1.set_xlim(-img_w * 0.35, img_w * 1.25)
+ax1.set_ylim(img_h * 1.08, -img_h * 0.08)
 ax1.axis('off')
 ax1.set_title('A. Sagittal Brain Section - Regional EAA Mapping', fontsize=14, 
               fontweight='bold', color=COLORS['primary'], loc='left', pad=15)
@@ -150,16 +149,16 @@ for i, (y_pos, region, eaa, color, ci, n) in enumerate(zip(y_positions, regions_
     elif 'Amygdala' in region:
         short_name = 'AMY'
         
-    ax2.text(0.3, y_pos, short_name, ha='right', va='center', fontsize=11, fontweight='bold', color=COLORS['text'])
+    ax2.text(0.3, y_pos, short_name, ha='right', va='center', fontsize=14, fontweight='bold', color=COLORS['text'])
     ax2.text(0.5 + eaa * 1.2 + 0.8, y_pos, f'+{eaa} yr (n={n})', 
-            ha='left', va='center', fontsize=10, fontweight='bold', color=COLORS['text'])
+            ha='left', va='center', fontsize=13, fontweight='bold', color=COLORS['text'])
 
 # X-axis
 ax2.plot([0.5, 8], [0.3, 0.3], color='black', linewidth=1.5)
 for tick in [0, 2, 4, 6]:
     ax2.plot([0.5 + tick*1.2, 0.5 + tick*1.2], [0.2, 0.4], color='black', linewidth=1)
-    ax2.text(0.5 + tick*1.2, -0.1, f'{tick}', ha='center', fontsize=9, color=COLORS['text'])
-ax2.text(4, -0.6, 'EAA (years)', ha='center', fontsize=11, fontweight='bold', color=COLORS['text'])
+    ax2.text(0.5 + tick*1.2, -0.1, f'{tick}', ha='center', fontsize=12, color=COLORS['text'])
+ax2.text(4, -0.6, 'EAA (years)', ha='center', fontsize=13, fontweight='bold', color=COLORS['text'])
 
 # Stats box
 stats_box = FancyBboxPatch((0.3, -3.5), 9.4, 2.8, boxstyle='round,pad=0.05',
@@ -171,7 +170,7 @@ Post-hoc Tukey HSD:
   PFC > NAc (p=0.021*)  |  PFC > HIP (p<0.001***)
 Total n = 147 postmortem samples"""
 
-ax2.text(5, -2.1, stats_text, ha='center', va='center', fontsize=9,
+ax2.text(5, -2.1, stats_text, ha='center', va='center', fontsize=11,
         fontfamily='monospace', color=COLORS['text'])
 
 # Main title
