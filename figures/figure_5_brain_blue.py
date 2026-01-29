@@ -131,10 +131,10 @@ eaa_sorted = [eaa_vals[i] for i in sorted_idx]
 colors_sorted = [colors[i] for i in sorted_idx]
 n_sorted = [n_vals[i] for i in sorted_idx]
 
-# Create horizontal bars - thinner bars
-y_positions = np.arange(len(regions_sorted))
+# Create horizontal bars - thinner bars, closer together
+y_positions = np.arange(len(regions_sorted)) * 0.6  # Reduce spacing between bars
 bars = ax2.barh(y_positions, eaa_sorted, color=colors_sorted, edgecolor='white', 
-                linewidth=1, height=0.4, alpha=0.9)
+                linewidth=1, height=0.35, alpha=0.9)
 
 # Error bars (95% CI approximation)
 ci_errors = [0.6, 0.5, 0.5, 0.5, 0.5]
@@ -156,12 +156,12 @@ for r in regions_sorted:
         short_names.append('VTA')
 
 ax2.set_yticks(y_positions)
-ax2.set_yticklabels(short_names, fontsize=28, fontweight='bold', color=COLORS['text'])
+ax2.set_yticklabels(short_names, fontsize=22, fontweight='bold', color=COLORS['text'])
 
 # Value annotations
 for i, (eaa, n) in enumerate(zip(eaa_sorted, n_sorted)):
-    ax2.text(eaa + 0.8, i, f'+{eaa} yr (n={n})', va='center', ha='left',
-             fontsize=24, fontweight='bold', color=COLORS['text'])
+    ax2.text(eaa + 0.8, y_positions[i], f'+{eaa} yr (n={n})', va='center', ha='left',
+             fontsize=18, fontweight='bold', color=COLORS['text'])
 
 # X-axis
 ax2.set_xlabel('EAA (years)', fontsize=28, fontweight='bold', color=COLORS['text'])
