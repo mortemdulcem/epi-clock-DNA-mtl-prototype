@@ -1,0 +1,59 @@
+SUPPLEMENTARY MATERIALS
+Supplementary Table S1. Veri Setleri Detaylı Karakteristikleri
+Tüm 15 veri setinin detaylı metadata bilgileri, preprocessing yöntemleri, kalite kontrol metrikleri ve batch bilgileri içermektedir. Her veri seti için örnek 
+sayısı, yaş dağılımı, cinsiyet dağılımı, madde kullanım özellikleri (süre, miktar, başlangıç yaşı), eş-tanılar, sosyoekonomik değişkenler ve yaşam tarzı 
+faktörleri sunulmaktadır.
+Supplementary Table S2. Kalite Kontrol Metrikleri
+Örnek düzeyinde kalite kontrol metrikleri: tespit p-değeri dağılımı, bisülfit dönüşüm kontrol prob değerleri, cinsiyet tahmin doğruluğu, principal 
+component outlier skorları. Prob düzeyinde kalite kontrol metrikleri: düşük tespit prob sayıları, çapraz-reaktif prob listesi, SNP-etkilenen prob listesi, 
+cinsiyet kromozomu prob listesi. Batch etki değerlendirmesi: düzeltme öncesi ve sonrası principal component varyans açıklamaları, ComBat düzeltme 
+parametreleri.
+Supplementary Table S3. Maddeye Özgü CpG İmzaları Tam Listesi
+1,847 diferansiyel metile CpG bölgesinin tam listesi: CpG ID, kromozom pozisyonu, ilişkili gen, madde türü, beta değer farkı (Δβ), log fold change, 
+standart hata, t-istatistiği, ham p-değeri, FDR-düzeltilmiş p-değeri. Her madde türü için ayrı tablolar ve paylaşılan core signature için tablo. Gen 
+lokasyonu bilgileri (promoter, gene body, intergenic), CpG adası durumu (island, shore, shelf, open sea), kromatin durumu (enhancer, promoter, 
+transcribed, repressed) ek sütunlar olarak sunulmaktadır.
+Supplementary Table S4. Gen Ontology Enrichment Tam Sonuçları
+Her madde türü için gen ontology enrichment analizi sonuçları: GO terimi, GO kategorisi (biological process, molecular function, cellular component), 
+zenginleşme oranı, beklenen gen sayısı, gözlemlenen gen sayısı, p-değeri, FDR-düzeltilmiş p-değeri, ilişkili genler listesi. KEGG pathway analizi 
+sonuçları: pathway adı, pathway ID, zenginleşme skoru, p-değeri, FDR, ilişkili genler.
+Supplementary Table S5. Mediyasyon Analizi Detaylı Sonuçları
+Üç mediyatör (insülin direnci, HPA eksen, inflamasyon) için detaylı mediyasyon analizi sonuçları: tam kohort ve maddeye özgü alt kohortlar için ayrı 
+analizler. Her analiz için: örnek sayısı, toplam etki katsayısı ve istatistikler, direkt etki katsayısı ve istatistikler, indirekt etki katsayısı ve bootstrap 
+güven aralıkları, path a katsayısı ve istatistikler, path b katsayısı ve istatistikler, mediyasyon yüzdesi ve güven aralıkları. Duyarlılık analizleri: farklı 
+kovaryat setleri, farklı mediyatör operasyonalizasyonları, robust regresyon yöntemleri.
+Supplementary Table S6. Moderasyon Analizi Detaylı Sonuçları
+İki moderatör (duygu düzenleme, öz-kontrol) için detaylı moderasyon analizi sonuçları: etkileşim modeli katsayıları ve istatistikler, simple slopes 
+analizi (düşük/orta/yüksek moderatör seviyeleri), Johnson-Neyman analizi sonuçları (anlamlılık bölgeleri), regions of significance. Moderated 
+mediation analizi: koşullu indirekt etkiler, moderatörün her seviyesi için mediyasyon yüzdeleri, index of moderated mediation. Kategorik moderasyon 
+analizleri: moderatör kategorilerine göre ortalama EAA değerleri, grup karşılaştırmaları, etki büyüklükleri.
+Supplementary Figure S1. Veri İşleme Pipeline Akış Diyagramı
+Supplementary Figure S2. Batch Etki Düzeltme PCA Grafikleri
+İki panel: (A) Düzeltme öncesi principal component analysis, örnekler veri setine göre renk kodlu, PC1 ve PC2 eksenleri, batch etkisi açıkça görülüyor 
+(veri setleri ayrı kümeler oluşturuyor). (B) Düzeltme sonrası principal component analysis, aynı renk kodlaması, batch etkisi büyük ölçüde azalmış 
+(veri setleri karışmış). Her panelde varyans açıklama yüzdeleri gösterilmiş.
+Supplementary Figure S3. Tüm Epigenetik Saatler İçin Kalibrasyon Grafikleri
+Beş panel (Horvath, Hannum, PhenoAge, GrimAge, Ensemble): Her panel için X-ekseni kronolojik yaş, Y-ekseni epigenetik yaş, 45° referans çizgisi 
+(mükemmel kalibrasyon), regresyon çizgisi ve %95 güven aralığı bandı, noktalar madde kullanıcıları (kırmızı) ve kontroller (mavi) olarak renk kodlu. 
+Her panelde regresyon denklemi, R², MAE ve kalibrasyon metrikleri gösterilmiş.
+Supplementary Figure S4. Maddeye Özgü CpG Volcano Plot'ları
+Altı panel (alkol, kokain, opioid, metamfetamin, kannabis, çoklu madde): Her panel için X-ekseni log fold change (Δβ), Y-ekseni -log10(p-değeri), 
+yatay kesikli çizgi FDR<0.05 eşiği, dikey kesikli çizgiler |Δβ|>0.1 eşikleri. Anlamlı CpG'ler kırmızı (hipermetile) ve mavi (hipometile) olarak renk 
+kodlu. En yüksek anlamlılık gösteren top 10 CpG gen isimleri ile etiketlenmiş.
+Supplementary Figure S5. Mediyasyon Path Diyagramları
+Üç panel (insülin direnci, HPA eksen, inflamasyon): Her panel için path diagram gösterimi: bağımsız değişken (madde kullanım süresi) → mediyatör 
+→ bağımlı değişken (GrimAge EAA). Path a, path b, direkt etki ve toplam etki için katsayılar ve p-değerleri oklar üzerinde gösterilmiş. Mediyasyon 
+yüzdesi merkezi kutuda vurgulanmış. Kovaryatlar (yaş, cinsiyet, BMI) kesikli oklar ile gösterilmiş.
+Supplementary Figure S6. Moderasyon Etkileşim Grafikleri
+İki panel (duygu düzenleme, öz-kontrol): Her panel için X-ekseni madde kullanım süresi (yıl), Y-ekseni GrimAge EAA (yıl), üç regresyon çizgisi 
+moderatörün düşük (-1 SD), orta (ortalama), yüksek (+1 SD) seviyeleri için. %95 güven aralığı bantları her çizgi için gösterilmiş. Johnson-Neyman 
+anlamlılık bölgesi gölgeli alan olarak gösterilmiş. Etkileşim terimi istatistikleri grafik üzerinde sunulmuş.
+Supplementary Figure S7. Postmortem PMI Düzeltme Etkisi
+Üç panel: (A) PMI (saat) vs yaş tahmini hatası (yıl), düzeltme öncesi, pozitif lineer ilişki gösterilmiş, regresyon çizgisi ve %95 GA. (B) PMI vs yaş 
+tahmini hatası, düzeltme sonrası, ilişki büyük ölçüde azalmış, düz regresyon çizgisi. (C) Kronolojik yaş vs epigenetik yaş, düzeltme öncesi (açık renkli 
+noktalar) ve düzeltme sonrası (koyu renkli noktalar) karşılaştırması, 45° referans çizgisi, düzeltme sonrası noktaların referans çizgisine daha yakın 
+olduğu görülüyor.
+Supplementary Figure S8. Beyin Bölgesine Göre EAA Dağılımları
+Üç beyin bölgesi (prefrontal korteks, nucleus accumbens, hippokampus) için violin plot'lar: Y-ekseni Horvath EAA (yıl), her bölge için dağılım, 
+median, interquartile range gösterilmiş. ANOVA istatistikleri ve post-hoc karşılaştırma yıldızları (*p<0.05, **p<0.01, ***p<0.001) eklenmiş. Her 
+bölgenin fonksiyonel önemi kısa açıklamalar ile sunulmuş.
