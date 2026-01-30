@@ -12304,27 +12304,46 @@ def render_ml_training_page(components):
         st.markdown("### Platform Veritabani Istatistikleri")
         
         stats = {
-            'Genomik Varyantlar': {
-                'gnomAD v4.0': '750,000,000',
-                'TOPMed': '400,000,000',
-                'UK Biobank': '96,000,000',
-                '1000 Genomes': '84,700,000',
-                'TOPLAM': '~1.33 Milyar'
+            'Genomik Varyantlar ve Veritabanlari': {
+                'dbSNP Genomik Varyant': '1+ MİLYAR',
+                'gnomAD Varyant': '76,156,000',
+                'WGBS CpG Sitesi': '28,000,000',
+                'ClinVar Klinik Varyant': '2,500,000',
+                'GEO Metilasyon Ornegi': '4,500,000',
+                'EWAS CpG-Fenotip Iliskisi': '1,400,000',
+                'Illumina EPIC CpG': '850,000',
+                'GWAS Asosiyasyon': '550,000',
+                'Illumina 450K CpG': '450,000',
+                'PharmGKB Anotasyon': '180,000',
+                'Platform Madde Imzasi': '38,299'
             },
-            'CpG Siteleri': {
-                'WGBS': '28,000,000',
-                'EPIC v2': '935,000',
-                'EPIC': '866,895',
-                '450K': '485,577',
-                'Platform Benzersiz': '23,847'
+            'Madde Veritabani': {
+                'Toplam Madde/Varyant': '38,299',
+                'Temel Madde Imzasi': '1,815',
+                'Yeni Psikoaktif Madde (NPS)': '9,736',
+                'Polisubstans Kombinasyonu': '20,000',
+                'Metabolit': '5,200',
+                'Diger Varyantlar': '1,548',
+                'Madde Kategorisi': '25+'
             },
-            'Maddeler': {
-                'Temel': '~140',
-                'NPS Turevleri': '200+',
-                'Polisubstans': '5,900+',
-                'TOPLAM': '36,000+'
+            'Epigenetik ve ML Modelleri': {
+                'Epigenetik Saat': '5 (Horvath, Hannum, PhenoAge, GrimAge, DunedinPACE)',
+                'Doku-Spesifik Saat': '12',
+                'Tanimlanan Hastalik': '50+',
+                'CpG Marker': '353+ (Horvath), 71 (Hannum)',
+                'ML/DL Modul': '19',
+                'PyTorch Model': '5 (MLP, Autoencoder, VAE, MultiTask, PathwayNN)',
+                'Ensemble ML Algoritma': '4 (RandomForest, XGBoost, ElasticNet, GradientBoosting)',
+                'Pathway Analizi': '6 (Dopamin, Serotonin, GABA, Glutamat, Opioid, Kannabinoid)',
+                'SMILES Formulu': '52',
+                'Metabolit Yolu': '9'
             },
-            'GWAS': {
+            'Referans Veritabanlari': {
+                'Veri Kaynagi': '6 (EWAS, PharmGKB, UNODC, GEO, DrugBank, PubChem)',
+                'UNODC Programli Madde': '81',
+                'Referans Metilasyon Profili': '10,542'
+            },
+            'GWAS Calismalari': {
                 'GSCAN': '1,232,091',
                 'PGC-SUD': '274,424',
                 'MVP Opioid': '82,707'
@@ -12337,14 +12356,17 @@ def render_ml_training_page(components):
                     st.markdown(f"**{name}:** {value}")
         
         st.markdown("---")
+        st.markdown("### TOPLAM: 1+ MİLYAR genomik varyant + 114 milyon CpG/referans verisi")
         
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Toplam Varyant", "~1.33B")
+            st.metric("dbSNP Varyant", "1+ MİLYAR")
         with col2:
             st.metric("CpG Kapsamı", "28M")
         with col3:
-            st.metric("Reseptor Hedefi", "55+")
+            st.metric("Toplam Madde", "38,299")
+        with col4:
+            st.metric("Referans Profil", "10,542")
 
 
 if __name__ == "__main__":
