@@ -429,7 +429,7 @@ with PdfPages(pdf_path) as pdf:
     ax5b.grid(True, alpha=0.3, axis='x', linestyle='--')
     
     add_figure_frame(fig5, 'Figure 5. Brain Region-Specific Epigenetic Age Acceleration',
-                     'PMI-corrected Horvath clock | Postmortem samples | n=147')
+                     'PMI-corrected Horvath clock | Postmortem samples | n=108')
     pdf.savefig(fig5, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close(fig5)
     print("Figure 5 done")

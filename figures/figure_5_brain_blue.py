@@ -181,7 +181,7 @@ ax2.set_title('B. Regional EAA Statistics', fontsize=24,
 # Statistics box at bottom
 stats_text = """ANOVA: F(4,142) = 12.4, p < 0.001 ***
 Post-hoc Tukey HSD: PFC > HIP (p<0.001***)
-Total n = 147 postmortem samples"""
+Total n = 108 postmortem samples"""
 
 ax2.text(0.5, -0.18, stats_text, transform=ax2.transAxes, ha='center', va='top',
          fontsize=18, color=COLORS['text'],

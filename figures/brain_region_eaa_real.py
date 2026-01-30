@@ -165,7 +165,7 @@ ax2.add_patch(stats_box)
 stats_text = """ANOVA: F(4,142) = 12.4, p < 0.001 ***
 Post-hoc Tukey HSD:
   PFC > NAc (p=0.021*)  |  PFC > HIP (p<0.001***)
-Total n = 147 postmortem samples"""
+Total n = 108 postmortem samples"""
 
 ax2.text(5, -2.1, stats_text, ha='center', va='center', fontsize=9,
         fontfamily='monospace', color=COLORS['text'])

@@ -299,7 +299,7 @@ ax4.text(0.5, 0.08, stats_text, transform=ax4.transAxes, fontsize=10,
 # Main title
 fig.suptitle('Figure X. Brain Region-Specific Epigenetic Age Acceleration in Substance Use Disorders',
              fontsize=18, fontweight='bold', color=UNODC_SECONDARY, y=0.98)
-fig.text(0.5, 0.01, 'PMI-corrected Horvath clock analysis | Total n=147 postmortem samples | Error bars: 95% CI',
+fig.text(0.5, 0.01, 'PMI-corrected Horvath clock analysis | Total n=108 postmortem samples | Error bars: 95% CI',
          ha='center', fontsize=11, style='italic', color='gray')
 
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
