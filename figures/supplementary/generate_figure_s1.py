@@ -46,16 +46,16 @@ def draw_stage_box(ax, x, y, width, height, title, subtitle=None, color='#144272
                         facecolor='white', edgecolor=color, linewidth=1.5)
         ax.add_patch(circle)
         ax.text(x - width/2 + 2.5, y + height/2 - 1.5, str(stage_num), 
-                fontsize=10, fontweight='bold', color=color, ha='center', va='center',
+                fontsize=20, fontweight='bold', color=color, ha='center', va='center',
                 fontfamily='serif')
     
     if subtitle:
-        ax.text(x, y + 0.8, title, fontsize=11, fontweight='bold',
+        ax.text(x, y + 0.8, title, fontsize=22, fontweight='bold',
                 color='white', ha='center', va='center', fontfamily='serif')
-        ax.text(x, y - 1.2, subtitle, fontsize=9,
+        ax.text(x, y - 1.2, subtitle, fontsize=36,
                 color='white', ha='center', va='center', fontfamily='serif', style='italic')
     else:
-        ax.text(x, y, title, fontsize=11, fontweight='bold',
+        ax.text(x, y, title, fontsize=22, fontweight='bold',
                 color='white', ha='center', va='center', fontfamily='serif')
 
 def draw_sub_box(ax, x, y, width, height, text, highlight=False):
@@ -69,12 +69,12 @@ def draw_sub_box(ax, x, y, width, height, text, highlight=False):
     
     lines = text.split('\n')
     if len(lines) == 1:
-        ax.text(x, y, text, fontsize=8, fontweight='normal',
+        ax.text(x, y, text, fontsize=16, fontweight='normal',
                 color=COLORS['dark_navy'], ha='center', va='center', fontfamily='serif')
     else:
-        ax.text(x, y + 0.8, lines[0], fontsize=8, fontweight='bold',
+        ax.text(x, y + 0.8, lines[0], fontsize=16, fontweight='bold',
                 color=COLORS['dark_navy'], ha='center', va='center', fontfamily='serif')
-        ax.text(x, y - 0.8, lines[1], fontsize=7,
+        ax.text(x, y - 0.8, lines[1], fontsize=14,
                 color=COLORS['navy'], ha='center', va='center', fontfamily='serif')
 
 def draw_arrow(ax, x1, y1, x2, y2, style='normal'):
@@ -94,9 +94,9 @@ def draw_connector_line(ax, x1, y1, x2, y2):
     ax.plot([x1, x2], [y1, y2], color=COLORS['light_blue'], lw=0.8, 
             linestyle='--', alpha=0.7)
 
-ax.text(50, 98, 'Supplementary Figure S1', fontsize=18, fontweight='bold', 
+ax.text(50, 98, 'Supplementary Figure S1', fontsize=36, fontweight='bold', 
         color=COLORS['dark_navy'], ha='center', va='top', fontfamily='serif')
-ax.text(50, 95.5, 'DNA Methylation Data Processing and Analysis Pipeline', fontsize=13, 
+ax.text(50, 95.5, 'DNA Methylation Data Processing and Analysis Pipeline', fontsize=26, 
         color=COLORS['navy'], ha='center', va='top', fontfamily='serif')
 
 header_rect = FancyBboxPatch((5, 93), 90, 0.15, boxstyle="square",
@@ -122,10 +122,10 @@ qc_rect = FancyBboxPatch((8, y_pos - 7), 84, 13, boxstyle="round,pad=0.01,roundi
                           facecolor='white', edgecolor=COLORS['blue'], linewidth=1.5, linestyle='-')
 ax.add_patch(qc_rect)
 
-ax.text(12, y_pos + 4.5, '3', fontsize=10, fontweight='bold', 
+ax.text(12, y_pos + 4.5, '3', fontsize=20, fontweight='bold', 
         color='white', ha='center', va='center', fontfamily='serif',
         bbox=dict(boxstyle='circle,pad=0.3', facecolor=COLORS['blue'], edgecolor='none'))
-ax.text(50, y_pos + 4.5, 'QUALITY CONTROL MODULE', fontsize=12, fontweight='bold',
+ax.text(50, y_pos + 4.5, 'QUALITY CONTROL MODULE', fontsize=24, fontweight='bold',
         color=COLORS['blue'], ha='center', va='center', fontfamily='serif')
 
 qc_items = [
@@ -145,10 +145,10 @@ filter_rect = FancyBboxPatch((8, y_pos - 7), 84, 13, boxstyle="round,pad=0.01,ro
                               facecolor='white', edgecolor=COLORS['light_blue'], linewidth=1.5)
 ax.add_patch(filter_rect)
 
-ax.text(12, y_pos + 4.5, '4', fontsize=10, fontweight='bold', 
+ax.text(12, y_pos + 4.5, '4', fontsize=20, fontweight='bold', 
         color='white', ha='center', va='center', fontfamily='serif',
         bbox=dict(boxstyle='circle,pad=0.3', facecolor=COLORS['light_blue'], edgecolor='none'))
-ax.text(50, y_pos + 4.5, 'PROBE FILTERING', fontsize=12, fontweight='bold',
+ax.text(50, y_pos + 4.5, 'PROBE FILTERING', fontsize=24, fontweight='bold',
         color=COLORS['light_blue'], ha='center', va='center', fontfamily='serif')
 
 filter_items = [
@@ -189,10 +189,10 @@ clock_rect = FancyBboxPatch((5, y_pos - 9), 90, 16, boxstyle="round,pad=0.01,rou
                              facecolor=COLORS['light_bg'], edgecolor=COLORS['dark_navy'], linewidth=2)
 ax.add_patch(clock_rect)
 
-ax.text(9, y_pos + 5.5, '8', fontsize=10, fontweight='bold', 
+ax.text(9, y_pos + 5.5, '8', fontsize=20, fontweight='bold', 
         color='white', ha='center', va='center', fontfamily='serif',
         bbox=dict(boxstyle='circle,pad=0.3', facecolor=COLORS['dark_navy'], edgecolor='none'))
-ax.text(50, y_pos + 5.5, 'EPIGENETIC CLOCK CALCULATION', fontsize=13, fontweight='bold',
+ax.text(50, y_pos + 5.5, 'EPIGENETIC CLOCK CALCULATION', fontsize=26, fontweight='bold',
         color=COLORS['dark_navy'], ha='center', va='center', fontfamily='serif')
 
 clocks = [
@@ -210,11 +210,11 @@ for i, (name, cpgs, year) in enumerate(clocks):
                                 facecolor='white', edgecolor=COLORS['navy'], linewidth=1)
     ax.add_patch(clock_box)
     
-    ax.text(x_pos, y_pos + 0.5, name, fontsize=10, fontweight='bold',
+    ax.text(x_pos, y_pos + 0.5, name, fontsize=20, fontweight='bold',
             color=COLORS['dark_navy'], ha='center', va='center', fontfamily='serif')
-    ax.text(x_pos, y_pos - 1.8, cpgs, fontsize=8,
+    ax.text(x_pos, y_pos - 1.8, cpgs, fontsize=16,
             color=COLORS['navy'], ha='center', va='center', fontfamily='serif')
-    ax.text(x_pos, y_pos - 3.8, f'({year})', fontsize=7,
+    ax.text(x_pos, y_pos - 3.8, f'({year})', fontsize=14,
             color=COLORS['light_blue'], ha='center', va='center', fontfamily='serif')
 
 draw_arrow(ax, 50, y_pos - 9, 50, y_pos - 12)
@@ -224,10 +224,10 @@ output_rect = FancyBboxPatch((5, y_pos - 5), 90, 10, boxstyle="round,pad=0.01,ro
                               facecolor=COLORS['dark_navy'], edgecolor=COLORS['border'], linewidth=2)
 ax.add_patch(output_rect)
 
-ax.text(9, y_pos + 3.5, '9', fontsize=10, fontweight='bold', 
+ax.text(9, y_pos + 3.5, '9', fontsize=20, fontweight='bold', 
         color=COLORS['dark_navy'], ha='center', va='center', fontfamily='serif',
         bbox=dict(boxstyle='circle,pad=0.3', facecolor='white', edgecolor='none'))
-ax.text(50, y_pos + 3.5, 'STATISTICAL ANALYSIS & OUTPUT', fontsize=13, fontweight='bold',
+ax.text(50, y_pos + 3.5, 'STATISTICAL ANALYSIS & OUTPUT', fontsize=26, fontweight='bold',
         color='white', ha='center', va='center', fontfamily='serif')
 
 outputs = [
@@ -238,7 +238,7 @@ outputs = [
 ]
 for i, output in enumerate(outputs):
     x_pos = 17 + i * 22
-    ax.text(x_pos, y_pos - 0.5, output, fontsize=9, fontweight='bold',
+    ax.text(x_pos, y_pos - 0.5, output, fontsize=36, fontweight='bold',
             color='white', ha='center', va='center', fontfamily='serif')
 
 final_rect = FancyBboxPatch((15, y_pos - 4.2), 70, 2.5,
@@ -246,7 +246,7 @@ final_rect = FancyBboxPatch((15, y_pos - 4.2), 70, 2.5,
                              facecolor=COLORS['cyan'], edgecolor='white', linewidth=1)
 ax.add_patch(final_rect)
 ax.text(50, y_pos - 3, 'Final Dataset: n = 10,542 samples  |  773,765 CpGs  |  5 Clocks  |  6 Substance Categories',
-        fontsize=9, fontweight='bold', color='white', ha='center', va='center', fontfamily='serif')
+        fontsize=36, fontweight='bold', color='white', ha='center', va='center', fontfamily='serif')
 
 legend_items = [
     (COLORS['dark_navy'], 'Input/Output'),
@@ -257,7 +257,7 @@ legend_items = [
 ]
 
 legend_y = 1.5
-ax.text(5, legend_y, 'Pipeline Stages:', fontsize=8, fontweight='bold',
+ax.text(5, legend_y, 'Pipeline Stages:', fontsize=16, fontweight='bold',
         color=COLORS['dark_navy'], ha='left', va='center', fontfamily='serif')
 
 for i, (color, label) in enumerate(legend_items):
@@ -265,7 +265,7 @@ for i, (color, label) in enumerate(legend_items):
     rect = Rectangle((x_pos - 1.5, legend_y - 0.6), 2.5, 1.2, 
                      facecolor=color, edgecolor='none')
     ax.add_patch(rect)
-    ax.text(x_pos + 2, legend_y, label, fontsize=7,
+    ax.text(x_pos + 2, legend_y, label, fontsize=14,
             color=COLORS['dark_navy'], ha='left', va='center', fontfamily='serif')
 
 plt.savefig('figures/output/supplementary_figure_s1.png', dpi=1200, bbox_inches='tight',
