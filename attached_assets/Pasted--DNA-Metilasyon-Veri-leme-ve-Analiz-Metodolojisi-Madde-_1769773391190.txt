@@ -1,0 +1,100 @@
+# DNA Metilasyon Veri İşleme ve Analiz Metodolojisi: Madde Kullanımının Epigenetik Etkileri
+
+Gönderilen ek figürler, DNA metilasyon verilerinin işlenmesi ve madde kullanımının epigenetik saat üzerindeki etkilerini inceleyen kapsamlı bir araştırma metodolojisini göstermektedir. Aşağıda her bir figürün teknik detayları ve bilimsel önemi açıklanmıştır.
+
+## Şekil S1: DNA Metilasyon Veri İşleme ve Analiz Pipeline'ı
+
+Bu figür, 15 farklı GEO/ArrayExpress veri setinden alınan toplam 10,542 örneğin işlendiği kapsamlı bir biyoinformatik iş akışını göstermektedir. Pipeline şu teknik aşamalardan oluşmaktadır:
+
+1. **Ham Veri Girişi**: Illumina 450K/EPIC BeadChip dizilerinden elde edilen IDAT dosyaları
+2. **IDAT Dosya İşleme**: Sinyal normalizasyonu ve ham beta değerlerinin çıkarılması
+3. **Kalite Kontrol Modülü**:
+   - Tespit p-değeri filtrelemesi (<0.01)
+   - Bisülfit dönüşüm verimliliği kontrolü (>%95)
+   - Cinsiyet doğrulama (getSex() validasyonu)
+   - Eksik veri kontrolü (örnek başına <%5)
+4. **Prob Filtreleme**:
+   - Çapraz reaktif probların çıkarılması (29,233 prob)
+   - SNP-etkilenen probların filtrelenmesi (MAF>0.01)
+   - Cinsiyet kromozomlarının çıkarılması
+   - Düşük tespit oranına sahip probların filtrelenmesi (p>0.01)
+5. **Normalizasyon**: Fonksiyonel normalizasyon teknikleri
+6. **Batch Düzeltmesi**: ComBat ampirik Bayes metodolojisi
+7. **Hücre Kompozisyonu Tahmini**: Houseman referans-tabanlı dekompozisyon (6 hücre tipi)
+8. **Epigenetik Saat Hesaplaması**: 5 farklı saat algoritması uygulanmıştır:
+   - Horvath (353 CpG, 2013)
+   - Hannum (71 CpG, 2013)
+   - PhenoAge (513 CpG, 2018)
+   - GrimAge (1,030 CpG, 2019)
+   - DunedinPACE (173 CpG, 2022)
+9. **İstatistiksel Analiz ve Çıktı**: Toplam 773,765 CpG, 5 saat ve 6 madde kategorisi için analizler
+
+## Şekil S2: Batch Etki Düzeltmesi (ComBat)
+
+Bu figür, teknik varyasyonun biyolojik sinyali korurken nasıl etkili bir şekilde giderildiğini göstermektedir:
+
+- **A) Düzeltme Öncesi**: PCA analizi, veri setlerinin belirgin şekilde ayrıştığını göstermektedir (PC1 %32.4, PC2 %18.6 varyans). Farklı renkler farklı veri setlerini temsil etmektedir (GSE110043, GSE181817, GSE149229, UK Biobank, MESA, L-MIAS-5/38).
+- **B) Düzeltme Sonrası**: ComBat ampirik Bayes düzeltmesi sonrası veri setleri homojen bir dağılım göstermektedir (PC1 %8.7, PC2 %6.2 varyans), biyolojik sinyali korurken teknik varyasyonu başarıyla gidermiştir.
+
+## Şekil S3: Epigenetik Saat Kalibrasyonu
+
+Beş farklı epigenetik saat algoritmasının kronolojik yaş ile korelasyonunu ve kalibrasyon performansını göstermektedir:
+
+1. **Horvath Saati**: MAE = 2.9 yıl, R² = 0.91, Eğim = 0.97, Kesişim = 1.4
+2. **Hannum Saati**: MAE = 3.1 yıl, R² = 0.89, Eğim = 0.95, Kesişim = 2.1
+3. **PhenoAge Saati**: MAE = 2.7 yıl, R² = 0.92, Eğim = 0.98, Kesişim = 1.1
+4. **GrimAge Saati**: MAE = 2.4 yıl, R² = 0.94, Eğim = 0.99, Kesişim = 0.8
+5. **Ensemble Saati**: MAE = 2.1 yıl, R² = 0.96, Eğim = 1.0, Kesişim = 0.3
+
+Kalibrasyon özeti, tüm saatlerin mükemmel kalibrasyon gösterdiğini, ancak madde kullanıcılarının (kırmızı noktalar) kontrollere (mavi noktalar) kıyasla sistematik pozitif sapma gösterdiğini, bu da epigenetik yaş hızlanmasını yansıttığını belirtmektedir. En iyi bireysel saat GrimAge (MAE=2.4, R²=0.94), en iyi genel performans ise Ensemble modelinde (MAE=2.1, R²=0.96) gözlenmiştir.
+
+## Şekil S4: Diferansiyel Metilasyon Volkan Grafikleri
+
+Altı farklı madde kategorisi için diferansiyel metilasyon analizini göstermektedir:
+
+1. **Alkol** (423 anlamlı CpG): 287 hipermetile, 136 hipometile
+2. **Kokain** (387 anlamlı CpG): 198 hipermetile, 169 hipometile
+3. **Opioid** (312 anlamlı CpG): 156 hipermetile, 156 hipometile
+4. **Metamfetamin** (289 anlamlı CpG): 147 hipermetile, 142 hipometile
+5. **Kannabis** (183 anlamlı CpG): 89 hipermetile, 94 hipometile
+6. **Çoklu Madde** (436 anlamlı CpG): 223 hipermetile, 213 hipometile
+
+Her grafik, metilasyon farkını (x-ekseni, ΔΒ) ve istatistiksel anlamlılığı (-log10 p-değeri, y-ekseni) göstermektedir. Kırmızı noktalar hipermetile (ΔΒ>0.1), mavi noktalar hipometile (ΔΒ<-0.1), gri noktalar ise anlamlı olmayan CpG'leri göstermektedir. Her madde kategorisi için en anlamlı gen bölgeleri etiketlenmiştir.
+
+## Şekil S5: Mediyasyon Yol Diyagramları
+
+Madde kullanım süresi ile GrimAge Epigenetik Yaş Hızlanması (EAA) arasındaki ilişkide üç farklı biyolojik mekanizmanın aracılık etkisini göstermektedir:
+
+1. **İnsülin Direnci (HOMA-IR)**:
+   - Yol a: β=0.42*** (Madde kullanımı → İnsülin direnci)
+   - Yol b: β=0.33*** (İnsülin direnci → GrimAge EAA)
+   - Doğrudan etki (c'): β=0.39***
+   - Mediyasyon oranı: %26.4
+
+2. **HPA Ekseni (Kortizol/ACTH)**:
+   - Yol a: β=0.38*** (Madde kullanımı → HPA ekseni)
+   - Yol b: β=0.24*** (HPA ekseni → GrimAge EAA)
+   - Doğrudan etki (c'): β=0.44***
+   - Mediyasyon oranı: %17.0
+
+3. **Sistemik Enflamasyon (CRP + IL-6)**:
+   - Yol a: β=0.45*** (Madde kullanımı → Enflamasyon)
+   - Yol b: β=0.36*** (Enflamasyon → GrimAge EAA)
+   - Doğrudan etki (c'): β=0.37***
+   - Mediyasyon oranı: %30.2
+
+Toplam dolaylı etki β=0.39 olup, kombine mediyasyon oranı %61'dir. Analizlerde yaş, cinsiyet ve BMI kovaryant olarak kullanılmıştır.
+
+## Teknik Önem ve Metodolojik Yenilikler
+
+1. **Kapsamlı Veri Entegrasyonu**: 15 farklı veri setinden 10,542 örneğin entegrasyonu, madde kullanımının epigenetik etkilerini incelemek için şimdiye kadar yapılmış en büyük çalışmalardan biridir.
+
+2. **Batch Etki Düzeltme Optimizasyonu**: ComBat ampirik Bayes metodolojisi, biyolojik sinyali korurken teknik varyasyonu etkili bir şekilde gidermiştir, bu da meta-analiz çalışmalarında kritik öneme sahiptir.
+
+3. **Çoklu Epigenetik Saat Yaklaşımı**: Beş farklı epigenetik saat algoritmasının karşılaştırılması, madde kullanımının farklı biyolojik yolaklar üzerindeki etkilerini daha iyi anlamayı sağlamıştır.
+
+4. **Mediyasyon Analizi**: Madde kullanımının epigenetik yaşlanma üzerindeki etkisinde aracılık eden üç farklı fizyolojik mekanizmanın (insülin direnci, HPA ekseni, sistemik enflamasyon) kantitatif değerlendirmesi, altta yatan biyolojik mekanizmaları aydınlatmaktadır.
+
+5. **Madde-Spesifik Metilasyon İmzaları**: Altı farklı madde kategorisi için özgün diferansiyel metilasyon profilleri, madde kullanımının moleküler biyobelirteçlerinin geliştirilmesi için temel oluşturmaktadır.
+
+Bu çalışma, madde kullanımının epigenetik yaşlanma üzerindeki etkilerini anlamak ve potansiyel müdahale noktalarını belirlemek için önemli metodolojik ilerlemeler sağlamaktadır. Özellikle epigenetik yaş hızlanmasında rol oynayan metabolik, endokrin ve enflamatuar yolakların tanımlanması, madde kullanım bozukluklarının uzun vadeli sağlık etkilerini azaltmak için yeni terapötik hedefler sunmaktadır.
