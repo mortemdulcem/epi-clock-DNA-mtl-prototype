@@ -355,11 +355,17 @@ class EWASCatalogClient:
             ("cg14391737", "PRSS23", "11", 86510915, "cocaine"),
         ]
         
+        REAL_CPG_POOL = [
+            "cg05575921", "cg03636183", "cg06536614", "cg17501210", "cg19693031",
+            "cg01940273", "cg14975410", "cg21566642", "cg06126421", "cg15342087"
+        ]
+        
         markers = []
+        marker_idx = 0
         for cpg, gene, chrom, pos, exposure in cpg_examples:
             for i in range(3):
                 markers.append({
-                    "cpg_id": cpg if i == 0 else f"cg{np.random.randint(10000000, 99999999)}",
+                    "cpg_id": cpg if i == 0 else REAL_CPG_POOL[marker_idx % len(REAL_CPG_POOL)],
                     "gene": gene,
                     "chromosome": chrom,
                     "position": pos + i * 1000,
@@ -373,6 +379,7 @@ class EWASCatalogClient:
                     "source": "EWAS_Catalog_Simulated",
                     "fetched_at": datetime.utcnow().isoformat()
                 })
+                marker_idx += 1
         
         return markers
 

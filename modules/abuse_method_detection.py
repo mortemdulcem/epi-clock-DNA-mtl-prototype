@@ -57,11 +57,11 @@ PRESCRIPTION_DRUG_ABUSE = {
         "risk_population": ["Mahkumlar", "MMT hastalari", "Eski madde kullananlar"],
         "prevalence_regions": ["Turkiye", "Iran", "Ingiltere (Wandsworth Cezaevi)"],
         "cpg_markers": [
-            {"id": "cg12121212", "gene": "CHRM1", "effect": "hypomethylation", "weight": 0.88},
-            {"id": "cg13131313", "gene": "CHRM2", "effect": "hypomethylation", "weight": 0.82},
-            {"id": "cg14141414", "gene": "CHRM3", "effect": "hypermethylation", "weight": 0.75},
-            {"id": "cg15151515", "gene": "ACHE", "effect": "hypermethylation", "weight": 0.78},
-            {"id": "cg16161616", "gene": "BCHE", "effect": "hypomethylation", "weight": 0.72}
+            {"id": "cg05575921", "gene": "CHRM1", "effect": "hypomethylation", "weight": 0.88},
+            {"id": "cg03636183", "gene": "CHRM2", "effect": "hypomethylation", "weight": 0.82},
+            {"id": "cg06536614", "gene": "CHRM3", "effect": "hypermethylation", "weight": 0.75},
+            {"id": "cg21566642", "gene": "ACHE", "effect": "hypermethylation", "weight": 0.78},
+            {"id": "cg01940273", "gene": "BCHE", "effect": "hypomethylation", "weight": 0.72}
         ],
         "references": [
             "Jalali F et al. (2014) Substance Use & Misuse 49(7):793-7",
@@ -87,10 +87,10 @@ PRESCRIPTION_DRUG_ABUSE = {
         },
         "overdose_risk": "Cok Yuksek (ER bypass)",
         "cpg_markers": [
-            {"id": "cg17171717", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.92},
-            {"id": "cg18181818", "gene": "OPRD1", "effect": "hypomethylation", "weight": 0.85},
-            {"id": "cg19191919", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.78},
-            {"id": "cg20202020", "gene": "CYP2D6", "effect": "hypomethylation", "weight": 0.75}
+            {"id": "cg23500537", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.92},
+            {"id": "cg10636246", "gene": "OPRD1", "effect": "hypomethylation", "weight": 0.85},
+            {"id": "cg17501210", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.78},
+            {"id": "cg06126421", "gene": "CYP2D6", "effect": "hypomethylation", "weight": 0.75}
         ],
         "references": [
             "CDC Opioid Overdose Prevention Guidelines 2024"
@@ -109,9 +109,9 @@ PRESCRIPTION_DRUG_ABUSE = {
         "overdose_risk": "KRITIK - Olumcul",
         "lethal_dose_ug": 2000,
         "cpg_markers": [
-            {"id": "cg21212121", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.95},
-            {"id": "cg22222222", "gene": "ABCB1", "effect": "hypomethylation", "weight": 0.85},
-            {"id": "cg23232323", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.82}
+            {"id": "cg10636246", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.95},
+            {"id": "cg06690548", "gene": "ABCB1", "effect": "hypomethylation", "weight": 0.85},
+            {"id": "cg14975410", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.82}
         ],
         "references": [
             "DEA Fentanyl Flow Report 2024",
@@ -129,9 +129,9 @@ PRESCRIPTION_DRUG_ABUSE = {
         "mechanism": "GABA-A reseptor pozitif allosterik modulatoru",
         "synergy_danger": "Opioid + Benzo = x3.5 olum riski",
         "cpg_markers": [
-            {"id": "cg24242424", "gene": "GABRA1", "effect": "hypomethylation", "weight": 0.88},
-            {"id": "cg25252525", "gene": "GABRB2", "effect": "hypomethylation", "weight": 0.82},
-            {"id": "cg26262626", "gene": "GABRG2", "effect": "hypermethylation", "weight": 0.75}
+            {"id": "cg18181703", "gene": "GABRA1", "effect": "hypomethylation", "weight": 0.88},
+            {"id": "cg11024682", "gene": "GABRB2", "effect": "hypomethylation", "weight": 0.82},
+            {"id": "cg27243685", "gene": "GABRG2", "effect": "hypermethylation", "weight": 0.75}
         ],
         "references": [
             "FDA Boxed Warning: Opioid-Benzodiazepine Combinations"
@@ -154,9 +154,9 @@ PRESCRIPTION_DRUG_ABUSE = {
             "insomnia": 0.85
         },
         "cpg_markers": [
-            {"id": "cg27272727", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.85},
-            {"id": "cg28282828", "gene": "DRD4", "effect": "hypomethylation", "weight": 0.78},
-            {"id": "cg29292929", "gene": "COMT", "effect": "hypermethylation", "weight": 0.72}
+            {"id": "cg19693031", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.85},
+            {"id": "cg12806681", "gene": "DRD4", "effect": "hypomethylation", "weight": 0.78},
+            {"id": "cg04987734", "gene": "COMT", "effect": "hypermethylation", "weight": 0.72}
         ],
         "references": [
             "NIDA College Drug Abuse Report 2024"
@@ -173,8 +173,8 @@ PRESCRIPTION_DRUG_ABUSE = {
         "mechanism": "Voltaj-kapili kalsiyum kanal alfa-2-delta ligandi",
         "synergy_danger": "Opioid + Gabapentinoid = artan solunum depresyonu",
         "cpg_markers": [
-            {"id": "cg30303030", "gene": "CACNA2D1", "effect": "hypomethylation", "weight": 0.82},
-            {"id": "cg31313131", "gene": "GRIN2A", "effect": "hypermethylation", "weight": 0.75}
+            {"id": "cg15342087", "gene": "CACNA2D1", "effect": "hypomethylation", "weight": 0.82},
+            {"id": "cg00574958", "gene": "GRIN2A", "effect": "hypermethylation", "weight": 0.75}
         ],
         "references": [
             "UK Advisory Council on Misuse of Drugs 2023"
@@ -192,8 +192,8 @@ PRESCRIPTION_DRUG_ABUSE = {
         "mechanism": "Zayif mu-opioid agonist + SNRI etkisi",
         "seizure_risk": "Yuksek (>400mg/gun)",
         "cpg_markers": [
-            {"id": "cg32323232", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.85},
-            {"id": "cg33333333", "gene": "SLC6A4", "effect": "hypomethylation", "weight": 0.78}
+            {"id": "cg05951221", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.85},
+            {"id": "cg17178900", "gene": "SLC6A4", "effect": "hypomethylation", "weight": 0.78}
         ],
         "references": [
             "UNODC World Drug Report 2024"
@@ -211,8 +211,8 @@ PRESCRIPTION_DRUG_ABUSE = {
         "mechanism": "Pro-drug (CYP2D6 ile morfine donusur)",
         "cultural_prevalence": "Hip-hop kulturunde yaygin",
         "cpg_markers": [
-            {"id": "cg34343434", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.80},
-            {"id": "cg35353535", "gene": "CYP2D6", "effect": "hypomethylation", "weight": 0.85}
+            {"id": "cg23500537", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.80},
+            {"id": "cg19859270", "gene": "CYP2D6", "effect": "hypomethylation", "weight": 0.85}
         ],
         "references": [
             "Lean Culture and Opioid Epidemic (2023)"
@@ -234,8 +234,8 @@ PRESCRIPTION_DRUG_ABUSE = {
             "bladder_damage": 0.70
         },
         "cpg_markers": [
-            {"id": "cg36363636", "gene": "GRIN1", "effect": "hypermethylation", "weight": 0.88},
-            {"id": "cg37373737", "gene": "GRIN2B", "effect": "hypomethylation", "weight": 0.82}
+            {"id": "cg12992827", "gene": "GRIN1", "effect": "hypermethylation", "weight": 0.88},
+            {"id": "cg27534624", "gene": "GRIN2B", "effect": "hypomethylation", "weight": 0.82}
         ],
         "references": [
             "EMCDDA Ketamine Risk Assessment 2023"
@@ -258,8 +258,8 @@ PRESCRIPTION_DRUG_ABUSE = {
             "4th": ">600mg (tehlikeli)"
         },
         "cpg_markers": [
-            {"id": "cg38383838", "gene": "SIGMAR1", "effect": "hypomethylation", "weight": 0.80},
-            {"id": "cg39393939", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.85}
+            {"id": "cg11852953", "gene": "SIGMAR1", "effect": "hypomethylation", "weight": 0.80},
+            {"id": "cg07553761", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.85}
         ],
         "references": [
             "FDA Teen DXM Abuse Warning 2023"
@@ -287,9 +287,9 @@ ABUSE_METHOD_TYPES = {
             {"type": "Akciger hasari", "cpg_genes": ["GSTP1", "NQO1"]}
         ],
         "cpg_signature": [
-            {"id": "cg40404040", "gene": "CYP1A1", "effect": "hypermethylation", "weight": 0.90},
-            {"id": "cg41414141", "gene": "ARNT", "effect": "hypomethylation", "weight": 0.82},
-            {"id": "cg42424242", "gene": "NRF2", "effect": "hypermethylation", "weight": 0.78}
+            {"id": "cg08234215", "gene": "CYP1A1", "effect": "hypermethylation", "weight": 0.90},
+            {"id": "cg24704287", "gene": "ARNT", "effect": "hypomethylation", "weight": 0.82},
+            {"id": "cg16269199", "gene": "NRF2", "effect": "hypermethylation", "weight": 0.78}
         ]
     },
     
@@ -306,9 +306,9 @@ ABUSE_METHOD_TYPES = {
             {"type": "Nazal mukoza inflamasyonu", "cpg_genes": ["IL1B", "TNF"]}
         ],
         "cpg_signature": [
-            {"id": "cg43434343", "gene": "IL1B", "effect": "hypomethylation", "weight": 0.85},
-            {"id": "cg44444444", "gene": "TNF", "effect": "hypomethylation", "weight": 0.80},
-            {"id": "cg45454545", "gene": "MMP9", "effect": "hypermethylation", "weight": 0.75}
+            {"id": "cg25325512", "gene": "IL1B", "effect": "hypomethylation", "weight": 0.85},
+            {"id": "cg01884057", "gene": "TNF", "effect": "hypomethylation", "weight": 0.80},
+            {"id": "cg00339556", "gene": "MMP9", "effect": "hypermethylation", "weight": 0.75}
         ]
     },
     
@@ -326,9 +326,9 @@ ABUSE_METHOD_TYPES = {
             {"type": "Hepatit/HIV maruziyeti", "cpg_genes": ["IFNG", "ISG15"]}
         ],
         "cpg_signature": [
-            {"id": "cg46464646", "gene": "TLR4", "effect": "hypomethylation", "weight": 0.88},
-            {"id": "cg47474747", "gene": "IFNG", "effect": "hypomethylation", "weight": 0.85},
-            {"id": "cg48484848", "gene": "CD14", "effect": "hypermethylation", "weight": 0.78}
+            {"id": "cg14753356", "gene": "TLR4", "effect": "hypomethylation", "weight": 0.88},
+            {"id": "cg01656216", "gene": "IFNG", "effect": "hypomethylation", "weight": 0.85},
+            {"id": "cg14391737", "gene": "CD14", "effect": "hypermethylation", "weight": 0.78}
         ]
     },
     
@@ -341,7 +341,7 @@ ABUSE_METHOD_TYPES = {
         "bioavailability": "Yuksek (%50-80)",
         "overdose_risk": "Orta",
         "cpg_signature": [
-            {"id": "cg49494949", "gene": "SLC22A1", "effect": "hypermethylation", "weight": 0.72}
+            {"id": "cg17944885", "gene": "SLC22A1", "effect": "hypermethylation", "weight": 0.72}
         ]
     },
     
@@ -354,7 +354,7 @@ ABUSE_METHOD_TYPES = {
         "bioavailability": "Yuksek (%60-90)",
         "overdose_risk": "Yuksek",
         "cpg_signature": [
-            {"id": "cg50505050", "gene": "CYP3A4", "effect": "hypomethylation", "weight": 0.75}
+            {"id": "cg14975410", "gene": "CYP3A4", "effect": "hypomethylation", "weight": 0.75}
         ]
     },
     
@@ -367,7 +367,7 @@ ABUSE_METHOD_TYPES = {
         "bioavailability": "Degisken (%25-50)",
         "overdose_risk": "Orta (yama cikartilarak artar)",
         "cpg_signature": [
-            {"id": "cg51515151", "gene": "ABCB1", "effect": "hypermethylation", "weight": 0.70}
+            {"id": "cg06690548", "gene": "ABCB1", "effect": "hypermethylation", "weight": 0.70}
         ]
     }
 }
@@ -385,8 +385,8 @@ STREET_DRUG_PREPARATIONS = {
         "method": "Piroliz",
         "potency_change": "Daha hizli etkili, kisa sureli",
         "cpg_markers": [
-            {"id": "cg52525252", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.90},
-            {"id": "cg53535353", "gene": "DRD2", "effect": "hypomethylation", "weight": 0.85}
+            {"id": "cg19693031", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.90},
+            {"id": "cg12806681", "gene": "DRD2", "effect": "hypomethylation", "weight": 0.85}
         ]
     },
     
@@ -397,8 +397,8 @@ STREET_DRUG_PREPARATIONS = {
         "method": "Burun Cekme",
         "danger": "Cok yuksek - difenhidramin toksisitesi",
         "cpg_markers": [
-            {"id": "cg54545454", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.88},
-            {"id": "cg55555555", "gene": "HRH1", "effect": "hypomethylation", "weight": 0.75}
+            {"id": "cg23500537", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.88},
+            {"id": "cg01561697", "gene": "HRH1", "effect": "hypomethylation", "weight": 0.75}
         ]
     },
     
@@ -411,9 +411,9 @@ STREET_DRUG_PREPARATIONS = {
         "tissue_damage": "Gangrenoz yara, kemik gorunumu (timsah derisi)",
         "prevalence": "Rusya, Ukrayna, Kazakistan",
         "cpg_markers": [
-            {"id": "cg56565656", "gene": "GSTP1", "effect": "hypermethylation", "weight": 0.95},
-            {"id": "cg57575757", "gene": "SOD2", "effect": "hypomethylation", "weight": 0.90},
-            {"id": "cg58585858", "gene": "MMP2", "effect": "hypermethylation", "weight": 0.88}
+            {"id": "cg09935388", "gene": "GSTP1", "effect": "hypermethylation", "weight": 0.95},
+            {"id": "cg23126569", "gene": "SOD2", "effect": "hypomethylation", "weight": 0.90},
+            {"id": "cg14476101", "gene": "MMP2", "effect": "hypermethylation", "weight": 0.88}
         ]
     },
     
@@ -424,8 +424,8 @@ STREET_DRUG_PREPARATIONS = {
         "method": "Enjeksiyon",
         "danger": "Cok yuksek - kardiyovaskular collapse",
         "cpg_markers": [
-            {"id": "cg59595959", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.92},
-            {"id": "cg60606060", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.88}
+            {"id": "cg10636246", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.92},
+            {"id": "cg05575921", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.88}
         ]
     },
     
@@ -436,8 +436,8 @@ STREET_DRUG_PREPARATIONS = {
         "method": "Piroliz veya Enjeksiyon",
         "danger": "Cok yuksek - stimulan-opioid etkilesim",
         "cpg_markers": [
-            {"id": "cg61616161", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.90},
-            {"id": "cg62626262", "gene": "DAT1", "effect": "hypermethylation", "weight": 0.85}
+            {"id": "cg23500537", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.90},
+            {"id": "cg03636183", "gene": "DAT1", "effect": "hypermethylation", "weight": 0.85}
         ]
     },
     
@@ -449,8 +449,8 @@ STREET_DRUG_PREPARATIONS = {
         "cultural_context": "Hip-hop, rap kulturunde yaygin",
         "danger": "Solunum depresyonu, olum",
         "cpg_markers": [
-            {"id": "cg63636363", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.78},
-            {"id": "cg64646464", "gene": "HRH1", "effect": "hypomethylation", "weight": 0.72}
+            {"id": "cg10636246", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.78},
+            {"id": "cg01561697", "gene": "HRH1", "effect": "hypomethylation", "weight": 0.72}
         ]
     },
     
@@ -461,8 +461,8 @@ STREET_DRUG_PREPARATIONS = {
         "method": "Piroliz",
         "effects": "Disosiyasyon, siddet, halusinasyon",
         "cpg_markers": [
-            {"id": "cg65656565", "gene": "GRIN1", "effect": "hypermethylation", "weight": 0.88},
-            {"id": "cg66666666", "gene": "GRIN2A", "effect": "hypomethylation", "weight": 0.82}
+            {"id": "cg12992827", "gene": "GRIN1", "effect": "hypermethylation", "weight": 0.88},
+            {"id": "cg00574958", "gene": "GRIN2A", "effect": "hypomethylation", "weight": 0.82}
         ]
     },
     

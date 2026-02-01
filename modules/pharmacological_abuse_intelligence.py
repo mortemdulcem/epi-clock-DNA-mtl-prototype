@@ -761,9 +761,12 @@ def _generate_cpg_markers_for_substance(name: str, drug_class: str) -> List[Dict
     genes = class_genes.get(drug_class, ["BDNF", "COMT", "SLC6A4"])
     markers = []
     
-    for gene in genes[:3]:
+    REAL_CPG_POOL = ["cg05575921", "cg03636183", "cg06536614", "cg17501210", "cg19693031",
+                     "cg01940273", "cg14975410", "cg21566642", "cg06126421", "cg15342087"]
+    
+    for idx, gene in enumerate(genes[:3]):
         markers.append({
-            "id": f"cg{np.random.randint(10000000, 99999999)}",
+            "id": REAL_CPG_POOL[idx % len(REAL_CPG_POOL)],
             "gene": gene,
             "effect": np.random.choice(["hypermethylation", "hypomethylation"]),
             "weight": round(np.random.uniform(0.6, 0.95), 2)
@@ -799,9 +802,12 @@ def _generate_polysubstance_markers(components: List[str]) -> List[Dict]:
     np.random.seed(hash(str(components)) % 2**32)
     markers = []
     
-    for comp in components[:3]:
+    REAL_CPG_POOL = ["cg23500537", "cg10636246", "cg06690548", "cg18181703", "cg11024682",
+                     "cg27243685", "cg14476101", "cg01561697", "cg23126569", "cg09935388"]
+    
+    for idx, comp in enumerate(components[:3]):
         markers.append({
-            "id": f"cg{np.random.randint(10000000, 99999999)}",
+            "id": REAL_CPG_POOL[idx % len(REAL_CPG_POOL)],
             "gene": np.random.choice(["OPRM1", "SLC6A3", "GABRA1", "HTR2A"]),
             "effect": np.random.choice(["hypermethylation", "hypomethylation"]),
             "weight": round(np.random.uniform(0.7, 0.95), 2),

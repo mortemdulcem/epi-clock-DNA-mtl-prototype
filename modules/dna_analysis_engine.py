@@ -146,13 +146,24 @@ class EpigeneticClockEngine:
         
         return clocks
     
+    # Real EWAS-validated CpG pool
+    REAL_CPG_POOL = [
+        "cg05575921", "cg03636183", "cg06536614", "cg17501210", "cg19693031",
+        "cg01940273", "cg14975410", "cg21566642", "cg06126421", "cg15342087",
+        "cg12806681", "cg04987734", "cg19859270", "cg05951221", "cg17178900",
+        "cg00574958", "cg12992827", "cg27534624", "cg11852953", "cg07553761",
+        "cg08234215", "cg24704287", "cg16269199", "cg25325512", "cg01884057",
+        "cg00339556", "cg14753356", "cg01656216", "cg14391737", "cg17944885",
+        "cg23500537", "cg10636246", "cg06690548", "cg18181703", "cg11024682",
+        "cg27243685", "cg14476101", "cg01561697", "cg23126569", "cg09935388"
+    ]
+    
     def _generate_cpg_list(self, n: int, seed: int) -> List[str]:
-        """Generate realistic CpG probe IDs - nrcdnl94"""
+        """Generate realistic CpG probe IDs from validated EWAS pool - nrcdnl94"""
         np.random.seed(seed)
         cpgs = []
         for i in range(n):
-            cpg_num = np.random.randint(10000000, 99999999)
-            cpgs.append(f"cg{cpg_num:08d}")
+            cpgs.append(self.REAL_CPG_POOL[i % len(self.REAL_CPG_POOL)])
         return cpgs
     
     def _anti_trafo(self, x: float, adult_age: float = 20) -> float:

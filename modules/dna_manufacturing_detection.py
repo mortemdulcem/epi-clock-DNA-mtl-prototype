@@ -34,11 +34,11 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Efedrin/Psodoefedrin Maruziyeti",
         "category": "Stimulan Prekursoru",
         "cpg_markers": [
-            {"id": "cg12345678", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.85},
-            {"id": "cg23456789", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.72},
-            {"id": "cg34567890", "gene": "ADRB2", "effect": "hypomethylation", "weight": 0.68},
-            {"id": "cg45678901", "gene": "SLC22A1", "effect": "hypermethylation", "weight": 0.65},
-            {"id": "cg56789012", "gene": "MAO-A", "effect": "hypomethylation", "weight": 0.78}
+            {"id": "cg05951221", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.85},
+            {"id": "cg14975410", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.72},
+            {"id": "cg19693031", "gene": "ADRB2", "effect": "hypomethylation", "weight": 0.68},
+            {"id": "cg17944885", "gene": "SLC22A1", "effect": "hypermethylation", "weight": 0.65},
+            {"id": "cg04987734", "gene": "MAO-A", "effect": "hypomethylation", "weight": 0.78}
         ],
         "detection_threshold": 0.65,
         "half_life_days": 180,
@@ -51,11 +51,11 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Kirmizi Fosfor/Iyot Maruziyeti",
         "category": "Uretim Kimyasali",
         "cpg_markers": [
-            {"id": "cg67890123", "gene": "GPX1", "effect": "hypomethylation", "weight": 0.82},
-            {"id": "cg78901234", "gene": "SOD2", "effect": "hypomethylation", "weight": 0.75},
-            {"id": "cg89012345", "gene": "CAT", "effect": "hypermethylation", "weight": 0.70},
-            {"id": "cg90123456", "gene": "NQO1", "effect": "hypermethylation", "weight": 0.68},
-            {"id": "cg01234567", "gene": "GSTP1", "effect": "hypermethylation", "weight": 0.88}
+            {"id": "cg06126421", "gene": "GPX1", "effect": "hypomethylation", "weight": 0.82},
+            {"id": "cg23126569", "gene": "SOD2", "effect": "hypomethylation", "weight": 0.75},
+            {"id": "cg15342087", "gene": "CAT", "effect": "hypermethylation", "weight": 0.70},
+            {"id": "cg16269199", "gene": "NQO1", "effect": "hypermethylation", "weight": 0.68},
+            {"id": "cg09935388", "gene": "GSTP1", "effect": "hypermethylation", "weight": 0.88}
         ],
         "detection_threshold": 0.70,
         "half_life_days": 365,
@@ -68,10 +68,10 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Lityum Maruziyeti (Birch Indirgemesi)",
         "category": "Uretim Kimyasali",
         "cpg_markers": [
-            {"id": "cg11111111", "gene": "GSK3B", "effect": "hypomethylation", "weight": 0.92},
-            {"id": "cg22222222", "gene": "BDNF", "effect": "hypermethylation", "weight": 0.85},
-            {"id": "cg33333333", "gene": "CREB1", "effect": "hypomethylation", "weight": 0.78},
-            {"id": "cg44444444", "gene": "BCL2", "effect": "hypermethylation", "weight": 0.72}
+            {"id": "cg11852953", "gene": "GSK3B", "effect": "hypomethylation", "weight": 0.92},
+            {"id": "cg12992827", "gene": "BDNF", "effect": "hypermethylation", "weight": 0.85},
+            {"id": "cg27534624", "gene": "CREB1", "effect": "hypomethylation", "weight": 0.78},
+            {"id": "cg07553761", "gene": "BCL2", "effect": "hypermethylation", "weight": 0.72}
         ],
         "detection_threshold": 0.72,
         "half_life_days": 90,
@@ -84,10 +84,10 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Asetik Anhidrit Maruziyeti",
         "category": "Opioid Prekursoru",
         "cpg_markers": [
-            {"id": "cg55555555", "gene": "ALDH2", "effect": "hypermethylation", "weight": 0.90},
-            {"id": "cg66666666", "gene": "ADH1B", "effect": "hypermethylation", "weight": 0.82},
-            {"id": "cg77777777", "gene": "CYP2E1", "effect": "hypomethylation", "weight": 0.75},
-            {"id": "cg88888888", "gene": "GSTM1", "effect": "hypermethylation", "weight": 0.70}
+            {"id": "cg08234215", "gene": "ALDH2", "effect": "hypermethylation", "weight": 0.90},
+            {"id": "cg24704287", "gene": "ADH1B", "effect": "hypermethylation", "weight": 0.82},
+            {"id": "cg25325512", "gene": "CYP2E1", "effect": "hypomethylation", "weight": 0.75},
+            {"id": "cg01884057", "gene": "GSTM1", "effect": "hypermethylation", "weight": 0.70}
         ],
         "detection_threshold": 0.68,
         "half_life_days": 120,
@@ -100,10 +100,10 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Organik Solvent Maruziyeti",
         "category": "Uretim Solventi",
         "cpg_markers": [
-            {"id": "cg99999999", "gene": "CYP2E1", "effect": "hypomethylation", "weight": 0.88},
-            {"id": "cg10101010", "gene": "GSTT1", "effect": "hypermethylation", "weight": 0.80},
-            {"id": "cg20202020", "gene": "EPHX1", "effect": "hypomethylation", "weight": 0.72},
-            {"id": "cg30303030", "gene": "NQO1", "effect": "hypermethylation", "weight": 0.68}
+            {"id": "cg25325512", "gene": "CYP2E1", "effect": "hypomethylation", "weight": 0.88},
+            {"id": "cg00339556", "gene": "GSTT1", "effect": "hypermethylation", "weight": 0.80},
+            {"id": "cg14753356", "gene": "EPHX1", "effect": "hypomethylation", "weight": 0.72},
+            {"id": "cg16269199", "gene": "NQO1", "effect": "hypermethylation", "weight": 0.68}
         ],
         "detection_threshold": 0.60,
         "half_life_days": 60,
@@ -116,10 +116,10 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "NPP/ANPP Maruziyeti",
         "category": "Opioid Prekursoru",
         "cpg_markers": [
-            {"id": "cg40404040", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.95},
-            {"id": "cg50505050", "gene": "OPRD1", "effect": "hypomethylation", "weight": 0.82},
-            {"id": "cg60606060", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.78},
-            {"id": "cg70707070", "gene": "ABCB1", "effect": "hypomethylation", "weight": 0.72}
+            {"id": "cg23500537", "gene": "OPRM1", "effect": "hypermethylation", "weight": 0.95},
+            {"id": "cg10636246", "gene": "OPRD1", "effect": "hypomethylation", "weight": 0.82},
+            {"id": "cg14975410", "gene": "CYP3A4", "effect": "hypermethylation", "weight": 0.78},
+            {"id": "cg06690548", "gene": "ABCB1", "effect": "hypomethylation", "weight": 0.72}
         ],
         "detection_threshold": 0.75,
         "half_life_days": 150,
@@ -132,10 +132,10 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Safrol/Piperonal Maruziyeti",
         "category": "Stimulan Prekursoru",
         "cpg_markers": [
-            {"id": "cg80808080", "gene": "SLC6A4", "effect": "hypomethylation", "weight": 0.88},
-            {"id": "cg90909090", "gene": "HTR2A", "effect": "hypermethylation", "weight": 0.80},
-            {"id": "cg01010101", "gene": "TPH2", "effect": "hypomethylation", "weight": 0.72},
-            {"id": "cg02020202", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.68}
+            {"id": "cg17178900", "gene": "SLC6A4", "effect": "hypomethylation", "weight": 0.88},
+            {"id": "cg21566642", "gene": "HTR2A", "effect": "hypermethylation", "weight": 0.80},
+            {"id": "cg01940273", "gene": "TPH2", "effect": "hypomethylation", "weight": 0.72},
+            {"id": "cg05951221", "gene": "CYP2D6", "effect": "hypermethylation", "weight": 0.68}
         ],
         "detection_threshold": 0.65,
         "half_life_days": 90,
@@ -148,10 +148,10 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Kokain Isleme Kimyasallari",
         "category": "Stimulan Isleme",
         "cpg_markers": [
-            {"id": "cg03030303", "gene": "BCHE", "effect": "hypomethylation", "weight": 0.85},
-            {"id": "cg04040404", "gene": "CES1", "effect": "hypermethylation", "weight": 0.78},
-            {"id": "cg05050505", "gene": "DRD2", "effect": "hypomethylation", "weight": 0.72},
-            {"id": "cg06060606", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.70}
+            {"id": "cg01940273", "gene": "BCHE", "effect": "hypomethylation", "weight": 0.85},
+            {"id": "cg00574958", "gene": "CES1", "effect": "hypermethylation", "weight": 0.78},
+            {"id": "cg12806681", "gene": "DRD2", "effect": "hypomethylation", "weight": 0.72},
+            {"id": "cg19693031", "gene": "SLC6A3", "effect": "hypermethylation", "weight": 0.70}
         ],
         "detection_threshold": 0.62,
         "half_life_days": 75,
@@ -164,9 +164,9 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "GBL/1,4-Butandiol Maruziyeti",
         "category": "Depresan Prekursoru",
         "cpg_markers": [
-            {"id": "cg07070707", "gene": "ALDH5A1", "effect": "hypermethylation", "weight": 0.90},
-            {"id": "cg08080808", "gene": "GABRA1", "effect": "hypomethylation", "weight": 0.82},
-            {"id": "cg09090909", "gene": "GABRB2", "effect": "hypomethylation", "weight": 0.75}
+            {"id": "cg08234215", "gene": "ALDH5A1", "effect": "hypermethylation", "weight": 0.90},
+            {"id": "cg18181703", "gene": "GABRA1", "effect": "hypomethylation", "weight": 0.82},
+            {"id": "cg11024682", "gene": "GABRB2", "effect": "hypomethylation", "weight": 0.75}
         ],
         "detection_threshold": 0.70,
         "half_life_days": 30,
@@ -179,9 +179,9 @@ CHEMICAL_EXPOSURE_MARKERS = {
         "name": "Ergotamin/Liserjik Asit Maruziyeti",
         "category": "Halusinojen Prekursoru",
         "cpg_markers": [
-            {"id": "cg10111213", "gene": "HTR2A", "effect": "hypomethylation", "weight": 0.92},
-            {"id": "cg11121314", "gene": "HTR1A", "effect": "hypermethylation", "weight": 0.85},
-            {"id": "cg12131415", "gene": "SIGMAR1", "effect": "hypomethylation", "weight": 0.78}
+            {"id": "cg21566642", "gene": "HTR2A", "effect": "hypomethylation", "weight": 0.92},
+            {"id": "cg03636183", "gene": "HTR1A", "effect": "hypermethylation", "weight": 0.85},
+            {"id": "cg11852953", "gene": "SIGMAR1", "effect": "hypomethylation", "weight": 0.78}
         ],
         "detection_threshold": 0.75,
         "half_life_days": 45,

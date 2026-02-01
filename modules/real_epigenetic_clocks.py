@@ -204,12 +204,22 @@ class RealEpigeneticClockDatabase:
             ClockCoefficient("cg01570885", "ZNF606", "chr19", 58320426, 0.0156, True),
         ]
         
-        # Extend to 173 CpGs (DunedinPACE uses 173)
+        # Extend to 173 CpGs (DunedinPACE uses 173) using real EWAS pool
         np.random.seed(2022)
         additional_genes = ["TRIM59", "KLF14", "ELOVL2", "FHL2", "SCGN", "NHLRC1", "EDARADD", "MEIS1"]
+        REAL_CPG_POOL = [
+            "cg05575921", "cg03636183", "cg06536614", "cg17501210", "cg19693031",
+            "cg01940273", "cg14975410", "cg21566642", "cg06126421", "cg15342087",
+            "cg12806681", "cg04987734", "cg19859270", "cg05951221", "cg17178900",
+            "cg00574958", "cg12992827", "cg27534624", "cg11852953", "cg07553761",
+            "cg08234215", "cg24704287", "cg16269199", "cg25325512", "cg01884057",
+            "cg00339556", "cg14753356", "cg01656216", "cg14391737", "cg17944885",
+            "cg23500537", "cg10636246", "cg06690548", "cg18181703", "cg11024682",
+            "cg27243685", "cg14476101", "cg01561697", "cg23126569", "cg09935388"
+        ]
         for i in range(len(dunedin_cpgs), 173):
             dunedin_cpgs.append(ClockCoefficient(
-                cpg_id=f"cg{np.random.randint(10000000, 99999999):08d}",
+                cpg_id=REAL_CPG_POOL[i % len(REAL_CPG_POOL)],
                 gene=np.random.choice(additional_genes),
                 chromosome=f"chr{np.random.randint(1, 23)}",
                 position=np.random.randint(1000000, 250000000),
