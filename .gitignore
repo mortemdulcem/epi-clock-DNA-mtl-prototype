@@ -1,69 +1,15 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.pythonlibs/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-
-# Streamlit
-.streamlit/secrets.toml
-
-# OS
+node_modules
+dist
 .DS_Store
-Thumbs.db
+server/public
+vite.config.ts.*
+*.tar.gz
+data/
+scripts/output/
 
-# Logs
-*.log
-logs/
-
-# Database
-*.db
-*.sqlite
-
-# Replit specific
-.replit
-replit.nix
-.upm/
-.cache/
-.config/
-
-# Generated files
-*.zip
-epiclock_prototype_complete.zip
-
-# Secrets and credentials
-.env.local
-.env.*.local
-secrets.toml
+# Large blobs that must NOT go to GitHub (>100MB hard reject). See scripts/revize/realdata/REPORT.md §9.
+# NOTE: .gitignore does NOT un-track already-committed files; a history rewrite (BFG / git lfs migrate)
+# is still required before any GitHub push can succeed.
+*.crdownload
+attached_assets/gdrive/epiclock/EpiClockPrototype.zip
+scripts/revize/realdata/out/*_CONFOUNDED.csv

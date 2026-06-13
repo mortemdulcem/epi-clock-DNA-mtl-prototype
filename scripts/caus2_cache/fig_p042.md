@@ -1,0 +1,1 @@
+Şekil 14: Termal hasar görmüş bir yolcunun yakın plan görüntüsü. Çoğu vücut ölümden sonra yanar. Kanda karbonmonoksit düzeyinin incelenmesi ve havayolunda kurum varlığının araştırılması, kişinin yangın sırasında hayatta mı yoksa ölmüş mü olduğunu gösterecektir.

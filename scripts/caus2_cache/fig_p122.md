@@ -1,0 +1,1 @@
+Şekil 163: Sürücü yokuşta bulunmuştur. Hem kendisi hem de çevresi yanmış durumdadır. Otopside solunum yolunda kurum birikimi ve kanda karbon monoksit saptanmamıştır. Termal hasar dışında vücutta başka yaralanma yoktur. Ölüm nedeni, aracın üzerinden geçmesi sırasında ezilmesidir.

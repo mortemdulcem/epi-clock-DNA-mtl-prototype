@@ -1,0 +1,1 @@
+Şekil 85: Servikal vertebral kolonun subluksasyonunu (kayma) gösteren boyun röntgeni. Bu tip yaralanma, omurilik üzerine bası sonucu ani ölüme neden olur. Servikal vertebral kolona ait gerçek kırıklar sanıldığı kadar sık değildir.

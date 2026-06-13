@@ -1,12 +1,22 @@
-modules = ["python-3.11", "postgresql-16"]
+modules = ["nodejs-20", "web", "python3", "python-3.11", "postgresql-16"]
+run = "npm run dev"
+hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
-channel = "stable-25_05"
-packages = ["cairo", "cargo", "catch2", "comic-neue", "coordgenlibs", "eigen", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "gumbo", "harfbuzz", "inchi", "jbig2dec", "libiconv", "libjpeg_turbo", "libxcrypt", "maeparser", "mupdf", "openjpeg", "openssl", "pkg-config", "qhull", "rapidjson", "rustc", "swig", "tcl", "tk", "unzip", "xcbuild", "xsimd", "zip"]
+channel = "stable-24_05"
+packages = ["cairo", "catch2", "comic-neue", "coordgenlibs", "eigen", "ffmpeg-full", "file", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "gumbo", "harfbuzz", "inchi", "itk", "jbig2dec", "libjpeg_turbo", "libxcrypt", "maeparser", "mupdf", "openjpeg", "pkg-config", "poppler_utils", "qhull", "rapidjson", "swig", "swig4", "tcl", "tk", "xcbuild", "xsimd"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[env]
+PORT = "5000"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["streamlit", "run", "app.py", "--server.port", "5000"]
+run = ["node", "./dist/index.cjs"]
+build = ["npm", "run", "build"]
 
 [workflows]
 runButton = "Project"
@@ -26,15 +36,8 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "streamlit run app.py --server.port 5000"
+args = "npm run dev"
 waitForPort = 5000
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
-
 [agent]
-integrations = ["github:1.0.0"]
+integrations = ["javascript_log_in_with_replit:2.0.0", "javascript_database:1.0.0", "javascript_openai_ai_integrations:2.0.0"]
