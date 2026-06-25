@@ -951,6 +951,53 @@ def render_clocks_page():
         </div>
         """, unsafe_allow_html=True)
 
+@st.cache_data(show_spinner=False)
+def _build_full_source_export():
+    """Tum proje kaynak kodunu tek bir .txt icerigi olarak uretir (anlik, guncel)."""
+    import io
+    TEXT_EXT = {".py", ".json", ".md", ".txt", ".toml", ".cfg", ".ini",
+                ".yml", ".yaml", ".csv", ".html", ".css", ".js", ".sh", ".sql"}
+    SKIP_DIRS = {"__pycache__", ".local", ".git", ".cache", "node_modules"}
+    MAX_BYTES = 2 * 1024 * 1024
+    paths = []
+    for root, dirs, fnames in os.walk("."):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for fn in fnames:
+            if fn == ".audit_secret":
+                continue
+            if os.path.splitext(fn)[1].lower() not in TEXT_EXT:
+                continue
+            full = os.path.join(root, fn)
+            rel = os.path.relpath(full, ".")
+            try:
+                if os.path.getsize(full) > MAX_BYTES:
+                    continue
+            except OSError:
+                continue
+            paths.append(rel)
+    paths.sort()
+    buf = io.StringIO()
+    buf.write("=" * 80 + "\n")
+    buf.write("EpiClock - Tam Kaynak Kodu (tek dosya)\n")
+    buf.write("Repo: mortemdulcem/epi-clock-DNA-mtl-prototype\n")
+    buf.write(f"Toplam dosya: {len(paths)}\n")
+    buf.write("=" * 80 + "\n\nICINDEKILER:\n")
+    for i, p in enumerate(paths, 1):
+        buf.write(f"{i:4d}. {p}\n")
+    buf.write("\n" + "=" * 80 + "\n\n")
+    for p in paths:
+        buf.write("#" * 80 + "\n")
+        buf.write(f"# FILE: {p}\n")
+        buf.write("#" * 80 + "\n")
+        try:
+            with open(p, "r", encoding="utf-8", errors="replace") as fh:
+                buf.write(fh.read())
+        except Exception as e:
+            buf.write(f"[okunamadi: {e}]")
+        buf.write("\n\n")
+    return buf.getvalue().encode("utf-8")
+
+
 def render_downloads_page():
     st.markdown("""
     <div class="info-card">
@@ -958,7 +1005,25 @@ def render_downloads_page():
         <p>Access research documentation and supplementary materials.</p>
     </div>
     """, unsafe_allow_html=True)
-    
+
+    st.markdown("""
+    <div class="info-card">
+        <h3>Tum Kaynak Kodu (EXPORT)</h3>
+        <p>Projenin tum kaynak kodunu tek bir .txt dosyasi olarak indirin.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    _src_txt = _build_full_source_export()
+    st.download_button(
+        label="EXPORT - Tum Kaynak Kodunu Indir (TXT)",
+        data=_src_txt,
+        file_name="EpiClock_Tam_Kaynak_Kodu.txt",
+        mime="text/plain",
+        key="export_full_source_txt",
+        use_container_width=True,
+    )
+    st.caption(f"Tum proje kaynak kodu tek .txt dosyasinda (~{len(_src_txt) // 1024} KB).")
+    st.markdown("---")
+
     col1, col2 = st.columns(2)
     
     with col1:
@@ -1114,6 +1179,7 @@ def render_substance_chemistry_db():
     import modules.nps_database_unodc as nps_mod
     import modules.comprehensive_substance_database as comp_mod
     import modules.markush_rules as mk_mod
+    import modules.nps_analytical_library as anlz_mod
 
     st.markdown("---")
     st.markdown("## 🧪 Çalışan Modül — Madde Kimya Veritabanı (NPS + Markush)")
@@ -1125,10 +1191,11 @@ def render_substance_chemistry_db():
         "katmanı bilimsel dürüstlük gereği bu görünüme DAHİL EDİLMEMİŞTİR."
     )
 
-    tab_nps, tab_ref, tab_mk = st.tabs([
+    tab_nps, tab_ref, tab_mk, tab_anlz = st.tabs([
         "NPS Veritabanı (UNODC/EMCDDA)",
         "Referans Madde Profilleri",
         "Markush Varyant Türetici",
+        "Analitik Referans Kütüphanesi (GC-MS/LC-MS)",
     ])
 
     with tab_nps:
@@ -1212,6 +1279,102 @@ def render_substance_chemistry_db():
             f"Tüm kurallar genelinde teorik toplam: {mstats['total_possible_variants']:,} yapısal varyant. "
             "RDKit ile yapısal geçerlilik denetimi modülün doğrulama hattında yürütülür."
         )
+
+    with tab_anlz:
+        astats = anlz_mod.get_statistics()
+        st.markdown(
+            "### 🔬 Bilinmeyen NPS Türevleri — Analitik Tespit Referans Katmanı"
+        )
+        st.caption(
+            "GC-MS / LC-MS/MS / LC-HRMS ile bilinmeyen NPS tanımlaması için "
+            "referans kütüphanesi hazırlama çerçevesi. Katalog/çerçeve verisi "
+            f"kaynaktan alınmıştır: {anlz_mod.SOURCE_DOC}. Addukt m/z değerleri "
+            "molekül formülünden **hesaplanır** (deterministik); belirli bir "
+            "bileşiğe ait deneysel MRM/EI fragmanı veya RI bu modülde "
+            "**uydurulmaz** — referans standart veya in-silico (CFM-ID/NPS-MS) "
+            "gerektirir."
+        )
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Referans Kütüphane", astats["reference_libraries"])
+        m2.metric("Standart Tedarikçi", astats["standard_suppliers"])
+        m3.metric("In-silico Araç", astats["in_silico_tools"])
+        m4.metric("Moleküler Ağ Yaklaşımı", astats["networking_approaches"])
+
+        st.markdown("#### 🧮 Bileşik Analitik Profili (hesaplanan m/z)")
+        st.caption(
+            "Bir NPS seçin veya molekül formülü girin; monoizotopik kütle ve "
+            "tek yüklü addukt m/z değerleri IUPAC monoizotopik kütlelerle "
+            "hesaplanır. HRMS şüpheli-tarama (suspect screening) için kesin "
+            "kütleler üretilir."
+        )
+        _adb = nps_mod.UNODCNPSDatabase()
+        _formulas = {s.name: s.molecular_formula for s in _adb.substances.values()}
+        cprof1, cprof2 = st.columns([2, 1])
+        sel_name = cprof1.selectbox(
+            "NPS seç (UNODC/EMCDDA DB)", ["(elle formül gir)"] + sorted(_formulas),
+            key="anlz_compound")
+        if sel_name == "(elle formül gir)":
+            formula_in = cprof2.text_input("Molekül formülü", "C11H15NO",
+                                           key="anlz_formula")
+            disp_name = formula_in
+        else:
+            formula_in = _formulas[sel_name]
+            cprof2.text_input("Molekül formülü", formula_in, disabled=True,
+                              key="anlz_formula_ro")
+            disp_name = sel_name
+        try:
+            prof = anlz_mod.compound_analytical_profile(disp_name, formula_in)
+            pc1, pc2 = st.columns(2)
+            pc1.metric("Monoizotopik kütle (Da)", f"{prof.monoisotopic_mass:.5f}")
+            pc2.metric("[M+H]⁺ (m/z)", f"{prof.adducts['[M+H]+']:.5f}")
+            st.dataframe(
+                pd.DataFrame([{"Addukt": k, "m/z (hesaplanan)": v}
+                              for k, v in prof.adducts.items()]),
+                use_container_width=True, hide_index=True)
+            st.caption("ℹ️ " + prof.notes)
+        except ValueError as e:
+            st.error(f"Formül çözümlenemedi: {e}")
+
+        st.markdown("#### 📚 Mevcut Spektral Referans Kütüphaneleri")
+        st.dataframe(pd.DataFrame(anlz_mod.get_reference_libraries()),
+                     use_container_width=True, hide_index=True)
+
+        st.markdown("#### ⚖️ Teknik Karşılaştırması (GC-MS / LC-MS/MS / LC-HRMS)")
+        st.dataframe(pd.DataFrame(anlz_mod.TECHNIQUE_COMPARISON),
+                     use_container_width=True, hide_index=True)
+
+        ctools, cnet = st.columns(2)
+        with ctools:
+            st.markdown("#### 🤖 In-silico Tahmin Araçları (standart yoksa)")
+            st.dataframe(pd.DataFrame(anlz_mod.get_in_silico_tools()),
+                         use_container_width=True, hide_index=True)
+        with cnet:
+            st.markdown("#### 🕸️ Moleküler Ağ Yaklaşımları")
+            st.dataframe(pd.DataFrame(anlz_mod.get_molecular_networking()),
+                         use_container_width=True, hide_index=True)
+
+        st.markdown("#### 🧭 Referans Kütüphanesi Hazırlama İş Akışı (8 aşama)")
+        st.dataframe(pd.DataFrame(anlz_mod.WORKFLOW_STAGES),
+                     use_container_width=True, hide_index=True)
+
+        clvl, ciso = st.columns(2)
+        with clvl:
+            st.markdown("#### 🎚️ Schymanski Güven Düzeyleri (1–5)")
+            st.dataframe(pd.DataFrame(anlz_mod.SCHYMANSKI_LEVELS),
+                         use_container_width=True, hide_index=True)
+        with ciso:
+            st.markdown("#### ✅ ISO 17025:2017 Validasyon")
+            st.dataframe(pd.DataFrame(anlz_mod.ISO17025_VALIDATION),
+                         use_container_width=True, hide_index=True)
+
+        st.markdown("#### 🎯 MRM Geçiş Tasarım Kuralları")
+        for _rule in anlz_mod.MRM_DESIGN_RULES:
+            st.markdown(f"- {_rule}")
+
+        st.markdown("#### 🏭 Sertifikalı Referans Standart Tedarikçileri")
+        st.dataframe(pd.DataFrame(anlz_mod.get_standard_suppliers()),
+                     use_container_width=True, hide_index=True)
+        st.caption(f"Tüm katalog/çerçeve verisinin kaynağı: {anlz_mod.SOURCE_DOC}")
 
 
 def render_specificity_score():
