@@ -1305,7 +1305,8 @@ def render_substance_chemistry_db():
             "Bir NPS seçin veya molekül formülü girin; monoizotopik kütle ve "
             "tek yüklü addukt m/z değerleri IUPAC monoizotopik kütlelerle "
             "hesaplanır. HRMS şüpheli-tarama (suspect screening) için kesin "
-            "kütleler üretilir."
+            "kütleler üretilir. Not: düz molekül formülü desteklenir "
+            "(ör. C11H15NO); parantez/yük/izotop gösterimi (ör. ¹³C) desteklenmez."
         )
         _adb = nps_mod.UNODCNPSDatabase()
         _formulas = {s.name: s.molecular_formula for s in _adb.substances.values()}
@@ -1374,7 +1375,11 @@ def render_substance_chemistry_db():
         st.markdown("#### 🏭 Sertifikalı Referans Standart Tedarikçileri")
         st.dataframe(pd.DataFrame(anlz_mod.get_standard_suppliers()),
                      use_container_width=True, hide_index=True)
-        st.caption(f"Tüm katalog/çerçeve verisinin kaynağı: {anlz_mod.SOURCE_DOC}")
+        st.caption(
+            f"Tüm katalog/çerçeve verisinin kaynağı: {anlz_mod.SOURCE_DOC} — "
+            f"dosya: `{anlz_mod.SOURCE_DOC_FILE}` · SHA-256: "
+            f"`{anlz_mod.SOURCE_DOC_SHA256}`"
+        )
 
 
 def render_specificity_score():
