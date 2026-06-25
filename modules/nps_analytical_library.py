@@ -41,6 +41,16 @@ SOURCE_DOC = (
     "Bilinmeyen NPS Türevlerinin LC-MS/MS ve GC-MS ile Analizi İçin "
     "Referans Kütüphanesi Hazırlama Süreci (kullanıcı sağladı, 2026)"
 )
+# Reprodüklenebilirlik/denetlenebilirlik (replit.md kural #6): kaynak
+# dokümanın tam dosya adı ve SHA-256 özeti. Katalog/çerçeve sabitleri bu
+# dosyadan kopyalanmıştır; özet sayesinde kaynak değişmediği doğrulanabilir.
+SOURCE_DOC_FILE = (
+    "Bilinmeyen_NPS_Türevlerinin_LC-MS_MS_ve_GC-MS_ile_Analizi_"
+    "İçi_1782393697139.docx"
+)
+SOURCE_DOC_SHA256 = (
+    "8ba06179ef268a2552f10d97cfa7eaf36052624a3033aec5d547bbe81db35c11"
+)
 
 # ---------------------------------------------------------------------------
 # 1. MONOİZOTOPİK KÜTLE & ADDUKT m/z HESABI (gerçek, deterministik)
